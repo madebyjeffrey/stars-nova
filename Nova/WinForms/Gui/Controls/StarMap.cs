@@ -132,7 +132,7 @@ namespace Nova.WinForms.Gui
         public void initialize(ClientData clientState)
         {
             this.clientState = clientState;
-            
+
             GameSettings.Restore();
 
             // Initial map size
@@ -149,9 +149,20 @@ namespace Nova.WinForms.Gui
             verticalScrollBar.Enabled = true;
 
             DetermineVisibleMinefields();
-            
+
             zoomFactor = 1.0;
             Zoom();
+        }
+        public void reinitialize(ClientData clientState)
+        {
+            this.clientState = clientState;
+
+            //GameSettings.Restore();
+
+
+            turnData = this.clientState.InputTurn;
+            DetermineVisibleMinefields();
+
         }
 
         /// <param name="graphics"></param>

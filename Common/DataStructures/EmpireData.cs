@@ -154,15 +154,16 @@ namespace Nova.Common
         /// <summary>
         /// Default constructor.
         /// </summary>
-        public EmpireData() 
+        public EmpireData(bool loadComponents = true) 
         {
-            Initialize();
+            Initialize(loadComponents);
             BattlePlans.Add("Default", new BattlePlan());
         }
 
-        protected virtual void Initialize()
+        protected virtual void Initialize(bool loadComponents = true)
         {
-            AvailableComponents = new RaceComponents();
+            
+           if (loadComponents) AvailableComponents = new RaceComponents();
         }
 
         /// <summary>

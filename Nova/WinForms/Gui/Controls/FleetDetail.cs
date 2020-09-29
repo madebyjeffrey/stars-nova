@@ -39,7 +39,7 @@ namespace Nova.WinForms.Gui
     /// </Summary>
     public partial class FleetDetail : System.Windows.Forms.UserControl
     {
-        private readonly EmpireData empireState;
+        private EmpireData empireState;
         private ClientData clientData;
         private Stack<ICommand> commands;
 
@@ -88,6 +88,14 @@ namespace Nova.WinForms.Gui
             this.commands = clientState.Commands;
 
             InitializeComponent();
+        }
+        public void ReInitialise(ClientData clientState)
+        {
+            this.clientData = clientState;
+            this.empireState = clientState.EmpireState;
+            this.commands = clientState.Commands;
+
+            //InitializeComponent();
         }
 
         /// <Summary>

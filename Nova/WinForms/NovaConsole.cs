@@ -48,7 +48,7 @@ namespace Nova.WinForms.Console
             // Fresh state; load game in progress later.            
             this.serverState = new ServerData();
         }
-
+        private Nova.WinForms.Gui.NovaGUI gui;
         /// <Summary>
         /// Clean up any resources being used.
         /// </Summary>
@@ -253,7 +253,7 @@ namespace Nova.WinForms.Console
                 args.Add(CommandArguments.Option.Turn, serverState.TurnYear);
                 args.Add(CommandArguments.Option.IntelFileName, Path.Combine(serverState.GameFolder, raceName + Global.IntelExtension));
                 
-                Nova.WinForms.Gui.NovaGUI gui = new Nova.WinForms.Gui.NovaGUI(args.ToArray());
+                gui = new Nova.WinForms.Gui.NovaGUI(args.ToArray());
                 gui.Show();
             }
             catch (Exception ex)
@@ -290,7 +290,13 @@ namespace Nova.WinForms.Console
                 // TODO (priority 4) - reading all the .orders files is overkill. Only really want to read orders for races that aren't turned in yet, and only if they have changed.
                 OrderReader orderReader = new OrderReader(serverState);
                 orderReader.ReadOrders();
-
+                if ((gui != null) && (gui.nextTurnQueued))
+                {
+                    gui.nextTurnQueued = false;
+                    consoleTimer.Enabled = true;
+                    //gui.NextTurn();
+                    consoleTimer.Enabled = true;
+                }
                 if (SetPlayerList())
                 {
                     generateTurnMenuItem.Enabled = true;
@@ -312,6 +318,7 @@ namespace Nova.WinForms.Console
             }
             finally
             {
+               //if ((gui != null) && (gui.nextTurnQueued)) gui.NextTurn();
                 consoleTimer.Enabled = true;
             }
         }

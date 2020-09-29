@@ -190,7 +190,7 @@ namespace Nova.WinForms.ComponentEditor
                    conf[Global.ComponentFileName] = fd.FileName;
                }
                
-               allComponents.Restore();
+               allComponents.Restore(" Component Editor");
                this.propertyTabs.TabPages.Clear();
         
                // start with something showing

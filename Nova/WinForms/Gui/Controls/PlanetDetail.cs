@@ -36,7 +36,7 @@ namespace Nova.WinForms.Gui
     /// </Summary>
     public partial class PlanetDetail : System.Windows.Forms.UserControl
     {
-        private readonly EmpireData empireState;
+        private EmpireData empireState;
 
         private Star selectedStar;
         
@@ -51,7 +51,7 @@ namespace Nova.WinForms.Gui
         /// Signals that the selected Star has changed.
         /// </summary>
         public event EventHandler<SelectionArgs> PlanetSelectionChanged;
-        
+
         /// <Summary>
         /// Initializes a new instance of the PlanetDetail class.
         /// </Summary>
@@ -59,8 +59,15 @@ namespace Nova.WinForms.Gui
         {
             this.empireState = empireState;
             this.clientState = clientState;
-            
+
             InitializeComponent();
+        }
+        public void ReInitialise(EmpireData empireState, ClientData clientState)
+        {
+            this.empireState = empireState;
+            this.clientState = clientState;
+
+           // InitializeComponent();
         }
 
         /// <Summary>

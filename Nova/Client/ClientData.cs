@@ -22,17 +22,14 @@
 
 namespace Nova.Client
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Windows.Forms;
-    using System.Xml;
-
     using Nova.Common;
     using Nova.Common.Commands;
     using Nova.Common.Components;
-
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Windows.Forms;
+    using System.Xml;
     using Message = Nova.Common.Message;
 
     /// <summary>
@@ -43,7 +40,7 @@ namespace Nova.Client
     [Serializable]
     public sealed class ClientData
     {
-        public EmpireData EmpireState = new EmpireData();
+        public EmpireData EmpireState = new EmpireData(true);
         
         public Stack<ICommand>   Commands = new Stack<ICommand>();
 
@@ -54,8 +51,10 @@ namespace Nova.Client
         public bool FirstTurn = true;  
         
         public string GameFolder = null;
-        
+
         public string StatePathName; // path&filename
+
+        public string IntelFileName; // path&filename
 
         /// <summary>
         /// Default Constructor.
@@ -137,13 +136,19 @@ namespace Nova.Client
         /// Initialize the data needed for the GUI to run.
         /// </summary>
         /// <param name="argArray">The command line arguments.</param>
-        public void Initialize(string[] argArray)
+        public void Initialize(string[] argArray,bool reloading = false)
         {
             // Restore the component definitions. Must be done first so that components used
             // in designs can be linked to when loading the .intel file.
+            CommandArguments commandArguments = new CommandArguments(argArray);
             try
             {
-                AllComponents allComponents = new AllComponents();
+                string hint = "";
+                if (commandArguments.Contains(CommandArguments.Option.RaceName))
+                {
+                    hint = "Race = " + commandArguments[CommandArguments.Option.RaceName];
+                }
+                AllComponents allComponents = new AllComponents(true,hint);
             }
             catch
             {
@@ -173,10 +178,9 @@ namespace Nova.Client
             //    Directly load the state file. If it is missing - FatalError.
             //    (The race name and game folder will be loaded from the state file)
             StatePathName = null;
-            string intelFileName = null;
+            IntelFileName = null;
 
             // process the arguments
-            CommandArguments commandArguments = new CommandArguments(argArray);
 
             if (commandArguments.Contains(CommandArguments.Option.RaceName))
             {
@@ -188,7 +192,7 @@ namespace Nova.Client
             }
             if (commandArguments.Contains(CommandArguments.Option.IntelFileName))
             {
-                intelFileName = commandArguments[CommandArguments.Option.IntelFileName];
+                IntelFileName = commandArguments[CommandArguments.Option.IntelFileName];
             }
 
             // Get the name of the folder where all the game files will be stored. 
@@ -199,7 +203,7 @@ namespace Nova.Client
             if (GameFolder == null)
             {
                 Report.FatalError("ClientState.cs Initialize() - An expected config file entry is missing\n" +
-                                  "Have you ran the Race Designer and \n" +
+                                  "Have you run the Race Designer and \n" +
                                   "Nova Console?");
             }
 
@@ -233,7 +237,7 @@ namespace Nova.Client
                         {
                             Report.FatalError("ClientState.cs Initialize() - Open Game dialog canceled. Exiting. Try running the NovaLauncher.");
                         }
-                        intelFileName = fd.FileName;
+                        IntelFileName = fd.FileName;
                     }
                     catch
                     {
@@ -244,22 +248,39 @@ namespace Nova.Client
 
             // 2. the Nova GUI was started from the launcher open a game option. 
             //    There will be a .intel file listed in the argArray.
-            if ( ! isLoaded && intelFileName != null)
+            if ( ! isLoaded && (IntelFileName != null) && !reloading)
             {
-                if (File.Exists(intelFileName))
+                if (File.Exists(IntelFileName))
                 {
                     // Evenything we need should be found in there.
                     IntelReader intelReader = new IntelReader(this);
-                    intelReader.ReadIntel(intelFileName);
+                    intelReader.ReadIntel(IntelFileName,false);
                     isLoaded = true;
                 }
                 else
                 {
-                    Report.FatalError("ClientState.cs Initialize() - Could not locate .intel file \"" + intelFileName + "\".");
+                    Report.FatalError("ClientState.cs Initialize() - Could not locate .intel file \"" + IntelFileName + "\".");
                 }
             }
 
-            // 3. the Nova GUI was started from the launcher to continue a game. 
+            // 3. the Nova GUI is running and the Player pressed F9 - next turn 
+
+            if (!isLoaded && reloading)
+            {
+                if (File.Exists(IntelFileName))
+                {
+                    Restore();
+                    IntelReader intelReader = new IntelReader(this);
+                    intelReader.ReadIntel(IntelFileName, true);
+                    isLoaded = true;
+                }
+                else
+                {
+                    Report.FatalError("ClientState.cs Initialize() - File not found. Could not continue game \"" + StatePathName + "\".");
+                }
+            }
+
+            // 4. the Nova GUI was started from the launcher to continue a game. 
             //    There will be a StateFileName in the argArray.
             // NB: we already copied it to ClientState.Data.StateFileName, but other
             // code sets that too, so check the arguments to see if it was there.
@@ -273,7 +294,7 @@ namespace Nova.Client
                 {
                     Restore();
                     IntelReader intelReader = new IntelReader(this);
-                    intelReader.ReadIntel(intelFileName);
+                    intelReader.ReadIntel(IntelFileName,false);
                     isLoaded = true;
                 }
                 else

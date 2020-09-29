@@ -60,7 +60,7 @@ namespace Nova.Common
     [Serializable]
     public sealed class Intel
     {
-        public EmpireData EmpireState = new EmpireData();
+        public EmpireData EmpireState = new EmpireData(true);
         
         public List<Message> Messages = new List<Message>();
         

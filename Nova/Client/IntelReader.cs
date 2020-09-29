@@ -36,7 +36,7 @@ namespace Nova.Client
     public class IntelReader
     {
         private ClientData clientState;
-        
+
         public IntelReader(ClientData clientState)
         {
             this.clientState = clientState;
@@ -61,15 +61,23 @@ namespace Nova.Client
         /// stateData (which is subsequently used to generate <RaceName>.orders.
         /// </summary>
         /// <param name="turnFileName">Path and file name of the RaceName.intel file.</param>
-        public void ReadIntel(string turnFileName)
+        public void ReadIntel(string turnFileName, bool nextTurn = false)
         {
+            //if (yearToLoad == 0) yearToLoad = clientState.EmpireState.TurnYear;
             if (!File.Exists(turnFileName))
             {
                 Report.FatalError("The Nova GUI cannot start unless a turn file is present");
             }
 
-            bool waitForFile = false;
+            bool waitForFile = true;
             double waitTime = 0.0; // seconds
+            int activitySpinner = 1;
+            ProgressDialog spinner = new ProgressDialog();
+
+            spinner.Text = "Waiting for year " + (clientState.EmpireState.TurnYear + 1).ToString();
+            spinner.Show();
+            spinner.Begin(0, 100);
+
             do
             {
                 try
@@ -80,27 +88,39 @@ namespace Nova.Client
 
                         xmldoc.Load(turnFile);
                         Intel newIntel = new Intel(xmldoc);
-
+                        waitForFile = (nextTurn && (newIntel.EmpireState.TurnYear == clientState.EmpireState.TurnYear));
                         // check this is a new turn, not an old one or the same one.
-                        if (newIntel.EmpireState.TurnYear >= clientState.EmpireState.TurnYear)
+                        if ((!nextTurn && (newIntel.EmpireState.TurnYear >= clientState.EmpireState.TurnYear)) || (nextTurn && (newIntel.EmpireState.TurnYear > clientState.EmpireState.TurnYear)))
                         {
                             clientState.GameFolder = Path.GetDirectoryName(turnFileName);
                             clientState.Restore();
                             clientState.InputTurn = newIntel;
+                            
+                            spinner.End();
                             ProcessIntel();
                         }
                         else
                         {
                             // exit without saving any files
-                            throw new System.Exception("Turn Year missmatch");
+                            if (!nextTurn)
+                            {
+                                throw new System.Exception("Turn Year missmatch");
+                            }
+                            else
+                            {
+                                //System.Windows.Forms.Application.DoEvents();  //dont DoEvents here because we still have the .intel file open
+                                spinner.StepTo(activitySpinner);
+                                activitySpinner++;
+                                if (activitySpinner > 98) activitySpinner = 1;
+                                if (spinner.IsAborting) waitForFile = false; //exit without loading anything
+                            }
                         }
                     }
-                    waitForFile = false;
                 }
                 catch (System.IO.IOException)
                 {
                     // IOException. Is the file locked? Try waiting.
-                    if (waitTime < Global.TotalFileWaitTime)
+                    if (!nextTurn && (waitTime < Global.TotalFileWaitTime))
                     {
                         waitForFile = true;
                         System.Threading.Thread.Sleep(Global.FileWaitRetryTime);
@@ -109,11 +129,14 @@ namespace Nova.Client
                     else
                     {
                         // Give up, maybe something else is wrong?
-                        throw;
+                        if (!nextTurn) throw;
                     }
                 }
-            } 
-            while (waitForFile);
+                if (nextTurn) System.Windows.Forms.Application.DoEvents(); //give some cpu cycles to the nextturn function
+                //spinner.Invalidate();
+            }
+            while (waitForFile && !spinner.IsAborting);
+            spinner.End();
         }
 
         /// <summary>

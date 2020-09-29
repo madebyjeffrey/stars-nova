@@ -48,31 +48,44 @@ namespace Nova.WinForms.Gui
         /// Construct the main window.
         /// </Summary>
         public NovaGUI(string[] argArray)
-        { 
+
+        {
+            System.Windows.Forms.Timer timerNextTurn = new System.Windows.Forms.Timer();
+            timerNextTurn.Enabled = true;
+            timerNextTurn.Interval = 100;
+            timerNextTurn.Tick += new EventHandler(timerNextTurn_Tick);
+            timerNextTurn.Start();
+            // 
+            // timerNextTurn
+            // 
+            timerNextTurn.Enabled = true;
+            timerNextTurn.Tick += new System.EventHandler(this.timerNextTurn_Tick);
+
             clientState = new ClientData();
             clientState.Initialize(argArray);
             
             InitializeComponent();
-            
-            initializeControls();
-            
-             // These used to be in the designer.cs file, but visual studio designer throws a whappy so they are here
+             initializeControls();
+
+            // These used to be in the designer.cs file, but visual studio designer throws a whappy so they are here
             // for now so it works again
+            if (SelectionDetails != null)
+            {
+                SelectionDetails.FleetDetail.StarmapChanged += MapControl.RefreshStarMap;
+                SelectionDetails.FleetDetail.FleetSelectionChanged += MapControl.SetCursor;
+                SelectionDetails.PlanetDetail.PlanetSelectionChanged += MapControl.SetCursor;
 
-            SelectionDetail.FleetDetail.StarmapChanged += MapControl.RefreshStarMap;
-            SelectionDetail.FleetDetail.FleetSelectionChanged += MapControl.SetCursor;
-            SelectionDetail.PlanetDetail.PlanetSelectionChanged += MapControl.SetCursor;
-            
-            SelectionDetail.FleetDetail.FleetSelectionChanged += SelectionSummary.SummaryChangeSelection;
-            SelectionDetail.PlanetDetail.PlanetSelectionChanged += SelectionSummary.SummaryChangeSelection;
-            MapControl.SelectionChanged += SelectionSummary.SummaryChangeSelection;            
+                SelectionDetails.FleetDetail.FleetSelectionChanged += SelectionSummary.SummaryChangeSelection;
+                SelectionDetails.PlanetDetail.PlanetSelectionChanged += SelectionSummary.SummaryChangeSelection;
+                MapControl.SelectionChanged += SelectionSummary.SummaryChangeSelection;
 
-            MapControl.SelectionRequested += SelectionDetail.CurrentSelection;            
-            MapControl.SelectionChanged += SelectionDetail.DetailChangeSelection;
-            MapControl.WaypointChanged += SelectionDetail.FleetDetail.UpdateWaypointList;
+                MapControl.SelectionRequested += SelectionDetails.CurrentSelection;
+                MapControl.SelectionChanged += SelectionDetails.DetailChangeSelection;
+                MapControl.WaypointChanged += SelectionDetails.FleetDetail.UpdateWaypointList;
+            }
         }
 
-        public SelectionDetail SelectionDetail
+        public SelectionDetail SelectionDetails
         {
             get { return selectionDetail; }
         }
@@ -90,6 +103,17 @@ namespace Nova.WinForms.Gui
         public Messages Messages
         {
             get { return messages; }
+        }
+        public bool nextTurnQueued = false;   //programatically create timer because cant use designer with GUI  !!!!
+        private void timerNextTurn_Tick(object sender, EventArgs e)
+        {
+            Application.DoEvents();
+            this.Update();
+            //if (nextTurnQueued)
+            {
+               // nextTurnQueued = false;
+              //  this.NextTurn();
+            }
         }
 
         /// <Summary>
@@ -293,15 +317,56 @@ namespace Nova.WinForms.Gui
         /// <param name="e">A <see cref="EventArgs"/> that contains the event data.</param>
         private void LoadNextTurnToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            NextTurn();
+            //this.nextTurnQueued = true;
+        }
+        public void NextTurn() 
+        {
+            loadNextTurnToolStripMenuItem.Enabled = false;
+            
+            //this.Update();
+            clientState.Save();
+            OrderWriter orderWriter = new OrderWriter(clientState);
+            orderWriter.WriteOrders();
+
+            int i = 0;
+            while (i < 50)
+            {
+//                Application.DoEvents();
+//                this.Update();
+                i++;
+            }
+
+            
             // prepare the arguments that will tell how to re-initialize.
             CommandArguments commandArguments = new CommandArguments();
+            Application.DoEvents();
             commandArguments.Add(CommandArguments.Option.RaceName, clientState.EmpireState.Race.Name);
+            Application.DoEvents();
             commandArguments.Add(CommandArguments.Option.Turn, clientState.EmpireState.TurnYear + 1);
+            commandArguments.Add(CommandArguments.Option.IntelFileName, clientState.IntelFileName);
+            Application.DoEvents();
 
-            clientState.Initialize(commandArguments.ToArray());
-            this.NextTurn();
+
+
+            clientState.Initialize(commandArguments.ToArray(),true);
+            reinitializeControls();
+
+            // this.selectionDetail.emp = clientState.pl
+            // this.selectionDetail. = clientState;
+            // this.empireState = clientState.EmpireState;
+            // this.commands = clientState.Commands;
+            selectionDetail.ReInitialize(clientState.EmpireState, clientState);
+
+            selectionSummary.ReInitialize( clientState.EmpireState);
+
+            this.doNextTurn();
+            Application.DoEvents();
+            loadNextTurnToolStripMenuItem.Enabled = true;
+            
+
         }
-        
+
         /// <Summary>
         /// Reacts to Fleet selection information. 
         /// </Summary>
@@ -310,7 +375,7 @@ namespace Nova.WinForms.Gui
         /// <param name="e">A <see cref="FleetSelectionArgs"/> that contains the event data.</param>
         public void DetailChangeSelection(object sender, SelectionArgs e)
         {
-            this.SelectionDetail.Value = e.Selection;
+            this.SelectionDetails.Value = e.Selection;
         }
         
         /// <Summary>
@@ -323,7 +388,7 @@ namespace Nova.WinForms.Gui
         {
             this.SelectionSummary.Value = e.Selection;
         }
-        
+
         /// <Summary>
         /// Load controls with any data we may have for them.
         /// </Summary>
@@ -336,6 +401,9 @@ namespace Nova.WinForms.Gui
             this.CurrentRace = clientState.EmpireState.Race.Name;
 
             this.MapControl.initialize(clientState);
+            if (this.CurrentTurn > 2100) loadNextTurnToolStripMenuItem.Enabled = true;
+
+
 
             // Select a Star owned by the player (if any) as the default display.
 
@@ -345,9 +413,42 @@ namespace Nova.WinForms.Gui
                 {
                     MapControl.SetCursor(report.Position);
                     MapControl.CenterMapOnPoint(report.Position);
-                    SelectionDetail.Value = report;
-                    SelectionSummary.Value = report;
-                    break;
+                    if (SelectionDetails != null)
+                    {
+                        SelectionDetails.Value = report;
+                        SelectionSummary.Value = report;
+                        break;
+                    }
+                }
+            }
+        }
+        public void reinitializeControls()
+        {
+            this.Messages.Year = clientState.EmpireState.TurnYear;
+            this.Messages.MessageList = clientState.Messages;
+
+            this.CurrentTurn = clientState.EmpireState.TurnYear;
+            this.CurrentRace = clientState.EmpireState.Race.Name;
+
+            this.MapControl.reinitialize(clientState);
+            if (this.CurrentTurn > 2100) loadNextTurnToolStripMenuItem.Enabled = true;
+
+
+
+            // Select a Star owned by the player (if any) as the default display.
+
+            foreach (StarIntel report in clientState.EmpireState.StarReports.Values)
+            {
+                if (report.Owner == clientState.EmpireState.Id)
+                {
+                    MapControl.SetCursor(report.Position);
+                    MapControl.CenterMapOnPoint(report.Position);
+                    if (SelectionDetails != null)
+                    {
+                        SelectionDetails.Value = report;
+                        SelectionSummary.Value = report;
+                        break;
+                    }
                 }
             }
         }
@@ -355,14 +456,14 @@ namespace Nova.WinForms.Gui
         /// <Summary>
         /// Refresh the display for a new turn.
         /// </Summary>
-        public void NextTurn()
+        public void doNextTurn()
         {
             Messages.Year = clientState.EmpireState.TurnYear;
             Messages.MessageList = clientState.Messages;
 
             Invalidate(true);
 
-            MapControl.initialize(clientState);
+            MapControl.reinitialize(clientState);
             MapControl.Invalidate();
 
             // Select a Star owned by the player (if any) as the default display.
@@ -372,8 +473,8 @@ namespace Nova.WinForms.Gui
                 if (report.Owner == clientState.EmpireState.Id)
                 {
                     MapControl.SetCursor((System.Drawing.Point)report.Position);
-                    SelectionDetail.Value = clientState.EmpireState.OwnedStars[report.Name];
-                    SelectionSummary.Value = report;
+                    if (SelectionDetails != null)   SelectionDetails.Value = clientState.EmpireState.OwnedStars[report.Name];
+                    if (SelectionSummary != null)   SelectionSummary.Value = report;
                     break;
                 }
             }
@@ -388,13 +489,21 @@ namespace Nova.WinForms.Gui
         /// </returns>
         private bool UpdateResearchBudgets()
         {
-            if (SelectionDetail.isPlanetDetail())
+            if (SelectionDetails.isPlanetDetail())
             {
-                SelectionDetail.Value = SelectionDetail.Reload();
+                SelectionDetails.Value = SelectionDetails.Reload();
                 return true;
             }
             
             return false;
+        }
+
+
+
+        private void toolsToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            //nextTurnQueued = true;
+            NextTurn();
         }
     }
 }

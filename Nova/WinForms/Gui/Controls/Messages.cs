@@ -277,6 +277,16 @@ namespace Nova.WinForms.Gui
             }
         }
 
+        /// ----------------------------------------------------------------------------
+        /// <Summary>
+        /// Clear a message in the message control at yearend.
+        /// </Summary>
+        /// ----------------------------------------------------------------------------
+        public void ReSetMessage()
+        {
+             messageBox.Text = "";
+        }
+
 
         /// ----------------------------------------------------------------------------
         /// <Summary>
@@ -327,7 +337,7 @@ namespace Nova.WinForms.Gui
                 {
                     nextButton.Enabled = false;
                 }
-
+                ReSetMessage();
                 SetMessage();
             }
         }

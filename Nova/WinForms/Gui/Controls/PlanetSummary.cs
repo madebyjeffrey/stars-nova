@@ -37,7 +37,7 @@ namespace Nova.WinForms.Gui
     public class PlanetSummary : System.Windows.Forms.UserControl, IStarObserver
     {
         // List of the Star reports.
-        private readonly EmpireData empireState;        
+        private  EmpireData empireState;        
        
         // reference to the Star. This is only used for owned stars.
         private StarIntel currentStar;
@@ -75,8 +75,17 @@ namespace Nova.WinForms.Gui
         public PlanetSummary(EmpireData empireState)
         {
             this.empireState = empireState;
-            
+
             InitializeComponent();
+        }
+        /// <Summary>
+        /// ReInitializes a new instance of the PlanetSummary class.
+        /// </Summary>
+        public void ReInitialize(EmpireData empireState)
+        {
+            this.empireState = empireState;
+
+            //InitializeComponent();
         }
 
         /// <Summary>

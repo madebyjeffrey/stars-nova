@@ -113,7 +113,7 @@ namespace Nova.Server.NewGame
                 }                
 
                 // Initialize clean data for them. 
-                EmpireData empireData = new EmpireData();
+                EmpireData empireData = new EmpireData(true);
                 empireData.Id = settings.PlayerNumber;
                 empireData.Race = serverState.AllRaces[settings.RaceName];
 

@@ -22,18 +22,16 @@
 
 namespace Nova.WinForms.Gui
 {
-    using System;
+    using Nova.Common;
     using System.Drawing;
     using System.Windows.Forms;
-    
-    using Nova.Common;
 
     /// <Summary>
     /// Control to display a Summary of the selected map Item.
     /// </Summary>
     public partial class SelectionSummary : UserControl
     {
-        private readonly EmpireData empireState;
+        private EmpireData empireState;
         
         private Mappable summaryItem = null;
         
@@ -54,9 +52,18 @@ namespace Nova.WinForms.Gui
         /// </Summary>
         public SelectionSummary(EmpireData empireState)
         {
+            if (this.empireState != null) this.empireState.Clear();
             this.empireState = empireState;
-            
+
             InitializeComponent();
+        }
+        public void ReInitialize(EmpireData empireState)
+        {
+            if (this.empireState != null) this.empireState.Clear();
+            this.empireState = empireState;
+
+            this.planetSummary.ReInitialize(empireState);
+            this.fleetSummary.ReInitialize (empireState);
         }
 
         protected override void OnKeyDown(KeyEventArgs e)

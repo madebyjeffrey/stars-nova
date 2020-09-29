@@ -90,6 +90,7 @@ namespace Nova.Client
                         using (Stream output = new FileStream(ordersFileName, FileMode.Create))
                         {
                             xmldoc.Save(output);
+                            while (!File.Exists(ordersFileName)) ;
                         }
                         waitForFile = false;
                     }

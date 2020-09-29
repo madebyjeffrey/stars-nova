@@ -34,7 +34,7 @@ namespace Nova.WinForms.Gui
     /// </Summary>
     public partial class FleetSummary : UserControl
     {
-        private readonly EmpireData empireState;
+        private  EmpireData empireState;
 
         /// <Summary>
         /// Initializes a new instance of the FleetSummary class.
@@ -42,8 +42,18 @@ namespace Nova.WinForms.Gui
         public FleetSummary(EmpireData empireState)
         {
             this.empireState = empireState;
-            
+
             InitializeComponent();
+        }
+
+        /// <Summary>
+        /// ReInitializes a new instance of the FleetSummary class.
+        /// </Summary>
+        public void ReInitialize(EmpireData empireState)
+        {
+            this.empireState = empireState;
+
+            //InitializeComponent();
         }
 
 

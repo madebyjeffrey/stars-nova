@@ -39,7 +39,7 @@ namespace Nova.WinForms.Gui
         // ProductionDialog shouldn't need the whole state either. Must refactor this.
         private ClientData clientState;
         
-        private readonly EmpireData empireState;
+        private EmpireData empireState;
         
         private UserControl selectedControl = null;
         
@@ -54,22 +54,33 @@ namespace Nova.WinForms.Gui
             get { return fleetDetail; }
             set { fleetDetail = value; }
         }
-        
-        
+
+
         /// <Summary>
         /// Initializes a new instance of the SelectionDetail class.
         /// </Summary>
         public SelectionDetail(EmpireData empireState, ClientData clientState)
         {
+            if (this.empireState != null) this.empireState.Clear();
             this.empireState = empireState;
-            
+
             // FIXME: (priority 3) see declaration.
             this.clientState = clientState;
-            
+
             InitializeComponent();
         }
+        public void ReInitialize(EmpireData empireState, ClientData clientState)
+        {
+            if (this.empireState != null) this.empireState.Clear();
+            this.empireState = empireState;
 
-        
+            // FIXME: (priority 3) see declaration.
+            this.clientState = clientState;
+
+             ReInitializeComponent();
+        }
+
+
         /// <Summary>
         /// Display planet Detail
         /// </Summary>
@@ -136,7 +147,15 @@ namespace Nova.WinForms.Gui
             {
                 // We should use item.Key here, but we know stars are keyed by Name and
                 // we save two casts (star and starintel, which are not polymorphic)
-                DisplayPlanet(empireState.OwnedStars[item.Name]);
+                try
+                {
+                    DisplayPlanet(empireState.OwnedStars[item.Name]);
+                }
+                catch
+                {
+
+                }
+
             }
         }
 

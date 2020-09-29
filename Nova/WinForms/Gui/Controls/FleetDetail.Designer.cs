@@ -312,6 +312,7 @@ namespace Nova.WinForms.Gui
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.checkBoxRepeatOrders);
+            this.groupBox3.Controls.Add(this.groupBox2);
             this.groupBox3.Controls.Add(this.buttonWaypointTarget);
             this.groupBox3.Controls.Add(this.wayPoints);
             this.groupBox3.Controls.Add(this.label1);
@@ -340,7 +341,7 @@ namespace Nova.WinForms.Gui
             // 
             this.checkBoxRepeatOrders.AutoSize = true;
             this.checkBoxRepeatOrders.Enabled = false;
-            this.checkBoxRepeatOrders.Location = new System.Drawing.Point(9, 204);
+            this.checkBoxRepeatOrders.Location = new System.Drawing.Point(9, 198);
             this.checkBoxRepeatOrders.Name = "checkBoxRepeatOrders";
             this.checkBoxRepeatOrders.Size = new System.Drawing.Size(95, 17);
             this.checkBoxRepeatOrders.TabIndex = 95;
@@ -369,14 +370,14 @@ namespace Nova.WinForms.Gui
             this.contextMenuWaypointTargets.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.blahToolStripMenuItem});
             this.contextMenuWaypointTargets.Name = "contextMenuWaypointTargets";
-            this.contextMenuWaypointTargets.Size = new System.Drawing.Size(153, 48);
+            this.contextMenuWaypointTargets.Size = new System.Drawing.Size(98, 26);
             this.contextMenuWaypointTargets.Opened += new System.EventHandler(this.ShowWaypointContext);
             this.contextMenuWaypointTargets.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.ContextMenuWaypointTargets_SelectedIndexChanged);
             // 
             // blahToolStripMenuItem
             // 
             this.blahToolStripMenuItem.Name = "blahToolStripMenuItem";
-            this.blahToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.blahToolStripMenuItem.Size = new System.Drawing.Size(97, 22);
             this.blahToolStripMenuItem.Text = "blah";
             // 
             // groupBox4
@@ -407,6 +408,7 @@ namespace Nova.WinForms.Gui
             this.typeHeader,
             this.numberHeader});
             this.fleetComposition.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.fleetComposition.HideSelection = false;
             this.fleetComposition.Location = new System.Drawing.Point(5, 22);
             this.fleetComposition.Name = "fleetComposition";
             this.fleetComposition.Size = new System.Drawing.Size(168, 88);
@@ -547,9 +549,9 @@ namespace Nova.WinForms.Gui
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.WaypointTasks);
-            this.groupBox2.Location = new System.Drawing.Point(0, 392);
+            this.groupBox2.Location = new System.Drawing.Point(3, 215);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(170, 60);
+            this.groupBox2.Size = new System.Drawing.Size(170, 69);
             this.groupBox2.TabIndex = 100;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Waypoint Task";
@@ -566,11 +568,12 @@ namespace Nova.WinForms.Gui
             "Scrap",
             "Unload Cargo",
             "Lay Mines"});
-            this.WaypointTasks.Location = new System.Drawing.Point(7, 20);
+            this.WaypointTasks.Location = new System.Drawing.Point(3, 21);
             this.WaypointTasks.Name = "WaypointTasks";
             this.WaypointTasks.Size = new System.Drawing.Size(152, 21);
             this.WaypointTasks.TabIndex = 68;
             this.WaypointTasks.TabStop = false;
+            this.WaypointTasks.SelectedIndexChanged += new System.EventHandler(this.WaypointTaskChanged);
             // 
             // meterCargoOther
             // 
@@ -622,7 +625,6 @@ namespace Nova.WinForms.Gui
             // FleetDetail
             // 
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupOrbitPlanet);
             this.Controls.Add(this.groupBox7);
             this.Controls.Add(this.groupFleetSelection);

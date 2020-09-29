@@ -60,11 +60,11 @@ namespace Nova.Common.Components
         /// </summary>
         /// <param name="restore">If true (by default) it will also restore
         /// all components on creation.</param>
-        public AllComponents(bool restore = true)
+        public AllComponents(bool restore = true,string hint = "")
         {
             if (restore)
             {
-                Restore();
+                Restore(hint);
             }
         }
 
@@ -145,7 +145,7 @@ namespace Nova.Common.Components
         /// <exception cref="System.Data.OperationAbortedException">
         /// The loading of the component definition was aborted.
         /// </exception>
-        public void Restore()
+        public void Restore(string hint ="")
         {
             // If components are already loaded, GO AWAY DAMN DIALOG -Aeglos 25 Jun 11
             if (isLoaded)
@@ -168,7 +168,7 @@ namespace Nova.Common.Components
             }
             
             ProgressDialog progress = new ProgressDialog();
-            progress.Text = "Loading Components";
+            progress.Text =  hint;
             ThreadPool.QueueUserWorkItem(new WaitCallback(LoadComponents), progress);
             progress.ShowDialog();
             
