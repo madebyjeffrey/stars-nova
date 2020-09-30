@@ -252,7 +252,7 @@ namespace Nova.Client
             {
                 if (File.Exists(IntelFileName))
                 {
-                    // Evenything we need should be found in there.
+                    // Everything we need should be found in there.
                     IntelReader intelReader = new IntelReader(this);
                     intelReader.ReadIntel(IntelFileName,false);
                     isLoaded = true;

@@ -113,7 +113,7 @@ namespace Nova.Common
         }
 
 
-        
+
         /// <summary>
         /// Calculate this race's Habitability for a given star.
         /// </summary>
@@ -143,6 +143,54 @@ namespace Nova.Common
         /// z=0 for r less than 1/2.
         /// </remarks>
         public double HabValue(Star star)
+        {
+            double r = NormalizeHabitalityDistance(RadiationTolerance, star.Radiation);
+            double g = NormalizeHabitalityDistance(GravityTolerance, star.Gravity);
+            double t = NormalizeHabitalityDistance(TemperatureTolerance, star.Temperature);
+
+            if (r > 1 || g > 1 || t > 1)
+            {
+                // currently not habitable
+                int result = 0;
+                int maxMalus = GetMaxMalus();
+                if (r > 1)
+                {
+                    result -= GetMalusForEnvironment(RadiationTolerance, star.Radiation, maxMalus);
+                }
+                if (g > 1)
+                {
+                    result -= GetMalusForEnvironment(GravityTolerance, star.Gravity, maxMalus);
+                }
+                if (t > 1)
+                {
+                    result -= GetMalusForEnvironment(TemperatureTolerance, star.Temperature, maxMalus);
+                }
+                return result / 100.0;
+            }
+
+            double x = 0;
+            double y = 0;
+            double z = 0;
+
+            if (g > 0.5)
+            {
+                x = g - 0.5;
+            }
+            if (t > 0.5)
+            {
+                y = t - 0.5;
+            }
+            if (r > 0.5)
+            {
+                z = r - 0.5;
+            }
+
+            double h = Math.Sqrt(
+                            ((1 - g) * (1 - g)) + ((1 - t) * (1 - t)) + ((1 - r) * (1 - r))) * (1 - x) * (1 - y) * (1 - z)
+                                 / Math.Sqrt(3.0);
+            return h;
+        }
+        public double HabValue(StarIntel star)
         {
             double r = NormalizeHabitalityDistance(RadiationTolerance, star.Radiation);
             double g = NormalizeHabitalityDistance(GravityTolerance, star.Gravity);

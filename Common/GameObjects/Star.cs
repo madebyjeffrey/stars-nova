@@ -286,7 +286,7 @@ namespace Nova.Common
             
             return (int)Math.Ceiling(capacity);
         }
-        
+
         /// <summary>
         /// Calculates the growth for the star.
         /// </summary>
@@ -306,7 +306,7 @@ namespace Nova.Common
             }
 
             double populationGrowth = 0;
-            
+
             double capacity = (double)Capacity(race) / 100.0;
 
             if (habitalValue < 0.0)
@@ -341,7 +341,7 @@ namespace Nova.Common
                 // very over full planet: crowding deaths cap at 12%
                 populationGrowth = Colonists * -0.12;
             }
-            
+
             // As per vanilla Stars! the minimal colonist growth unit
             // is set as 100 colonists. A planet does not track colonists
             // by the tens. While visually this does not matter much,
@@ -351,10 +351,26 @@ namespace Nova.Common
             int finalGrowth = (int)populationGrowth;
             finalGrowth /= 100;
             finalGrowth *= 100;
-            
+
             return finalGrowth;
+        }
+        public int MinValue(Race race)
+        {
+            double habitalValue = race.HabValue(this);
+            double growthRate = race.GrowthRate;
+
+            if (race.HasTrait("HyperExpansion"))
+            {
+                growthRate *= Global.GrowthFactorHyperExpansion;
+            }
+
+
+
+
+            double minValue = growthRate / 100.0 * habitalValue;
+            return (int) minValue;
         } 
-        
+
         /// <summary>
         /// Update the population of a star system.
         /// </summary>

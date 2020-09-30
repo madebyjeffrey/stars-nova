@@ -152,7 +152,7 @@ namespace Nova.Common
         {
             return "Star: " + Name;
         }
-        
+
         /// <summary>
         /// Updates the report with data from a star.
         /// </summary>
@@ -162,64 +162,97 @@ namespace Nova.Common
         public void Update(Star star, ScanLevel scan, int year)
         {
             Clear();
-            
-            if (star == null) 
+
+            if (star == null)
             {
                 return;
             }
 
-            if (year < this.Year) 
-            { 
-                return; 
+            if (year < this.Year)
+            {
+                return;
             }
-            
+
             // Information that is always available and doesn't
             // depend on scanning level.
-            Name     = star.Name; 
+            Name = star.Name;
             Position = star.Position; // Can this change? Random Events?
-             
+
             if (scan >= ScanLevel.None)
-            {            
+            {
                 // We can't see this star.
             }
-            
+
             // If we are at least scanning with non-penetrating
             if (scan >= ScanLevel.InScan)
             {
-               // Non-pen scanners are useless for stars.
+                // Non-pen scanners are useless for stars.
             }
-            
+
             // If we are at least currently in orbit of the star
             // with no scanners.
             if (scan >= ScanLevel.InPlace)
             {
                 // We can at least see it, so set age to current.
                 Year = year;
-                
-                Owner                   = star.Owner;                
-                MineralConcentration    = star.MineralConcentration;
-                Gravity                 = star.Gravity;
-                Radiation               = star.Radiation;
-                Temperature             = star.Temperature;
-                Starbase                = star.Starbase;
-                HasFleetsInOrbit        = star.HasFleetsInOrbit;                
+
+                Owner = star.Owner;
+                MineralConcentration = star.MineralConcentration;
+                Gravity = star.Gravity;
+                Radiation = star.Radiation;
+                Temperature = star.Temperature;
+                Starbase = star.Starbase;
+                HasFleetsInOrbit = star.HasFleetsInOrbit;
             }
-            
+
             // If we are have Pen-Scanners, or we are
             // in orbit with scanners.
             if (scan >= ScanLevel.InDeepScan)
-            {                
-                Colonists = star.Colonists;    
+            {
+                Colonists = star.Colonists;
             }
-            
+
             // If the star is ours.
             if (scan >= ScanLevel.Owned)
-            {                
+            {
                 // We do nothing, as owned Stars are handled
                 // elsewhere.
             }
         }
-        
+
+        public int MinValue(Race race)
+        {
+            double habitalValue = race.HabValue(this);
+            double growthRate = race.GrowthRate;
+
+            if (race.HasTrait("HyperExpansion"))
+            {
+                growthRate *= Global.GrowthFactorHyperExpansion;
+            }
+
+
+
+
+            double minValue = growthRate  * habitalValue;
+            return (int)minValue;
+        }
+        public int MaxValue(Race race)
+        {
+            double habitalValue = race.HabValue(this);
+            double growthRate = race.GrowthRate;
+
+            if (race.HasTrait("HyperExpansion"))
+            {
+                growthRate *= Global.GrowthFactorHyperExpansion;
+            }
+
+
+
+
+            double minValue = growthRate  * habitalValue;
+            return (int)minValue;
+        }
+
         /// <summary>
         /// Create an XmlElement representation of the star report for saving.
         /// </summary>

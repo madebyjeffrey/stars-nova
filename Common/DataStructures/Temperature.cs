@@ -35,7 +35,7 @@ namespace Nova.Common
 
         public static string Format(int value)
         {
-            // always trunkate temperature for GUI values to 0 decimal points
+            // always truncate temperature for GUI values to 0 decimal points
             return BarPositionToEnvironmentValue(value).ToString("F0");
         }
 

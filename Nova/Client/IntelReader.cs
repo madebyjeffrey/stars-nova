@@ -75,9 +75,11 @@ namespace Nova.Client
             ProgressDialog spinner = new ProgressDialog();
 
             spinner.Text = "Waiting for year " + (clientState.EmpireState.TurnYear + 1).ToString();
-            spinner.Show();
-            spinner.Begin(0, 100);
-
+            if (nextTurn)
+            {
+                spinner.Show();
+                spinner.Begin(0, 100);
+            }
             do
             {
                 try
@@ -96,7 +98,7 @@ namespace Nova.Client
                             clientState.Restore();
                             clientState.InputTurn = newIntel;
                             
-                            spinner.End();
+                            if (nextTurn) spinner.End();
                             ProcessIntel();
                         }
                         else
@@ -109,10 +111,13 @@ namespace Nova.Client
                             else
                             {
                                 //System.Windows.Forms.Application.DoEvents();  //dont DoEvents here because we still have the .intel file open
-                                spinner.StepTo(activitySpinner);
+                                if (nextTurn) spinner.StepTo(activitySpinner);
                                 activitySpinner++;
                                 if (activitySpinner > 98) activitySpinner = 1;
-                                if (spinner.IsAborting) waitForFile = false; //exit without loading anything
+                                if (nextTurn)
+                                {
+                                    if (spinner.IsAborting) waitForFile = false; //exit without loading anything
+                                }
                             }
                         }
                     }
@@ -136,7 +141,7 @@ namespace Nova.Client
                 //spinner.Invalidate();
             }
             while (waitForFile && !spinner.IsAborting);
-            spinner.End();
+            if (nextTurn) spinner.End();
         }
 
         /// <summary>

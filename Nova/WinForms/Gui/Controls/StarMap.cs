@@ -304,7 +304,8 @@ namespace Nova.WinForms.Gui
 
             foreach (StarIntel report in clientState.EmpireState.StarReports.Values)
             {
-                DrawStar(g, report);
+                if (radioButtonGrowth.Checked) DrawStarValue(g, report, clientState.EmpireState.Race);
+                if (radioButtonNormal.Checked) DrawStarNormal(g, report);
                 DrawOrbitingFleets(g, report);
             }
 
@@ -360,6 +361,26 @@ namespace Nova.WinForms.Gui
                 position.Y - radius,
                 radius * 2,
                 radius * 2);
+        }
+
+        private void FillCircleMinMax(Graphics g, Brush brushMin, Brush brushMax, Point position, int minRadius,int maxRadius)
+        {
+            g.FillPie(
+                brushMin,
+                position.X - minRadius,
+                position.Y - minRadius,
+                minRadius * 2,
+                minRadius * 2,
+                90,
+                180);
+            g.FillPie(
+                brushMin,
+                position.X - minRadius,
+                position.Y - minRadius,
+                minRadius * 2,
+                minRadius * 2,
+                270,
+                180);
         }
 
 
@@ -426,17 +447,48 @@ namespace Nova.WinForms.Gui
         }
 
         /// <Summary>
-        /// Draw a Star. The Star is just a small circle which is a bit bigger if we've
-        /// explored it. 
+        /// Draw a Star. The Star is a circle whose size is proportional to the % value of the star
+        /// Red = cannot be terraformed to positive population growth rate, 
+        /// 1/2 red 1/2 green can be terraformed to positive population growth rate, left red 1/2 circle shows stars current value and right 1/2 circle shows max terraformed value, 
+        /// green already are positive population growth rate
         /// </Summary>
         /// <remarks>
         /// The color of the Star symbol is based on its Star report (reports for stars
-        /// owned by the current player are always up-to-date). Unoccupied stars are
-        /// white. Stars colonised by the player are green. Stars owned by other races
-        /// are red.
+        /// owned by the current player are always up-to-date). 
         /// </remarks>
         /// <param name="Star">The Star sytem to draw.</param>
-        private void DrawStar(Graphics g, StarIntel report)
+        private void DrawStarValue(Graphics g, StarIntel report,Race race)
+        {
+            NovaPoint position = LogicalToDevice(report.Position);
+            int minValue = 2;
+            int maxValue = 2;
+            Brush starBrushMin = Brushes.White;
+            Brush starBrushMax = Brushes.White;
+            if (report.Year > Global.Unset)
+            {
+                minValue = report.MinValue(race);
+                maxValue = report.MaxValue(race);
+                if (minValue < 0) starBrushMin = Brushes.Red;
+                else starBrushMin = Brushes.Green;
+                if (maxValue < 0) starBrushMax = Brushes.Red;
+                else starBrushMax = Brushes.Green;
+            }
+
+
+
+
+            FillCircleMinMax(g, starBrushMin, starBrushMax ,(Point)position, Math.Abs( minValue)+1, Math.Abs(maxValue)+1);
+
+            // If the Star name display is turned on then add the name
+
+            if (this.displayStarNames && zoomFactor > 0.5)
+            {
+                StringFormat format = new StringFormat();
+                format.Alignment = StringAlignment.Center;
+                g.DrawString(report.Name, this.nameFont, Brushes.White, position.X, position.Y + 5, format);
+            }
+        }
+        private void DrawStarNormal(Graphics g, StarIntel report)
         {
             NovaPoint position = LogicalToDevice(report.Position);
             int size = 2;
@@ -471,7 +523,7 @@ namespace Nova.WinForms.Gui
             if (this.displayStarNames && zoomFactor > 0.5)
             {
                 StringFormat format = new StringFormat();
-                format.Alignment = StringAlignment.Center;               
+                format.Alignment = StringAlignment.Center;
                 g.DrawString(report.Name, this.nameFont, Brushes.White, position.X, position.Y + 5, format);
             }
         }
@@ -1113,6 +1165,63 @@ namespace Nova.WinForms.Gui
             if (SelectionChanged != null) {
                 SelectionChanged(this, e);
             }
-        }        
+        }
+
+        private void radioButtonNormal_CheckedChanged_1(object sender, EventArgs e)
+        {
+            if (radioButtonNormal.Checked)
+            {
+                radioButtonGrowth.Checked = false;
+                radioButtonMineralConcentration.Checked = false;
+                radioButtonSurfaceMinerals.Checked = false;
+                radioButtonSurfaceMinerals.Checked = false;
+                RefreshStarMap(this, EventArgs.Empty);
+
+            }
+        }
+
+        private void radioButtonGrowth_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButtonGrowth.Checked)
+            {
+                radioButtonNormal.Checked = false;
+                radioButtonMineralConcentration.Checked = false;
+                radioButtonSurfaceMinerals.Checked = false;
+                radioButtonSurfaceMinerals.Checked = false;
+                RefreshStarMap(this, EventArgs.Empty);
+
+            }
+
+        }
+
+        private void radioButtonMineralConcentration_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButtonMineralConcentration.Checked)
+            {
+                radioButtonGrowth.Checked = false;
+                radioButtonNormal.Checked = false;
+                radioButtonSurfaceMinerals.Checked = false;
+                radioButtonSurfaceMinerals.Checked = false;
+                RefreshStarMap(this, EventArgs.Empty);
+
+            }
+
+        }
+
+        private void radioButtonSurfaceMinerals_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButtonSurfaceMinerals.Checked)
+            {
+                radioButtonGrowth.Checked = false;
+                radioButtonMineralConcentration.Checked = false;
+                radioButtonNormal.Checked = false;
+                radioButtonSurfaceMinerals.Checked = false;
+                RefreshStarMap(this, EventArgs.Empty);
+
+            }
+
+        }
+
+
     }
 }
