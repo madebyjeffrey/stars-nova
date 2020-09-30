@@ -304,7 +304,7 @@ namespace Nova.WinForms.Gui
 
             foreach (StarIntel report in clientState.EmpireState.StarReports.Values)
             {
-                if (radioButtonGrowth.Checked) DrawStarValue(g, report, clientState.EmpireState.Race);
+                if (radioButtonGrowth.Checked) DrawStarValue(g, report, clientState.EmpireState.Race,clientState.EmpireState.gravityModCapability, clientState.EmpireState.temperatureModCapability,clientState.EmpireState.radiationModCapability );
                 if (radioButtonNormal.Checked) DrawStarNormal(g, report);
                 DrawOrbitingFleets(g, report);
             }
@@ -367,18 +367,18 @@ namespace Nova.WinForms.Gui
         {
             g.FillPie(
                 brushMin,
-                position.X - minRadius,
-                position.Y - minRadius,
-                minRadius * 2,
-                minRadius * 2,
+                position.X - (minRadius / 20),
+                position.Y - (minRadius / 20),
+                (minRadius / 10) + 1,
+                (minRadius / 10) + 1,
                 90,
                 180);
             g.FillPie(
-                brushMin,
-                position.X - minRadius,
-                position.Y - minRadius,
-                minRadius * 2,
-                minRadius * 2,
+                brushMax,
+                position.X - (maxRadius / 20),
+                position.Y - (maxRadius / 20),
+                (maxRadius / 10) + 1,
+                (maxRadius / 10) + 1,
                 270,
                 180);
         }
@@ -457,7 +457,7 @@ namespace Nova.WinForms.Gui
         /// owned by the current player are always up-to-date). 
         /// </remarks>
         /// <param name="Star">The Star sytem to draw.</param>
-        private void DrawStarValue(Graphics g, StarIntel report,Race race)
+        private void DrawStarValue(Graphics g, StarIntel report,Race race, int gravityModCapability, int temperatureModCapability, int radiationModCapability)
         {
             NovaPoint position = LogicalToDevice(report.Position);
             int minValue = 2;
@@ -467,7 +467,7 @@ namespace Nova.WinForms.Gui
             if (report.Year > Global.Unset)
             {
                 minValue = report.MinValue(race);
-                maxValue = report.MaxValue(race);
+                maxValue = report.MaxValue(race, gravityModCapability, temperatureModCapability, radiationModCapability);
                 if (minValue < 0) starBrushMin = Brushes.Red;
                 else starBrushMin = Brushes.Green;
                 if (maxValue < 0) starBrushMax = Brushes.Red;
@@ -477,7 +477,7 @@ namespace Nova.WinForms.Gui
 
 
 
-            FillCircleMinMax(g, starBrushMin, starBrushMax ,(Point)position, Math.Abs( minValue)+1, Math.Abs(maxValue)+1);
+            FillCircleMinMax(g, starBrushMin, starBrushMax ,(Point)position, Math.Abs( minValue), Math.Abs(maxValue));
 
             // If the Star name display is turned on then add the name
 

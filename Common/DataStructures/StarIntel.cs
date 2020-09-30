@@ -26,6 +26,8 @@ namespace Nova.Common
 
     using Nova.Common.DataStructures;
 
+    using Nova.Common.Components;
+
     /// <summary>
     /// This module describes the basic things we can
     /// know about a Star system.
@@ -52,7 +54,11 @@ namespace Nova.Common
                 return Name; 
             }
         }
-        
+
+        public int baseRadiation { get; internal set; }
+        public int baseGravity { get; internal set; }
+        public int baseTemperature { get; internal set; }
+
         /// <summary>
         /// Default constructor. Sets sensible but meaningless default values for this report.
         /// </summary>
@@ -222,7 +228,7 @@ namespace Nova.Common
 
         public int MinValue(Race race)
         {
-            double habitalValue = race.HabValue(this);
+            double habitableValue = race.HabValue(this);
             double growthRate = race.GrowthRate;
 
             if (race.HasTrait("HyperExpansion"))
@@ -233,12 +239,14 @@ namespace Nova.Common
 
 
 
-            double minValue = growthRate  * habitalValue;
+            double minValue = growthRate  * habitableValue * 100;
             return (int)minValue;
         }
-        public int MaxValue(Race race)
+        public int MaxValue(Race race,int gravityModCapability,int temperatureModCapability,int radiationModCapability)
         {
-            double habitalValue = race.HabValue(this);
+            //Terraform terraformProperty = new Terraform();
+            //Terraform maxTerraform = new Terraform(terraformProperty);
+            double habitableValue = race.HabValue(this,true,gravityModCapability,temperatureModCapability,radiationModCapability);
             double growthRate = race.GrowthRate;
 
             if (race.HasTrait("HyperExpansion"))
@@ -249,8 +257,8 @@ namespace Nova.Common
 
 
 
-            double minValue = growthRate  * habitalValue;
-            return (int)minValue;
+            double maxValue = growthRate  * habitableValue * 100;
+            return (int)maxValue;
         }
 
         /// <summary>

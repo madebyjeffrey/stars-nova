@@ -114,39 +114,27 @@ namespace Nova.Common
 
 
 
-        /// <summary>
-        /// Calculate this race's Habitability for a given star.
-        /// </summary>
-        /// <param name="star">The star for which the Habitability is being determined.</param>
-        /// <returns>The normalized habitability of the star (-1 to +1).</returns>
-        /// <remarks>
-        /// This algorithm is taken from the Stars! Technical FAQ:
-        /// http://www.starsfaq.com/advfaq/contents.htm
-        ///
-        /// Return the hab value of this star for the specified race (in the range
-        /// -1 to +1 where 1 = 100%). Note that the star environment values are
-        /// percentages of the total range.
-        ///
-        /// The full equation (from the Stars! Technical FAQ) is: 
-        ///
-        /// Hab% = SQRT[(1-g)^2+(1-t)^2+(1-r)^2]*(1-x)*(1-y)*(1-z)/SQRT[3] 
-        ///
-        /// Where g, t,and r (stand for gravity, temperature, and radiation)are given
-        /// by Clicks_from_center/Total_clicks_from_center_to_edge and where x,y, and z
-        /// are:
-        ///
-        /// x=g-1/2 for g>1/2
-        /// x=0 for g less than 1/2 
-        /// y=t-1/2 for t>1/2
-        /// y=0 for t less than 1/2 
-        /// z=r-1/2 for r>1/2
-        /// z=0 for r less than 1/2.
-        /// </remarks>
-        public double HabValue(Star star)
+
+        public double HabValue(Star star, bool maxTerraformed = false, int gravityModCapability = 0, int temperatureModCapability = 0, int radiationModCapability = 0)
         {
-            double r = NormalizeHabitalityDistance(RadiationTolerance, star.Radiation);
-            double g = NormalizeHabitalityDistance(GravityTolerance, star.Gravity);
-            double t = NormalizeHabitalityDistance(TemperatureTolerance, star.Temperature);
+            double r = 0.0;
+            double g = 0.0;
+            double t = 0.0;
+            if (maxTerraformed)
+            {
+                //r = NormalizeHabitabilityDistance(RadiationTolerance, star.baseRadiation, radiationModCapability);// should use unterraformed stats but not implemented yet
+                // g = NormalizeHabitabilityDistance(GravityTolerance, star.baseGravity, gravityModCapability);
+                //t = NormalizeHabitabilityDistance(TemperatureTolerance, star.baseTemperature, temperatureModCapability);
+                r = NormalizeHabitabilityDistance(RadiationTolerance, star.Radiation, radiationModCapability);
+                g = NormalizeHabitabilityDistance(GravityTolerance, star.Gravity, gravityModCapability);
+                t = NormalizeHabitabilityDistance(TemperatureTolerance, star.Temperature, temperatureModCapability);
+            }
+            else
+            {
+                r = NormalizeHabitabilityDistance(RadiationTolerance, star.Radiation);
+                g = NormalizeHabitabilityDistance(GravityTolerance, star.Gravity);
+                t = NormalizeHabitabilityDistance(TemperatureTolerance, star.Temperature);
+            }
 
             if (r > 1 || g > 1 || t > 1)
             {
@@ -190,11 +178,26 @@ namespace Nova.Common
                                  / Math.Sqrt(3.0);
             return h;
         }
-        public double HabValue(StarIntel star)
+        public double HabValue(StarIntel star, bool maxTerraformed = false, int gravityModCapability = 0, int temperatureModCapability = 0, int radiationModCapability = 0)
         {
-            double r = NormalizeHabitalityDistance(RadiationTolerance, star.Radiation);
-            double g = NormalizeHabitalityDistance(GravityTolerance, star.Gravity);
-            double t = NormalizeHabitalityDistance(TemperatureTolerance, star.Temperature);
+            double r = 0.0;
+            double g = 0.0;
+            double t = 0.0;
+            if (maxTerraformed)
+            {
+                //r = NormalizeHabitabilityDistance(RadiationTolerance, star.baseRadiation, radiationModCapability);// should use unterraformed stats but not implemented yet
+                // g = NormalizeHabitabilityDistance(GravityTolerance, star.baseGravity, gravityModCapability);
+                //t = NormalizeHabitabilityDistance(TemperatureTolerance, star.baseTemperature, temperatureModCapability);
+                r = NormalizeHabitabilityDistance(RadiationTolerance, star.Radiation, radiationModCapability);
+                g = NormalizeHabitabilityDistance(GravityTolerance, star.Gravity, gravityModCapability);
+                t = NormalizeHabitabilityDistance(TemperatureTolerance, star.Temperature, temperatureModCapability);
+            }
+            else
+            {
+                r = NormalizeHabitabilityDistance(RadiationTolerance, star.Radiation);
+                g = NormalizeHabitabilityDistance(GravityTolerance, star.Gravity);
+                t = NormalizeHabitabilityDistance(TemperatureTolerance, star.Temperature);
+            }
 
             if (r > 1 || g > 1 || t > 1)
             {
@@ -300,7 +303,7 @@ namespace Nova.Common
         /// <param name="tol"></param>
         /// <param name="starValue"></param>
         /// <returns></returns>
-        private double NormalizeHabitalityDistance(EnvironmentTolerance tol, int starValue)
+        private double NormalizeHabitabilityDistance(EnvironmentTolerance tol, int starValue, int maxTerraformed = 0)
         {
             if (tol.Immune)
             {
@@ -313,6 +316,10 @@ namespace Nova.Common
             double totalClicksFromCenterToEdge = span / 2;
             double centre = minv + totalClicksFromCenterToEdge;
             double clicksFromCenter = Math.Abs(centre - starValue);
+
+            if (maxTerraformed > clicksFromCenter) clicksFromCenter = 0;
+            else clicksFromCenter = clicksFromCenter - maxTerraformed;
+
             return clicksFromCenter / totalClicksFromCenterToEdge;
         }
         

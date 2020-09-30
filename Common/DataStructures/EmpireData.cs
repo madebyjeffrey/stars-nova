@@ -93,9 +93,12 @@ namespace Nova.Common
         public List<BattleReport> BattleReports = new List<BattleReport>();
         
         // See associated properties.
-        private long        fleetCounter             = 0;
-        private long        designCounter            = 0;
-        
+        private long        fleetCounter                = 0;
+        private long        designCounter               = 0;
+        public  int         gravityModCapability        = 0;
+        public  int         radiationModCapability      = 0;
+        public  int         temperatureModCapability    = 0;
+
         public Race Race
         {
             get
@@ -176,6 +179,12 @@ namespace Nova.Common
             return EmpireReports[lamb].Relation == PlayerRelation.Enemy;
         }
 
+        private void CalcTotalTerraform (int totalTeraformLevel)
+        {
+            temperatureModCapability = Math.Max(temperatureModCapability, totalTeraformLevel);
+            radiationModCapability = Math.Max(radiationModCapability, totalTeraformLevel);
+            gravityModCapability = Math.Max(gravityModCapability, totalTeraformLevel);
+        }
         /// <summary>
         /// Load: constructor to load EmpireData from an XmlNode representation.
         /// </summary>
@@ -317,6 +326,46 @@ namespace Nova.Common
                 }
 
                 mainNode = mainNode.NextSibling;
+
+                //how much can this race terraform at the moment?
+
+                if ((this.ResearchLevels[TechLevel.ResearchField.Biotechnology] >= 1)
+                    && (this.ResearchLevels[TechLevel.ResearchField.Weapons] >= 1)) radiationModCapability = 3;
+                if ((this.ResearchLevels[TechLevel.ResearchField.Biotechnology] >= 2)
+                    && (this.ResearchLevels[TechLevel.ResearchField.Weapons] >= 5)) radiationModCapability = 7;
+                if ((this.ResearchLevels[TechLevel.ResearchField.Biotechnology] >= 3)
+                    && (this.ResearchLevels[TechLevel.ResearchField.Weapons] >= 10)) radiationModCapability = 11;
+                if ((this.ResearchLevels[TechLevel.ResearchField.Biotechnology] >= 4)
+                    && (this.ResearchLevels[TechLevel.ResearchField.Weapons] >= 15)) radiationModCapability = 15;
+                if ((this.ResearchLevels[TechLevel.ResearchField.Biotechnology] >= 1)
+                    && (this.ResearchLevels[TechLevel.ResearchField.Propulsion] >= 1)) gravityModCapability = 3;
+                if ((this.ResearchLevels[TechLevel.ResearchField.Biotechnology] >= 2)
+                    && (this.ResearchLevels[TechLevel.ResearchField.Propulsion] >= 5)) gravityModCapability = 7;
+                if ((this.ResearchLevels[TechLevel.ResearchField.Biotechnology] >= 3)
+                    && (this.ResearchLevels[TechLevel.ResearchField.Propulsion] >= 10)) gravityModCapability = 11;
+                if ((this.ResearchLevels[TechLevel.ResearchField.Biotechnology] >= 4)
+                    && (this.ResearchLevels[TechLevel.ResearchField.Propulsion] >= 15)) gravityModCapability = 15;
+                if ((this.ResearchLevels[TechLevel.ResearchField.Biotechnology] >= 1)
+                    && (this.ResearchLevels[TechLevel.ResearchField.Energy] >= 1)) temperatureModCapability = 3;
+                if ((this.ResearchLevels[TechLevel.ResearchField.Biotechnology] >= 2)
+                    && (this.ResearchLevels[TechLevel.ResearchField.Energy] >= 5)) temperatureModCapability = 7;
+                if ((this.ResearchLevels[TechLevel.ResearchField.Biotechnology] >= 3)
+                    && (this.ResearchLevels[TechLevel.ResearchField.Energy] >= 10)) temperatureModCapability = 11;
+                if ((this.ResearchLevels[TechLevel.ResearchField.Biotechnology] >= 4)
+                    && (this.ResearchLevels[TechLevel.ResearchField.Energy] >= 15)) temperatureModCapability = 15;
+                 //if (this.Race.Traits.Contains("TT"))
+                 if (race.HasTrait("Total Terraforming"))
+                {
+                    if (this.ResearchLevels[TechLevel.ResearchField.Biotechnology] >= 1) CalcTotalTerraform(3);
+                    if (this.ResearchLevels[TechLevel.ResearchField.Biotechnology] >= 3) CalcTotalTerraform(5);
+                    if (this.ResearchLevels[TechLevel.ResearchField.Biotechnology] >= 6) CalcTotalTerraform(7);
+                    if (this.ResearchLevels[TechLevel.ResearchField.Biotechnology] >= 9) CalcTotalTerraform(10);
+                    if (this.ResearchLevels[TechLevel.ResearchField.Biotechnology] >= 13) CalcTotalTerraform(15);
+                    if (this.ResearchLevels[TechLevel.ResearchField.Biotechnology] >= 17) CalcTotalTerraform(20);
+                    if (this.ResearchLevels[TechLevel.ResearchField.Biotechnology] >= 22) CalcTotalTerraform(25);
+                    if (this.ResearchLevels[TechLevel.ResearchField.Biotechnology] >= 25) CalcTotalTerraform(30);
+                }
+
             }
             
             LinkReferences();
