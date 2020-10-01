@@ -350,7 +350,6 @@ namespace Nova.WinForms.Gui
 
 
             clientState.Initialize(commandArguments.ToArray(),true);
-            reinitializeControls();
 
             // this.selectionDetail.emp = clientState.pl
             // this.selectionDetail. = clientState;
@@ -359,6 +358,8 @@ namespace Nova.WinForms.Gui
             selectionDetail.ReInitialize(clientState.EmpireState, clientState);
 
             selectionSummary.ReInitialize( clientState.EmpireState);
+
+            reinitializeControls();
 
             this.doNextTurn();
             Application.DoEvents();

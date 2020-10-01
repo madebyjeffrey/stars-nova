@@ -180,14 +180,16 @@ namespace Nova.Common
         }
         public double HabValue(StarIntel star, bool maxTerraformed = false, int gravityModCapability = 0, int temperatureModCapability = 0, int radiationModCapability = 0)
         {
+
             double r = 0.0;
             double g = 0.0;
             double t = 0.0;
             if (maxTerraformed)
             {
-                //r = NormalizeHabitabilityDistance(RadiationTolerance, star.baseRadiation, radiationModCapability);// should use unterraformed stats but not implemented yet
-                // g = NormalizeHabitabilityDistance(GravityTolerance, star.baseGravity, gravityModCapability);
-                //t = NormalizeHabitabilityDistance(TemperatureTolerance, star.baseTemperature, temperatureModCapability);
+
+               // r = NormalizeHabitabilityDistance(RadiationTolerance, star.baseRadiation, radiationModCapability);
+               // g = NormalizeHabitabilityDistance(GravityTolerance, star.baseGravity, gravityModCapability);
+               // t = NormalizeHabitabilityDistance(TemperatureTolerance, star.baseTemperature, temperatureModCapability);
                 r = NormalizeHabitabilityDistance(RadiationTolerance, star.Radiation, radiationModCapability);
                 g = NormalizeHabitabilityDistance(GravityTolerance, star.Gravity, gravityModCapability);
                 t = NormalizeHabitabilityDistance(TemperatureTolerance, star.Temperature, temperatureModCapability);

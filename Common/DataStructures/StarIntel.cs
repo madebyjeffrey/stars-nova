@@ -43,6 +43,10 @@ namespace Nova.Common
         public int          Colonists               { get; set; }
         public bool         HasFleetsInOrbit        { get; set; }
         public Fleet        Starbase                { get; set; }
+        public Resources    ResourcesOnHand         { get; set; }
+        public int          baseRadiation           { get;  set; }
+        public int          baseGravity             { get;  set; }
+        public int          baseTemperature         { get;  set; }
 
         /// <summary>
         /// Stars are Keyed by name, so overload.
@@ -54,11 +58,7 @@ namespace Nova.Common
                 return Name; 
             }
         }
-
-        public int baseRadiation { get; internal set; }
-        public int baseGravity { get; internal set; }
-        public int baseTemperature { get; internal set; }
-
+       
         /// <summary>
         /// Default constructor. Sets sensible but meaningless default values for this report.
         /// </summary>
@@ -111,6 +111,9 @@ namespace Nova.Common
                     case "temperature":
                         Temperature = int.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
                         break;
+                    case "resourcesonhand":
+                            ResourcesOnHand = new Resources(mainNode);
+                            break;
                     case "colonists":
                         Colonists = int.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
                         break;
@@ -119,6 +122,15 @@ namespace Nova.Common
                         break;
                     case "starbase":
                         Starbase = new Fleet(long.Parse(mainNode.FirstChild.Value, System.Globalization.NumberStyles.HexNumber));
+                        break;
+                    case "baseRadiation":
+                        baseRadiation = int.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                        break;
+                    case "baseGravity":
+                        baseGravity = int.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                        break;
+                    case "baseTemperature":
+                        baseTemperature = int.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
                         break;
                     }
                 }
@@ -142,10 +154,14 @@ namespace Nova.Common
             Owner                   = Global.Nobody;
             Type                    = ItemType.StarIntel;
             MineralConcentration    = new Resources();
+            ResourcesOnHand         = new Resources();
             Gravity                 = Global.Unset;
             Radiation               = Global.Unset;
             Temperature             = Global.Unset;
             Colonists               = Global.Unset;
+            baseRadiation           = Global.Unset;
+            baseTemperature         = Global.Unset;
+            baseGravity             = Global.Unset;
             HasFleetsInOrbit        = false;
             Starbase                = null;            
         }
@@ -183,6 +199,9 @@ namespace Nova.Common
             // depend on scanning level.
             Name = star.Name;
             Position = star.Position; // Can this change? Random Events?
+            baseGravity = star.OriginalGravity; // we don't use this until the star is discovered
+            baseRadiation = star.OriginalRadiation;
+            baseTemperature = star.OriginalTemperature;
 
             if (scan >= ScanLevel.None)
             {
@@ -199,7 +218,7 @@ namespace Nova.Common
             // with no scanners.
             if (scan >= ScanLevel.InPlace)
             {
-                // We can at least see it, so set age to current.
+
                 Year = year;
 
                 Owner = star.Owner;
@@ -209,6 +228,8 @@ namespace Nova.Common
                 Temperature = star.Temperature;
                 Starbase = star.Starbase;
                 HasFleetsInOrbit = star.HasFleetsInOrbit;
+                ResourcesOnHand = star.ResourcesOnHand;
+
             }
 
             // If we are have Pen-Scanners, or we are
@@ -221,6 +242,7 @@ namespace Nova.Common
             // If the star is ours.
             if (scan >= ScanLevel.Owned)
             {
+                ResourcesOnHand = star.ResourcesOnHand;
                 // We do nothing, as owned Stars are handled
                 // elsewhere.
             }
@@ -246,6 +268,7 @@ namespace Nova.Common
         {
             //Terraform terraformProperty = new Terraform();
             //Terraform maxTerraform = new Terraform(terraformProperty);
+            
             double habitableValue = race.HabValue(this,true,gravityModCapability,temperatureModCapability,radiationModCapability);
             double growthRate = race.GrowthRate;
 
@@ -276,11 +299,15 @@ namespace Nova.Common
             Global.SaveData(xmldoc, xmlelStarIntel, "Year", Year.ToString(System.Globalization.CultureInfo.InvariantCulture));
             
             xmlelStarIntel.AppendChild(MineralConcentration.ToXml(xmldoc, "MineralConcentration"));
-            
+            xmlelStarIntel.AppendChild(ResourcesOnHand.ToXml(xmldoc, "ResourcesOnHand"));
+
             Global.SaveData(xmldoc, xmlelStarIntel, "Gravity", Gravity.ToString(System.Globalization.CultureInfo.InvariantCulture));
             Global.SaveData(xmldoc, xmlelStarIntel, "Radiation", Radiation.ToString(System.Globalization.CultureInfo.InvariantCulture));
             Global.SaveData(xmldoc, xmlelStarIntel, "Temperature", Temperature.ToString(System.Globalization.CultureInfo.InvariantCulture));
-            
+            Global.SaveData(xmldoc, xmlelStarIntel, "baseGravity", baseGravity.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            Global.SaveData(xmldoc, xmlelStarIntel, "baseRadiation", baseRadiation.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            Global.SaveData(xmldoc, xmlelStarIntel, "baseTemperature", baseTemperature.ToString(System.Globalization.CultureInfo.InvariantCulture));
+
             Global.SaveData(xmldoc, xmlelStarIntel, "Colonists", Colonists.ToString(System.Globalization.CultureInfo.InvariantCulture));
             
             Global.SaveData(xmldoc, xmlelStarIntel, "HasFleetsInOrbit", HasFleetsInOrbit.ToString());

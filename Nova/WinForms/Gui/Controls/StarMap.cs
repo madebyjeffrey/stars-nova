@@ -306,6 +306,8 @@ namespace Nova.WinForms.Gui
             {
                 if (radioButtonGrowth.Checked) DrawStarValue(g, report, clientState.EmpireState.Race,clientState.EmpireState.gravityModCapability, clientState.EmpireState.temperatureModCapability,clientState.EmpireState.radiationModCapability );
                 if (radioButtonNormal.Checked) DrawStarNormal(g, report);
+                if (radioButtonMineralConcentration.Checked) DrawStarMineralConcentration(g, report);
+                if (radioButtonSurfaceMinerals.Checked) DrawStarSurfaceMinerals(g, report);
                 DrawOrbitingFleets(g, report);
             }
 
@@ -346,6 +348,16 @@ namespace Nova.WinForms.Gui
             g.DrawString(str, font, coordBrush, 0, 100);
         }
 
+        private void FillRectangle(Graphics g, Brush brush, Point position, int height, int offset)
+        {
+            g.FillRectangle(
+                brush,
+                position.X +5 * offset,
+                position.Y - 3 - (int)(height / 3.0 * zoomFactor),
+                3,
+                (int) (height/3.0 * zoomFactor)
+                );
+        }
 
         /// <Summary>
         /// Draw a filled circle using device coordinates.
@@ -367,18 +379,18 @@ namespace Nova.WinForms.Gui
         {
             g.FillPie(
                 brushMin,
-                position.X - (minRadius / 20),
-                position.Y - (minRadius / 20),
-                (minRadius / 10) + 1,
-                (minRadius / 10) + 1,
+                position.X - (int)(minRadius * zoomFactor / 40),
+                position.Y - (int)(minRadius * zoomFactor / 40),
+                (int)(minRadius * zoomFactor / 20) + 1,
+                (int) (minRadius * zoomFactor / 20) + 1,
                 90,
                 180);
             g.FillPie(
                 brushMax,
-                position.X - (maxRadius / 20),
-                position.Y - (maxRadius / 20),
-                (maxRadius / 10) + 1,
-                (maxRadius / 10) + 1,
+                position.X - (int)(maxRadius * zoomFactor / 40),
+                position.Y - (int)(maxRadius * zoomFactor / 40),
+                (int)(maxRadius * zoomFactor / 20) + 1,
+                (int)(maxRadius * zoomFactor / 20) + 1,
                 270,
                 180);
         }
@@ -525,6 +537,104 @@ namespace Nova.WinForms.Gui
                 StringFormat format = new StringFormat();
                 format.Alignment = StringAlignment.Center;
                 g.DrawString(report.Name, this.nameFont, Brushes.White, position.X, position.Y + 5, format);
+            }
+        }
+
+        private void DrawStarMineralConcentration(Graphics g, StarIntel report)
+        {
+            NovaPoint position = LogicalToDevice(report.Position);
+            int size = 2;
+            Brush starBrush = Brushes.White;
+
+            // Bigger symbol for explored stars.
+
+            if (report.Year > Global.Unset)
+            {
+                size = 4;
+            }
+
+            // Our stars are greenish, other's are red, unknown or uncolonised
+            // stars are white.
+
+            if (report.Owner == clientState.EmpireState.Id)
+            {
+                starBrush = Brushes.GreenYellow;
+            }
+            else
+            {
+                if (report.Owner != Global.Nobody)
+                {
+                    starBrush = Brushes.Red;
+                }
+            }
+
+            FillCircle(g, starBrush, (Point)position, size);
+
+            // If the Star name display is turned on then add the name
+
+            if (this.displayStarNames && zoomFactor > 0.5)
+            {
+                StringFormat format = new StringFormat();
+                format.Alignment = StringAlignment.Center;
+                g.DrawString(report.Name, this.nameFont, Brushes.White, position.X, position.Y + 5, format);
+            }
+
+            Brush mineralBrush = Brushes.Blue;
+            FillRectangle(g, mineralBrush, (Point)position, report.MineralConcentration.Ironium, -3);
+            mineralBrush = Brushes.LimeGreen;
+            FillRectangle(g, mineralBrush, (Point)position, report.MineralConcentration.Boranium, -2);
+            mineralBrush = Brushes.Yellow;
+            FillRectangle(g, mineralBrush, (Point)position, report.MineralConcentration.Germanium, -1);
+
+        }
+
+        private void DrawStarSurfaceMinerals(Graphics g, StarIntel report)
+        {
+            NovaPoint position = LogicalToDevice(report.Position);
+            int size = 2;
+            Brush starBrush = Brushes.White;
+
+            // Bigger symbol for explored stars.
+
+            if (report.Year > Global.Unset)
+            {
+                size = 4;
+            }
+
+            // Our stars are greenish, other's are red, unknown or uncolonised
+            // stars are white.
+
+            if (report.Owner == clientState.EmpireState.Id)
+            {
+                starBrush = Brushes.GreenYellow;
+            }
+            else
+            {
+                if (report.Owner != Global.Nobody)
+                {
+                    starBrush = Brushes.Red;
+                }
+            }
+
+            FillCircle(g, starBrush, (Point)position, size);
+
+            // If the Star name display is turned on then add the name
+
+            if (this.displayStarNames && zoomFactor > 0.5)
+            {
+                StringFormat format = new StringFormat();
+                format.Alignment = StringAlignment.Center;
+                g.DrawString(report.Name, this.nameFont, Brushes.White, position.X, position.Y + 5, format);
+            }
+
+            Brush mineralBrush = Brushes.Blue;
+            if (report.ResourcesOnHand != null)
+            {
+                FillRectangle(g, mineralBrush, (Point)position, report.ResourcesOnHand.Ironium/20, -3);
+                mineralBrush = Brushes.LimeGreen;
+                FillRectangle(g, mineralBrush, (Point)position, report.ResourcesOnHand.Boranium/20, -2);
+                mineralBrush = Brushes.Yellow;
+                FillRectangle(g, mineralBrush, (Point)position, report.ResourcesOnHand.Germanium/20, -1);
             }
         }
 
@@ -1174,7 +1284,6 @@ namespace Nova.WinForms.Gui
                 radioButtonGrowth.Checked = false;
                 radioButtonMineralConcentration.Checked = false;
                 radioButtonSurfaceMinerals.Checked = false;
-                radioButtonSurfaceMinerals.Checked = false;
                 RefreshStarMap(this, EventArgs.Empty);
 
             }
@@ -1186,7 +1295,6 @@ namespace Nova.WinForms.Gui
             {
                 radioButtonNormal.Checked = false;
                 radioButtonMineralConcentration.Checked = false;
-                radioButtonSurfaceMinerals.Checked = false;
                 radioButtonSurfaceMinerals.Checked = false;
                 RefreshStarMap(this, EventArgs.Empty);
 
@@ -1201,7 +1309,6 @@ namespace Nova.WinForms.Gui
                 radioButtonGrowth.Checked = false;
                 radioButtonNormal.Checked = false;
                 radioButtonSurfaceMinerals.Checked = false;
-                radioButtonSurfaceMinerals.Checked = false;
                 RefreshStarMap(this, EventArgs.Empty);
 
             }
@@ -1215,7 +1322,6 @@ namespace Nova.WinForms.Gui
                 radioButtonGrowth.Checked = false;
                 radioButtonMineralConcentration.Checked = false;
                 radioButtonNormal.Checked = false;
-                radioButtonSurfaceMinerals.Checked = false;
                 RefreshStarMap(this, EventArgs.Empty);
 
             }
