@@ -235,8 +235,9 @@ namespace Nova.Common.Waypoints
                 // and change stuff.
                 secondFleet = sender.MakeNewFleet(fleet);
             
-                ReassignShips(fleet, secondFleet);
+                ReassignShips(fleet, secondFleet,sender.PeekFleetKey());
 
+ 
                 // Now send new Fleets to limbo pending inclusion.
                 sender.TemporaryFleets.Add(secondFleet);                
             }
@@ -281,8 +282,10 @@ namespace Nova.Common.Waypoints
         /// </summary>
         /// <param name="left">Original Fleet.</param>
         /// <param name="right">New Fleet.</param>
-        private void ReassignShips(Fleet left, Fleet right)
-        {            
+        private void ReassignShips(Fleet left, Fleet right,long fleetNumber)
+        {
+            long mostVessels = 0;
+            String designName = "";
             foreach (long key in LeftComposition.Keys)
             {
                 int leftNewCount = LeftComposition[key].Quantity;
@@ -308,6 +311,13 @@ namespace Nova.Common.Waypoints
                     from = left;
                     to = right;
                     moveCount = leftOldCount - leftNewCount;
+                    if (moveCount > mostVessels)
+                    { 
+                        mostVessels = moveCount;
+                        designName = left.Composition[key].Design.Name;
+                        right.Name = designName + " #" + fleetNumber.ToString();
+
+                    }
                 }
                 
                 if (!to.Composition.ContainsKey(key))

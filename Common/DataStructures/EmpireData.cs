@@ -135,7 +135,7 @@ namespace Nova.Common
                 empireId = value;
             }
         }
-        
+
         /// <summary>
         /// Gets the next available Fleet Key from the internal FleetCounter.
         /// </summary>
@@ -144,6 +144,28 @@ namespace Nova.Common
             ++fleetCounter;
             return (long)fleetCounter | ((long)empireId << 32);
         }
+
+        /// <summary>
+        /// Peeks the next available Fleet Key from the internal FleetCounter.
+        /// </summary>
+        public long PeekNextFleetKey()
+        {
+            
+            return fleetCounter + 1 ;
+        }
+
+
+        /// <summary>
+        /// Peeks the next available Fleet Key from the internal FleetCounter.
+        /// </summary>
+        public long PeekFleetKey()
+        {
+
+            return fleetCounter;
+        }
+
+
+
 
         /// <summary>
         /// Gets the next available Key for the empire.

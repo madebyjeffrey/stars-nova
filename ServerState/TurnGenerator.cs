@@ -108,8 +108,13 @@ namespace Nova.Server
             // Do all fleet movement and actions 
             // TODO (priority 4) - split this up into waypoint zero and waypoint 1 actions
 
+            //Stars! Split functionality splits the fleets at the current position before moving!!
+            //let's try to do that here in a new loop first
+            new SplitFleetStep().Process(serverState);
+
             // ToDo: Step 1 --> Scrap Fleet if waypoint 0 order; here, and only here.
             // ToDo: ScrapFleetStep / foreach ITurnStep for waypoint 0. Own TurnStep-List for Waypoint 0?
+
             new ScrapFleetStep().Process(serverState);
 
             foreach (Fleet fleet in serverState.IterateAllFleets())

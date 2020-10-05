@@ -696,18 +696,20 @@ namespace Nova.WinForms.Gui
             using (SplitFleetDialog splitFleet = new SplitFleetDialog())
             {
                 splitFleet.SetFleet(selectedFleet, otherFleet);
-
+                splitFleet.nextFleetID = empireState.PeekNextFleetKey();
                 if (splitFleet.ShowDialog() == DialogResult.OK)
                 {
-                    int index = wayPoints.SelectedIndices[0];
-                    Waypoint waypoint = new Waypoint(selectedFleet.Waypoints[index]);
-
+                    //int index = wayPoints.SelectedIndices[0];    We don't do the split at the next waypoint, we do it NOW
+                    //Waypoint waypoint = new Waypoint(selectedFleet.Waypoints[index]);
+                    Waypoint waypoint = new Waypoint(selectedFleet.Waypoints[0]);
                     waypoint.Task = new SplitMergeTask(
                         splitFleet.SourceComposition,
                         splitFleet.OtherComposition,
                         (otherFleet == null) ? 0 : otherFleet.Key);
 
-                    WaypointCommand command = new WaypointCommand(CommandMode.Add, selectedFleet.Key, index);
+                    WaypointCommand command = new WaypointCommand(CommandMode.Add, selectedFleet.Key, 0);
+                    
+                    
                     command.Waypoint = waypoint;
 
                     if (command.IsValid(empireState))

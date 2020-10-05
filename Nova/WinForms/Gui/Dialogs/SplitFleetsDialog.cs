@@ -37,7 +37,7 @@ namespace Nova.WinForms.Gui.Dialogs
         public Dictionary<long, ShipToken> OtherComposition {get; private set;}
         private List<NumericUpDown> leftNumerics;
         private List<NumericUpDown> rightNumerics;
-
+        public long nextFleetID;
 
         private enum Side 
         { 
@@ -151,6 +151,8 @@ namespace Nova.WinForms.Gui.Dialogs
                 left.Value = newval;
                 SourceComposition[designs[index].Key].Quantity = (int)newval;
             }
-        } 
+            if ((lblFleetRight.Text == "New Fleet") && (OtherComposition[designs[index].Key] != null)) lblFleetRight.Text = designs[index].Name + " #"+ nextFleetID.ToString();
+
+        }
     }
 }
