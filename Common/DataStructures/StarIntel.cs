@@ -123,13 +123,13 @@ namespace Nova.Common
                     case "starbase":
                         Starbase = new Fleet(long.Parse(mainNode.FirstChild.Value, System.Globalization.NumberStyles.HexNumber));
                         break;
-                    case "baseRadiation":
+                    case "baseradiation":
                         baseRadiation = int.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
                         break;
-                    case "baseGravity":
+                    case "basegravity":
                         baseGravity = int.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
                         break;
-                    case "baseTemperature":
+                    case "basetemperature":
                         baseTemperature = int.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
                         break;
                     }

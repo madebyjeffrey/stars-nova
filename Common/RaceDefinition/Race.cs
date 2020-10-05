@@ -187,12 +187,12 @@ namespace Nova.Common
             if (maxTerraformed)
             {
 
-               // r = NormalizeHabitabilityDistance(RadiationTolerance, star.baseRadiation, radiationModCapability);
-               // g = NormalizeHabitabilityDistance(GravityTolerance, star.baseGravity, gravityModCapability);
-               // t = NormalizeHabitabilityDistance(TemperatureTolerance, star.baseTemperature, temperatureModCapability);
-                r = NormalizeHabitabilityDistance(RadiationTolerance, star.Radiation, radiationModCapability);
-                g = NormalizeHabitabilityDistance(GravityTolerance, star.Gravity, gravityModCapability);
-                t = NormalizeHabitabilityDistance(TemperatureTolerance, star.Temperature, temperatureModCapability);
+                r = NormalizeHabitabilityDistance(RadiationTolerance, star.baseRadiation, radiationModCapability);
+                g = NormalizeHabitabilityDistance(GravityTolerance, star.baseGravity, gravityModCapability);
+                t = NormalizeHabitabilityDistance(TemperatureTolerance, star.baseTemperature, temperatureModCapability);
+               // r = NormalizeHabitabilityDistance(RadiationTolerance, star.Radiation, radiationModCapability);
+               // g = NormalizeHabitabilityDistance(GravityTolerance, star.Gravity, gravityModCapability);
+               // t = NormalizeHabitabilityDistance(TemperatureTolerance, star.Temperature, temperatureModCapability);
             }
             else
             {
