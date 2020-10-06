@@ -95,11 +95,18 @@ namespace Nova.Server
         public void Generate()
         {
             BackupTurn();
+            foreach (EmpireData empire in serverState.AllEmpires.Values)
+            {
+                 foreach (StarIntel report in this.serverState.AllEmpires[empire.Id].StarReports.Values) report.HasFleetsInOrbit = false;
+            }
 
-            // For now, just copy the command stacks right away.
-            // TODO (priority 6): Integrity check the new turn before
-            // updating the state (cheats, errors).
-            ReadOrders();
+
+
+
+                // For now, just copy the command stacks right away.
+                // TODO (priority 6): Integrity check the new turn before
+                // updating the state (cheats, errors).
+                ReadOrders();
 
             // for all commands of all empires: command.ApplyToState(empire);
             // for WaypointCommand: Add Waypoints to Fleets.
@@ -147,7 +154,22 @@ namespace Nova.Server
             {
                 turnStep.Process(serverState);    
             }
-            
+
+
+            foreach (EmpireData empire in serverState.AllEmpires.Values)
+            {
+                foreach (Fleet fleet in empire.OwnedFleets.Values)
+
+                    if (fleet.InOrbit != null)
+                    {
+                        this.serverState.AllEmpires[empire.Id].StarReports[fleet.InOrbit.Name].HasFleetsInOrbit = true;
+                    }
+            }
+
+
+
+
+
             WriteIntel();
 
             // remove old messages, do this last so that the 1st turn intro message is not removed before it is delivered.

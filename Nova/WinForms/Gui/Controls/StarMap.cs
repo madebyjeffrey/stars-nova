@@ -375,6 +375,21 @@ namespace Nova.WinForms.Gui
                 radius * 2);
         }
 
+
+
+        private void DrawCircle(Graphics g, Pen pen, Point position, int radius)
+        {
+            g.DrawArc(
+                pen,
+                position.X - radius,
+                position.Y - radius,
+                radius * 2,
+                radius * 2,
+                0,
+                360);
+        }
+
+
         private void FillCircleMinMax(Graphics g, Brush brushMin, Brush brushMax, Point position, int minRadius,int maxRadius)
         {
             g.FillPie(
@@ -500,6 +515,11 @@ namespace Nova.WinForms.Gui
                 g.DrawString(report.Name, this.nameFont, Brushes.White, position.X, position.Y + 5, format);
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="g"></param>
+        /// <param name="report"></param>
         private void DrawStarNormal(Graphics g, StarIntel report)
         {
             NovaPoint position = LogicalToDevice(report.Position);
@@ -529,6 +549,13 @@ namespace Nova.WinForms.Gui
             }
 
             FillCircle(g, starBrush, (Point)position, size);
+
+            //if (report.HasFleetsInOrbit)
+            //{
+            //    size = size + size;
+            //    Pen starPen = new Pen(Color.White,1);
+            //    DrawCircle(g, starPen, (Point)position, size);
+            //}
 
             // If the Star name display is turned on then add the name
 
