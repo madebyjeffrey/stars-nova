@@ -315,7 +315,7 @@ namespace Nova.Common.Waypoints
                     { 
                         mostVessels = moveCount;
                         designName = left.Composition[key].Design.Name;
-                        right.Name = designName + " #" + fleetNumber.ToString();
+                        right.Name = designName + " #" + fleetNumber.ToString();  //Name of new fleet is taken from the design of the most populous vessel in the fleet
 
                     }
                 }
@@ -411,7 +411,7 @@ namespace Nova.Common.Waypoints
             }
             Debug.Assert(ktToMove == 0, "Must not be negative.");
 
-            // fuel
+            // fuel is split in proportion to fuel tank capacity in Stars!
             if (left.FuelAvailable > left.TotalFuelCapacity)
             {
                 // Move excess to right and set left to max
