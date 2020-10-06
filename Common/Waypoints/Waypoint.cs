@@ -32,6 +32,7 @@ namespace Nova.Common.Waypoints
     /// Waypoints have a position (i.e. where to go), a destination description
     /// (e.g. a star name), a speed to go there and a task to do on arrival (e.g. 
     /// colonise).
+    /// and a chronological timestamp for processing SplitMerge orders
     /// </summary>
     public class Waypoint
     {
@@ -44,6 +45,12 @@ namespace Nova.Common.Waypoints
         public int WarpFactor 
         {
             get; 
+            set;
+        }
+
+        public DateTime guiTimestamp
+        {
+            get;
             set;
         }
 
@@ -67,8 +74,9 @@ namespace Nova.Common.Waypoints
         {
             WarpFactor = 6;
             Task = new NoTask();
+            guiTimestamp = DateTime.UtcNow;
         }
-        
+
         /// <summary>
         /// Copies everything about another Waypoint, except the Task.
         /// Used for editing purposes.
@@ -79,6 +87,7 @@ namespace Nova.Common.Waypoints
             Position = other.Position;
             WarpFactor = other.WarpFactor;
             Destination = other.Destination;
+            guiTimestamp = DateTime.UtcNow;
         }
         
 
@@ -102,6 +111,10 @@ namespace Nova.Common.Waypoints
 
                         case "warpfactor":
                             WarpFactor = int.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+
+                        case "guitimestamp":
+                            guiTimestamp =  DateTime.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
                             break;
 
                         case "position":
@@ -175,8 +188,9 @@ namespace Nova.Common.Waypoints
             {
                 xmlelWaypoint.AppendChild(Position.ToXml(xmldoc, "Position"));
             }
-            
+
             Global.SaveData(xmldoc, xmlelWaypoint, "WarpFactor", WarpFactor.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            Global.SaveData(xmldoc, xmlelWaypoint, "guiTimestamp", guiTimestamp.ToString(System.Globalization.CultureInfo.InvariantCulture));
             xmlelWaypoint.AppendChild(Task.ToXml(xmldoc));
 
             return xmlelWaypoint;
