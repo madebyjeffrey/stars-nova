@@ -61,6 +61,13 @@ namespace Nova.Common
 
             if (raceFiles.Length == 0)
             {
+                raceFolder = GetFolder(Global.NovaFolderName, Global.RaceFolderName);
+                directory = new DirectoryInfo(raceFolder); 
+                raceFiles = directory.GetFiles("*" + Global.RaceExtension);
+            }
+
+            if (raceFiles.Length == 0)
+            {
                 Report.Error("No race files found in game folder: \"" + raceFolder  + "\"");
             }
             else

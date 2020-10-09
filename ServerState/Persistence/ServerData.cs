@@ -542,6 +542,7 @@ namespace Nova.Server
                     {
                         empire.AddOrUpdateFleet(newFleet);
                     }
+                    empire.TemporaryFleets.Clear();   ///just a guess but do we want thes to hang around forever?
                 }
             }
         }

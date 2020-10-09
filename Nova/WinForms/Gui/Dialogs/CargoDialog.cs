@@ -199,6 +199,7 @@ namespace Nova.ControlLibrary
                             command.Waypoint.Task.Perform(fleet, fleet.InOrbit, clientData.EmpireState, null); // Load, Unload
                         }
                     }
+                    fleet.Waypoints.Remove(waypoint); // immediate commands don't add a visible waypoint to the ship in the client - we have told the server what to do
                 }
             }
         }
