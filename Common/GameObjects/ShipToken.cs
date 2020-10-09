@@ -115,6 +115,7 @@ namespace Nova.Common
         /// <param name="quantity">The amount of ships in this token.</param>
         public ShipToken(ShipDesign newDesign, int quantity)
         {
+            newDesign.Update();
             Design = newDesign;
             Quantity = quantity;
             Armor = newDesign.Armor * quantity;
@@ -138,6 +139,7 @@ namespace Nova.Common
                 {
                     case "design":
                         Design = new ShipDesign(long.Parse(mainNode.FirstChild.Value, System.Globalization.NumberStyles.HexNumber));
+                        Design.Update();
                     break;                   
                     
                     case "quantity":

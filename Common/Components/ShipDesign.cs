@@ -537,6 +537,7 @@ namespace Nova.Common.Components
         public ShipDesign(ShipDesign copy)
             : base(copy)
         {
+            copy.Update();
             Icon = (ShipIcon)copy.Icon.Clone();
             Blueprint = new Component(copy.Blueprint);
             Update();
@@ -589,8 +590,14 @@ namespace Nova.Common.Components
             {
                 if (module.AllocatedComponent != null)
                 {
-                    // Sumarise the mass & cost
-                    Summary.Mass += module.AllocatedComponent.Mass;
+                    AllComponents allComponents = new AllComponents();
+                    if (module.AllocatedComponent.Name != null)
+                    {
+                        module.AllocatedComponent =  allComponents.Fetch(module.AllocatedComponent.Name);
+                    }
+
+                        // Sumarise the mass & cost
+                        Summary.Mass += module.AllocatedComponent.Mass;
                     Summary.Cost += module.AllocatedComponent.Cost;
                     // Summarise the properties
                     foreach (string key in module.AllocatedComponent.Properties.Keys)

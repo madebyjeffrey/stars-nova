@@ -404,6 +404,7 @@ namespace Nova.Server
                             module.AllocatedComponent = allComponents.Fetch(module.AllocatedComponent.Name);
                         }
                     }
+                    design.Update();
                 }
             
                 foreach (Fleet fleet in empire.OwnedFleets.Values)

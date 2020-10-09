@@ -95,10 +95,12 @@ namespace Nova.Common.Commands
                     
                     case "design":
                         Design = new ShipDesign(mainNode);
+                        Design.Update();
                         break;
                     
                     case "shipdesign":
                         Design = new ShipDesign(mainNode);
+                        Design.Update();
                         break;
 
                     case "key": // occurs if CommandMode is Delete
@@ -142,6 +144,7 @@ namespace Nova.Common.Commands
             switch (Mode)
             {
                 case CommandMode.Add:
+                    Design.Update();
                     empire.Designs.Add(Design.Key, Design);
                 break;
                 case CommandMode.Delete:

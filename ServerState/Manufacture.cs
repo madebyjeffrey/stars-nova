@@ -92,8 +92,8 @@ namespace Nova.Server
         /// <param name="star">The star system producing the ship.</param>
         private void CreateShips(ShipDesign design, Star star, int countToBuild)
         {
+            design.Update();
             EmpireData empire = serverState.AllEmpires[star.Owner];
-
             ShipToken token = new ShipToken(design, countToBuild);
             
             Fleet fleet = new Fleet(token, star, empire.GetNextFleetKey());

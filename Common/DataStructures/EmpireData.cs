@@ -329,6 +329,7 @@ namespace Nova.Common
                         while (subNode != null)
                         {
                             ShipDesign design = new ShipDesign(subNode);
+                            design.Update();
                             Designs.Add(design.Key, design);
                             
                             subNode = subNode.NextSibling;
@@ -432,6 +433,7 @@ namespace Nova.Common
             XmlElement xmlelDesigns = xmldoc.CreateElement("Designs");
             foreach (ShipDesign design in Designs.Values)
             {
+                design.Update();
                 xmlelDesigns.AppendChild(design.ToXml(xmldoc));                                             
             }            
             xmlelEmpireData.AppendChild(xmlelDesigns);

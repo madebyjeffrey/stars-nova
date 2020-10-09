@@ -64,6 +64,7 @@ namespace Nova.Common
         /// <param name="shipDesign"><see cref="ShipDesign"/> to produce.</param>
         public ShipProductionUnit(ShipDesign shipDesign)
         {
+            shipDesign.Update();
             designKey = shipDesign.Key;
             name = shipDesign.Name;
             cost = shipDesign.Cost;

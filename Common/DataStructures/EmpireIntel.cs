@@ -83,6 +83,7 @@ namespace Nova.Common
                             while (subNode != null)
                             {
                                 ShipDesign design = new ShipDesign(subNode);
+                                design.Update();
                                 Designs.Add(design.Key, design);
                                 subNode = subNode.NextSibling;
                             }

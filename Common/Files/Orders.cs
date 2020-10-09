@@ -85,6 +85,7 @@ namespace Nova.Common
 
                         case "shipdesign":
                             design = new ShipDesign(xmlnode);
+                            design.Update();
                             RaceDesigns.Add(design.Key, design);
                             break;
 
@@ -150,6 +151,7 @@ namespace Nova.Common
             // store the designs, for any new designs
             foreach (ShipDesign design in RaceDesigns.Values)
             {
+                design.Update();
                 xmlelOrders.AppendChild(design.ToXml(xmldoc));
             }
 
