@@ -722,6 +722,7 @@ namespace Nova.WinForms.Gui
                         {
                             command.Waypoint.Task.Perform(selectedFleet, otherFleet, empireState, empireState);
 
+                            selectedFleet.Waypoints.Remove(waypoint);
                             // Now clean and remove empty fleets and update remaining ones
                             // This is done to update the Client State visuals only, the server
                             // will handle this "for real".
@@ -766,6 +767,7 @@ namespace Nova.WinForms.Gui
                     }
 
                     selectedFleet = (otherFleet == null) ? selectedFleet : otherFleet;
+
                 }
 
                 // Signal the change.

@@ -567,6 +567,8 @@ namespace Nova.Common
             int fuelUsed = (int)(fuelConsumptionRate * travelTime);
             FuelAvailable -= fuelUsed;
 
+            availableTime = 0; //In Stars! the fleet looses the rest of the turn as it enters orbit and scans the Star
+
             // Added check if fleet run out of full it's speed will be changed 
             // to free warp speed.
             if (arrived == TravelStatus.InTransit && fuelConsumptionRate > this.FuelAvailable)

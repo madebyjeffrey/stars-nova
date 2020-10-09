@@ -95,6 +95,8 @@ namespace Nova.Server
         public void Generate()
         {
             BackupTurn();
+
+            // Clear the HasFleetsInOrder flag then recalc after ships move
             foreach (EmpireData empire in serverState.AllEmpires.Values)
             {
                  foreach (StarIntel report in this.serverState.AllEmpires[empire.Id].StarReports.Values) report.HasFleetsInOrbit = false;
@@ -116,7 +118,7 @@ namespace Nova.Server
             // TODO (priority 4) - split this up into waypoint zero and waypoint 1 actions
 
             //Stars! Split functionality splits the fleets at the current position before moving!!
-            //let's try to do that here in a new loop first
+            //let's do that here in a new loop first
             new SplitFleetStep().Process(serverState);
 
             // ToDo: Step 1 --> Scrap Fleet if waypoint 0 order; here, and only here.
