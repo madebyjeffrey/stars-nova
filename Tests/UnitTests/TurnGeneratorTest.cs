@@ -54,9 +54,9 @@ namespace Nova.Common
         {
         }
 
-        protected override void Initialize()
+        protected override void Initialize(bool complete,String hint)
         {
-            //base.Initialize();
+            base.Initialize(complete, hint);
         }
     }
 }

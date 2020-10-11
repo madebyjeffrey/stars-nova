@@ -39,7 +39,7 @@ namespace Nova.WinForms.Gui
     public partial class ShipDesignDialog : System.Windows.Forms.Form
     {
         private readonly ClientData clientState;
-        private readonly AllComponents allComponents = new AllComponents();
+        private readonly AllComponents allComponents = new AllComponents(true,"Ship Design");
         private readonly Dictionary<long, ShipDesign> allDesigns;
         private readonly Dictionary<string, int> imageIndices = new Dictionary<string, int>();
         private readonly ImageList componentImages = new ImageList();

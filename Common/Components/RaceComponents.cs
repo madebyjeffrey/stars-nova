@@ -38,16 +38,18 @@ namespace Nova.Common.Components
     [Serializable]
     public class RaceComponents : Dictionary<string, Component>
     {
+        private String DialogHint = "";
         private Race race = null;
         private TechLevel tech = null;
-        private AllComponents allComponents = new AllComponents();
-
+        private AllComponents allComponents = null;
         /// <summary>
         /// Default Constructor. Use this when loading from XML and adding components
         /// from there one by one.
         /// </summary>
-        public RaceComponents()
+        public RaceComponents(String dialogHint)
         {
+            DialogHint = dialogHint;
+            allComponents = new AllComponents(true,DialogHint);
         }
         
         /// <summary>
@@ -56,8 +58,10 @@ namespace Nova.Common.Components
         /// </summary>
         /// <param name="newRace">The race these RaceComponents are available too.</param>
         /// <param name="newTech">The current tech level of the race.</param>
-        public RaceComponents(Race newRace, TechLevel newTech)
+        public RaceComponents(Race newRace, TechLevel newTech, String dialogHint)
         {
+            DialogHint = dialogHint;
+            allComponents = new AllComponents(true,DialogHint);
             DetermineRaceComponents(newRace, newTech);
         }
 

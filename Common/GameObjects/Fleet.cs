@@ -167,6 +167,27 @@ namespace Nova.Common
             }
         }
 
+
+        public int SlowestEngine
+        {
+            get
+            {
+                int speed = 10;
+                foreach (ShipToken token in tokens.Values)
+                {
+                    speed = Math.Min(speed, token.Design.Engine.OptimumSpeed);
+                }
+
+                return speed;
+            }
+        }
+
+
+
+
+
+
+
         /// <summary>
         /// Determine if the fleet has bombers.
         /// </summary>
@@ -539,7 +560,7 @@ namespace Nova.Common
                 arrived = TravelStatus.InTransit;
             }
 
-            if (travelTime >= fuelTime)
+            if (travelTime > fuelTime)
             {
                 travelTime = fuelTime;
                 arrived = TravelStatus.InTransit;
@@ -566,8 +587,6 @@ namespace Nova.Common
             availableTime -= travelTime;
             int fuelUsed = (int)(fuelConsumptionRate * travelTime);
             FuelAvailable -= fuelUsed;
-
-            availableTime = 0; //In Stars! the fleet looses the rest of the turn as it enters orbit and scans the Star
 
             // Added check if fleet run out of full it's speed will be changed 
             // to free warp speed.

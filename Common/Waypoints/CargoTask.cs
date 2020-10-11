@@ -67,13 +67,15 @@ namespace Nova.Common.Waypoints
         /// Cargo object representing the amount to Load or Unload.
         /// </summary>
         public Cargo Amount { get; set; }
-        
+
+
         /// <summary>
         /// Load or Unload cargo. Mixed operations are represented by more than one Task.
         /// </summary>
         public CargoMode Mode { get; set; }
-        
-        
+        public Item Target { get; set; }
+
+
         /// <summary>
         /// Default Constructor.
         /// </summary>
@@ -81,6 +83,7 @@ namespace Nova.Common.Waypoints
         {
             Amount = new Cargo();
             Mode = CargoMode.Unload;
+            Target = new Mappable();
         }
         
         
@@ -91,7 +94,8 @@ namespace Nova.Common.Waypoints
         public CargoTask(CargoTask copy)
         {
             Amount = new Cargo(copy.Amount);
-            Mode = copy.Mode;            
+            Mode = copy.Mode;
+            Target = copy.Target;
         }
         
         
@@ -112,9 +116,12 @@ namespace Nova.Common.Waypoints
                 try
                 {
                     switch (mainNode.Name.ToLower())
-                    {                            
+                    {
                         case "cargo":
                             Amount = new Cargo(mainNode);
+                            break;
+                        case "item":
+                            Target = new Item(node);
                             break;
                         case "mode":
                             Mode = (CargoMode)Enum.Parse(typeof(CargoMode), mainNode.FirstChild.Value);
@@ -135,49 +142,86 @@ namespace Nova.Common.Waypoints
         {
             XmlElement xmlelTask = xmldoc.CreateElement("CargoTask");
             Global.SaveData(xmldoc, xmlelTask, "Mode", Mode.ToString());
+            if (Target != null) xmlelTask.AppendChild(Target.ToXml(xmldoc));
             xmlelTask.AppendChild(Amount.ToXml(xmldoc));
-            
+
             return xmlelTask;
         }
 
         
         /// <inheritdoc />
-        public bool IsValid(Fleet fleet, Mappable target, EmpireData sender, EmpireData receiver)
+        public bool IsValid(Fleet fleet, Item target, EmpireData sender, EmpireData receiver)
         {
-            if (fleet.InOrbit == null || target == null || !(target is Star))
+            if (target == null )
             {
-                Message message = new Message();            
+
+                Message message = new Message();
                 message.Audience = fleet.Owner;
-                message.Text = "Fleet " + fleet.Name + " attempted to unload cargo while not in orbit.";
+                message.Text = "Fleet " + fleet.Name + " attempted to load/unload cargo to empty space: " ;
                 Messages.Add(message);
                 return false;
             }
-            
-            Star star = target as Star;
-            
-            // Check ownership.
-            if (fleet.Owner != star.Owner)
+            if ((target.Type == ItemType.Star)|| (target.Type == ItemType.StarIntel))
             {
-                bool toReturn = false;
-                
-                InvadeTask invade = new InvadeTask();
-                
-                if (invade.IsValid(fleet, target, sender, receiver))
+                if (sender.StarReports.ContainsKey(target.Name.ToString()))
                 {
-                    toReturn = invade.Perform(fleet, target, sender, receiver);
+                    StarIntel star = sender.StarReports[target.Name.ToString()];
+
+                    if ((Math.Abs(star.Position.X - fleet.Position.X) > 1) || (Math.Abs(star.Position.Y - fleet.Position.Y) > 1))
+                    {
+
+                        Message message = new Message();
+                        message.Audience = fleet.Owner;
+                        message.Text = "Fleet " + fleet.Name + " attempted to load/unload cargo when too far from target: " + target.Name;
+                        Messages.Add(message);
+                        return false;
+                    }
                 }
-                
-                Messages.AddRange(invade.Messages);
-                
-                return toReturn;                
+
+
+                // Check ownership.
+                if (!sender.OwnedStars.ContainsKey(target.Name))
+                {
+                    bool toReturn = false;
+
+                    InvadeTask invade = new InvadeTask();
+
+                    if (invade.IsValid(fleet, target, sender, receiver))
+                    {
+                        toReturn = invade.Perform(fleet, target, sender, receiver);
+                    }
+
+                    Messages.AddRange(invade.Messages);
+
+                    return toReturn;
+                }
             }
             
+            if (target.Type == ItemType.Fleet)
+            {
+                if (sender.OwnedFleets.ContainsKey(target.Key))
+                {
+                    Fleet other = sender.OwnedFleets[target.Key];
+
+                    if ((Math.Abs(other.Position.X - fleet.Position.X) > 1) || (Math.Abs(other.Position.Y - fleet.Position.Y) > 1))
+                    {
+
+                        Message message = new Message();
+                        message.Audience = fleet.Owner;
+                        message.Text = "Fleet " + fleet.Name + " attempted to load/unload cargo when too far from target: " + target.Name;
+                        Messages.Add(message);
+                        return false;
+                    }
+                }
+
+            }
+
             return true;           
         }
         
         
         /// <inheritdoc />
-        public bool Perform(Fleet fleet, Mappable target, EmpireData sender, EmpireData receiver)
+        public bool Perform(Fleet fleet, Item target, EmpireData sender, EmpireData receiver)
         {            
             switch (Mode)
             {
@@ -195,36 +239,92 @@ namespace Nova.Common.Waypoints
         /// <summary>
         /// Performs concrete unloading.
         /// </summary>
-        private bool Unload(Fleet fleet, Mappable target, EmpireData sender, EmpireData receiver)
+        private bool Unload(Fleet fleet, Item target, EmpireData sender, EmpireData receiver)
         {
-            Star star = target as Star;
-            
-            Message message = new Message();            
-            message.Text = "Fleet " + fleet.Name + " has unloaded its cargo at " + star.Name + ".";
-            Messages.Add(message);
+            if ((target.Type == ItemType.Star) || (target.Type == ItemType.StarIntel))
+            {
+                if (sender.OwnedStars.ContainsKey(target.Name))
+                {
+                    Star star = sender.OwnedStars[target.Name];
+                    {
+                        Message message = new Message();
+                        message.Text = "Fleet " + fleet.Name + " has unloaded its cargo at " + star.Name + ".";
+                        Messages.Add(message);
 
-            star.Add(Amount);
-            fleet.Cargo.Remove(Amount);
-            
-            return true;    
+                        star.Add(Amount);
+                        fleet.Cargo.Remove(Amount);
+
+                        return true;
+                    }
+                }
+                else return false;
+            }
+            else
+            {
+                if (target.Type == ItemType.Fleet)
+                {
+                    if (sender.OwnedFleets.ContainsKey(target.Key))
+                    {
+                        Fleet other = sender.OwnedFleets[target.Key];
+                        Message message = new Message();
+                        message.Text = "Fleet " + fleet.Name + " has transferred cargo to " + other.Name + ".";
+                        Messages.Add(message);
+
+                        other.Cargo.Add(Amount);
+                        fleet.Cargo.Remove(Amount);
+
+                        return true;
+                    }
+                }
+                else return false;
+            }
+            return false;
         }
         
         
         /// <summary>
         /// Performs concrete loading.
         /// </summary>
-        private bool Load(Fleet fleet, Mappable target, EmpireData sender, EmpireData receiver)
+        private bool Load(Fleet fleet, Item target, EmpireData sender, EmpireData receiver)
         {
-            Star star = target as Star;
-            
-            Message message = new Message();
-            message.Text = "Fleet " + fleet.Name + " has loaded cargo from " + star.Name + ".";
-            Messages.Add(message);            
+            if ((target.Type == ItemType.Star)|| (target.Type == ItemType.StarIntel))
+            {
+                if (sender.OwnedStars.ContainsKey(target.Name))
+                {
+                    Star star = sender.OwnedStars[target.Name];
+                    {
+                        Message message = new Message();
+                        message.Text = "Fleet " + fleet.Name + " has loaded cargo from " + star.Name + ".";
+                        Messages.Add(message);
 
-            fleet.Cargo.Add(Amount);
-            star.Remove(Amount);
-            
-            return true;      
+                        fleet.Cargo.Add(Amount);
+                        star.Remove(Amount);
+
+                        return true;
+                    }
+                }
+                else return false;
+            }
+            else if (target.Type == ItemType.Fleet)
+                        {
+                if (sender.OwnedFleets.ContainsKey(target.Key))
+                {
+                    Fleet other = sender.OwnedFleets[target.Key];
+
+
+                    Message message = new Message();
+                    message = new Message();
+                    message.Text = "Fleet " + fleet.Name + " has transferred cargo from " + other.Name + ".";
+                    Messages.Add(message);
+
+                    fleet.Cargo.Add(Amount);
+                    other.Cargo.Remove(Amount);
+
+                    return true;
+                }
+                return false;
+            }
+            return false;
         }
     }
 }

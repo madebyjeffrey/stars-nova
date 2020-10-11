@@ -197,7 +197,7 @@ namespace Nova.Server.TurnSteps
             
             serverState.AllMessages.Add(techAdvanceMessage);
 
-            AllComponents allComponents = new AllComponents();
+            AllComponents allComponents = new AllComponents(true,"Research progress");
 
             foreach (Component component in allComponents.GetAll.Values)
             {

@@ -304,7 +304,13 @@ namespace Nova.WinForms.Gui
 
             foreach (StarIntel report in clientState.EmpireState.StarReports.Values)
             {
-                if (radioButtonGrowth.Checked) DrawStarValue(g, report, clientState.EmpireState.Race,clientState.EmpireState.gravityModCapability, clientState.EmpireState.temperatureModCapability,clientState.EmpireState.radiationModCapability );
+                if (radioButtonGrowth.Checked)
+                {
+                    DrawStarValue(g, report, clientState.EmpireState.Race, clientState.EmpireState.gravityModCapability, clientState.EmpireState.temperatureModCapability, clientState.EmpireState.radiationModCapability);
+                    DrawStarMineralConcentration(g, report);
+                }
+                if (radioButtonMineralConcentration.Checked) DrawStarMineralConcentration(g, report);
+                if (radioButtonNovaValue.Checked) DrawStarValueNova(g, report, clientState.EmpireState.Race, clientState.EmpireState.gravityModCapability, clientState.EmpireState.temperatureModCapability, clientState.EmpireState.radiationModCapability);
                 if (radioButtonNormal.Checked) DrawStarNormal(g, report);
                 if (radioButtonMineralConcentration.Checked) DrawStarMineralConcentration(g, report);
                 if (radioButtonSurfaceMinerals.Checked) DrawStarSurfaceMinerals(g, report);
@@ -515,6 +521,51 @@ namespace Nova.WinForms.Gui
                 g.DrawString(report.Name, this.nameFont, Brushes.White, position.X, position.Y + 5, format);
             }
         }
+
+
+        private void DrawStarValueNova(Graphics g, StarIntel report, Race race, int gravityModCapability, int temperatureModCapability, int radiationModCapability)
+        {
+            NovaPoint position = LogicalToDevice(report.Position);
+            int minValue = 2;
+            int maxValue = 2;
+            Brush starBrushMooshedTogether = Brushes.White;
+
+            if (report.Year > Global.Unset)
+            {
+                minValue = report.MinValue(race);
+                maxValue = report.MaxValue(race, gravityModCapability, temperatureModCapability, radiationModCapability);
+                if (minValue >= 0)
+                {
+                    starBrushMooshedTogether = Brushes.Green;
+                    FillCircleMinMax(g, starBrushMooshedTogether, starBrushMooshedTogether,(Point)position, Math.Abs(minValue), Math.Abs(minValue));
+                }
+
+
+                if (maxValue <= 0)
+                {
+                    starBrushMooshedTogether = Brushes.Red;
+                    FillCircleMinMax(g, starBrushMooshedTogether, starBrushMooshedTogether,(Point)position, Math.Abs(maxValue), Math.Abs(maxValue));
+                }
+
+                if ((maxValue > 0) && (minValue < 0))
+                {
+                    starBrushMooshedTogether = Brushes.Yellow;
+                    FillCircleMinMax(g, starBrushMooshedTogether, starBrushMooshedTogether,(Point)position, Math.Abs(maxValue), Math.Abs(maxValue));
+                }
+
+            }
+
+
+            // If the Star name display is turned on then add the name
+
+            if (this.displayStarNames && zoomFactor > 0.5)
+            {
+                StringFormat format = new StringFormat();
+                format.Alignment = StringAlignment.Center;
+                g.DrawString(report.Name, this.nameFont, Brushes.White, position.X, position.Y + 5, format);
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -1003,7 +1054,7 @@ namespace Nova.WinForms.Gui
             Waypoint waypoint = new Waypoint();
 
             waypoint.Position = position;
-            waypoint.WarpFactor = 6;
+            waypoint.WarpFactor = fleet.SlowestEngine;
             waypoint.Task =  new NoTask();
 
             // If there are no items near the selected position then set the
@@ -1311,6 +1362,7 @@ namespace Nova.WinForms.Gui
                 radioButtonGrowth.Checked = false;
                 radioButtonMineralConcentration.Checked = false;
                 radioButtonSurfaceMinerals.Checked = false;
+                radioButtonNovaValue.Checked = false;
                 RefreshStarMap(this, EventArgs.Empty);
 
             }
@@ -1323,6 +1375,7 @@ namespace Nova.WinForms.Gui
                 radioButtonNormal.Checked = false;
                 radioButtonMineralConcentration.Checked = false;
                 radioButtonSurfaceMinerals.Checked = false;
+                radioButtonNovaValue.Checked = false;
                 RefreshStarMap(this, EventArgs.Empty);
 
             }
@@ -1336,6 +1389,7 @@ namespace Nova.WinForms.Gui
                 radioButtonGrowth.Checked = false;
                 radioButtonNormal.Checked = false;
                 radioButtonSurfaceMinerals.Checked = false;
+                radioButtonNovaValue.Checked = false;
                 RefreshStarMap(this, EventArgs.Empty);
 
             }
@@ -1349,12 +1403,25 @@ namespace Nova.WinForms.Gui
                 radioButtonGrowth.Checked = false;
                 radioButtonMineralConcentration.Checked = false;
                 radioButtonNormal.Checked = false;
+                radioButtonNovaValue.Checked = false;
                 RefreshStarMap(this, EventArgs.Empty);
 
             }
 
         }
 
+        private void radioButtonNovaValue_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButtonNovaValue.Checked)
+            {
+                radioButtonGrowth.Checked = false;
+                radioButtonMineralConcentration.Checked = false;
+                radioButtonNormal.Checked = false;
+                radioButtonSurfaceMinerals.Checked = false;
+                RefreshStarMap(this, EventArgs.Empty);
 
+            }
+
+        }
     }
 }

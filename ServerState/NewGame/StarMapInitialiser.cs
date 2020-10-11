@@ -126,7 +126,7 @@ namespace Nova.Server.NewGame
         private void PrepareDesigns(EmpireData empire, string player)
         {
             // Read components data and create some basic stuff
-            AllComponents components = new AllComponents();
+            AllComponents components = new AllComponents(true, "Race = "+ empire.Race.Name);
             
             Component colonyShipHull = null, scoutHull = null;            
             Component colonizer = null;

@@ -146,7 +146,7 @@ namespace Nova.WinForms.Gui
             }
             
             // Populate the expected research benefits list
-            AllComponents allComponents = new AllComponents();
+            AllComponents allComponents = new AllComponents(true,"Research");
 
             TechLevel oldResearchLevel = currentLevel;
             TechLevel newResearchLevel = new TechLevel(oldResearchLevel);

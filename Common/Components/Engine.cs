@@ -55,6 +55,27 @@ namespace Nova.Common.Components
             }
         }
 
+        public int OptimumSpeed
+        {
+            get
+            {
+                double MPG = 9.0 * 9.0 / FuelConsumption[9]; 
+                for (int i = 8; i >= 0; i--)
+                {
+                    if ((double)(i * i) / FuelConsumption[i] < MPG)
+                    {
+                        MPG = (double) i * i / FuelConsumption[i];
+                    }
+                    else
+                    {
+                        return i ;
+                    }
+                }
+                return 0;
+            }
+        }
+
+
         #endregion
 
         #region Construction

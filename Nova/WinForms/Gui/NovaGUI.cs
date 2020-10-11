@@ -61,7 +61,7 @@ namespace Nova.WinForms.Gui
             timerNextTurn.Enabled = true;
             timerNextTurn.Tick += new System.EventHandler(this.timerNextTurn_Tick);
 
-            clientState = new ClientData();
+            clientState = new ClientData("Client ");
             clientState.Initialize(argArray);
             
             InitializeComponent();

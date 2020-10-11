@@ -261,7 +261,7 @@ namespace Nova.WinForms.Gui
             set { SetStarDetails(value); }
             get { return selectedStar; }
         }
-        private Fleet GetSelectedFleetInOrbit()
+        private Fleet GettopFleetInOrbit()
         {
             if (comboFleetsInOrbit.SelectedItem == null)
             {
@@ -279,7 +279,7 @@ namespace Nova.WinForms.Gui
 
         private void ComboFleetsInOrbit_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Fleet fleet = GetSelectedFleetInOrbit();
+            Fleet fleet = GettopFleetInOrbit();
             if (fleet == null)
             {
                 meterFuel.Value = 0;
@@ -299,7 +299,7 @@ namespace Nova.WinForms.Gui
 
         private void ButtonGoto_Click(object sender, EventArgs e)
         {
-            Fleet fleet = GetSelectedFleetInOrbit();
+            Fleet fleet = GettopFleetInOrbit();
             if (fleet != null)
             {
                 OnPlanetSelectionChanged(new SelectionArgs(fleet));
@@ -308,12 +308,12 @@ namespace Nova.WinForms.Gui
 
         private void ButtonCargo_Click(object sender, EventArgs e)
         {
-            Fleet fleet = GetSelectedFleetInOrbit();
-            if (fleet != null)
+            Fleet fleet = GettopFleetInOrbit();
+            if ((fleet != null) && (fleet.InOrbit != null))
             {
                 try
                 {
-                    using (CargoDialog cargoDialog = new CargoDialog(fleet, clientState))
+                    using (CargoDialog cargoDialog = new CargoDialog(fleet, fleet.InOrbit, clientState))
                     {
                         cargoDialog.ShowDialog(); 
                         UpdateFields();

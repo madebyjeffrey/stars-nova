@@ -179,16 +179,16 @@ namespace Nova.Common
         /// <summary>
         /// Default constructor.
         /// </summary>
-        public EmpireData(bool loadComponents = true) 
+        public EmpireData(bool loadComponents = true,String RaceHint = "") 
         {
-            Initialize(loadComponents);
+            Initialize(loadComponents,RaceHint);
             BattlePlans.Add("Default", new BattlePlan());
         }
 
-        protected virtual void Initialize(bool loadComponents = true)
+        protected virtual void Initialize(bool loadComponents = true,String RaceHint = "")
         {
             
-           if (loadComponents) AvailableComponents = new RaceComponents();
+           if (loadComponents) AvailableComponents = new RaceComponents(RaceHint);
         }
 
         /// <summary>
@@ -211,9 +211,8 @@ namespace Nova.Common
         /// Load: constructor to load EmpireData from an XmlNode representation.
         /// </summary>
         /// <param name="node">An XmlNode containing a EmpireData representation (from a save file).</param>
-        public EmpireData(XmlNode node)
+        public EmpireData(XmlNode node,String RaceName)
         {
-            Initialize();
             XmlNode mainNode = node.FirstChild;
             XmlNode subNode;
             while (mainNode != null)
@@ -281,6 +280,7 @@ namespace Nova.Common
                         break;
                         
                     case "fleetreports":
+                        if (AvailableComponents == null) Initialize(true,race.Name);
                         subNode = mainNode.FirstChild;
                         while (subNode != null)
                         {
@@ -291,6 +291,7 @@ namespace Nova.Common
                         break;
                         
                     case "ownedfleets":
+                        if (AvailableComponents == null) Initialize(true,race.Name);
                         subNode = mainNode.FirstChild;
                         while (subNode != null)
                         {
@@ -298,6 +299,7 @@ namespace Nova.Common
                             OwnedFleets.Add(fleet);
                             subNode = subNode.NextSibling;
                         }
+
                         break;
                         
                     case "otherempires":
@@ -316,6 +318,7 @@ namespace Nova.Common
                         break; 
                         
                     case "availablecomponents":
+                        if (AvailableComponents == null) Initialize(true,race.Name);
                         subNode = mainNode.FirstChild;
                         while (subNode != null)
                         { 
@@ -325,6 +328,7 @@ namespace Nova.Common
                         break;
                         
                     case "designs":
+                        if (AvailableComponents == null) Initialize(true, race.Name);
                         subNode = mainNode.FirstChild;
                         while (subNode != null)
                         {
@@ -337,6 +341,7 @@ namespace Nova.Common
                         break;
                         
                     case "battlereport":
+                        if (AvailableComponents == null) Initialize(true, race.Name);
                         BattleReport battle = new BattleReport(mainNode);
                         BattleReports.Add(battle);
                         break;
@@ -512,7 +517,7 @@ namespace Nova.Common
             ResearchResources       = new TechLevel();
             ResearchTopics          = new TechLevel();
             
-            AvailableComponents     = new RaceComponents();
+ ///           AvailableComponents     = new RaceComponents();
             Designs                 = new Dictionary<long, ShipDesign>();
             
             OwnedStars.Clear();
@@ -638,7 +643,7 @@ namespace Nova.Common
         /// </summary>
         private void LinkReferences()
         {
-            AllComponents allComponents = new AllComponents();
+            AllComponents allComponents = new AllComponents(true,race.Name);
             
             // HullModule reference to a component
             foreach (ShipDesign design in Designs.Values)

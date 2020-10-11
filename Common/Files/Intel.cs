@@ -60,7 +60,7 @@ namespace Nova.Common
     [Serializable]
     public sealed class Intel
     {
-        public EmpireData EmpireState = new EmpireData(true);
+        public EmpireData EmpireState = new EmpireData(true,"Intel");
         
         public List<Message> Messages = new List<Message>();
         
@@ -91,16 +91,16 @@ namespace Nova.Common
         /// Load <see cref="Intel">Intel</see> from an xml document.
         /// </summary>
         /// <param name="xmldoc">Produced using XmlDocument.Load(filename).</param>
-        public Intel(XmlDocument xmldoc)
+        public Intel(XmlDocument xmldoc,String RaceHint)
         {
             XmlNode xmlnode = xmldoc.DocumentElement;
-            LoadFromXmlNode(xmlnode);
+            LoadFromXmlNode(xmlnode, RaceHint);
         }
         
         /// <summary>
         /// Load <see cref="Intel">Intel</see> from an xml node.
         /// </summary>
-        public void LoadFromXmlNode(XmlNode xmlnode)
+        public void LoadFromXmlNode(XmlNode xmlnode, String RaceName)
         {
             while (xmlnode != null)
             {
@@ -116,7 +116,7 @@ namespace Nova.Common
                             continue;
 
                         case "empiredata":
-                            EmpireState = new EmpireData(xmlnode);
+                            EmpireState = new EmpireData(xmlnode, RaceName);
                             break;
 
                         case "message":

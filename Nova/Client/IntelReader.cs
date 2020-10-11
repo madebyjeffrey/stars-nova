@@ -89,7 +89,7 @@ namespace Nova.Client
                         XmlDocument xmldoc = new XmlDocument();
 
                         xmldoc.Load(turnFile);
-                        Intel newIntel = new Intel(xmldoc);
+                        Intel newIntel = new Intel(xmldoc,"IntelReader");
                         waitForFile = (nextTurn && (newIntel.EmpireState.TurnYear == clientState.EmpireState.TurnYear));
                         // check this is a new turn, not an old one or the same one.
                         if ((!nextTurn && (newIntel.EmpireState.TurnYear >= clientState.EmpireState.TurnYear)) || (nextTurn && (newIntel.EmpireState.TurnYear > clientState.EmpireState.TurnYear)))

@@ -63,7 +63,7 @@ namespace Nova.Common.Waypoints
             }    
         }
         
-        public bool IsValid(Fleet fleet, Mappable target, EmpireData sender, EmpireData receiver = null)
+        public bool IsValid(Fleet fleet, Item target, EmpireData sender, EmpireData receiver = null)
         {
             return true; // fleet.GetTravelStatus() == Fleet.TravelStatus.Arrived;           
         }
@@ -87,7 +87,7 @@ namespace Nova.Common.Waypoints
         /// next year. Scrapping at a planet gives you 45% of the minerals and 35% of
         /// the resources.These resources are not strictly additive.
         /// </remarks>
-        public bool Perform(Fleet fleet, Mappable target, EmpireData sender, EmpireData receiver = null)
+        public bool Perform(Fleet fleet, Item target, EmpireData sender, EmpireData receiver = null)
         {
             Message message = new Message();
             Messages.Add(message);

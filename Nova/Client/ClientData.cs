@@ -40,7 +40,7 @@ namespace Nova.Client
     [Serializable]
     public sealed class ClientData
     {
-        public EmpireData EmpireState = new EmpireData(true);
+        public EmpireData EmpireState = null;
         
         public Stack<ICommand>   Commands = new Stack<ICommand>();
 
@@ -56,18 +56,22 @@ namespace Nova.Client
 
         public string IntelFileName; // path&filename
 
+        public string RaceHint;
+
         /// <summary>
         /// Default Constructor.
         /// </summary>
-        public ClientData() 
-        { 
+        public ClientData(string RaceName) 
+        {
+            RaceHint = RaceName;
+            EmpireState = new EmpireData(true, RaceName);
         }
         
         /// <summary>
         /// Load <see cref="Intel">ClientState</see> from an xml document.
         /// </summary>
         /// <param name="xmldoc">Produced using XmlDocument.Load(filename).</param>
-        public ClientData(XmlDocument xmldoc)
+        public ClientData(XmlDocument xmldoc,String RaceName)
         {            
             XmlNode xmlnode = xmldoc.DocumentElement;
             XmlNode textNode;
@@ -86,7 +90,7 @@ namespace Nova.Client
                             continue;
                         
                         case "empiredata":
-                            EmpireState = new EmpireData(xmlnode);
+                            EmpireState = new EmpireData(xmlnode,RaceName);
                             break;
                             
                         case "commands":
@@ -110,7 +114,7 @@ namespace Nova.Client
                         case "intel":
                             // THIS HAS TO GO!
                             InputTurn = new Intel();
-                            InputTurn.LoadFromXmlNode(xmlnode);
+                            InputTurn.LoadFromXmlNode(xmlnode,"Client "+ RaceName);
                             break;                       
                         case "firstturn":
                             FirstTurn = bool.Parse(xmlnode.FirstChild.Value);
@@ -374,7 +378,7 @@ namespace Nova.Client
         public ClientData Restore(string gameFolder, string raceName)
         {            
             StatePathName = Path.Combine(gameFolder, raceName + Global.ClientStateExtension);
-            ClientData clientState = new ClientData();
+            ClientData clientState = new ClientData(raceName);
 
             if (File.Exists(StatePathName))
             {
@@ -390,7 +394,7 @@ namespace Nova.Client
 
                             xmldoc.Load(stream);
 
-                            clientState = new ClientData(xmldoc);
+                            clientState = new ClientData(xmldoc,raceName);
                         }
                         waitForFile = false;
                     }

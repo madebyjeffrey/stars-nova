@@ -42,7 +42,7 @@ namespace Nova.Common.Components
         private static string saveFilePath;
         private static string graphicsFilePath;
         private static bool isLoaded = false;
-        
+        private String hint;
         /// <summary>
         /// Returns an IDictionary (Compatible with Dictionary and ConcurrentDictionary)
         /// containing all game components.
@@ -60,8 +60,9 @@ namespace Nova.Common.Components
         /// </summary>
         /// <param name="restore">If true (by default) it will also restore
         /// all components on creation.</param>
-        public AllComponents(bool restore = true,string hint = "")
+        public AllComponents(bool restore = true,string Hint = "")
         {
+            hint = Hint;
             if (restore)
             {
                 Restore(hint);
@@ -145,8 +146,9 @@ namespace Nova.Common.Components
         /// <exception cref="System.Data.OperationAbortedException">
         /// The loading of the component definition was aborted.
         /// </exception>
-        public void Restore(string hint ="")
+        public void Restore(string Hint ="")
         {
+            hint = Hint;
             // If components are already loaded, GO AWAY DAMN DIALOG -Aeglos 25 Jun 11
             if (isLoaded)
             {
@@ -221,7 +223,7 @@ namespace Nova.Common.Components
                             else if (xmlnode.Name == "Component")
                             {
                                 ++nodesLoaded;
-                                callback.SetText(string.Format("Loading component: {0}", nodesLoaded));
+                                callback.SetText(string.Format(hint+": Loading component: {0}", nodesLoaded));
                                 callback.StepTo(nodesLoaded);
                                 Component newComponent = new Component(xmlnode);
                                 components[newComponent.Name] = newComponent;

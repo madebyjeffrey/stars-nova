@@ -32,13 +32,14 @@ namespace Nova.ControlLibrary
     using Nova.Common.Waypoints;
 
     /// <summary>
-    /// A dialog for transferring cargo between a planet and a ship.
+    /// A dialog for transferring cargo between a fleet and a Mappable(fleet,planet or salvage).
     /// </summary>
     public partial class CargoDialog : Form
     {
         private Fleet fleet;
+        private Mappable target;
         private Cargo fleetCargo;
-        private Cargo starCargo;
+        private Cargo targetCargo;
         private ClientData clientData;
         
         public Dictionary<CargoMode, CargoTask> Tasks {get; private set;}
@@ -46,7 +47,7 @@ namespace Nova.ControlLibrary
         /// <summary>
         /// Initializes a new instance of the CargoDialog class.
         /// </summary>
-        public CargoDialog(Fleet fleet, ClientData clientData)
+        public CargoDialog(Fleet fleet, Mappable target, ClientData clientData)
         {
             InitializeComponent();
             cargoIron.ValueChanged += CargoIron_ValueChanged;
@@ -56,7 +57,7 @@ namespace Nova.ControlLibrary
 
             Tasks = new Dictionary<CargoMode, CargoTask>();
 
-            SetTarget(fleet);
+            SetTarget(fleet,target);
 
             this.clientData = clientData;
         }
@@ -68,7 +69,7 @@ namespace Nova.ControlLibrary
                 newValue = meterCargo.Maximum - fleetCargo.Mass + fleetCargo.Ironium;
             }
 
-            int total = fleetCargo.Ironium + starCargo.Ironium;
+            int total = fleetCargo.Ironium + targetCargo.Ironium;
 
             if (newValue > total)
             {
@@ -76,7 +77,7 @@ namespace Nova.ControlLibrary
             }
 
             fleetCargo.Ironium = newValue;
-            starCargo.Ironium = total - newValue;
+            targetCargo.Ironium = total - newValue;
 
             UpdateMeters();
         }
@@ -88,7 +89,7 @@ namespace Nova.ControlLibrary
                 newValue = meterCargo.Maximum - fleetCargo.Mass + fleetCargo.Boranium;
             }
 
-            int total = fleetCargo.Boranium + starCargo.Boranium;
+            int total = fleetCargo.Boranium + targetCargo.Boranium;
 
             if (newValue > total)
             {
@@ -96,7 +97,7 @@ namespace Nova.ControlLibrary
             }
 
             fleetCargo.Boranium = newValue;
-            starCargo.Boranium = total - newValue;
+            targetCargo.Boranium = total - newValue;
             UpdateMeters();
         }
 
@@ -107,7 +108,7 @@ namespace Nova.ControlLibrary
                 newValue = meterCargo.Maximum - fleetCargo.Mass + fleetCargo.Germanium;
             }
 
-            int total = fleetCargo.Germanium + starCargo.Germanium;
+            int total = fleetCargo.Germanium + targetCargo.Germanium;
 
             if (newValue > total)
             {
@@ -115,7 +116,7 @@ namespace Nova.ControlLibrary
             }
 
             fleetCargo.Germanium = newValue;
-            starCargo.Germanium = total - newValue;
+            targetCargo.Germanium = total - newValue;
             UpdateMeters();
         }
 
@@ -126,7 +127,7 @@ namespace Nova.ControlLibrary
                 newValue = meterCargo.Maximum - fleetCargo.Mass + fleetCargo.ColonistsInKilotons;
             }
 
-            int total = fleetCargo.ColonistsInKilotons + starCargo.ColonistsInKilotons;
+            int total = fleetCargo.ColonistsInKilotons + targetCargo.ColonistsInKilotons;
 
             if (newValue > total)
             {
@@ -134,7 +135,7 @@ namespace Nova.ControlLibrary
             }
 
             fleetCargo.ColonistsInKilotons = newValue;
-            starCargo.ColonistsInKilotons = total - newValue;
+            targetCargo.ColonistsInKilotons = total - newValue;
             UpdateMeters();
         }
 
@@ -146,10 +147,10 @@ namespace Nova.ControlLibrary
             cargoGerman.Value = fleetCargo.Germanium;
             cargoColonistsInKilotons.Value = fleetCargo.ColonistsInKilotons;
 
-            labelIron.Text = starCargo.Ironium + " kT";
-            labelBoran.Text = starCargo.Boranium + " kT";
-            labelGerman.Text = starCargo.Germanium + " kT";
-            labelColonistsInKilotons.Text = starCargo.ColonistsInKilotons + " kT";
+            labelIron.Text = targetCargo.Ironium + " kT";
+            labelBoran.Text = targetCargo.Boranium + " kT";
+            labelGerman.Text = targetCargo.Germanium + " kT";
+            labelColonistsInKilotons.Text = targetCargo.ColonistsInKilotons + " kT";
 
             meterCargo.CargoLevels = fleetCargo;
         }
@@ -159,8 +160,10 @@ namespace Nova.ControlLibrary
             Tasks.Add(CargoMode.Load, new CargoTask());
             Tasks.Add(CargoMode.Unload, new CargoTask());
             Tasks[CargoMode.Load].Mode = CargoMode.Load;
+            Tasks[CargoMode.Load].Target = target;
             Tasks[CargoMode.Unload].Mode = CargoMode.Unload;
-            
+            Tasks[CargoMode.Unload].Target = target;
+
             // See if this is a Load, Unload or Mixed operation.            
             // If original fleet >= dialog fleet, then Unload. Else, Load.
             CargoMode mode;
@@ -177,6 +180,7 @@ namespace Nova.ControlLibrary
                 }
                 
                 Tasks[mode].Amount[commodity.Key] = Math.Abs(fleetCargo[commodity.Key] - fleet.Cargo[commodity.Key]);
+                Tasks[mode].Target = target;
             }
 
             WaypointCommand command;
@@ -193,40 +197,72 @@ namespace Nova.ControlLibrary
                     if (command.IsValid(clientData.EmpireState))
                     {
                         command.ApplyToState(clientData.EmpireState);
-                        // Also perform it here, to update client state for manual xfer.
-                        if (command.Waypoint.Task.IsValid(fleet, fleet.InOrbit, clientData.EmpireState, null))
+
+                        if ((waypoint.Task as CargoTask).Target.Type == ItemType.Star)
                         {
-                            command.Waypoint.Task.Perform(fleet, fleet.InOrbit, clientData.EmpireState, null); // Load, Unload
+                            if (clientData.EmpireState.StarReports.ContainsKey((waypoint.Task as CargoTask).Target.Name.ToString()))
+                            {
+                                StarIntel star = clientData.EmpireState.StarReports[(waypoint.Task as CargoTask).Target.Name.ToString()];
+                                // Also perform it here, to update client state for manual xfer.
+                                if (command.Waypoint.Task.IsValid(fleet, star, clientData.EmpireState, null))
+                                {
+                                    command.Waypoint.Task.Perform(fleet, star, clientData.EmpireState, null); // Load, Unload
+                                }
+                            }
+                            fleet.Waypoints.Remove(waypoint); // immediate commands don't add a visible waypoint to the ship in the client - we have told the server what to do
+                        }
+                        else  if (clientData.EmpireState.OwnedFleets.ContainsKey((waypoint.Task as CargoTask).Target.Key))
+                        {
+                            Fleet other = clientData.EmpireState.OwnedFleets[(waypoint.Task as CargoTask).Target.Key];
+                            if (waypoint.Task.IsValid(fleet, other, clientData.EmpireState,null))
+                            {
+
+                                // Also perform it here, to update client state for manual xfer.
+                                if (command.Waypoint.Task.IsValid(fleet, other, clientData.EmpireState, null))
+                                {
+                                    command.Waypoint.Task.Perform(fleet, other, clientData.EmpireState, null); // Load, Unload
+                                }
+                            }
+                            fleet.Waypoints.Remove(waypoint); // immediate commands don't add a visible waypoint to the ship in the client - we have told the server what to do
                         }
                     }
-                    fleet.Waypoints.Remove(waypoint); // immediate commands don't add a visible waypoint to the ship in the client - we have told the server what to do
+                    
                 }
             }
+            
         }
 
         /// <summary>
         /// initialize the various fields in the dialog.
         /// </summary>
         /// <param name="targetFleet">The <see cref="Fleet"/> transferring cargo.</param>
-        public void SetTarget(Fleet targetFleet)
+        public void SetTarget(Fleet targetFleet,Mappable sourceMappable)
         {
-            fleet = targetFleet;                     
+            fleet = targetFleet;
+            target = sourceMappable;
             fleetCargo = new Cargo(targetFleet.Cargo); // clone this so it can hold values in case we cancel
-            starCargo = new Cargo();
-            
-            if (targetFleet.InOrbit.Type == ItemType.Star)
+            targetCargo = new Cargo();
+
+            if (sourceMappable.Type == ItemType.Star)
             {
-                starCargo.Ironium = (targetFleet.InOrbit as Star).ResourcesOnHand.Ironium;
-                starCargo.Boranium =  (targetFleet.InOrbit as Star).ResourcesOnHand.Boranium;
-                starCargo.Germanium =  (targetFleet.InOrbit as Star).ResourcesOnHand.Germanium;
-                starCargo.ColonistsInKilotons = (targetFleet.InOrbit as Star).Colonists / Global.ColonistsPerKiloton;
+                targetCargo.Ironium = (sourceMappable as Star).ResourcesOnHand.Ironium;
+                targetCargo.Boranium = (sourceMappable as Star).ResourcesOnHand.Boranium;
+                targetCargo.Germanium = (sourceMappable as Star).ResourcesOnHand.Germanium;
+                targetCargo.ColonistsInKilotons = (sourceMappable as Star).Colonists / Global.ColonistsPerKiloton;
+            }
+            else if (sourceMappable.Type == ItemType.Fleet)
+            {
+                targetCargo.Ironium = (sourceMappable as Fleet).Cargo.Ironium;
+                targetCargo.Boranium = (sourceMappable as Fleet).Cargo.Boranium;
+                targetCargo.Germanium = (sourceMappable as Fleet).Cargo.Germanium;
+                targetCargo.ColonistsInKilotons = (sourceMappable as Fleet).Cargo.ColonistsInKilotons;
             }
             else
             {
-                starCargo.Ironium = 0;
-                starCargo.Boranium =  0;
-                starCargo.Germanium =  0;
-                starCargo.ColonistsInKilotons = 0;    
+                targetCargo.Ironium = 0;
+                targetCargo.Boranium =  0;
+                targetCargo.Germanium =  0;
+                targetCargo.ColonistsInKilotons = 0;    
             }
 
             cargoIron.Maximum = targetFleet.TotalCargoCapacity;

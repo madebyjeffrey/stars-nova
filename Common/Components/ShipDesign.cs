@@ -590,7 +590,7 @@ namespace Nova.Common.Components
             {
                 if (module.AllocatedComponent != null)
                 {
-                    AllComponents allComponents = new AllComponents();
+                    AllComponents allComponents = new AllComponents(true,"ShipDesign");
                     if (module.AllocatedComponent.Name != null)
                     {
                         module.AllocatedComponent =  allComponents.Fetch(module.AllocatedComponent.Name);

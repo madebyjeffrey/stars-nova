@@ -129,7 +129,7 @@ namespace Nova.Server
                             {
                                 AllEmpires.Add(
                                     int.Parse(textNode.Attributes["Key"].Value, System.Globalization.NumberStyles.HexNumber),
-                                    new EmpireData(textNode));
+                                    new EmpireData(textNode,"Server"));
                                 textNode = textNode.NextSibling;
                             }
                             break;
@@ -367,7 +367,7 @@ namespace Nova.Server
         /// </summary>
         private void LinkServerStateReferences()
         {
-            AllComponents allComponents = new AllComponents();
+            AllComponents allComponents = new AllComponents(true,"Server updating server state ");
 
             foreach (Star star in AllStars.Values)
             {

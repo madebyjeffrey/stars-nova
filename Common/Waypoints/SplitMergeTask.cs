@@ -192,7 +192,7 @@ namespace Nova.Common.Waypoints
 
         
         /// <inheritdoc />
-        public bool IsValid(Fleet fleet, Mappable target, EmpireData sender, EmpireData receiver)
+        public bool IsValid(Fleet fleet, Item target, EmpireData sender, EmpireData receiver)
         {
             // fleet is the original fleet to split, or the recipient of a merge.
             // target (as Fleet) is the new fleet in a split, or the fleet to be merged into FirstFleet.           
@@ -205,7 +205,7 @@ namespace Nova.Common.Waypoints
         
         
         /// <inheritdoc />
-        public bool Perform(Fleet fleet, Mappable target, EmpireData sender, EmpireData receiver)
+        public bool Perform(Fleet fleet, Item target, EmpireData sender, EmpireData receiver)
         { 
             Fleet secondFleet = null;
             

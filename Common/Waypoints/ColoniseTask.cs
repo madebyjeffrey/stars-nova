@@ -68,7 +68,7 @@ namespace Nova.Common.Waypoints
             }    
         }
         
-        public bool IsValid(Fleet fleet, Mappable target, EmpireData sender, EmpireData reciever)
+        public bool IsValid(Fleet fleet, Item target, EmpireData sender, EmpireData reciever)
         {
             Message message = new Message();
             Messages.Add(message);
@@ -107,7 +107,7 @@ namespace Nova.Common.Waypoints
             return true;           
         }
         
-        public bool Perform(Fleet fleet, Mappable target, EmpireData sender, EmpireData reciever)
+        public bool Perform(Fleet fleet, Item target, EmpireData sender, EmpireData reciever)
         {
             Star star = target as Star;
             

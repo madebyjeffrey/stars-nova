@@ -44,6 +44,7 @@ namespace Nova.WinForms.Gui
             this.radioButtonMineralConcentration = new System.Windows.Forms.RadioButton();
             this.radioButtonSurfaceMinerals = new System.Windows.Forms.RadioButton();
             this.MapPanel = new Nova.WinForms.Gui.StarMapPanel();
+            this.radioButtonNovaValue = new System.Windows.Forms.RadioButton();
             this.selectItemMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -52,7 +53,7 @@ namespace Nova.WinForms.Gui
             this.verticalScrollBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.verticalScrollBar.Enabled = false;
-            this.verticalScrollBar.Location = new System.Drawing.Point(537, 32);
+            this.verticalScrollBar.Location = new System.Drawing.Point(961, 32);
             this.verticalScrollBar.Name = "verticalScrollBar";
             this.verticalScrollBar.Size = new System.Drawing.Size(16, 611);
             this.verticalScrollBar.TabIndex = 5;
@@ -65,7 +66,7 @@ namespace Nova.WinForms.Gui
             this.horizontalScrollBar.Enabled = false;
             this.horizontalScrollBar.Location = new System.Drawing.Point(3, 652);
             this.horizontalScrollBar.Name = "horizontalScrollBar";
-            this.horizontalScrollBar.Size = new System.Drawing.Size(533, 16);
+            this.horizontalScrollBar.Size = new System.Drawing.Size(957, 16);
             this.horizontalScrollBar.TabIndex = 3;
             this.horizontalScrollBar.Scroll += new System.Windows.Forms.ScrollEventHandler(this.MapScrollH);
             // 
@@ -167,18 +168,18 @@ namespace Nova.WinForms.Gui
             // radioButtonGrowth
             // 
             this.radioButtonGrowth.AutoSize = true;
-            this.radioButtonGrowth.Location = new System.Drawing.Point(267, 7);
+            this.radioButtonGrowth.Location = new System.Drawing.Point(832, 8);
             this.radioButtonGrowth.Name = "radioButtonGrowth";
-            this.radioButtonGrowth.Size = new System.Drawing.Size(85, 17);
+            this.radioButtonGrowth.Size = new System.Drawing.Size(144, 17);
             this.radioButtonGrowth.TabIndex = 12;
-            this.radioButtonGrowth.Text = "Planet Value";
+            this.radioButtonGrowth.Text = "Stars! Nova Planet Value";
             this.radioButtonGrowth.UseVisualStyleBackColor = true;
             this.radioButtonGrowth.CheckedChanged += new System.EventHandler(this.radioButtonGrowth_CheckedChanged);
             // 
             // radioButtonMineralConcentration
             // 
             this.radioButtonMineralConcentration.AutoSize = true;
-            this.radioButtonMineralConcentration.Location = new System.Drawing.Point(349, 7);
+            this.radioButtonMineralConcentration.Location = new System.Drawing.Point(349, 8);
             this.radioButtonMineralConcentration.Name = "radioButtonMineralConcentration";
             this.radioButtonMineralConcentration.Size = new System.Drawing.Size(128, 17);
             this.radioButtonMineralConcentration.TabIndex = 13;
@@ -208,14 +209,27 @@ namespace Nova.WinForms.Gui
             this.MapPanel.Cursor = System.Windows.Forms.Cursors.Cross;
             this.MapPanel.Location = new System.Drawing.Point(3, 30);
             this.MapPanel.Name = "MapPanel";
-            this.MapPanel.Size = new System.Drawing.Size(535, 620);
+            this.MapPanel.Size = new System.Drawing.Size(959, 620);
             this.MapPanel.TabIndex = 6;
             this.MapPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.StarMapMouse);
+            // 
+            // radioButtonNovaValue
+            // 
+            this.radioButtonNovaValue.AutoSize = true;
+            this.radioButtonNovaValue.Location = new System.Drawing.Point(278, 8);
+            this.radioButtonNovaValue.Name = "radioButtonNovaValue";
+            this.radioButtonNovaValue.Size = new System.Drawing.Size(52, 17);
+            this.radioButtonNovaValue.TabIndex = 15;
+            this.radioButtonNovaValue.TabStop = true;
+            this.radioButtonNovaValue.Text = "Value";
+            this.radioButtonNovaValue.UseVisualStyleBackColor = true;
+            this.radioButtonNovaValue.CheckedChanged += new System.EventHandler(this.radioButtonNovaValue_CheckedChanged);
             // 
             // StarMap
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.radioButtonNovaValue);
             this.Controls.Add(this.radioButtonSurfaceMinerals);
             this.Controls.Add(this.radioButtonMineralConcentration);
             this.Controls.Add(this.radioButtonGrowth);
@@ -229,7 +243,7 @@ namespace Nova.WinForms.Gui
             this.Controls.Add(this.zoomOut);
             this.Controls.Add(this.MapPanel);
             this.Name = "StarMap";
-            this.Size = new System.Drawing.Size(555, 670);
+            this.Size = new System.Drawing.Size(979, 670);
             this.selectItemMenu.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -253,5 +267,6 @@ namespace Nova.WinForms.Gui
         private System.Windows.Forms.RadioButton radioButtonGrowth;
         private System.Windows.Forms.RadioButton radioButtonMineralConcentration;
         private System.Windows.Forms.RadioButton radioButtonSurfaceMinerals;
+        private System.Windows.Forms.RadioButton radioButtonNovaValue;
     }
 }

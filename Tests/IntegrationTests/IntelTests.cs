@@ -78,7 +78,7 @@ namespace Nova.Tests.IntegrationTests
                     using (FileStream saveFileStream = new FileStream(saveFileName, FileMode.Open, FileAccess.Read))
                     {
                         xmldoc.Load(saveFileStream);
-                        loadedData = new Intel(xmldoc);
+                        loadedData = new Intel(xmldoc,"Test");
                     }
                 }
                 else
@@ -86,7 +86,7 @@ namespace Nova.Tests.IntegrationTests
                     // move to start of memory stream
                     memoryStream.Seek(0, SeekOrigin.Begin);
                     xmldoc.Load(memoryStream);
-                    loadedData = new Intel(xmldoc);
+                    loadedData = new Intel(xmldoc,"Test");
                 }
 
                 // test if it worked
@@ -155,7 +155,7 @@ namespace Nova.Tests.IntegrationTests
                     using (FileStream saveFileStream = new FileStream(saveFileName, FileMode.Open, FileAccess.Read))
                     {
                         xmldoc.Load(saveFileStream);
-                        loadedData = new Intel(xmldoc);
+                        loadedData = new Intel(xmldoc,"Test");
                     }
                 }
                 else
@@ -163,7 +163,7 @@ namespace Nova.Tests.IntegrationTests
                     // move to start of memory stream
                     memoryStream.Seek(0, SeekOrigin.Begin);
                     xmldoc.Load(memoryStream);
-                    loadedData = new Intel(xmldoc);
+                    loadedData = new Intel(xmldoc,"Test");
                 }
 
                 // test if it worked

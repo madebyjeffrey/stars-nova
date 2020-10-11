@@ -113,7 +113,7 @@ namespace Nova.Server.NewGame
                 }                
 
                 // Initialize clean data for them. 
-                EmpireData empireData = new EmpireData(true);
+                EmpireData empireData = new EmpireData(true, settings.RaceName);
                 empireData.Id = settings.PlayerNumber;
                 empireData.Race = serverState.AllRaces[settings.RaceName];
 
@@ -126,7 +126,7 @@ namespace Nova.Server.NewGame
                 // TODO: (priority 6) Set spent resources according to initial levels, instead of zero.
                 
                 // Load components!
-                empireData.AvailableComponents = new RaceComponents(empireData.Race, empireData.ResearchLevels);
+                empireData.AvailableComponents = new RaceComponents(empireData.Race, empireData.ResearchLevels,"INIT: "+ empireData.Race);
             }
             
             // Create initial relations.

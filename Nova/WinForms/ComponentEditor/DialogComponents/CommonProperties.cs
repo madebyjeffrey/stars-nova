@@ -34,7 +34,7 @@ namespace Nova.WinForms.ComponentEditor
     public partial class CommonProperties : UserControl
     {
         public event EventHandler ListBoxChanged;
-        private readonly AllComponents allComponents = new AllComponents();
+        private readonly AllComponents allComponents = new AllComponents(true,"Common");
 
         /// <Summary>
         /// Initializes a new instance of the CommonProperties class.

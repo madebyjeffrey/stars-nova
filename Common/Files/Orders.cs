@@ -50,7 +50,7 @@ namespace Nova.Common
         /// </summary>
         public List<long> DeletedDesigns = new List<long>(); 
 
-        public EmpireData EmpireStatus = new EmpireData(false);        // Player relations, battle orders & turn # (turn # so we can check these orders are for the right year.) and research %
+        public EmpireData EmpireStatus = new EmpireData(false,"Orders");        // Player relations, battle orders & turn # (turn # so we can check these orders are for the right year.) and research %
         public int TechLevel;                               // This is the sum of all the player's tech levels, used for victory checks.
         
         /// <summary>
@@ -117,7 +117,7 @@ namespace Nova.Common
                             break;
 
                         case "empiredata":
-                            EmpireStatus = new EmpireData(xmlnode);
+                            EmpireStatus = new EmpireData(xmlnode,"Orders");
                             break;
 
                         default: break;
