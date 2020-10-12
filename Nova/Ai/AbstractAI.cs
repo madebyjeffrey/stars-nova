@@ -38,7 +38,7 @@ namespace Nova.Ai
         {
             raceName = commandArguments[CommandArguments.Option.RaceName];
             turnNumber = int.Parse(commandArguments[CommandArguments.Option.Turn], System.Globalization.CultureInfo.InvariantCulture);
-            clientState = new ClientData("AI "+ raceName);
+            clientState = new ClientData("A. I.  "+ raceName);
             clientState.Initialize(commandArguments.ToArray()); 
         }
 

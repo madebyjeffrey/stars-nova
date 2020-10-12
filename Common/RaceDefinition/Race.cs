@@ -251,6 +251,7 @@ namespace Nova.Common
         /// <returns>The normalized habitability of the star (-1 to +1).</returns>
         public double HabitalValue(StarIntel report)
         {
+            if (report.Year == Global.Unset) return -1;
             Star star = new Star();
             star.Gravity = report.Gravity;
             star.Radiation = report.Radiation;

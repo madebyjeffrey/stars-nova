@@ -87,14 +87,17 @@ namespace Nova.Ai
                 clearProductionCommand.ApplyToState(clientState.EmpireState);
             }
 
+            int earlyProductionDivisor = 1; // Rush factories for 1st 8 years
+            if (clientState.EmpireState.TurnYear > 2008) earlyProductionDivisor = 3; //then build some scouts
+            if (clientState.EmpireState.TurnYear > 2015) earlyProductionDivisor = 2;
             // build factories (limited by Germanium, and don't want to use it all)
             if (this.planet.ResourcesOnHand.Germanium > 50)
             {
                 int factoryBuildCostGerm = clientState.EmpireState.Race.HasTrait("CF") ? 3 : 4;
                 int factoriesToBuild = (int)((this.planet.ResourcesOnHand.Germanium - 50) / factoryBuildCostGerm);
-                if (factoriesToBuild > (this.planet.GetOperableFactories() - this.planet.Factories))
+                if (factoriesToBuild > (this.planet.GetOperableFactories()/ earlyProductionDivisor - this.planet.Factories))
                 {
-                    factoriesToBuild = this.planet.GetOperableFactories() - this.planet.Factories;
+                    factoriesToBuild = this.planet.GetOperableFactories()/ earlyProductionDivisor - this.planet.Factories;
                 }
 
                 if (factoriesToBuild > 0)
@@ -111,7 +114,7 @@ namespace Nova.Ai
             }
 
             // build mines
-            int maxMines = this.planet.GetOperableMines();
+            int maxMines = this.planet.GetOperableMines()/ earlyProductionDivisor;
             if (this.planet.Mines < maxMines)
             {
                 ProductionOrder mineOrder = new ProductionOrder(maxMines - this.planet.Mines, new MineProductionUnit(clientState.EmpireState.Race), false);
@@ -137,7 +140,7 @@ namespace Nova.Ai
                 if (defenseCommand.IsValid(clientState.EmpireState))
                 {
                     defenseCommand.ApplyToState(clientState.EmpireState);
-                    clientState.Commands.Push(defenseCommand);
+                    //clientState.Commands.Push(defenseCommand); 
                 }
             }
         }
@@ -161,6 +164,7 @@ namespace Nova.Ai
         /// <returns>The updated productionIndex.</returns>
         private int BuildScout(int productionIndex)
         {
+
             if (this.planet.GetResourceRate() > DefaultAIPlanner.LowProduction && this.aiPlan.ScoutCount < DefaultAIPlanner.EarlyScouts)
             {
                 if (this.aiPlan.ScoutDesign != null)

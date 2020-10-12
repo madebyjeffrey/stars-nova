@@ -247,5 +247,9 @@ namespace Nova.Common.DataStructures
 
             return xmlelPoint;
         }
+        public double distanceTo(NovaPoint other)
+        {
+            return Math.Sqrt((other.X - X) * (other.Y - Y) * (other.X - X) * (other.Y - Y));
+        }
     }
 }

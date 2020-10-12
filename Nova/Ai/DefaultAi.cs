@@ -149,9 +149,23 @@ namespace Nova.Ai
             {
                 Fleet colonyFleet = colonyShipsFleets[0];
                 // check if there is any good star to colonize
+                foreach (StarIntel report in turnData.EmpireState.StarReports.Values) //Let's cherry pick nice stars first!
+                {
+                    if (report.Year != Global.Unset && clientState.EmpireState.Race.HabitalValue(report) > 0.5 && report.Owner == Global.Nobody && report.mineralRich() && fleetAIs[colonyFleet.Id].canReach(report))
+                    {
+                        // send fleet to colonise
+                        fleetAIs[colonyFleet.Id].Colonise(report);
+                        colonyShipsFleets.RemoveAt(0);
+                        if (colonyShipsFleets.Count == 0)
+                        {
+                            break;
+                        }
+                        colonyFleet = colonyShipsFleets[0];
+                    }
+                }
                 foreach (StarIntel report in turnData.EmpireState.StarReports.Values)
                 {
-                    if (clientState.EmpireState.Race.HabitalValue(report) > 0 && report.Owner == Global.Nobody)
+                    if (report.Year != Global.Unset && clientState.EmpireState.Race.HabitalValue(report) > 0 && report.Owner == Global.Nobody)
                     {
                         // send fleet to colonise
                         fleetAIs[colonyFleet.Id].Colonise(report);

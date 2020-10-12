@@ -165,7 +165,14 @@ namespace Nova.Common
             HasFleetsInOrbit        = false;
             Starbase                = null;            
         }
-                
+ 
+        
+
+
+        public bool mineralRich()
+        {
+            return (MineralConcentration.Ironium > 40) && (MineralConcentration.Boranium > 30) && (MineralConcentration.Germanium > 40);
+        }
         /// <summary>
         /// Returns the name of the Star.
         /// </summary>

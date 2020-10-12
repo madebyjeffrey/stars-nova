@@ -479,7 +479,7 @@ namespace Nova.Server
                     {
                         fleet.InOrbit = target;
                         serverState.AllEmpires.TryGetValue(target.Owner, out reciever);
-                        availableTime = 0; //In Stars! the fleet looses the rest of the turn as it enters orbit and scans the Star
+                        if (availableTime != 1.0) availableTime = 0; //In Stars! the fleet looses the rest of the turn as it enters orbit and scans the Star
                     }
                     
                     // -------------------------

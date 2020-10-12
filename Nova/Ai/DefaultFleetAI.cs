@@ -64,43 +64,55 @@ namespace Nova.Ai
             bool missionAccepted = false;
 
             // Find a star to scout
-            StarIntel starToScout = CloesestStar(this.fleet, excludedStars);
+            StarIntel starToScout = ClosestStar(this.fleet, excludedStars);
             if (starToScout != null)
             {
                 // Do we need fuel first?
-                double fuelRequired = 0.0;
-                Fleet nearestFuel = ClosestFuel(fleet);
-                if (!fleet.CanRefuel)
-                {
-                    // Can not make fuel, so how much fuel is required to scout and then refuel?
-                    if (nearestFuel != null)
-                    {
-                        int bestWarp = 6; // FIXME (priority 4) - what speed to scout at?
-                        double bestSpeed = bestWarp * bestWarp;
-                        double speedSquared = bestSpeed * bestSpeed;
-                        double fuelConsumption = fleet.FuelConsumption(bestWarp, clientState.EmpireState.Race);
-                        double distanceSquared = PointUtilities.DistanceSquare(fleet.Position, starToScout.Position); // to the stars
-                        distanceSquared += PointUtilities.DistanceSquare(starToScout.Position, nearestFuel.Position); // and back to fuel (minimum)
-                        double time = Math.Sqrt(distanceSquared / speedSquared);
-                        fuelRequired = time * fuelConsumption;
-                    }
-                    else
-                    {
-                        // OMG there is no fuel! - just keep scouting then?
-                    }
-                }
-
-
-                if (fleet.FuelAvailable > fuelRequired)
-                {
-                    // Fuel is no problem
+                if ((fleet.FreeWarpSpeed > 1) || (fleet.FuelAvailable > 100))
+                { // Scout can make fuel or has heaps of fuel available so just keep scouting
                     SendFleet(starToScout, fleet, new NoTask());
                     missionAccepted = true;
                 }
                 else
-                {
-                    // Refuel before scouting further
-                    SendFleet(nearestFuel, fleet, new NoTask());
+                {// Scout can't make fuel
+                    double fuelRequired = 0.0;
+                    Fleet nearestFuel = ClosestFuel(fleet);
+                    if (!fleet.CanRefuel)
+                    {
+                        // Can not make fuel, so how much fuel is required to scout and then refuel?
+                        if (nearestFuel != null)
+                        {
+                            int bestWarp = fleet.SlowestEngine;
+                            double bestSpeed = bestWarp * bestWarp;
+                            double speedSquared = bestSpeed * bestSpeed;
+                            double fuelConsumption = fleet.FuelConsumption(bestWarp, clientState.EmpireState.Race);
+                            double distanceSquared = PointUtilities.DistanceSquare(fleet.Position, starToScout.Position); // to the stars
+                            distanceSquared += PointUtilities.DistanceSquare(starToScout.Position, nearestFuel.Position); // and back to fuel (minimum)
+                            double time = Math.Sqrt(distanceSquared / speedSquared);
+                            fuelRequired = time * fuelConsumption;
+                        }
+                        else
+                        {
+                            // OMG there is no fuel! - just keep scouting then?
+                        }
+                    }
+
+
+                    if (fleet.FuelAvailable > fuelRequired)
+                    {
+                        // Fuel is no problem
+                        fleet.Speed = fleet.SlowestEngine;
+                        if (fleet.Speed > 1) fleet.Speed--;
+
+
+                        SendFleet(starToScout, fleet, new NoTask());
+                        missionAccepted = true;
+                    }
+                    else
+                    {
+                        // Refuel before scouting further
+                        SendFleet(nearestFuel, fleet, new NoTask());
+                    }
                 }
             }
 
@@ -121,7 +133,7 @@ namespace Nova.Ai
         public void Colonise(StarIntel targetStar)
         {
             // ensure we take some colonists, maybe some Germainium
-            if (this.fleet.Cargo.ColonistsInKilotons < 1)
+            if (this.fleet.Cargo.ColonistsInKilotons < 10)
             {
                 if (this.fleet.InOrbit != null && this.fleet.InOrbit.Owner == this.fleet.Owner)
                 {
@@ -142,7 +154,7 @@ namespace Nova.Ai
                     // but do not take the Star below 250,000 (max % growth)
                     colonistsToLoadKt = System.Math.Min(colonistsToLoadKt, (ourStar.Colonists - 250000) / Nova.Common.Global.ColonistsPerKiloton);
                     // ensure we load at least 1 kT of colonists
-                    colonistsToLoadKt = System.Math.Max(colonistsToLoadKt, 1);
+                    colonistsToLoadKt = System.Math.Max(colonistsToLoadKt, 10);
 
                     // load up
                     CargoTask wpTask = new CargoTask();
@@ -153,7 +165,7 @@ namespace Nova.Ai
                     Waypoint wp = new Waypoint();
                     wp.Task = wpTask;
                     wp.Position = ourStar.Position;
-                    wp.WarpFactor = this.fleet.FreeWarpSpeed;
+                    wp.WarpFactor = this.fleet.SlowestEngine;
                     wp.Destination = ourStar.Name;
 
                     WaypointCommand loadCommand = new WaypointCommand(CommandMode.Add, wp, this.fleet.Key);
@@ -179,7 +191,7 @@ namespace Nova.Ai
         /// </summary>
         /// <param name="fleet"></param>
         /// <returns></returns>
-        private StarIntel CloesestStar(Fleet fleet, List<StarIntel> excludedStars)
+        private StarIntel ClosestStar(Fleet fleet, List<StarIntel> excludedStars)
         {
             StarIntel target = null;
             double distance = double.MaxValue;
@@ -197,6 +209,13 @@ namespace Nova.Ai
             return target;
         }
 
+        public bool canReach(StarIntel destination)
+        {
+            double destinationDistance = fleet.distanceTo(destination);
+            double yearsOfTravel = destinationDistance / (this.fleet.SlowestEngine * this.fleet.SlowestEngine);
+            double fuelRequired = fleet.FuelConsumptionWhenFull(fleet.SlowestEngine, clientState.EmpireState.Race) * yearsOfTravel;
+            return (fleet.FuelAvailable > fuelRequired);
+        }
         /// <summary>
         /// Return the closest refuelling point.
         /// </summary>
@@ -250,6 +269,7 @@ namespace Nova.Ai
             Waypoint w = new Waypoint();
             w.Position = position;
             w.Destination = position.ToString();
+            w.WarpFactor = fleet.SlowestEngine;
             w.Task = task;
 
             WaypointCommand command = new WaypointCommand(CommandMode.Add, w, fleet.Key);
@@ -263,6 +283,7 @@ namespace Nova.Ai
             w.Position = target.Position;
             w.Destination = target.Name;
             w.Task = task;
+            w.WarpFactor = fleet.SlowestEngine;
 
             WaypointCommand command = new WaypointCommand(CommandMode.Add, w, fleet.Key);
             command.ApplyToState(clientState.EmpireState);
@@ -275,6 +296,7 @@ namespace Nova.Ai
             w.Position = target.Position;
             w.Destination = target.Name;
             w.Task = task;
+            w.WarpFactor = fleet.SlowestEngine;
 
             WaypointCommand command = new WaypointCommand(CommandMode.Add, w, fleet.Key);
             command.ApplyToState(clientState.EmpireState);
@@ -285,7 +307,7 @@ namespace Nova.Ai
         {
             Waypoint w = new Waypoint();
             w.Position = star.Position;
-
+            w.WarpFactor = fleet.SlowestEngine;
             w.Destination = star.Name;
             w.Task = task;
 

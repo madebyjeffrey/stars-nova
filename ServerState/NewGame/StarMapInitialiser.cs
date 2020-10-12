@@ -129,6 +129,7 @@ namespace Nova.Server.NewGame
             AllComponents components = new AllComponents(true, "Race = "+ empire.Race.Name);
             RaceComponents raceComponents = new RaceComponents("Race = " + empire.Race.Name);
             raceComponents.DetermineRaceComponents(empire.Race, empire.ResearchLevels);
+            Component fuelPod = null;
             Component colonyShipHull = null, scoutHull = null;            
             Component colonizer = null;
             Component scaner = components.Fetch("Bat Scanner");
@@ -202,6 +203,11 @@ namespace Nova.Server.NewGame
                 else if (module.ComponentType == "Scanner")
                 {
                     module.AllocatedComponent = scaner;
+                    module.ComponentCount = 1;
+                }
+                else if ((module.ComponentType == "General Purpose") && (fuelPod != null))
+                {
+                    module.AllocatedComponent = fuelPod;
                     module.ComponentCount = 1;
                 }
             }

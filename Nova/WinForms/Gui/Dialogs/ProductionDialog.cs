@@ -305,6 +305,10 @@ namespace Nova.WinForms.Gui
             ProductionOrder productionOrder = new ProductionOrder(quantity, productionUnit, false);
             
             AddProduction(productionOrder);
+            int rowSelected = queueList.SelectedIndices[0];
+            queueList.SelectedIndices.Clear();
+            queueList.Items[rowSelected-1].Selected = true;
+
         }
 
         /// <Summary>

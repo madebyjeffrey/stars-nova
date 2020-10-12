@@ -622,7 +622,37 @@ namespace Nova.Common
 
             foreach (ShipToken token in tokens.Values)
             {
-                fuelConsumption += token.Design.FuelConsumption(warpFactor, race, (int)(token.Design.CargoCapacity * cargoFullness)); 
+                fuelConsumption += token.Design.FuelConsumption(warpFactor, race, (int)(token.Design.CargoCapacity * cargoFullness));
+            }
+
+            return fuelConsumption;
+        }
+        /// <summary>
+        /// Return the fuel consumption (mg per year) of the fleet at the specified
+        /// warp factor if it were full.
+        /// </summary>
+        /// <param name="warpFactor">The warp speed of the fleet.</param>
+        /// <param name="race">The race this fleet belongs too.</param>
+        /// <returns>The rate of fuel consumption in mg / year.</returns>
+        public double FuelConsumptionWhenFull(int warpFactor, Race race)
+        {
+            double fuelConsumption = 0;
+
+            // Work out how full of cargo the fleet is.
+            double cargoFullness;
+            if (TotalCargoCapacity == 0)
+            {
+                cargoFullness = 0;
+            }
+            else
+            {
+                cargoFullness = 1.0;
+            }
+
+
+            foreach (ShipToken token in tokens.Values)
+            {
+                fuelConsumption += token.Design.FuelConsumption(warpFactor, race, (int)(token.Design.CargoCapacity * cargoFullness));
             }
 
             return fuelConsumption;

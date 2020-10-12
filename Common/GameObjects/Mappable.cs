@@ -125,5 +125,10 @@ namespace Nova.Common
             xmlelMap.AppendChild(Position.ToXml(xmldoc));
             return xmlelMap;
         }
+
+        public double distanceTo(Mappable other)
+        {
+            return other.Position.distanceTo(Position);
+        }
     }
 }
