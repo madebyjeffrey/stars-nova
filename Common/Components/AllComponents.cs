@@ -106,8 +106,19 @@ namespace Nova.Common.Components
             
             return null;
         }
-        
-        
+
+        public Component FetchBest(string componentName)
+        {
+            if (Contains(componentName))
+            {
+                return new Component(components[componentName]);
+            }
+
+            return null;
+        }
+
+
+
         /// <summary>
         /// Removes and returns a Component.
         /// </summary>

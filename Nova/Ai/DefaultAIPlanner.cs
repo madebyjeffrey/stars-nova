@@ -125,6 +125,20 @@ namespace Nova.Ai
                             colonizerDesign = design;
                         }
                     }
+                    foreach (ShipDesign design in clientState.EmpireState.Designs.Values)
+                    {
+                        if (design.Name.Contains("Large Santa Maria"))
+                        {
+                            colonizerDesign = design;
+                        }
+                    }
+                    foreach (ShipDesign design in clientState.EmpireState.Designs.Values)
+                    {
+                        if (design.Name.Contains("Super Santa Maria"))
+                        {
+                            colonizerDesign = design;
+                        }
+                    }
                 }
                 return colonizerDesign;
             }

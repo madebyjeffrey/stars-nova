@@ -68,7 +68,7 @@ namespace Nova.Common.Components
                     }
                     else
                     {
-                        return i ;
+                        return i - 1;
                     }
                 }
                 return 0;

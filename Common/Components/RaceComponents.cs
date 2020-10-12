@@ -65,6 +65,31 @@ namespace Nova.Common.Components
             DetermineRaceComponents(newRace, newTech);
         }
 
+
+        public Component GetBestEngine(Component hullType,bool preferWarp = true)
+        {
+            List<Component> suitableEngines = new List<Component>();
+            foreach (Component component in this.Values)
+                if (component.Type == ItemType.Engine)
+                {
+                    if (component.Properties.ContainsKey("Hull Affinity"))
+                    {
+                        HullAffinity hullAffinity = component.Properties["Hull Affinity"] as HullAffinity;
+                        if (hullAffinity.Value == hullType.Name) suitableEngines.Add(component);
+                    }
+                    else suitableEngines.Add(component);
+                }
+            Component best = null;
+            if (suitableEngines.Count > 0) best = suitableEngines[0];
+            foreach (Component engine in suitableEngines)
+            {
+                if (preferWarp && ((engine.Properties["Engine"] as Engine).FreeWarpSpeed > (best.Properties["Engine"] as Engine).FreeWarpSpeed)) best = engine;
+                if (preferWarp && ((engine.Properties["Engine"] as Engine).FreeWarpSpeed == (best.Properties["Engine"] as Engine).FreeWarpSpeed) && ((engine.Properties["Engine"] as Engine).OptimumSpeed > (best.Properties["Engine"] as Engine).OptimumSpeed)) best = engine;
+                if (!preferWarp && ((engine.Properties["Engine"] as Engine).OptimumSpeed > (best.Properties["Engine"] as Engine).OptimumSpeed)) best = engine;  
+            }
+            return best;
+
+        }
         /// <summary>
         /// Updates the collection for the given race and tech level.
         /// Note this does not remove any existing components from the collection.

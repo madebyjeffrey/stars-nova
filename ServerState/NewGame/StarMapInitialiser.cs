@@ -127,7 +127,8 @@ namespace Nova.Server.NewGame
         {
             // Read components data and create some basic stuff
             AllComponents components = new AllComponents(true, "Race = "+ empire.Race.Name);
-            
+            RaceComponents raceComponents = new RaceComponents("Race = " + empire.Race.Name);
+            raceComponents.DetermineRaceComponents(empire.Race, empire.ResearchLevels);
             Component colonyShipHull = null, scoutHull = null;            
             Component colonizer = null;
             Component scaner = components.Fetch("Bat Scanner");
@@ -136,21 +137,22 @@ namespace Nova.Server.NewGame
             Component laser = components.Fetch("Laser");
             Component torpedo = components.Fetch("Alpha Torpedo");
 
-            Component starbaseHull = components.Fetch("Space Station");
-            Component engine = components.Fetch("Quick Jump 5");
             Component colonyShipEngine = null;
-
+            Component starbaseHull = components.Fetch("Space Station");
             if (empire.Race.Traits.Primary.Code != "HE")
             {
                 colonyShipHull = components.Fetch("Colony Ship");
             }
             else
             {
-                colonyShipEngine = components.Fetch("Settler's Delight");
                 colonyShipHull = components.Fetch("Mini-Colony Ship");
             }
-            
+            colonyShipEngine = raceComponents.GetBestEngine(colonyShipHull, true);
             scoutHull = components.Fetch("Scout");
+            Component engine = raceComponents.GetBestEngine(scoutHull, true);
+
+
+
 
             if (empire.Race.HasTrait("AR") == true)
             {
@@ -162,7 +164,7 @@ namespace Nova.Server.NewGame
             }
 
 
-            if (colonyShipEngine == null)
+            if (colonyShipEngine == null) //should never be true
             {
                 colonyShipEngine = engine;
             }
@@ -194,7 +196,7 @@ namespace Nova.Server.NewGame
             {
                 if (module.ComponentType == "Engine")
                 {
-                    module.AllocatedComponent = engine;
+                    module.AllocatedComponent = engine as Component;
                     module.ComponentCount = 1;
                 }
                 else if (module.ComponentType == "Scanner")
