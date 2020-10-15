@@ -306,14 +306,21 @@ namespace Nova.WinForms.Gui
             {
                 if (radioButtonGrowth.Checked)
                 {
-                    DrawStarValue(g, report, clientState.EmpireState.Race, clientState.EmpireState.gravityModCapability, clientState.EmpireState.temperatureModCapability, clientState.EmpireState.radiationModCapability);
+                    DrawStarValueNova(g, report, clientState.EmpireState.Race, clientState.EmpireState.gravityModCapability, clientState.EmpireState.temperatureModCapability, clientState.EmpireState.radiationModCapability);
                     DrawStarMineralConcentration(g, report);
                 }
-                if (radioButtonMineralConcentration.Checked) DrawStarMineralConcentration(g, report);
-                if (radioButtonNovaValue.Checked) DrawStarValueNova(g, report, clientState.EmpireState.Race, clientState.EmpireState.gravityModCapability, clientState.EmpireState.temperatureModCapability, clientState.EmpireState.radiationModCapability);
+                if (radioButtonMineralConcentration.Checked)
+                {
+                    DrawStarNormal(g, report);
+                    DrawStarMineralConcentration(g, report);
+                }
+                if (radioButtonNovaValue.Checked) DrawStarValue(g, report, clientState.EmpireState.Race, clientState.EmpireState.gravityModCapability, clientState.EmpireState.temperatureModCapability, clientState.EmpireState.radiationModCapability);
                 if (radioButtonNormal.Checked) DrawStarNormal(g, report);
-                if (radioButtonMineralConcentration.Checked) DrawStarMineralConcentration(g, report);
-                if (radioButtonSurfaceMinerals.Checked) DrawStarSurfaceMinerals(g, report);
+                if (radioButtonSurfaceMinerals.Checked)
+                {
+                    DrawStarNormal(g, report);
+                    DrawStarSurfaceMinerals(g, report);
+                }
                 DrawOrbitingFleets(g, report);
             }
 
@@ -400,18 +407,18 @@ namespace Nova.WinForms.Gui
         {
             g.FillPie(
                 brushMin,
-                position.X - (int)(minRadius * zoomFactor / 40),
-                position.Y - (int)(minRadius * zoomFactor / 40),
-                (int)(minRadius * zoomFactor / 20) + 1,
-                (int) (minRadius * zoomFactor / 20) + 1,
+                position.X - (int)(minRadius * zoomFactor / 40.0)+1,
+                position.Y - (int)(minRadius * zoomFactor / 40.0),
+                (int)(minRadius * zoomFactor / 20.0),
+                (int) (minRadius * zoomFactor / 20.0),
                 90,
                 180);
             g.FillPie(
                 brushMax,
-                position.X - (int)(maxRadius * zoomFactor / 40),
-                position.Y - (int)(maxRadius * zoomFactor / 40),
-                (int)(maxRadius * zoomFactor / 20) + 1,
-                (int)(maxRadius * zoomFactor / 20) + 1,
+                position.X - (int)(maxRadius * zoomFactor / 40.0),
+                position.Y - (int)(maxRadius * zoomFactor / 40.0),
+                (int)(maxRadius * zoomFactor / 20.0),
+                (int)(maxRadius * zoomFactor / 20.0),
                 270,
                 180);
         }
@@ -490,14 +497,18 @@ namespace Nova.WinForms.Gui
         /// owned by the current player are always up-to-date). 
         /// </remarks>
         /// <param name="Star">The Star sytem to draw.</param>
-        private void DrawStarValue(Graphics g, StarIntel report,Race race, int gravityModCapability, int temperatureModCapability, int radiationModCapability)
+        private void DrawStarValueNova(Graphics g, StarIntel report,Race race, int gravityModCapability, int temperatureModCapability, int radiationModCapability)
         {
             NovaPoint position = LogicalToDevice(report.Position);
             int minValue = 2;
             int maxValue = 2;
             Brush starBrushMin = Brushes.White;
             Brush starBrushMax = Brushes.White;
-            if (report.Year > Global.Unset)
+            int size = 2;
+            Brush starBrush = Brushes.White;
+            if (report.Year == Global.Unset) FillCircle(g, starBrush, (Point)position, size);
+
+            else
             {
                 minValue = report.MinValue(race);
                 maxValue = report.MaxValue(race, gravityModCapability, temperatureModCapability, radiationModCapability);
@@ -505,12 +516,12 @@ namespace Nova.WinForms.Gui
                 else starBrushMin = Brushes.Green;
                 if (maxValue < 0) starBrushMax = Brushes.Red;
                 else starBrushMax = Brushes.Green;
+                FillCircleMinMax(g, starBrushMin, starBrushMax ,(Point)position, Math.Abs( minValue), Math.Abs(maxValue));
             }
 
 
 
 
-            FillCircleMinMax(g, starBrushMin, starBrushMax ,(Point)position, Math.Abs( minValue), Math.Abs(maxValue));
 
             // If the Star name display is turned on then add the name
 
@@ -523,35 +534,41 @@ namespace Nova.WinForms.Gui
         }
 
 
-        private void DrawStarValueNova(Graphics g, StarIntel report, Race race, int gravityModCapability, int temperatureModCapability, int radiationModCapability)
+        private void DrawStarValue(Graphics g, StarIntel report, Race race, int gravityModCapability, int temperatureModCapability, int radiationModCapability)
         {
             NovaPoint position = LogicalToDevice(report.Position);
             int minValue = 2;
             int maxValue = 2;
             Brush starBrushMooshedTogether = Brushes.White;
 
-            if (report.Year > Global.Unset)
+            int size = 2;
+            Brush starBrush = Brushes.White;
+
+            // Bigger symbol for explored stars.
+
+            if (report.Year == Global.Unset) FillCircle(g, starBrush, (Point)position, size);
+        
+
+            else
             {
                 minValue = report.MinValue(race);
                 maxValue = report.MaxValue(race, gravityModCapability, temperatureModCapability, radiationModCapability);
                 if (minValue >= 0)
                 {
                     starBrushMooshedTogether = Brushes.Green;
-                    FillCircleMinMax(g, starBrushMooshedTogether, starBrushMooshedTogether,(Point)position, Math.Abs(minValue), Math.Abs(minValue));
                 }
 
 
                 if (maxValue <= 0)
                 {
                     starBrushMooshedTogether = Brushes.Red;
-                    FillCircleMinMax(g, starBrushMooshedTogether, starBrushMooshedTogether,(Point)position, Math.Abs(maxValue), Math.Abs(maxValue));
                 }
 
                 if ((maxValue > 0) && (minValue < 0))
                 {
                     starBrushMooshedTogether = Brushes.Yellow;
-                    FillCircleMinMax(g, starBrushMooshedTogether, starBrushMooshedTogether,(Point)position, Math.Abs(maxValue), Math.Abs(maxValue));
                 }
+                FillCircleMinMax(g, starBrushMooshedTogether, starBrushMooshedTogether,(Point)position, Math.Abs(maxValue), Math.Abs(maxValue));
 
             }
 
@@ -621,41 +638,9 @@ namespace Nova.WinForms.Gui
         private void DrawStarMineralConcentration(Graphics g, StarIntel report)
         {
             NovaPoint position = LogicalToDevice(report.Position);
-            int size = 2;
-            Brush starBrush = Brushes.White;
 
-            // Bigger symbol for explored stars.
-
-            if (report.Year > Global.Unset)
-            {
-                size = 4;
-            }
-
-            // Our stars are greenish, other's are red, unknown or uncolonised
-            // stars are white.
-
-            if (report.Owner == clientState.EmpireState.Id)
-            {
-                starBrush = Brushes.GreenYellow;
-            }
-            else
-            {
-                if (report.Owner != Global.Nobody)
-                {
-                    starBrush = Brushes.Red;
-                }
-            }
-
-            FillCircle(g, starBrush, (Point)position, size);
 
             // If the Star name display is turned on then add the name
-
-            if (this.displayStarNames && zoomFactor > 0.5)
-            {
-                StringFormat format = new StringFormat();
-                format.Alignment = StringAlignment.Center;
-                g.DrawString(report.Name, this.nameFont, Brushes.White, position.X, position.Y + 5, format);
-            }
 
             Brush mineralBrush = Brushes.Blue;
             FillRectangle(g, mineralBrush, (Point)position, report.MineralConcentration.Ironium, -3);
@@ -669,41 +654,7 @@ namespace Nova.WinForms.Gui
         private void DrawStarSurfaceMinerals(Graphics g, StarIntel report)
         {
             NovaPoint position = LogicalToDevice(report.Position);
-            int size = 2;
-            Brush starBrush = Brushes.White;
 
-            // Bigger symbol for explored stars.
-
-            if (report.Year > Global.Unset)
-            {
-                size = 4;
-            }
-
-            // Our stars are greenish, other's are red, unknown or uncolonised
-            // stars are white.
-
-            if (report.Owner == clientState.EmpireState.Id)
-            {
-                starBrush = Brushes.GreenYellow;
-            }
-            else
-            {
-                if (report.Owner != Global.Nobody)
-                {
-                    starBrush = Brushes.Red;
-                }
-            }
-
-            FillCircle(g, starBrush, (Point)position, size);
-
-            // If the Star name display is turned on then add the name
-
-            if (this.displayStarNames && zoomFactor > 0.5)
-            {
-                StringFormat format = new StringFormat();
-                format.Alignment = StringAlignment.Center;
-                g.DrawString(report.Name, this.nameFont, Brushes.White, position.X, position.Y + 5, format);
-            }
 
             Brush mineralBrush = Brushes.Blue;
             if (report.ResourcesOnHand != null)

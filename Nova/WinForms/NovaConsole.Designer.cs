@@ -90,6 +90,7 @@ namespace Nova.WinForms.Console
             this.turnIn});
             this.playerList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.playerList.FullRowSelect = true;
+            this.playerList.HideSelection = false;
             this.playerList.Location = new System.Drawing.Point(3, 16);
             this.playerList.MultiSelect = false;
             this.playerList.Name = "playerList";

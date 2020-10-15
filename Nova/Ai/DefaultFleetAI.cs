@@ -216,6 +216,12 @@ namespace Nova.Ai
             double fuelRequired = fleet.FuelConsumptionWhenFull(fleet.SlowestEngine, clientState.EmpireState.Race) * yearsOfTravel;
             return (fleet.FuelAvailable > fuelRequired);
         }
+        public double maxDistance()
+        {
+            double distancePerYear =  (this.fleet.SlowestEngine * this.fleet.SlowestEngine);
+            double fuelPerYear = fleet.FuelConsumptionWhenFull(fleet.SlowestEngine, clientState.EmpireState.Race);
+            return (fleet.FuelAvailable * fuelPerYear * distancePerYear);
+        }
         /// <summary>
         /// Return the closest refuelling point.
         /// </summary>

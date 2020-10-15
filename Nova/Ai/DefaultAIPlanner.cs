@@ -97,13 +97,19 @@ namespace Nova.Ai
             {
                 if (scoutDesign == null)
                 {
+                    ShipDesign longRangeScout = null;
                     foreach (ShipDesign design in clientState.EmpireState.Designs.Values)
                     {
                         if (design.Name.Contains("Scout"))
                         {
                             scoutDesign = design;
                         }
+                        if (design.Name.Contains("Long Range Scout"))
+                        {
+                            scoutDesign = longRangeScout;
+                        }
                     }
+                    if (longRangeScout != null) scoutDesign = longRangeScout;
                 }
                 return scoutDesign;
             }
@@ -127,14 +133,14 @@ namespace Nova.Ai
                     }
                     foreach (ShipDesign design in clientState.EmpireState.Designs.Values)
                     {
-                        if (design.Name.Contains("Large Santa Maria"))
+                        if (design.Name.Contains("Medium Santa Maria"))
                         {
                             colonizerDesign = design;
                         }
                     }
                     foreach (ShipDesign design in clientState.EmpireState.Designs.Values)
                     {
-                        if (design.Name.Contains("Super Santa Maria"))
+                        if (design.Name.Contains("Large Santa Maria"))
                         {
                             colonizerDesign = design;
                         }
@@ -291,7 +297,7 @@ namespace Nova.Ai
             {
                 this.ColonizerCount++;
             }
-            else if (fleet.Name.Contains("Scout"))
+            else if (fleet.Name.Contains("Scout")|| (fleet.Name.Contains("Long Range Scout")))
             {
                 this.ScoutCount++;
             }

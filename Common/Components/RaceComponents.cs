@@ -90,6 +90,46 @@ namespace Nova.Common.Components
             return best;
 
         }
+        public Component GetBestScanner(bool preferPenetrating = true)
+        {
+            List<Component> possibleScanner = new List<Component>();
+            foreach (Component component in this.Values)
+                if (component.Type == ItemType.Scanner)
+                {
+                    possibleScanner.Add(component);
+                }
+            Component best = null;
+            if (possibleScanner.Count > 0) best = possibleScanner[0];
+            foreach (Component scanner in possibleScanner)
+            {
+                if (preferPenetrating && ((scanner.Properties["Scanner"] as Scanner).PenetratingScan > (best.Properties["Scanner"] as Scanner).PenetratingScan)) best = scanner;
+                if (preferPenetrating && ((scanner.Properties["Scanner"] as Scanner).PenetratingScan == (best.Properties["Scanner"] as Scanner).PenetratingScan) && ((scanner.Properties["Scanner"] as Scanner).NormalScan > (best.Properties["Scanner"] as Scanner).NormalScan)) best = scanner;
+                if (!preferPenetrating && ((scanner.Properties["Scanner"] as Scanner).NormalScan > (best.Properties["Scanner"] as Scanner).NormalScan)) best = scanner;
+            }
+            return best;
+
+        }
+        public Component GetBestFuelTank()
+        {
+            List<Component> possibleTank = new List<Component>();
+            foreach (Component component in this.Values)
+                if ((component.Type == ItemType.Mechanical) && component.Name.Contains("Fuel Tank"))
+                {
+                    possibleTank.Add(component);
+                }
+            Component best = null;
+            if (possibleTank.Count > 0) best = possibleTank[0];
+            foreach (Component tank in possibleTank)
+            {
+                if ((tank.Properties["Fuel"] as Fuel).Capacity > (best.Properties["Fuel"] as Fuel).Capacity) best = tank;
+            }
+            return best;
+
+        }
+
+
+
+
         /// <summary>
         /// Updates the collection for the given race and tech level.
         /// Note this does not remove any existing components from the collection.

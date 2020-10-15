@@ -200,6 +200,7 @@ namespace Nova.Server
             {
                 if (serverState.AllCommands.ContainsKey(empire.Id))
                 {                
+                    new SplitFleetStep().Process(serverState);   //process splits first so the new fleet is created before we try to add the waypont orders for that new fleet 
                     while (serverState.AllCommands[empire.Id].Count > 0) // Assume orders are executed chronologically then newly created fleets will be available when their waypoint tasks are executed
                     {
                         ICommand command = serverState.AllCommands[empire.Id].Pop();
@@ -207,7 +208,6 @@ namespace Nova.Server
                         if (command.IsValid(empire))
                         {
                              command.ApplyToState(empire);
-                             new SplitFleetStep().Process(serverState);   //process splits first so the new fleet is created before we try to add the waypont orders for that new fleet 
 
                         }
                         else

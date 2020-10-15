@@ -86,6 +86,7 @@ namespace Nova.Ai
             HandleResearch();
             HandleScouting();
             HandleColonizing();
+            HandleShipDesign();
         }
 
         /// <summary>
@@ -147,34 +148,49 @@ namespace Nova.Ai
 
             if (colonyShipsFleets.Count > 0)
             {
-                Fleet colonyFleet = colonyShipsFleets[0];
                 // check if there is any good star to colonize
                 foreach (StarIntel report in turnData.EmpireState.StarReports.Values) //Let's cherry pick nice stars first!
                 {
-                    if (report.Year != Global.Unset && clientState.EmpireState.Race.HabitalValue(report) > 0.5 && report.Owner == Global.Nobody && report.mineralRich() && fleetAIs[colonyFleet.Id].canReach(report))
+                    if (report.Year != Global.Unset && clientState.EmpireState.Race.HabitalValue(report) > 0.5 && report.Owner == Global.Nobody && report.mineralRich())
                     {
-                        // send fleet to colonise
-                        fleetAIs[colonyFleet.Id].Colonise(report);
-                        colonyShipsFleets.RemoveAt(0);
+                        Fleet found = null;
+                        foreach (Fleet fleet in colonyShipsFleets)
+                        {
+                            if (fleet.canReach(report,clientState.EmpireState.Race))
+                            {
+                                found = fleet;
+                                break;
+                            }
+                        }
+                        if (found != null)
+                        {
+                            // send fleet to colonise
+                            fleetAIs[colonyShipsFleets.IndexOf(found)].Colonise(report);
+                            colonyShipsFleets.RemoveAt(colonyShipsFleets.IndexOf(found));
+                        }
                         if (colonyShipsFleets.Count == 0)
                         {
                             break;
                         }
-                        colonyFleet = colonyShipsFleets[0];
+
                     }
                 }
                 foreach (StarIntel report in turnData.EmpireState.StarReports.Values)
                 {
                     if (report.Year != Global.Unset && clientState.EmpireState.Race.HabitalValue(report) > 0 && report.Owner == Global.Nobody)
                     {
-                        // send fleet to colonise
-                        fleetAIs[colonyFleet.Id].Colonise(report);
-                        colonyShipsFleets.RemoveAt(0);
-                        if (colonyShipsFleets.Count == 0)
+                        if (colonyShipsFleets.Count > 0)
                         {
-                            break;
+                            Fleet colonyFleet = colonyShipsFleets[0];
+                            // send fleet to colonise
+                            fleetAIs[colonyFleet.Id].Colonise(report);
+                            colonyShipsFleets.RemoveAt(0);
+                            if (colonyShipsFleets.Count == 0)
+                            {
+                                break;
+                            }
+                            colonyFleet = colonyShipsFleets[0];
                         }
-                        colonyFleet = colonyShipsFleets[0];
                     }
                 }
             }
@@ -224,6 +240,11 @@ namespace Nova.Ai
                 {
                     // Cons 3 - Destroyer & Medium Freighter
                     targetResearchField = TechLevel.ResearchField.Construction;
+                }
+                else if (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Propulsion] < 5)
+                {
+                    // Long Hump 7
+                    targetResearchField = TechLevel.ResearchField.Propulsion;
                 }
                 else if (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Electronics] < 5)
                 {
@@ -345,6 +366,99 @@ namespace Nova.Ai
                 clientState.Commands.Push(command);
                 command.ApplyToState(clientState.EmpireState);
             }
+        }
+
+
+        private void HandleShipDesign()
+        {
+            AllComponents allComponents = new AllComponents(true, "A.I. shipdesign");
+            designScouts(allComponents.Fetch("Scout"), "Long Range Scout");
+            if ((clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] >= 3) && (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Propulsion] >= 5)) designColonizers(allComponents.Fetch("Medium Freighter"), "Medium Santa Maria", allComponents.Fetch("Colonization Module"));
+            if ((clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] >= 8) && (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Propulsion] >= 7)) designColonizers(allComponents.Fetch("Large Freighter"), "Large Santa Maria", allComponents.Fetch("Colonization Module"));
+            if ((clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] >= 3) && (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Propulsion] >= 5)) designColonizers(allComponents.Fetch("Medium Freighter"), "Medium Freighter", clientState.EmpireState.AvailableComponents.GetBestFuelTank());
+            if ((clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] >= 8) && (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Propulsion] >= 7)) designColonizers(allComponents.Fetch("Large Freighter"), "Large Freighter", clientState.EmpireState.AvailableComponents.GetBestScanner());
+        }
+        private void designScouts(Component Hull, String designPrefix)
+        {
+            Component engine = clientState.EmpireState.AvailableComponents.GetBestEngine(Hull, true);
+            Engine engineSpecs = engine.Properties["Engine"] as Engine;
+            bool found = false;
+            String designName = designPrefix + "(" + engineSpecs.OptimumSpeed.ToString() + ")";
+            foreach (ShipDesign ship in clientState.EmpireState.Designs.Values) if (ship.Name == designName) found = true;
+            if (!found)
+            {
+                ShipDesign scout = new ShipDesign(clientState.EmpireState.GetNextDesignKey());
+                scout.Blueprint = Hull;
+                foreach (HullModule module in scout.Hull.Modules)
+                {
+                    if (module.ComponentType == "Engine")
+                    {
+                        module.AllocatedComponent = engine as Component;
+                        module.ComponentCount = 1;
+                    }
+                    else if (module.ComponentType == "Scanner")
+                    {
+                        module.AllocatedComponent = clientState.EmpireState.AvailableComponents.GetBestScanner(true);
+                        module.ComponentCount = 1;
+                    }
+                    else if (module.ComponentType == "General Purpose")
+                    {
+                        module.AllocatedComponent = clientState.EmpireState.AvailableComponents.GetBestFuelTank();
+                        module.ComponentCount = 1;
+                    }
+                }
+                scout.Icon = new ShipIcon(Hull.ImageFile, (System.Drawing.Bitmap)Hull.ComponentImage);
+
+                scout.Type = ItemType.Ship;
+                scout.Name = designName;
+                scout.Update();
+                DesignCommand command = new DesignCommand(CommandMode.Add, scout);
+                if (command.IsValid(clientState.EmpireState))
+                {
+                    clientState.Commands.Push(command);
+                    command.ApplyToState(clientState.EmpireState);
+                }
+
+            }
+
+        }
+        private void designColonizers(Component Hull, String designPrefix, Component colonyModule)
+        {
+            Component engine = clientState.EmpireState.AvailableComponents.GetBestEngine(Hull, true);
+            Engine engineSpecs = engine.Properties["Engine"] as Engine;
+            bool found = false;
+            String designName = designPrefix + "("+ engineSpecs.OptimumSpeed.ToString()+")";
+            foreach (ShipDesign ship in clientState.EmpireState.Designs.Values) if (ship.Name == designName) found = true;
+            if (!found)
+            {
+                ShipDesign coloniser = new ShipDesign(clientState.EmpireState.GetNextDesignKey());
+                coloniser.Blueprint = Hull;
+                foreach (HullModule module in coloniser.Hull.Modules)
+                {
+                    if (module.ComponentType == "Engine")
+                    {
+                        module.AllocatedComponent = engine as Component;
+                        module.ComponentCount = 1;
+                    }
+                    else if ((module.ComponentType == "Mechanical")|| (module.ComponentType == "Scanner Electrical Mechanical")) 
+                    {
+                        module.AllocatedComponent = colonyModule;
+                        module.ComponentCount = 1;
+                    }
+                }
+                coloniser.Icon = new ShipIcon(Hull.ImageFile, (System.Drawing.Bitmap)Hull.ComponentImage);
+
+                coloniser.Type = ItemType.Ship;
+                coloniser.Name = designName;
+                coloniser.Update();
+                DesignCommand command = new DesignCommand(CommandMode.Add, coloniser);
+                if (command.IsValid(clientState.EmpireState))
+                {
+                    clientState.Commands.Push(command);
+                    command.ApplyToState(clientState.EmpireState);
+                }
+            }
+
         }
     }
 }

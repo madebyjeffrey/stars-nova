@@ -38,7 +38,7 @@ namespace Nova.WinForms.Gui
     {        
         private readonly Star queueStar;
         private readonly ClientData clientState;
-
+        private int rowSelected;
         /// <Summary>
         /// Initializes a new instance of the ProductionDialog class.
         /// </Summary>
@@ -216,9 +216,10 @@ namespace Nova.WinForms.Gui
         private void QueueSelected(object sender, EventArgs e)
         {
             // check if selected Item is the "--- Top of Queue ---" which cannot be moved down or removed
-            if (queueList.SelectedItems.Count > 0)
+            if (queueList.SelectedItems.Count > 0) rowSelected = queueList.SelectedIndices[0]; else rowSelected = -1;
+            if (rowSelected != -1)
             {
-                if (queueList.SelectedIndices[0] == 0)
+                if (rowSelected == 0)
                 {
                     // "--- Top of Queue ---" selected
                     this.queueUp.Enabled = false;
@@ -230,7 +231,7 @@ namespace Nova.WinForms.Gui
                 {
                     removeFromQueue.Enabled = true;
                     // check if >1 to ignore top two items ("--- Top of Queue ---" placeholder which cannot be moved and Item below it)
-                    if (queueList.SelectedIndices[0] > 1)
+                    if (rowSelected > 1) 
                     {
                         queueUp.Enabled = true;
                     }
@@ -238,9 +239,9 @@ namespace Nova.WinForms.Gui
                     {
                         queueUp.Enabled = false;
                     }
-                          
-                          
-                    if (queueList.SelectedIndices[0] < queueList.Items.Count - 1)
+
+
+                    if (rowSelected < queueList.Items.Count - 1)
                     {
                         queueDown.Enabled = true;
                     }
@@ -252,10 +253,12 @@ namespace Nova.WinForms.Gui
             }
             else
             {
+
                 // no items are selected
                 queueUp.Enabled = false;
                 queueDown.Enabled = false;
                 removeFromQueue.Enabled = false;
+
             }
             
             // it does not matter if an Item is selected the Production Costs can still be updated.
@@ -305,9 +308,8 @@ namespace Nova.WinForms.Gui
             ProductionOrder productionOrder = new ProductionOrder(quantity, productionUnit, false);
             
             AddProduction(productionOrder);
-            int rowSelected = queueList.SelectedIndices[0];
-            queueList.SelectedIndices.Clear();
-            queueList.Items[rowSelected-1].Selected = true;
+
+
 
         }
 
@@ -328,7 +330,8 @@ namespace Nova.WinForms.Gui
         /// <param name="e">A <see cref="EventArgs"/> that contains the event data.</param>
         private void RemoveFromQueue_Click(object sender, EventArgs e)
         {
-            int s = queueList.SelectedIndices[0];
+            int s;
+            if (rowSelected > -1) s= rowSelected; else s = queueList.SelectedIndices[0];
             ProductionOrder productionOrder = (queueList.Items[s].Tag as ProductionOrder);
 
             if (queueList.SelectedItems.Count > 0)
@@ -370,7 +373,8 @@ namespace Nova.WinForms.Gui
         {
             if (queueList.SelectedItems.Count > 0)
             {
-                int source = queueList.SelectedIndices[0];
+                int source;
+                if (rowSelected > -1) source = rowSelected; else source = queueList.SelectedIndices[0];
                 // must be greater than 0 due to "--- Top of Queue ---" Placeholder
                 if (source > 0)
                 {
@@ -395,8 +399,9 @@ namespace Nova.WinForms.Gui
         {
             if (queueList.SelectedItems.Count > 0)
             {
-                int source = queueList.SelectedIndices[0];
-                 // check if > 0 for Top of Queue place holder
+                int source;
+                if (rowSelected > -1) source = rowSelected; else source = queueList.SelectedIndices[0];
+                // check if > 0 for Top of Queue place holder
                 if (source < queueList.Items.Count - 1 && source > 0)
                 {
                     ListViewItem movedItem = (ListViewItem)queueList.Items[source].Clone();
@@ -430,8 +435,9 @@ namespace Nova.WinForms.Gui
             }
             else
             {
-                int s = queueList.SelectedIndices[0];
-                
+                int s;
+                if (rowSelected > -1) s = rowSelected; else s = queueList.SelectedIndices[0];
+
                 // if the Item selected in the queue is the same as the design being added increase the quantity
                 if (productionOrder.Name == (queueList.Items[s].Tag as ProductionOrder).Name)
                 {
@@ -489,6 +495,11 @@ namespace Nova.WinForms.Gui
             }
 
             UpdateProductionCost();
+            int rowToSelect = queueList.SelectedIndices[0];
+            queueList.BackColor = designList.BackColor;
+            for (int i = 0; i < queueList.Items.Count; i++) queueList.Items[i].BackColor = designList.BackColor;
+            queueList.Items[rowSelected].BackColor = System.Drawing.Color.WhiteSmoke;
+            queueList.SelectedIndices.Clear();
         }
 
         /// <Summary>
@@ -584,11 +595,12 @@ namespace Nova.WinForms.Gui
             // requires checking if queueList.Items.Count > than 1 due to Placeholder value at Top of the Queue
             if (queueList.Items.Count > 1)
             {
-                int selectedItemIndex = 0;
+                int source;
+                if (rowSelected > -1) source = rowSelected; else if (queueList.SelectedIndices.Count == 0) source = 0; else source = queueList.SelectedIndices[0];
                 if (queueList.SelectedItems.Count > 0)
                 {
-                    selectedItemIndex = queueList.SelectedIndices[0];
-                    if (selectedItemIndex == 0)
+                    source = queueList.SelectedIndices[0];
+                    if (source == 0)
                     {
                         minYearsSelected = maxYearsSelected = -2;
                     }
@@ -624,7 +636,7 @@ namespace Nova.WinForms.Gui
                             minYearsTotal = -1;
                         }
                         maxYearsTotal = -1;
-                        if (queueIndex == selectedItemIndex)
+                        if (queueIndex == source)
                         {
                             minYearsSelected = maxYearsSelected = -1;
                         }
@@ -683,7 +695,7 @@ namespace Nova.WinForms.Gui
                                 }
                                 maxYearsCurrent = yearsSoFar;
 
-                                if (queueIndex == selectedItemIndex)
+                                if (queueIndex == source)
                                 {
                                     if (minYearsSelected == 0)
                                     {
@@ -748,7 +760,7 @@ namespace Nova.WinForms.Gui
                                     {
                                         minYearsCurrent = yearsSoFar;
                                     }
-                                    if (queueIndex == selectedItemIndex && minYearsSelected == 0)
+                                    if (queueIndex == source && minYearsSelected == 0)
                                     {
                                         minYearsSelected = yearsSoFar;
                                     }
@@ -824,7 +836,7 @@ namespace Nova.WinForms.Gui
                     }
 
                     // Update for the currently selected Item.
-                    if (queueIndex == selectedItemIndex)
+                    if (queueIndex == source)
                     {
                         selectedItemCost = productionOrder.NeededResources();
 

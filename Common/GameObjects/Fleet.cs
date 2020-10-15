@@ -658,6 +658,15 @@ namespace Nova.Common
             return fuelConsumption;
         }
 
+
+        public bool canReach(StarIntel destination,Race race)
+        {
+            double destinationDistance = this.distanceTo(destination);
+            double yearsOfTravel = destinationDistance / (this.SlowestEngine * this.SlowestEngine);
+            double fuelRequired = this.FuelConsumptionWhenFull(this.SlowestEngine, race) * yearsOfTravel;
+            return (this.FuelAvailable > fuelRequired);
+        }
+
         /// <summary>
         /// Calculate the fuel required for this fleet to reach a given destination.
         /// </summary>
@@ -803,5 +812,12 @@ namespace Nova.Common
             
             return report;
         }
+        public double maxDistance(Race race)
+        {
+            double distancePerYear = (this.SlowestEngine * this.SlowestEngine);
+            double fuelPerYear = FuelConsumptionWhenFull(SlowestEngine, race);
+            return (FuelAvailable * fuelPerYear * distancePerYear);
+        }
+
     }
 }

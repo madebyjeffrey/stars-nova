@@ -86,62 +86,73 @@ namespace Nova.Ai
             {
                 clearProductionCommand.ApplyToState(clientState.EmpireState);
             }
-
-            int earlyProductionDivisor = 1; // Rush factories for 1st 8 years
-            if (clientState.EmpireState.TurnYear > 2008) earlyProductionDivisor = 3; //then build some scouts
-            if (clientState.EmpireState.TurnYear > 2015) earlyProductionDivisor = 2;
-            // build factories (limited by Germanium, and don't want to use it all)
-            if (this.planet.ResourcesOnHand.Germanium > 50)
-            {
-                int factoryBuildCostGerm = clientState.EmpireState.Race.HasTrait("CF") ? 3 : 4;
-                int factoriesToBuild = (int)((this.planet.ResourcesOnHand.Germanium - 50) / factoryBuildCostGerm);
-                if (factoriesToBuild > (this.planet.GetOperableFactories()/ earlyProductionDivisor - this.planet.Factories))
+            //if population is over 55% capacity and we don't have mediumm freighters yet then just research until we do!
+            //if population is over 80% capacity and we don't have large freighters yet then just research until we do!
+            if (((planet.Capacity(clientState.EmpireState.Race) < 55) || ((clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] >= 3) && (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Propulsion] >= 5)))
+                && ((planet.Capacity(clientState.EmpireState.Race) < 80) || ((clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] >= 8) && (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Propulsion] >= 7))))
                 {
-                    factoriesToBuild = this.planet.GetOperableFactories()/ earlyProductionDivisor - this.planet.Factories;
-                }
-
-                if (factoriesToBuild > 0)
+                    Double earlyProductionMultiplier = 1.0; // Rush factories for 1st 8 years
+                if (clientState.EmpireState.TurnYear > 2108) earlyProductionMultiplier = 0.3; //then Rush some scouts
+                if (clientState.EmpireState.TurnYear > 2115) earlyProductionMultiplier = 0.5; //then build a mix of stuff
+                if (clientState.EmpireState.TurnYear > 2120) earlyProductionMultiplier = 0.6;
+                // build factories (limited by Germanium, and don't want to use it all)
+                if (this.planet.ResourcesOnHand.Germanium > 50)
                 {
-                    ProductionOrder factoryOrder = new ProductionOrder(factoriesToBuild, new FactoryProductionUnit(clientState.EmpireState.Race), false);
-                    ProductionCommand factoryCommand = new ProductionCommand(CommandMode.Add, factoryOrder, this.planet.Key, FactoryProductionPrecedence);
-                    productionIndex++;
-                    if (factoryCommand.IsValid(clientState.EmpireState))
+                    int factoryBuildCostGerm = clientState.EmpireState.Race.HasTrait("CF") ? 3 : 4;
+                    int factoriesToBuild = (int)((this.planet.ResourcesOnHand.Germanium - 50) / factoryBuildCostGerm);
+                    if (factoriesToBuild > (int)(this.planet.GetOperableFactories() * earlyProductionMultiplier - this.planet.Factories))
                     {
-                        factoryCommand.ApplyToState(clientState.EmpireState);
-                        this.clientState.Commands.Push(factoryCommand);
+                        factoriesToBuild = (int)(this.planet.GetOperableFactories() * earlyProductionMultiplier) - this.planet.Factories;
+                    }
+
+                    if (factoriesToBuild > 0)
+                    {
+                        ProductionOrder factoryOrder = new ProductionOrder(factoriesToBuild, new FactoryProductionUnit(clientState.EmpireState.Race), false);
+                        ProductionCommand factoryCommand = new ProductionCommand(CommandMode.Add, factoryOrder, this.planet.Key, FactoryProductionPrecedence);
+                        productionIndex++;
+                        if (factoryCommand.IsValid(clientState.EmpireState))
+                        {
+                            factoryCommand.ApplyToState(clientState.EmpireState);
+                            this.clientState.Commands.Push(factoryCommand);
+                        }
                     }
                 }
-            }
 
-            // build mines
-            int maxMines = this.planet.GetOperableMines()/ earlyProductionDivisor;
-            if (this.planet.Mines < maxMines)
-            {
-                ProductionOrder mineOrder = new ProductionOrder(maxMines - this.planet.Mines, new MineProductionUnit(clientState.EmpireState.Race), false);
-                ProductionCommand mineCommand = new ProductionCommand(CommandMode.Add, mineOrder, this.planet.Key, Math.Min(MineProductionPrecedence, productionIndex));
-                productionIndex++;
-                if (mineCommand.IsValid(clientState.EmpireState))
+                // build mines
+                int maxMines = (int)(this.planet.GetOperableMines() * earlyProductionMultiplier);
+                if (this.planet.Mines < maxMines)
                 {
-                    mineCommand.ApplyToState(clientState.EmpireState);
-                    clientState.Commands.Push(mineCommand);
+                    ProductionOrder mineOrder = new ProductionOrder(maxMines - this.planet.Mines, new MineProductionUnit(clientState.EmpireState.Race), false);
+                    ProductionCommand mineCommand = new ProductionCommand(CommandMode.Add, mineOrder, this.planet.Key, Math.Min(MineProductionPrecedence, productionIndex));
+                    productionIndex++;
+                    if (mineCommand.IsValid(clientState.EmpireState))
+                    {
+                        mineCommand.ApplyToState(clientState.EmpireState);
+                        clientState.Commands.Push(mineCommand);
+                    }
                 }
-            }
 
-            // Build ships
-            productionIndex = BuildShips(productionIndex);
+                // Build ships
+                productionIndex = BuildShips(productionIndex);
 
-            // build defenses
-            int defenseToBuild = Global.MaxDefenses - this.planet.Defenses;
-            if (defenseToBuild > 0)
-            {
-                ProductionOrder defenseOrder = new ProductionOrder(defenseToBuild, new DefenseProductionUnit(), false);
-                ProductionCommand defenseCommand = new ProductionCommand(CommandMode.Add, defenseOrder, this.planet.Key, productionIndex);
-                productionIndex++;
-                if (defenseCommand.IsValid(clientState.EmpireState))
+                // build defenses
+                int defenseToBuild = Global.MaxDefenses - this.planet.Defenses;
+                if (defenseToBuild > 0)
                 {
-                    defenseCommand.ApplyToState(clientState.EmpireState);
-                    //clientState.Commands.Push(defenseCommand); 
+                    ProductionOrder defenseOrder = new ProductionOrder(defenseToBuild, new DefenseProductionUnit(), false);
+                    ProductionCommand defenseCommand = new ProductionCommand(CommandMode.Add, defenseOrder, this.planet.Key, productionIndex);
+                    productionIndex++;
+                    if (defenseCommand.IsValid(clientState.EmpireState))
+                    {
+                        defenseCommand.ApplyToState(clientState.EmpireState);
+                        //clientState.Commands.Push(defenseCommand); // build defenses in specific circumstances NOT on EVERY planet?
+                    }
                 }
+
+            }
+            else
+            {
+                Report.Information("A.I. planet capacity is high and A.I. is devoting itself to researching better freighters");
             }
         }
 
@@ -164,8 +175,8 @@ namespace Nova.Ai
         /// <returns>The updated productionIndex.</returns>
         private int BuildScout(int productionIndex)
         {
-
-            if (this.planet.GetResourceRate() > DefaultAIPlanner.LowProduction && this.aiPlan.ScoutCount < DefaultAIPlanner.EarlyScouts)
+            int earlyScouts = (int)Math.Max(DefaultAIPlanner.EarlyScouts, Math.Sqrt(clientState.EmpireState.StarReports.Count));
+            if (this.planet.GetResourceRate() > DefaultAIPlanner.LowProduction && this.aiPlan.ScoutCount < earlyScouts)
             {
                 if (this.aiPlan.ScoutDesign != null)
                 {
