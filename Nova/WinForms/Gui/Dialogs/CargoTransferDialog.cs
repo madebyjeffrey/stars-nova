@@ -20,20 +20,26 @@
 // ===========================================================================
 #endregion
 
-namespace Nova.WinForms.Gui.Dialogs
+namespace Nova.ControlLibrary
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Data;
-    using System.Drawing;
-    using System.Linq;
-    using System.Text;
     using System.Windows.Forms;
+    using Nova.WinForms.Gui.Controls;
+
+    using Nova.Client;
     using Nova.Common;
+    using Nova.Common.Commands;
+    using Nova.Common.Waypoints;
+
 
     public partial class CargoTransferDialog : Form
     {
+        private Fleet fleet;
+        private Mappable target;
+        private ClientData clientData;
+
+        public Dictionary<CargoMode, CargoTask> Tasks { get; private set; }
         private Cargo leftCargo;
         private Cargo rightCargo;
         private int leftFuel;
@@ -182,8 +188,12 @@ namespace Nova.WinForms.Gui.Dialogs
 
 
 
-        public void SetFleets(Fleet left, Fleet right)
+        public void SetFleets(Fleet left, Fleet right, ClientData clientData)
         {
+            Tasks = new Dictionary<CargoMode, CargoTask>();
+            target = right;
+            fleet = left;
+            this.clientData = clientData;
             leftCargo = new Cargo(left.Cargo);
             rightCargo = new Cargo(right.Cargo);
             leftFuel = (int) left.FuelAvailable;
@@ -249,5 +259,84 @@ namespace Nova.WinForms.Gui.Dialogs
         {
             get { return rightFuel; }
         }
+
+        private void okButton_Click(object sender, EventArgs e)
+        {
+            Tasks.Add(CargoMode.Load, new CargoTask());
+            Tasks.Add(CargoMode.Unload, new CargoTask());
+            Tasks[CargoMode.Load].Mode = CargoMode.Load;
+            Tasks[CargoMode.Load].Target = target;
+            Tasks[CargoMode.Unload].Mode = CargoMode.Unload;
+            Tasks[CargoMode.Unload].Target = target;
+
+            // See if this is a Load, Unload or Mixed operation.            
+            // If original fleet >= dialog fleet, then Unload. Else, Load.
+            CargoMode mode;
+
+            foreach (KeyValuePair<ResourceType, int> commodity in LeftCargo.Commodities)
+            {
+                if (fleet.Cargo[commodity.Key] >= leftCargo[commodity.Key])
+                {
+                    mode = CargoMode.Unload;
+                }
+                else
+                {
+                    mode = CargoMode.Load;
+                }
+
+                Tasks[mode].Amount[commodity.Key] = Math.Abs(leftCargo[commodity.Key] - fleet.Cargo[commodity.Key]);
+                Tasks[mode].Target = target;
+            }
+
+            WaypointCommand command;
+            foreach (CargoTask task in Tasks.Values)
+            {
+                if (task.Amount.Mass != 0)
+                {
+                    Waypoint waypoint = new Waypoint(fleet.Waypoints[0]); // copy first Waypoint
+                    waypoint.Task = task;
+                    command = new WaypointCommand(CommandMode.Add, waypoint, fleet.Key, 0); // insert always instead of first waypoint. Todo should be: add task always to actual waypoint zero.
+
+                    clientData.Commands.Push(command);
+
+                    if (command.IsValid(clientData.EmpireState))
+                    {
+                        command.ApplyToState(clientData.EmpireState);
+
+                        if ((waypoint.Task as CargoTask).Target.Type == ItemType.Star)
+                        {
+                            if (clientData.EmpireState.StarReports.ContainsKey((waypoint.Task as CargoTask).Target.Name.ToString()))
+                            {
+                                StarIntel star = clientData.EmpireState.StarReports[(waypoint.Task as CargoTask).Target.Name.ToString()];
+                                // Also perform it here, to update client state for manual xfer.
+                                if (command.Waypoint.Task.IsValid(fleet, star, clientData.EmpireState, null))
+                                {
+                                    command.Waypoint.Task.Perform(fleet, star, clientData.EmpireState, null); // Load, Unload
+                                }
+                            }
+                            fleet.Waypoints.Remove(waypoint); // immediate commands don't add a visible waypoint to the ship in the client - we have told the server what to do
+                        }
+                        else if (clientData.EmpireState.OwnedFleets.ContainsKey((waypoint.Task as CargoTask).Target.Key))
+                        {
+                            Fleet other = clientData.EmpireState.OwnedFleets[(waypoint.Task as CargoTask).Target.Key];
+                            if (waypoint.Task.IsValid(fleet, other, clientData.EmpireState, null))
+                            {
+
+                                // Also perform it here, to update client state for manual xfer.
+                                if (command.Waypoint.Task.IsValid(fleet, other, clientData.EmpireState, null))
+                                {
+                                    command.Waypoint.Task.Perform(fleet, other, clientData.EmpireState, null); // Load, Unload
+                                }
+                            }
+                            fleet.Waypoints.Remove(waypoint); // immediate commands don't add a visible waypoint to the ship in the client - we have told the server what to do
+                        }
+                    }
+
+                }
+            }
+
+        }
+
     }
 }
+

@@ -75,7 +75,7 @@ namespace Nova.Client
         {            
             XmlNode xmlnode = xmldoc.DocumentElement;
             XmlNode textNode;
-            
+            bool containsResearch = false;
             while (xmlnode != null)
             {
                 try
@@ -100,7 +100,11 @@ namespace Nova.Client
                                 switch (textNode.Attributes["Type"].Value.ToString().ToLower())
                                 {
                                     case "research":
-                                        Commands.Push(new ResearchCommand(textNode));
+                                        if (!containsResearch)
+                                        {
+                                            Commands.Push(new ResearchCommand(textNode));
+                                            containsResearch = true; // only save the most recent research command in ClientData
+                                        }
                                     break;                                        
                                 }
                                 textNode = textNode.NextSibling;

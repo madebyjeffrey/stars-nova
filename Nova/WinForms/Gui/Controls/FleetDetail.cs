@@ -699,15 +699,24 @@ namespace Nova.WinForms.Gui
                 splitFleet.nextFleetID = empireState.PeekNextFleetKey();
                 if (splitFleet.ShowDialog() == DialogResult.OK)
                 {
-                    //int index = wayPoints.SelectedIndices[0];    We don't do the split at the next waypoint, we do it NOW
-                    //Waypoint waypoint = new Waypoint(topFleet.Waypoints[index]);
-                    Waypoint waypoint = new Waypoint(topFleet.Waypoints[0]);
+                    //find the last waypoint with the current destination - it is the last Waypoint zero command so insert after it
+                    int index = 0;
+                    String destination = topFleet.Waypoints[0].Destination;
+                    bool found = false;
+                    while ((!found) && (index < topFleet.Waypoints.Count))
+                    {
+                        found = (topFleet.Waypoints[index].Destination != destination);
+                        index++;
+                    }
+                                            
+                    Waypoint waypoint = new Waypoint(topFleet.Waypoints[index-1]);
+
                     waypoint.Task = new SplitMergeTask(
                         splitFleet.SourceComposition,
                         splitFleet.OtherComposition,
                         (otherFleet == null) ? 0 : otherFleet.Key);
 
-                    WaypointCommand command = new WaypointCommand(CommandMode.Add, topFleet.Key, 0);
+                    WaypointCommand command = new WaypointCommand(CommandMode.Add, topFleet.Key, index);
                     
                     
                     command.Waypoint = waypoint;
@@ -722,7 +731,7 @@ namespace Nova.WinForms.Gui
                         {
                             command.Waypoint.Task.Perform(topFleet, otherFleet, empireState, empireState);
 
-                            topFleet.Waypoints.Remove(waypoint);
+                           // topFleet.Waypoints.Remove(waypoint);
                             // Now clean and remove empty fleets and update remaining ones
                             // This is done to update the Client State visuals only, the server
                             // will handle this "for real".
@@ -777,9 +786,10 @@ namespace Nova.WinForms.Gui
 
         private void ButtonCargoXfer_Click(object sender, EventArgs e)
         {
-            using (CargoDialog cargoDialog = new CargoDialog(topFleet, GettopFleetAtLocation(), clientData))
+            CargoTransferDialog cargoTransferDialog = new CargoTransferDialog();
             {
-                cargoDialog.ShowDialog();
+                cargoTransferDialog.SetFleets(topFleet, GettopFleetAtLocation(),clientData);
+                cargoTransferDialog.ShowDialog();
                 UpdateCargoMeters();
                 Invalidate();
             }

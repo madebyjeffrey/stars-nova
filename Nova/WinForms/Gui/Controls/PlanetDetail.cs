@@ -429,96 +429,98 @@ namespace Nova.WinForms.Gui
                             }
                         }
                     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    Defenses.ComputeDefenseCoverage(selectedStar);
-
-                    defenseType.Text = selectedStar.DefenseType;
-                    defenses.Text = selectedStar.Defenses.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                    defenseCoverage.Text = Defenses.SummaryCoverage.ToString(System.Globalization.CultureInfo.InvariantCulture);
-
-                    factories.Text = selectedStar.Factories.ToString(System.Globalization.CultureInfo.InvariantCulture)
-                                     + " of " +
-                                     selectedStar.GetOperableFactories().ToString(System.Globalization.CultureInfo.InvariantCulture);
-                    mines.Text = selectedStar.Mines.ToString(System.Globalization.CultureInfo.InvariantCulture)
-                                 + " of " + selectedStar.GetOperableMines().ToString(System.Globalization.CultureInfo.InvariantCulture);
-                    population.Text = selectedStar.Colonists.ToString(System.Globalization.CultureInfo.InvariantCulture);
-
-                    resourceDisplay.ResourceRate = selectedStar.GetResourceRate();
-
-                    if (selectedStar.OnlyLeftover == false)
-                    {
-                        resourceDisplay.ResearchBudget = empireState.ResearchBudget;
-                    }
-                    else
-                    {
-                        // We treat Stars contributing only leftover resources as having
-                        // a 0% budget allocation.
-
-                        resourceDisplay.ResearchBudget = 0;
-                    }
-
-                    resourceDisplay.Value = selectedStar.ResourcesOnHand;
-
-                    scannerRange.Text = selectedStar.ScanRange.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                    scannerType.Text = selectedStar.ScannerType;
-
-                    if (selectedStar.Starbase == null)
-                    {
-                        starbasePanel.Text = "No Starbase";
-                        starbasePanel.Enabled = false;
-                    }
-                    else
-                    {
-                        Fleet starbase = selectedStar.Starbase;
-                        starbaseArmor.Text = starbase.TotalArmorStrength.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                        starbaseCapacity.Text =
-                            starbase.TotalDockCapacity.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                        starbaseDamage.Text = "0";
-                        starbasePanel.Enabled = true;
-                        starbasePanel.Text = starbase.Name;
-                        starbaseShields.Text = starbase.TotalShieldStrength.ToString();
-
-                        massDriverType.Text = "None";
-                        massDriverDestination.Text = "None";
-                        targetButton.Enabled = false;
-                    }
-
-                    List<string> fleetnames = new List<string>();
-                    fleetsInOrbit = new Dictionary<string, Fleet>();
-                    foreach (Fleet fleet in empireState.OwnedFleets.Values)
-                    {
-                        if (fleet.InOrbit != null && fleet.InOrbit.Name == selectedStar.Name && !fleet.IsStarbase)
-                        {
-                            fleetnames.Add(fleet.Name);
-                            fleetsInOrbit[fleet.Name] = fleet;
-                        }
-                    }
-                    fleetnames.Sort();
-                    comboFleetsInOrbit.Items.Clear();
-                    bool haveFleets = fleetnames.Count > 0;
-                    if (haveFleets)
-                    {
-                        comboFleetsInOrbit.Items.AddRange(fleetnames.ToArray());
-                        comboFleetsInOrbit.SelectedIndex = 0;
-                    }
-                    buttonGoto.Enabled = haveFleets;
-                    buttonGoto.Enabled = haveFleets;
                 }
-                productionQueue.Invalidate();
             }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            Defenses.ComputeDefenseCoverage(selectedStar);
+
+            defenseType.Text = selectedStar.DefenseType;
+            defenses.Text = selectedStar.Defenses.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            defenseCoverage.Text = Defenses.SummaryCoverage.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+            factories.Text = selectedStar.Factories.ToString(System.Globalization.CultureInfo.InvariantCulture)
+                             + " of " +
+                             selectedStar.GetOperableFactories().ToString(System.Globalization.CultureInfo.InvariantCulture);
+            mines.Text = selectedStar.Mines.ToString(System.Globalization.CultureInfo.InvariantCulture)
+                         + " of " + selectedStar.GetOperableMines().ToString(System.Globalization.CultureInfo.InvariantCulture);
+            population.Text = selectedStar.Colonists.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+            resourceDisplay.ResourceRate = selectedStar.GetResourceRate();
+
+            if (selectedStar.OnlyLeftover == false)
+            {
+                resourceDisplay.ResearchBudget = empireState.ResearchBudget;
+            }
+            else
+            {
+                // We treat Stars contributing only leftover resources as having
+                // a 0% budget allocation.
+
+                resourceDisplay.ResearchBudget = 0;
+            }
+
+            resourceDisplay.Value = selectedStar.ResourcesOnHand;
+
+            scannerRange.Text = selectedStar.ScanRange.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            scannerType.Text = selectedStar.ScannerType;
+
+            if (selectedStar.Starbase == null)
+            {
+                starbasePanel.Text = "No Starbase";
+                starbasePanel.Enabled = false;
+            }
+            else
+            {
+                Fleet starbase = selectedStar.Starbase;
+                starbaseArmor.Text = starbase.TotalArmorStrength.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                starbaseCapacity.Text =
+                    starbase.TotalDockCapacity.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                starbaseDamage.Text = "0";
+                starbasePanel.Enabled = true;
+                starbasePanel.Text = starbase.Name;
+                starbaseShields.Text = starbase.TotalShieldStrength.ToString();
+
+                massDriverType.Text = "None";
+                massDriverDestination.Text = "None";
+                targetButton.Enabled = false;
+            }
+
+            List<string> fleetnames = new List<string>();
+            fleetsInOrbit = new Dictionary<string, Fleet>();
+            foreach (Fleet fleet in empireState.OwnedFleets.Values)
+            {
+                if (fleet.InOrbit != null && fleet.InOrbit.Name == selectedStar.Name && !fleet.IsStarbase)
+                {
+                    fleetnames.Add(fleet.Name);
+                    fleetsInOrbit[fleet.Name] = fleet;
+                }
+            }
+            fleetnames.Sort();
+            comboFleetsInOrbit.Items.Clear();
+            bool haveFleets = fleetnames.Count > 0;
+            if (haveFleets)
+            {
+                comboFleetsInOrbit.Items.AddRange(fleetnames.ToArray());
+                comboFleetsInOrbit.SelectedIndex = 0;
+            }
+            buttonGoto.Enabled = haveFleets;
+            buttonGoto.Enabled = haveFleets;
+
+            Invalidate();
+
         }
 
         /// <Summary>

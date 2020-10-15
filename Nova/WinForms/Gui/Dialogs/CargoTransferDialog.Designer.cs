@@ -1,4 +1,4 @@
-﻿namespace Nova.WinForms.Gui.Dialogs
+﻿namespace Nova.ControlLibrary
 {
     public partial class CargoTransferDialog
     {
@@ -71,6 +71,7 @@
             this.okButton.Size = new System.Drawing.Size(75, 23);
             this.okButton.TabIndex = 20;
             this.okButton.Text = "OK";
+            this.okButton.Click += new System.EventHandler(this.okButton_Click);
             // 
             // cancelButton
             // 
@@ -317,17 +318,17 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
-        private Controls.CargoMeterCounter cargoIronRight;
-        private Controls.CargoMeterCounter cargoIronLeft;
-        private Controls.CargoMeterCounter cargoBoraniumLeft;
-        private Controls.CargoMeterCounter cargoBoraniumRight;
-        private Controls.CargoMeterCounter cargoGermaniumLeft;
-        private Controls.CargoMeterCounter cargoGermaniumRight;
-        private Controls.CargoMeterCounter cargoColonistsLeft;
-        private Controls.CargoMeterCounter cargoColonistsRight;
-        private Controls.CargoMeterCounter fuelLeft;
-        private Controls.CargoMeterCounter fuelRight;
-        private Controls.CargoMeter cargoMeterLeft;
-        private Controls.CargoMeter cargoMeterRight;
+        private Nova.WinForms.Gui.Controls.CargoMeterCounter cargoIronRight;
+        private Nova.WinForms.Gui.Controls.CargoMeterCounter cargoIronLeft;
+        private Nova.WinForms.Gui.Controls.CargoMeterCounter cargoBoraniumLeft;
+        private Nova.WinForms.Gui.Controls.CargoMeterCounter cargoBoraniumRight;
+        private Nova.WinForms.Gui.Controls.CargoMeterCounter cargoGermaniumLeft;
+        private Nova.WinForms.Gui.Controls.CargoMeterCounter cargoGermaniumRight;
+        private Nova.WinForms.Gui.Controls.CargoMeterCounter cargoColonistsLeft;
+        private Nova.WinForms.Gui.Controls.CargoMeterCounter cargoColonistsRight;
+        private Nova.WinForms.Gui.Controls.CargoMeterCounter fuelLeft;
+        private Nova.WinForms.Gui.Controls.CargoMeterCounter fuelRight;
+        private Nova.WinForms.Gui.Controls.CargoMeter cargoMeterLeft;
+        private Nova.WinForms.Gui.Controls.CargoMeter cargoMeterRight;
     }
 }
