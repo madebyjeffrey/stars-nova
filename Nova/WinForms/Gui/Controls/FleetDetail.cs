@@ -213,16 +213,21 @@ namespace Nova.WinForms.Gui
             {
                 return;
             }
-
-            WaypointCommand command = new WaypointCommand(CommandMode.Delete, topFleet.Key, index);
-
-            commands.Push(command);
-
-            if (command.IsValid(empireState))
+            if ((topFleet.Waypoints[index].Task is SplitMergeTask) || (topFleet.Waypoints[index].Task is CargoTask))
             {
-                command.ApplyToState(empireState);
+                Report.Information("That is a waypoint zero task, removing it may result in a loss of Fleet split, merge, load and unload actions for this fleet and/or other fleets");
             }
+            else
+            {
+                WaypointCommand command = new WaypointCommand(CommandMode.Delete, topFleet.Key, index);
 
+                commands.Push(command);
+
+                if (command.IsValid(empireState))
+                {
+                    command.ApplyToState(empireState);
+                }
+            }
             // Refresh the waypoint list on the GUI.
             UpdateWaypointList(this, new EventArgs());
 
@@ -244,15 +249,22 @@ namespace Nova.WinForms.Gui
                 int index = wayPoints.SelectedIndices[0];
                 if (index > 0)
                 {
-                    WaypointCommand command = new WaypointCommand(CommandMode.Delete, topFleet.Key, index);
 
-                    commands.Push(command);
-
-                    if (command.IsValid(empireState))
+                    if ((topFleet.Waypoints[index].Task is SplitMergeTask) || (topFleet.Waypoints[index].Task is CargoTask))
                     {
-                        command.ApplyToState(empireState);
+                        Report.Information("That is a waypoint zero task, removing it may result in a loss of Fleet split, merge, load and unload actions for this fleet and/or other fleets");
                     }
+                    else
+                    {
+                        WaypointCommand command = new WaypointCommand(CommandMode.Delete, topFleet.Key, index);
 
+                        commands.Push(command);
+
+                        if (command.IsValid(empireState))
+                        {
+                            command.ApplyToState(empireState);
+                        }
+                    }
                     // Refresh the waypoint list on the GUI.
                     UpdateWaypointList(this, new EventArgs());
 
@@ -279,43 +291,50 @@ namespace Nova.WinForms.Gui
             }
 
             int index = wayPoints.SelectedIndices[0];
-
-            Waypoint waypoint = topFleet.Waypoints[index];
-
-            Waypoint editedWaypoint = new Waypoint();
-
-            editedWaypoint.Destination = topFleet.Waypoints[index].Destination;
-            editedWaypoint.Position = topFleet.Waypoints[index].Position;
-            editedWaypoint.WarpFactor = topFleet.Waypoints[index].WarpFactor;
-
-            editedWaypoint.LoadTask(WaypointTasks.Text, null);
-
-            WaypointCommand command = new WaypointCommand(CommandMode.Edit, editedWaypoint, topFleet.Key, index);
-
-            // Minimizing clutter. If the last command was a speed/task change for this same waypoint,
-            // then just use that instead of adding a potentialy huge pile of task edits.
-            if (commands.Count > 0)
+            if ((topFleet.Waypoints[index].Task is SplitMergeTask) || (topFleet.Waypoints[index].Task is CargoTask))
             {
-                ICommand lastCommand = commands.Peek();
+                Report.Information("That is a waypoint zero task, editing it may result in a loss of Fleet split, merge, load and unload actions for this fleet and/or other fleets");
+            }
+            else
+            {
 
-                // Make sure it's the same waypoint except for speed/task, and that it's not a freshly added
-                // waypoint.
-                if (lastCommand is WaypointCommand && (lastCommand as WaypointCommand).Waypoint != null)
+                Waypoint waypoint = topFleet.Waypoints[index];
+
+                Waypoint editedWaypoint = new Waypoint();
+
+                editedWaypoint.Destination = topFleet.Waypoints[index].Destination;
+                editedWaypoint.Position = topFleet.Waypoints[index].Position;
+                editedWaypoint.WarpFactor = topFleet.Waypoints[index].WarpFactor;
+
+                editedWaypoint.LoadTask(WaypointTasks.Text, null);
+
+                WaypointCommand command = new WaypointCommand(CommandMode.Edit, editedWaypoint, topFleet.Key, index);
+
+                // Minimizing clutter. If the last command was a speed/task change for this same waypoint,
+                // then just use that instead of adding a potentialy huge pile of task edits.
+                if (commands.Count > 0)
                 {
-                    if ((lastCommand as WaypointCommand).Waypoint.Destination == editedWaypoint.Destination &&
-                        (lastCommand as WaypointCommand).Waypoint.Position == editedWaypoint.Position &&
-                        (lastCommand as WaypointCommand).Mode != CommandMode.Add)
+                    ICommand lastCommand = commands.Peek();
+
+                    // Make sure it's the same waypoint except for speed/task, and that it's not a freshly added
+                    // waypoint.
+                    if (lastCommand is WaypointCommand && (lastCommand as WaypointCommand).Waypoint != null)
                     {
-                        // Discard it.
-                        commands.Pop();
+                        if ((lastCommand as WaypointCommand).Waypoint.Destination == editedWaypoint.Destination &&
+                            (lastCommand as WaypointCommand).Waypoint.Position == editedWaypoint.Position &&
+                            (lastCommand as WaypointCommand).Mode != CommandMode.Add)
+                        {
+                            // Discard it.
+                            commands.Pop();
+                        }
                     }
                 }
-            }
-            commands.Push(command);
+                commands.Push(command);
 
-            if (command.IsValid(empireState))
-            {
-                command.ApplyToState(empireState);
+                if (command.IsValid(empireState))
+                {
+                    command.ApplyToState(empireState);
+                }
             }
         }
 

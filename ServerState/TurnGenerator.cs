@@ -490,9 +490,14 @@ namespace Nova.Server
                     {
                         waypointZero.Task.Perform(fleet, target, sender, reciever); // ToDo: scrapping fleet may be performed as waypoint 1 task here which is not correct.
                     }
-                    
-                    serverState.AllMessages.AddRange(waypointZero.Task.Messages);
-                    
+                    try
+                    {
+                        serverState.AllMessages.AddRange(waypointZero.Task.Messages);
+                    }
+                    catch
+                    {
+                        Report.Information("Bad waypoint for " + fleet.Name);
+                    }
                     // Task is done, clear it.
                     waypointZero.Task = new NoTask();
 

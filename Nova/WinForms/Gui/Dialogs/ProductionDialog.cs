@@ -215,8 +215,11 @@ namespace Nova.WinForms.Gui
         /// <param name="e">A <see cref="EventArgs"/> that contains the event data.</param>
         private void QueueSelected(object sender, EventArgs e)
         {
+
+            for (int i = 0; i < queueList.Items.Count; i++) queueList.Items[i].BackColor = designList.BackColor;
+            //queueList.Items[rowSelected].BackColor = Form.DefaultBackColor;
             // check if selected Item is the "--- Top of Queue ---" which cannot be moved down or removed
-            if (queueList.SelectedItems.Count > 0) rowSelected = queueList.SelectedIndices[0]; else rowSelected = -1;
+            if (queueList.SelectedItems.Count > 0) rowSelected = queueList.SelectedIndices[0]; 
             if (rowSelected != -1)
             {
                 if (rowSelected == 0)
@@ -361,6 +364,7 @@ namespace Nova.WinForms.Gui
                 }
 
                 UpdateProductionCost();
+                rowSelected = rowSelected-1;
             }
         }
 
@@ -427,52 +431,51 @@ namespace Nova.WinForms.Gui
         private void AddProduction(ProductionOrder productionOrder)
         {
             ListViewItem newItem = null;
-            
+
             // if no items are selected add the quantity of design as indicated
-            if (queueList.SelectedItems.Count == 0)
+
+            int selectedRow = 0;
+            if (queueList.SelectedIndices.Count > 0) selectedRow = queueList.SelectedIndices[queueList.SelectedItems.Count - 1];
+            else if (rowSelected >= 0) selectedRow = rowSelected;
+
+            // if the Item selected in the queue is the same as the design being added increase the quantity
+            if (productionOrder.Name == (queueList.Items[selectedRow].Tag as ProductionOrder).Name)
             {
-                newItem = queueList.InsertProductionOrder(productionOrder, queueList.Items.Count);
+                productionOrder.Quantity += (queueList.Items[selectedRow].Tag as ProductionOrder).Quantity;
+
+                newItem = queueList.EditProductionOrder(productionOrder, selectedRow);
             }
             else
             {
-                int s;
-                if (rowSelected > -1) s = rowSelected; else s = queueList.SelectedIndices[0];
-
-                // if the Item selected in the queue is the same as the design being added increase the quantity
-                if (productionOrder.Name == (queueList.Items[s].Tag as ProductionOrder).Name)
+                // as the Item selected in the queue is different from the design being added check the Item
+                // below the selected Item (first confirm it exists) to see if it matches, if so increase its
+                // quantity and have it become the selected Item, if not add the Item after the Item selected in the queue
+                int nextIndex = selectedRow + 1;
+                if (queueList.Items.Count > nextIndex)
                 {
-                    productionOrder.Quantity += (queueList.Items[s].Tag as ProductionOrder).Quantity;
-                    
-                    newItem = queueList.EditProductionOrder(productionOrder, s);
+                    if (productionOrder.Name == (queueList.Items[nextIndex].Tag as ProductionOrder).Name)
+                    {
+                        // the design is the same as the Item after the selected Item in the queue so update the Item after
+                        productionOrder.Quantity += (queueList.Items[nextIndex].Tag as ProductionOrder).Quantity;
+
+                        newItem = queueList.EditProductionOrder(productionOrder, nextIndex);
+                        rowSelected = nextIndex;
+                    }
+                    else
+                    {
+                        // add the design after the Item selected in the queue
+                        newItem = queueList.InsertProductionOrder(productionOrder, nextIndex+1);
+                        rowSelected = nextIndex+1;
+                    }
                 }
                 else
                 {
-                    // as the Item selected in the queue is different from the design being added check the Item
-                    // below the selected Item (first confirm it exists) to see if it matches, if so increase its
-                    // quantity and have it become the selected Item, if not add the Item after the Item selected in the queue
-                    int nextIndex = s + 1;
-                    if (queueList.Items.Count > nextIndex)    
-                    {
-                        if (productionOrder.Name == (queueList.Items[nextIndex].Tag as ProductionOrder).Name)
-                        {    
-                            // the design is the same as the Item after the selected Item in the queue so update the Item after
-                            productionOrder.Quantity += (queueList.Items[nextIndex].Tag as ProductionOrder).Quantity;
-
-                            newItem = queueList.EditProductionOrder(productionOrder, nextIndex);
-                        }
-                        else
-                        {
-                            // add the design after the Item selected in the queue
-                            newItem = queueList.InsertProductionOrder(productionOrder, nextIndex);                            
-                        }
-                    }
-                    else
-                    {                        
-                        queueList.Items[s].Selected = false;
-                        newItem = queueList.InsertProductionOrder(productionOrder, queueList.Items.Count);
-                    }
+                    queueList.Items[selectedRow].Selected = false;
+                    newItem = queueList.InsertProductionOrder(productionOrder, queueList.Items.Count);
+                    rowSelected = queueList.Items.Count -1;
                 }
             }
+           
 
             // Limit the number of defenses built.
             // TODO (Priority 4) - update this section to handle the quantity when too many have been added!

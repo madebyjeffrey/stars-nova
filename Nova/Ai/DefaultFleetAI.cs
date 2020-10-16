@@ -159,6 +159,7 @@ namespace Nova.Ai
                     // load up
                     CargoTask wpTask = new CargoTask();
                     wpTask.Mode = CargoMode.Load;
+                    wpTask.Target = this.fleet.InOrbit;
                     wpTask.Amount.ColonistsInKilotons = colonistsToLoadKt;
                     wpTask.Amount.Germanium = germaniumToLoad;
 

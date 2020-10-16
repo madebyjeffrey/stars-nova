@@ -190,7 +190,17 @@ namespace Nova.ControlLibrary
                 {
                     Waypoint waypoint = new Waypoint(fleet.Waypoints[0]); // copy first Waypoint
                     waypoint.Task = task;
-                    command = new WaypointCommand(CommandMode.Add, waypoint, fleet.Key, 0); // insert always instead of first waypoint. Todo should be: add task always to actual waypoint zero.
+                    int index = 0;
+                    String destination = fleet.Waypoints[0].Destination;
+                    bool found = false;
+                    while ((!found) && (index < fleet.Waypoints.Count))
+                    {
+                        found = (fleet.Waypoints[index].Destination != destination);
+                        index++;
+                    }
+                                            
+
+                    command = new WaypointCommand(CommandMode.Add, waypoint, fleet.Key, index); // add task always to the end of waypoint zero commands.
 
                     clientData.Commands.Push(command);
 
@@ -209,7 +219,7 @@ namespace Nova.ControlLibrary
                                     command.Waypoint.Task.Perform(fleet, star, clientData.EmpireState, null); // Load, Unload
                                 }
                             }
-                            fleet.Waypoints.Remove(waypoint); // immediate commands don't add a visible waypoint to the ship in the client - we have told the server what to do
+                            //fleet.Waypoints.Remove(waypoint); // immediate commands shouldn't add a visible waypoint to the ship in the client - we have told the server what to do
                         }
                         else  if (clientData.EmpireState.OwnedFleets.ContainsKey((waypoint.Task as CargoTask).Target.Key))
                         {
@@ -223,7 +233,8 @@ namespace Nova.ControlLibrary
                                     command.Waypoint.Task.Perform(fleet, other, clientData.EmpireState, null); // Load, Unload
                                 }
                             }
-                           fleet.Waypoints.Remove(waypoint); // immediate commands don't add a visible waypoint to the ship in the client - we have told the server what to do
+                           //fleet.Waypoints.Remove(waypoint); // immediate commands should't add a visible waypoint to the ship in the client - we have told the server what to do
+
                         }
                     }
                     
