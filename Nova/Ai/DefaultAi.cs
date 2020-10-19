@@ -87,6 +87,7 @@ namespace Nova.Ai
             HandleScouting();
             HandleColonizing();
             HandleShipDesign();
+            HandlePopulationSurplus();
         }
 
         /// <summary>
@@ -133,8 +134,42 @@ namespace Nova.Ai
                 }
             }
         }
-        
 
+        private void HandleArmedScouting()
+        {
+            List<Fleet> armedScoutFleets = new List<Fleet>();
+            foreach (Fleet fleet in clientState.EmpireState.OwnedFleets.Values)
+            {
+                if ((fleet.Name.Contains("Pointy Stick") == true) && (fleet.Waypoints.Count == 1))
+                {
+                    armedScoutFleets.Add(fleet);
+                }
+            }
+
+            // Find the stars we do not need to scout with an armed scout (eg home world)
+            List<StarIntel> excludedStars = new List<StarIntel>();
+            foreach (StarIntel report in turnData.EmpireState.StarReports.Values)
+            {
+                if ((report.Year != Global.Unset) && (report.MinValue(clientState.EmpireState.Race) < 50)
+                    && ((report.Owner == clientState.EmpireState.Id)||(report.Owner == Global.Nobody))
+                    )
+                {
+                    excludedStars.Add(report);
+                }
+            }
+
+            if (armedScoutFleets.Count > 0)
+            {
+                foreach (Fleet fleet in armedScoutFleets)
+                {
+                    StarIntel starToScout = fleetAIs[fleet.Id].ArmedScout(excludedStars);
+                    if (starToScout != null)
+                    {
+                        excludedStars.Add(starToScout);
+                    }
+                }
+            }
+        }
         private void HandleColonizing()
         {
             List<Fleet> colonyShipsFleets = new List<Fleet>();
@@ -196,7 +231,84 @@ namespace Nova.Ai
             }
         }
 
+        /// <Summary>
+        /// Move surplus population to somewhere where it is usefull.
+        /// Maintaining a stars capacity around 55% gives the empire the best growth rate
+        /// </Summary>
+        private void HandlePopulationSurplus()
+        {
+            List<Fleet> idleTransportFleets = new List<Fleet>();
+            foreach (Fleet fleet in clientState.EmpireState.OwnedFleets.Values)
+            {
+                if (fleet.CanColonize == false && fleet.Waypoints.Count == 1 && fleet.Cargo.Mass == 0 && fleet.TotalCargoCapacity != 0)
+                {
+                    idleTransportFleets.Add(fleet);
+                }
+            }
+            List<Star> underPopulated = new List<Star>();
+            foreach (Star star in clientState.EmpireState.OwnedStars.Values)
+            {
+                if (star.Capacity(clientState.EmpireState.Race) < 25)   //if less than 50% growth is reduced
+                    underPopulated.Add(star);
+            }
 
+            foreach (Star source in clientState.EmpireState.OwnedStars.Values)
+            {
+                if (source.Capacity(clientState.EmpireState.Race) > 50)   //if more than 50% growth is reduced
+                {
+                    int surplusPopulationKT = (int)((source.Colonists - source.MaxPopulation(clientState.EmpireState.Race) / 2) / Global.ColonistsPerKiloton); // maintain population at 50% - best growth rate
+                    while (surplusPopulationKT > 0)
+                    {
+                        bool found = false;
+                        List<Fleet> occupiedFleets = new List<Fleet>();
+                        Fleet nextTransport = null;
+                        while (!found)
+                        {
+                            foreach (Fleet transport in idleTransportFleets)
+                                if (transport.Position == source.Position)
+                                {
+                                    found = true;
+                                    nextTransport = transport;
+                                    break;
+                                }
+                        }
+                        if (found) //there is a fleet in orbit so use it
+                        {
+                            foreach (Star target in underPopulated)
+                                if (nextTransport.canCurrentlyReach(target, clientState.EmpireState.Race))
+                                {
+                                    WaypointCommand loadCargo = null;
+                                    if (surplusPopulationKT > nextTransport.TotalCargoCapacity)
+                                        loadCargo = nextTransport.LoadWaypoint(source, nextTransport.TotalCargoCapacity);
+                                    else loadCargo = nextTransport.LoadWaypoint(source, surplusPopulationKT);
+                                    loadCargo.ApplyToState(clientState.EmpireState);
+                                    clientState.Commands.Push(loadCargo);
+
+                                    SendFleet(target, nextTransport, new CargoTask());
+                                    surplusPopulationKT = surplusPopulationKT - nextTransport.TotalCargoCapacity;
+                                    occupiedFleets.Add(nextTransport);
+                                    if (surplusPopulationKT <= 0) break;
+                                }
+                        }
+                        else // there are no fleets in orbit so send one there
+                        {
+                            foreach (Fleet transport in idleTransportFleets)
+                                if (nextTransport.canCurrentlyReach(source, clientState.EmpireState.Race))
+                                {
+                                    found = true;
+                                    nextTransport = transport;
+                                    break;
+                                }
+                            SendFleet(source, nextTransport, new CargoTask());
+                            surplusPopulationKT = surplusPopulationKT - nextTransport.Cargo.Mass;
+                            occupiedFleets.Add(nextTransport);
+                            if (surplusPopulationKT <= 0) break;
+                        }
+                        foreach (Fleet occupied in occupiedFleets) idleTransportFleets.Remove(occupied);
+                    }
+                }
+            }
+        }
         /// <Summary>
         /// Manage research.
         /// Only changes research field after completing the previous research level.
@@ -377,13 +489,166 @@ namespace Nova.Ai
             if ((clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] >= 8) && (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Propulsion] >= 7)) designColonizers(allComponents.Fetch("Large Freighter"), "Large Santa Maria", allComponents.Fetch("Colonization Module"));
             if ((clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] >= 3) && (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Propulsion] >= 5)) designColonizers(allComponents.Fetch("Medium Freighter"), "Medium Freighter", clientState.EmpireState.AvailableComponents.GetBestFuelTank());
             if ((clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] >= 8) && (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Propulsion] >= 7)) designColonizers(allComponents.Fetch("Large Freighter"), "Large Freighter", clientState.EmpireState.AvailableComponents.GetBestScanner());
+            Component BattleCruiserHull = null;
+            Component cruiserHull = null;
+            Component frigateHull = null;
+            Component destroyerHull = null;
+
+            foreach (Component component in clientState.EmpireState.AvailableComponents.Values)
+            {
+                if ((component.Properties.ContainsKey("Hull")) && (component.Name == "Battle Cruiser")) BattleCruiserHull = component;
+                if ((component.Properties.ContainsKey("Hull")) && (component.Name == "Cruiser")) cruiserHull = component;
+                if ((component.Properties.ContainsKey("Hull")) && (component.Name == "Destroyer")) destroyerHull = component;
+                if ((component.Properties.ContainsKey("Hull")) && (component.Name == "Frigate")) frigateHull = component;
+            }
+
+            if (destroyerHull != null) designDestroyers(destroyerHull, " Pointy Stick");
+            if (cruiserHull != null) designDestroyers(cruiserHull, " Spear");
+            if (BattleCruiserHull != null) designDestroyers(BattleCruiserHull, " Dr Death");
+            if (frigateHull != null) designFrigate(frigateHull, " Mosquito");
+            if (cruiserHull != null) designFrigate(cruiserHull, " Bee");
+            if (BattleCruiserHull != null) designFrigate(BattleCruiserHull, " Light Saber");
+
+
         }
+
+        private void designDestroyers(Component Hull, String designPrefix)
+        {
+            Component engine = clientState.EmpireState.AvailableComponents.GetBestEngine(Hull, true);
+            Component torpedo = clientState.EmpireState.AvailableComponents.GetBestTorpedo();
+            Engine engineSpecs = engine.Properties["Engine"] as Engine;
+            bool found = false;
+            String designName = torpedo.Name + designPrefix + "(" + engineSpecs.OptimalSpeed.ToString() + ")";
+            foreach (ShipDesign ship in clientState.EmpireState.Designs.Values) if (ship.Name == designName) found = true;
+            if (!found)
+            {
+                ShipDesign destroyer = new ShipDesign(clientState.EmpireState.GetNextDesignKey());
+                destroyer.Blueprint = Hull;
+                foreach (HullModule module in destroyer.Hull.Modules)
+                {
+                    if (module.ComponentType == "Engine")
+                    {
+                        module.AllocatedComponent = engine as Component;
+                        module.ComponentCount = module.ComponentMaximum;
+                    }
+                    else if (module.ComponentType == "Scanner")
+                    {
+                        module.AllocatedComponent = clientState.EmpireState.AvailableComponents.GetBestScanner(true);
+                        module.ComponentCount = 1;
+                    }
+                    else if ((module.ComponentType == "General Purpose") || (module.ComponentType == "Weapon"))
+                    {
+                        module.AllocatedComponent = torpedo;
+                        module.ComponentCount = module.ComponentMaximum;
+                    }
+                    else if ((module.ComponentType == "Mechanical") || (module.ComponentType == "Scanner Electrical Mechanical") )
+                    {
+                        module.AllocatedComponent = clientState.EmpireState.AvailableComponents.GetBestManeuveringJet();
+                        module.ComponentCount = module.ComponentMaximum;
+                    }
+                    else if  ((module.ComponentType == "Electrical") || (module.ComponentType == "Shield Electrical Mechanical"))
+                    {
+                        module.AllocatedComponent = clientState.EmpireState.AvailableComponents.GetBestBattleComputer();
+                        module.ComponentCount = module.ComponentMaximum;
+                    }
+                    else if ((module.ComponentType == "Armor") || (module.ComponentType == "Shield or Armor"))
+                    {
+                        module.AllocatedComponent = clientState.EmpireState.AvailableComponents.GetBestMobileArmour();
+                        module.ComponentCount = module.ComponentMaximum;
+                    }
+                    else if (module.ComponentType == "Shield")
+                    {
+                        module.AllocatedComponent = clientState.EmpireState.AvailableComponents.GetBestShield();
+                        module.ComponentCount = module.ComponentMaximum;
+                    }
+                }
+                destroyer.Icon = new ShipIcon(Hull.ImageFile, (System.Drawing.Bitmap)Hull.ComponentImage);
+
+                destroyer.Type = ItemType.Ship;
+                destroyer.Name = designName;
+                destroyer.Update();
+                DesignCommand command = new DesignCommand(CommandMode.Add, destroyer);
+                if (command.IsValid(clientState.EmpireState))
+                {
+                    clientState.Commands.Push(command);
+                    command.ApplyToState(clientState.EmpireState);
+                }
+
+            }
+
+        }
+        private void designFrigate(Component Hull, String designPrefix)
+        {
+            Component engine = clientState.EmpireState.AvailableComponents.GetBestEngine(Hull, false);
+            Component beam = clientState.EmpireState.AvailableComponents.GetBestBeamWeapon();
+            Engine engineSpecs = engine.Properties["Engine"] as Engine;
+            bool found = false;
+            String designName = beam.Name + designPrefix + "(" + engineSpecs.OptimalSpeed.ToString() + ")";
+            foreach (ShipDesign ship in clientState.EmpireState.Designs.Values) if (ship.Name == designName) found = true;
+            if (!found)
+            {
+                ShipDesign destroyer = new ShipDesign(clientState.EmpireState.GetNextDesignKey());
+                destroyer.Blueprint = Hull;
+                foreach (HullModule module in destroyer.Hull.Modules)
+                {
+                    if (module.ComponentType == "Engine")
+                    {
+                        module.AllocatedComponent = engine as Component;
+                        module.ComponentCount = module.ComponentMaximum;
+                    }
+                    else if (module.ComponentType == "Scanner")
+                    {
+                        module.AllocatedComponent = clientState.EmpireState.AvailableComponents.GetBestScanner(true);
+                        module.ComponentCount = 1;
+                    }
+                    else if ((module.ComponentType == "General Purpose") || (module.ComponentType == "Weapon"))
+                    {
+                        module.AllocatedComponent = beam;
+                        module.ComponentCount = module.ComponentMaximum;
+                    }
+                    else if ((module.ComponentType == "Mechanical") || (module.ComponentType == "Scanner Electrical Mechanical") || (module.ComponentType == "Shield Electrical Mechanical"))
+                    {
+                        module.AllocatedComponent = clientState.EmpireState.AvailableComponents.GetBestManeuveringJet();
+                        module.ComponentCount = module.ComponentMaximum;
+                    }
+                    else if ((module.ComponentType == "Electrical") )
+                    {
+                        module.AllocatedComponent = clientState.EmpireState.AvailableComponents.GetBestCapacitor();
+                        module.ComponentCount = module.ComponentMaximum;
+                    }
+                    else if (module.ComponentType == "Armor") 
+                    {
+                        module.AllocatedComponent = clientState.EmpireState.AvailableComponents.GetBestMobileArmour();
+                        module.ComponentCount = module.ComponentMaximum;
+                    }
+                    else if ((module.ComponentType == "Shield") || (module.ComponentType == "Shield or Armor"))
+                    {
+                        module.AllocatedComponent = clientState.EmpireState.AvailableComponents.GetBestShield();
+                        module.ComponentCount = module.ComponentMaximum;
+                    }
+                }
+                destroyer.Icon = new ShipIcon(Hull.ImageFile, (System.Drawing.Bitmap)Hull.ComponentImage);
+
+                destroyer.Type = ItemType.Ship;
+                destroyer.Name = designName;
+                destroyer.Update();
+                DesignCommand command = new DesignCommand(CommandMode.Add, destroyer);
+                if (command.IsValid(clientState.EmpireState))
+                {
+                    clientState.Commands.Push(command);
+                    command.ApplyToState(clientState.EmpireState);
+                }
+
+            }
+
+        }
+
         private void designScouts(Component Hull, String designPrefix)
         {
             Component engine = clientState.EmpireState.AvailableComponents.GetBestEngine(Hull, true);
             Engine engineSpecs = engine.Properties["Engine"] as Engine;
             bool found = false;
-            String designName = designPrefix + "(" + engineSpecs.OptimumSpeed.ToString() + ")";
+            String designName = designPrefix + "(" + engineSpecs.OptimalSpeed.ToString() + ")";
             foreach (ShipDesign ship in clientState.EmpireState.Designs.Values) if (ship.Name == designName) found = true;
             if (!found)
             {
@@ -427,7 +692,7 @@ namespace Nova.Ai
             Component engine = clientState.EmpireState.AvailableComponents.GetBestEngine(Hull, true);
             Engine engineSpecs = engine.Properties["Engine"] as Engine;
             bool found = false;
-            String designName = designPrefix + "("+ engineSpecs.OptimumSpeed.ToString()+")";
+            String designName = designPrefix + "(" + engineSpecs.OptimalSpeed.ToString() + ")";
             foreach (ShipDesign ship in clientState.EmpireState.Designs.Values) if (ship.Name == designName) found = true;
             if (!found)
             {
@@ -459,6 +724,19 @@ namespace Nova.Ai
                 }
             }
 
+        }
+
+        private void SendFleet(Star star, Fleet fleet, IWaypointTask task)
+        {
+            Waypoint w = new Waypoint();
+            w.Position = star.Position;
+            w.WarpFactor = fleet.SlowestEngine;
+            w.Destination = star.Name;
+            w.Task = task;
+
+            WaypointCommand command = new WaypointCommand(CommandMode.Add, w, fleet.Key);
+            command.ApplyToState(clientState.EmpireState);
+            clientState.Commands.Push(command);
         }
     }
 }

@@ -249,7 +249,7 @@ namespace Nova.Common.DataStructures
         }
         public double distanceTo(NovaPoint other)
         {
-            return Math.Sqrt((other.X - X) * (other.Y - Y) * (other.X - X) * (other.Y - Y));
+            return Math.Sqrt((Math.Abs(other.X - X) + Math.Abs(other.Y - Y)) * (Math.Abs(other.X - X) + Math.Abs(other.Y - Y)));
         }
     }
 }

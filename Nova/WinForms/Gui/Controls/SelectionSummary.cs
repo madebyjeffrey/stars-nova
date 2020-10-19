@@ -80,10 +80,15 @@ namespace Nova.WinForms.Gui
             if (empireState.StarReports[report.Name].Year == Global.Unset)
             {
                 this.summaryFrame.Text = report.Name + " is unexplored";
-                summaryItem = null;
-                PlanetSummary.Hide();
+                //summaryItem = null;
                 FleetSummary.Hide();
                 Invalidate();
+                PlanetSummary.Hide();
+                summaryItem = report;
+                PlanetSummary.Location = new Point(5, 15);
+                PlanetSummary.Value = report;
+
+
                 return;
             }
             

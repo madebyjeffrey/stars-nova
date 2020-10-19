@@ -73,6 +73,7 @@ namespace Nova.WinForms.Gui
             this.blahToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.wayPoints = new Nova.WinForms.Gui.WaypointListBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.buttonSplitAll = new System.Windows.Forms.Button();
             this.btnRename = new System.Windows.Forms.Button();
             this.fleetComposition = new System.Windows.Forms.ListView();
             this.typeHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -204,7 +205,7 @@ namespace Nova.WinForms.Gui
             // 
             this.buttonCargo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonCargo.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonCargo.Location = new System.Drawing.Point(115, 17);
+            this.buttonCargo.Location = new System.Drawing.Point(168, 17);
             this.buttonCargo.Name = "buttonCargo";
             this.buttonCargo.Size = new System.Drawing.Size(56, 23);
             this.buttonCargo.TabIndex = 88;
@@ -239,7 +240,7 @@ namespace Nova.WinForms.Gui
             // 
             // manageFleet
             // 
-            this.manageFleet.Location = new System.Drawing.Point(5, 116);
+            this.manageFleet.Location = new System.Drawing.Point(22, 116);
             this.manageFleet.Name = "manageFleet";
             this.manageFleet.Size = new System.Drawing.Size(56, 23);
             this.manageFleet.TabIndex = 92;
@@ -277,7 +278,7 @@ namespace Nova.WinForms.Gui
             this.groupStatus.Controls.Add(this.label12);
             this.groupStatus.Location = new System.Drawing.Point(177, 3);
             this.groupStatus.Name = "groupStatus";
-            this.groupStatus.Size = new System.Drawing.Size(178, 58);
+            this.groupStatus.Size = new System.Drawing.Size(264, 58);
             this.groupStatus.TabIndex = 95;
             this.groupStatus.TabStop = false;
             this.groupStatus.Text = "Status";
@@ -287,7 +288,7 @@ namespace Nova.WinForms.Gui
             this.meterCargo.Cargo = Nova.WinForms.Gui.Controls.CargoMeter.CargoType.Multi;
             this.meterCargo.Location = new System.Drawing.Point(61, 32);
             this.meterCargo.Name = "meterCargo";
-            this.meterCargo.Size = new System.Drawing.Size(108, 15);
+            this.meterCargo.Size = new System.Drawing.Size(163, 15);
             this.meterCargo.TabIndex = 98;
             this.meterCargo.Text = "cargoMeter2";
             // 
@@ -296,7 +297,7 @@ namespace Nova.WinForms.Gui
             this.meterFuel.Cargo = Nova.WinForms.Gui.Controls.CargoMeter.CargoType.Fuel;
             this.meterFuel.Location = new System.Drawing.Point(61, 15);
             this.meterFuel.Name = "meterFuel";
-            this.meterFuel.Size = new System.Drawing.Size(108, 15);
+            this.meterFuel.Size = new System.Drawing.Size(163, 15);
             this.meterFuel.TabIndex = 95;
             this.meterFuel.Text = "cargoMeter1";
             // 
@@ -320,7 +321,7 @@ namespace Nova.WinForms.Gui
             // 
             this.buttonGotoPlanet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonGotoPlanet.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonGotoPlanet.Location = new System.Drawing.Point(6, 17);
+            this.buttonGotoPlanet.Location = new System.Drawing.Point(46, 19);
             this.buttonGotoPlanet.Name = "buttonGotoPlanet";
             this.buttonGotoPlanet.Size = new System.Drawing.Size(56, 23);
             this.buttonGotoPlanet.TabIndex = 89;
@@ -440,19 +441,30 @@ namespace Nova.WinForms.Gui
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.buttonSplitAll);
             this.groupBox4.Controls.Add(this.btnRename);
             this.groupBox4.Controls.Add(this.fleetComposition);
             this.groupBox4.Controls.Add(this.manageFleet);
             this.groupBox4.Location = new System.Drawing.Point(176, 119);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(179, 150);
+            this.groupBox4.Size = new System.Drawing.Size(265, 150);
             this.groupBox4.TabIndex = 97;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Fleet Composition";
             // 
+            // buttonSplitAll
+            // 
+            this.buttonSplitAll.Location = new System.Drawing.Point(102, 116);
+            this.buttonSplitAll.Name = "buttonSplitAll";
+            this.buttonSplitAll.Size = new System.Drawing.Size(56, 23);
+            this.buttonSplitAll.TabIndex = 94;
+            this.buttonSplitAll.Text = "Split All";
+            this.buttonSplitAll.UseVisualStyleBackColor = true;
+            this.buttonSplitAll.Click += new System.EventHandler(this.buttonSplitAll_Click);
+            // 
             // btnRename
             // 
-            this.btnRename.Location = new System.Drawing.Point(114, 116);
+            this.btnRename.Location = new System.Drawing.Point(181, 116);
             this.btnRename.Name = "btnRename";
             this.btnRename.Size = new System.Drawing.Size(56, 23);
             this.btnRename.TabIndex = 93;
@@ -469,7 +481,7 @@ namespace Nova.WinForms.Gui
             this.fleetComposition.HideSelection = false;
             this.fleetComposition.Location = new System.Drawing.Point(5, 22);
             this.fleetComposition.Name = "fleetComposition";
-            this.fleetComposition.Size = new System.Drawing.Size(168, 88);
+            this.fleetComposition.Size = new System.Drawing.Size(254, 88);
             this.fleetComposition.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.fleetComposition.TabIndex = 0;
             this.fleetComposition.UseCompatibleStateImageBehavior = false;
@@ -532,7 +544,7 @@ namespace Nova.WinForms.Gui
             this.groupBox7.Location = new System.Drawing.Point(177, 273);
             this.groupBox7.Margin = new System.Windows.Forms.Padding(0);
             this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(178, 112);
+            this.groupBox7.Size = new System.Drawing.Size(264, 112);
             this.groupBox7.TabIndex = 99;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Other fleets at this Location";
@@ -542,7 +554,7 @@ namespace Nova.WinForms.Gui
             this.meterCargoOther.Cargo = Nova.WinForms.Gui.Controls.CargoMeter.CargoType.Multi;
             this.meterCargoOther.Location = new System.Drawing.Point(61, 62);
             this.meterCargoOther.Name = "meterCargoOther";
-            this.meterCargoOther.Size = new System.Drawing.Size(108, 15);
+            this.meterCargoOther.Size = new System.Drawing.Size(163, 15);
             this.meterCargoOther.TabIndex = 102;
             this.meterCargoOther.Text = "cargoMeter2";
             // 
@@ -551,7 +563,7 @@ namespace Nova.WinForms.Gui
             this.meterFuelOther.Cargo = Nova.WinForms.Gui.Controls.CargoMeter.CargoType.Fuel;
             this.meterFuelOther.Location = new System.Drawing.Point(61, 45);
             this.meterFuelOther.Name = "meterFuelOther";
-            this.meterFuelOther.Size = new System.Drawing.Size(108, 15);
+            this.meterFuelOther.Size = new System.Drawing.Size(163, 15);
             this.meterFuelOther.TabIndex = 99;
             this.meterFuelOther.Text = "cargoMeter1";
             // 
@@ -573,7 +585,7 @@ namespace Nova.WinForms.Gui
             // 
             // buttonMerge
             // 
-            this.buttonMerge.Location = new System.Drawing.Point(57, 81);
+            this.buttonMerge.Location = new System.Drawing.Point(98, 81);
             this.buttonMerge.Name = "buttonMerge";
             this.buttonMerge.Size = new System.Drawing.Size(59, 23);
             this.buttonMerge.TabIndex = 94;
@@ -583,7 +595,7 @@ namespace Nova.WinForms.Gui
             // 
             // buttonCargoXfer
             // 
-            this.buttonCargoXfer.Location = new System.Drawing.Point(122, 81);
+            this.buttonCargoXfer.Location = new System.Drawing.Point(180, 83);
             this.buttonCargoXfer.Name = "buttonCargoXfer";
             this.buttonCargoXfer.Size = new System.Drawing.Size(50, 23);
             this.buttonCargoXfer.TabIndex = 93;
@@ -593,7 +605,7 @@ namespace Nova.WinForms.Gui
             // 
             // buttonGotoFleet
             // 
-            this.buttonGotoFleet.Location = new System.Drawing.Point(3, 81);
+            this.buttonGotoFleet.Location = new System.Drawing.Point(21, 81);
             this.buttonGotoFleet.Name = "buttonGotoFleet";
             this.buttonGotoFleet.Size = new System.Drawing.Size(50, 23);
             this.buttonGotoFleet.TabIndex = 92;
@@ -607,7 +619,7 @@ namespace Nova.WinForms.Gui
             this.comboOtherFleets.FormattingEnabled = true;
             this.comboOtherFleets.Location = new System.Drawing.Point(9, 19);
             this.comboOtherFleets.Name = "comboOtherFleets";
-            this.comboOtherFleets.Size = new System.Drawing.Size(162, 21);
+            this.comboOtherFleets.Size = new System.Drawing.Size(249, 21);
             this.comboOtherFleets.TabIndex = 0;
             this.comboOtherFleets.SelectedIndexChanged += new System.EventHandler(this.ComboOtherFleets_SelectedIndexChanged);
             // 
@@ -617,7 +629,7 @@ namespace Nova.WinForms.Gui
             this.groupOrbitPlanet.Controls.Add(this.buttonGotoPlanet);
             this.groupOrbitPlanet.Location = new System.Drawing.Point(177, 67);
             this.groupOrbitPlanet.Name = "groupOrbitPlanet";
-            this.groupOrbitPlanet.Size = new System.Drawing.Size(178, 46);
+            this.groupOrbitPlanet.Size = new System.Drawing.Size(264, 46);
             this.groupOrbitPlanet.TabIndex = 96;
             this.groupOrbitPlanet.TabStop = false;
             this.groupOrbitPlanet.Text = "Orbiting Planet";
@@ -633,7 +645,7 @@ namespace Nova.WinForms.Gui
             this.Controls.Add(this.groupStatus);
             this.Controls.Add(this.groupBox1);
             this.Name = "FleetDetail";
-            this.Size = new System.Drawing.Size(355, 453);
+            this.Size = new System.Drawing.Size(455, 390);
             ((System.ComponentModel.ISupportInitialize)(this.warpFactor)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupStatus.ResumeLayout(false);
@@ -716,5 +728,6 @@ namespace Nova.WinForms.Gui
         private ContextMenuStrip contextMenuWaypointTargets;
         private System.ComponentModel.IContainer components;
         private ToolStripMenuItem blahToolStripMenuItem;
+        private Button buttonSplitAll;
     }
 }

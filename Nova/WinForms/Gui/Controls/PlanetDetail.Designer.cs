@@ -12,13 +12,9 @@ namespace Nova.WinForms.Gui
     {
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PlanetDetail));
             this.mines = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.productionQueue = new Nova.WinForms.Gui.QueueList();
-            this.description = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.quantity = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.changeProductionQueue = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.population = new System.Windows.Forms.Label();
@@ -67,9 +63,12 @@ namespace Nova.WinForms.Gui
             this.buttonGoto = new System.Windows.Forms.Button();
             this.buttonCargo = new System.Windows.Forms.Button();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.fuel = new Nova.ControlLibrary.Gauge();
             this.meterCargo = new Nova.WinForms.Gui.Controls.CargoMeter();
             this.meterFuel = new Nova.WinForms.Gui.Controls.CargoMeter();
-            this.fuel = new Nova.ControlLibrary.Gauge();
+            this.productionQueue = new Nova.WinForms.Gui.QueueList();
+            this.description = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.quantity = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.cargoMeter1 = new Nova.WinForms.Gui.Controls.CargoMeter();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -107,44 +106,10 @@ namespace Nova.WinForms.Gui
             this.label5.TabIndex = 18;
             this.label5.Text = "Mines";
             // 
-            // productionQueue
-            // 
-            this.productionQueue.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.productionQueue.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.productionQueue.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.productionQueue.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] 
-            {
-            this.description,
-            this.quantity 
-            }
-            );
-            this.productionQueue.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-            this.productionQueue.Location = new System.Drawing.Point(6, 22);
-            this.productionQueue.MultiSelect = false;
-            this.productionQueue.Name = "productionQueue";
-            this.productionQueue.Scrollable = false;
-            this.productionQueue.Size = new System.Drawing.Size(166, 57);
-            this.productionQueue.TabIndex = 13;
-            this.productionQueue.UseCompatibleStateImageBehavior = false;
-            this.productionQueue.View = System.Windows.Forms.View.Details;
-            // 
-            // description
-            // 
-            this.description.Text = "Description";
-            this.description.Width = 92;
-            // 
-            // quantity
-            // 
-            this.quantity.Text = "Quantity";
-            this.quantity.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.quantity.Width = 59;
-            // 
             // changeProductionQueue
             // 
             this.changeProductionQueue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.changeProductionQueue.Location = new System.Drawing.Point(6, 85);
+            this.changeProductionQueue.Location = new System.Drawing.Point(77, 122);
             this.changeProductionQueue.Name = "changeProductionQueue";
             this.changeProductionQueue.Size = new System.Drawing.Size(75, 23);
             this.changeProductionQueue.TabIndex = 14;
@@ -159,7 +124,7 @@ namespace Nova.WinForms.Gui
             this.groupBox1.Location = new System.Drawing.Point(177, 117);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(178, 114);
+            this.groupBox1.Size = new System.Drawing.Size(262, 148);
             this.groupBox1.TabIndex = 26;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Production Queue";
@@ -226,13 +191,12 @@ namespace Nova.WinForms.Gui
             // 
             // resourceDisplay
             // 
-            this.resourceDisplay.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.resourceDisplay.Location = new System.Drawing.Point(6, 18);
+            this.resourceDisplay.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.resourceDisplay.Location = new System.Drawing.Point(0, 18);
             this.resourceDisplay.Name = "resourceDisplay";
-            this.resourceDisplay.Size = new System.Drawing.Size(150, 68);
+            this.resourceDisplay.Size = new System.Drawing.Size(158, 68);
             this.resourceDisplay.TabIndex = 20;
-            this.resourceDisplay.Value = new Nova.Common.Resources(0, 0, 0, 0);
             // 
             // groupBox3
             // 
@@ -388,10 +352,10 @@ namespace Nova.WinForms.Gui
             this.starbasePanel.Controls.Add(this.label15);
             this.starbasePanel.Controls.Add(this.label14);
             this.starbasePanel.Controls.Add(this.label13);
-            this.starbasePanel.Location = new System.Drawing.Point(177, 236);
+            this.starbasePanel.Location = new System.Drawing.Point(177, 265);
             this.starbasePanel.Margin = new System.Windows.Forms.Padding(0);
             this.starbasePanel.Name = "starbasePanel";
-            this.starbasePanel.Size = new System.Drawing.Size(178, 151);
+            this.starbasePanel.Size = new System.Drawing.Size(256, 122);
             this.starbasePanel.TabIndex = 31;
             this.starbasePanel.TabStop = false;
             this.starbasePanel.Text = "Starbase";
@@ -400,7 +364,7 @@ namespace Nova.WinForms.Gui
             // 
             this.label21.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(156, 70);
+            this.label21.Location = new System.Drawing.Point(234, 70);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(20, 13);
             this.label21.TabIndex = 37;
@@ -411,7 +375,7 @@ namespace Nova.WinForms.Gui
             // 
             this.label26.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label26.AutoSize = true;
-            this.label26.Location = new System.Drawing.Point(158, 50);
+            this.label26.Location = new System.Drawing.Point(236, 50);
             this.label26.Name = "label26";
             this.label26.Size = new System.Drawing.Size(15, 13);
             this.label26.TabIndex = 35;
@@ -422,7 +386,7 @@ namespace Nova.WinForms.Gui
             // 
             this.label27.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label27.AutoSize = true;
-            this.label27.Location = new System.Drawing.Point(158, 14);
+            this.label27.Location = new System.Drawing.Point(236, 14);
             this.label27.Name = "label27";
             this.label27.Size = new System.Drawing.Size(19, 13);
             this.label27.TabIndex = 36;
@@ -433,7 +397,7 @@ namespace Nova.WinForms.Gui
             // 
             this.label12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(158, 32);
+            this.label12.Location = new System.Drawing.Point(236, 32);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(19, 13);
             this.label12.TabIndex = 34;
@@ -443,7 +407,7 @@ namespace Nova.WinForms.Gui
             // targetButton
             // 
             this.targetButton.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.targetButton.Location = new System.Drawing.Point(6, 125);
+            this.targetButton.Location = new System.Drawing.Point(171, 83);
             this.targetButton.Name = "targetButton";
             this.targetButton.Size = new System.Drawing.Size(75, 23);
             this.targetButton.TabIndex = 15;
@@ -461,7 +425,7 @@ namespace Nova.WinForms.Gui
             // 
             // massDriverDestination
             // 
-            this.massDriverDestination.Location = new System.Drawing.Point(100, 90);
+            this.massDriverDestination.Location = new System.Drawing.Point(74, 90);
             this.massDriverDestination.Name = "massDriverDestination";
             this.massDriverDestination.Size = new System.Drawing.Size(72, 13);
             this.massDriverDestination.TabIndex = 11;
@@ -488,7 +452,7 @@ namespace Nova.WinForms.Gui
             // 
             // massDriverType
             // 
-            this.massDriverType.Location = new System.Drawing.Point(92, 108);
+            this.massDriverType.Location = new System.Drawing.Point(66, 108);
             this.massDriverType.Name = "massDriverType";
             this.massDriverType.Size = new System.Drawing.Size(79, 13);
             this.massDriverType.TabIndex = 10;
@@ -597,7 +561,7 @@ namespace Nova.WinForms.Gui
             this.comboFleetsInOrbit.FormattingEnabled = true;
             this.comboFleetsInOrbit.Location = new System.Drawing.Point(9, 19);
             this.comboFleetsInOrbit.Name = "comboFleetsInOrbit";
-            this.comboFleetsInOrbit.Size = new System.Drawing.Size(162, 21);
+            this.comboFleetsInOrbit.Size = new System.Drawing.Size(247, 21);
             this.comboFleetsInOrbit.TabIndex = 0;
             this.comboFleetsInOrbit.SelectedIndexChanged += new System.EventHandler(this.ComboFleetsInOrbit_SelectedIndexChanged);
             // 
@@ -619,7 +583,7 @@ namespace Nova.WinForms.Gui
             // 
             // buttonGoto
             // 
-            this.buttonGoto.Location = new System.Drawing.Point(10, 81);
+            this.buttonGoto.Location = new System.Drawing.Point(39, 81);
             this.buttonGoto.Name = "buttonGoto";
             this.buttonGoto.Size = new System.Drawing.Size(59, 23);
             this.buttonGoto.TabIndex = 92;
@@ -629,7 +593,7 @@ namespace Nova.WinForms.Gui
             // 
             // buttonCargo
             // 
-            this.buttonCargo.Location = new System.Drawing.Point(112, 81);
+            this.buttonCargo.Location = new System.Drawing.Point(171, 81);
             this.buttonCargo.Name = "buttonCargo";
             this.buttonCargo.Size = new System.Drawing.Size(59, 23);
             this.buttonCargo.TabIndex = 93;
@@ -649,28 +613,10 @@ namespace Nova.WinForms.Gui
             this.groupBox7.Location = new System.Drawing.Point(177, 0);
             this.groupBox7.Margin = new System.Windows.Forms.Padding(0);
             this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(178, 112);
+            this.groupBox7.Size = new System.Drawing.Size(262, 112);
             this.groupBox7.TabIndex = 33;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Fleets in Orbit";
-            // 
-            // meterCargo
-            // 
-            this.meterCargo.Cargo = Nova.WinForms.Gui.Controls.CargoMeter.CargoType.Multi;            
-            this.meterCargo.Location = new System.Drawing.Point(64, 62);
-            this.meterCargo.Name = "meterCargo";
-            this.meterCargo.Size = new System.Drawing.Size(108, 15);
-            this.meterCargo.TabIndex = 94;
-            this.meterCargo.Text = "cargoMeter2";
-            // 
-            // meterFuel
-            // 
-            this.meterFuel.Cargo = Nova.WinForms.Gui.Controls.CargoMeter.CargoType.Fuel;            
-            this.meterFuel.Location = new System.Drawing.Point(64, 45);
-            this.meterFuel.Name = "meterFuel";
-            this.meterFuel.Size = new System.Drawing.Size(108, 15);
-            this.meterFuel.TabIndex = 38;
-            this.meterFuel.Text = "cargoMeter1";
             // 
             // fuel
             // 
@@ -690,6 +636,56 @@ namespace Nova.WinForms.Gui
             this.fuel.TopValue = 0D;
             this.fuel.Units = "mg";
             this.fuel.Value = 0D;
+            // 
+            // meterCargo
+            // 
+            this.meterCargo.Cargo = Nova.WinForms.Gui.Controls.CargoMeter.CargoType.Multi;
+            this.meterCargo.Location = new System.Drawing.Point(64, 62);
+            this.meterCargo.Name = "meterCargo";
+            this.meterCargo.Size = new System.Drawing.Size(192, 15);
+            this.meterCargo.TabIndex = 94;
+            this.meterCargo.Text = "cargoMeter2";
+            // 
+            // meterFuel
+            // 
+            this.meterFuel.Cargo = Nova.WinForms.Gui.Controls.CargoMeter.CargoType.Fuel;
+            this.meterFuel.Location = new System.Drawing.Point(64, 45);
+            this.meterFuel.Name = "meterFuel";
+            this.meterFuel.Size = new System.Drawing.Size(192, 15);
+            this.meterFuel.TabIndex = 38;
+            this.meterFuel.Text = "cargoMeter1";
+            // 
+            // productionQueue
+            // 
+            this.productionQueue.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.productionQueue.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.productionQueue.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.productionQueue.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.description,
+            this.quantity});
+            this.productionQueue.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.productionQueue.HideSelection = false;
+            this.productionQueue.Location = new System.Drawing.Point(6, 19);
+            this.productionQueue.MultiSelect = false;
+            this.productionQueue.Name = "productionQueue";
+            this.productionQueue.Scrollable = false;
+            this.productionQueue.Size = new System.Drawing.Size(250, 101);
+            this.productionQueue.TabIndex = 13;
+            this.productionQueue.UseCompatibleStateImageBehavior = false;
+            this.productionQueue.View = System.Windows.Forms.View.Details;
+            // 
+            // description
+            // 
+            this.description.Text = "Description";
+            this.description.Width = 92;
+            // 
+            // quantity
+            // 
+            this.quantity.Text = "Quantity";
+            this.quantity.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.quantity.Width = 59;
             // 
             // cargoMeter1
             // 
@@ -712,7 +708,7 @@ namespace Nova.WinForms.Gui
             this.Controls.Add(this.groupBox1);
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "PlanetDetail";
-            this.Size = new System.Drawing.Size(355, 453);
+            this.Size = new System.Drawing.Size(455, 396);
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);

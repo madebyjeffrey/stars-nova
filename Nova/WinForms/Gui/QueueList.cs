@@ -58,7 +58,7 @@ namespace Nova.WinForms.Gui
             
             Items.Clear();
             BeginUpdate();
-
+            if (this.Columns.Count > 1) this.Columns[0].Width = 200; //designer is broken so do it here
             // Note that we don't add these to the commandqueue, as we only use
             // commands to denote CHANGES in the queue.
             

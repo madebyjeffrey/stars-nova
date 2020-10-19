@@ -501,8 +501,8 @@ namespace Nova.WinForms.Gui
             int rowToSelect = queueList.SelectedIndices[0];
             queueList.BackColor = designList.BackColor;
             for (int i = 0; i < queueList.Items.Count; i++) queueList.Items[i].BackColor = designList.BackColor;
-            queueList.Items[rowSelected].BackColor = System.Drawing.Color.WhiteSmoke;
             queueList.SelectedIndices.Clear();
+            queueList.Items[rowSelected].BackColor = System.Drawing.Color.WhiteSmoke;
         }
 
         /// <Summary>

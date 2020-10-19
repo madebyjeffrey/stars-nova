@@ -263,10 +263,37 @@ namespace Nova.Common
         }
         
         /// <summary>
-        /// Calculate the utilized capacity (as a percentage).
+        /// Calculate the max population.
         /// </summary>
         /// <param name="race"></param>
-        /// <returns>Capacity in the range 1 - 100 (%).</returns>
+        /// <returns>population.</returns>
+        public int MaxPopulation(Race race)
+        {
+            if (race.HasTrait("AR")) return this.Starbase.maxPopulation;
+            else
+            {
+                double maxPopulation = race.MaxPopulation;
+
+                if (race.HasTrait("HyperExpansion"))
+                {
+                    maxPopulation *= Global.PopulationFactorHyperExpansion;
+                }
+
+                // handle negative hab worlds
+                if (race.HabValue(this) < 0.0)
+                {
+                    maxPopulation = 250000.0;  //negative hab worlds terraform faster with more people don't they?
+                }
+                return (int)maxPopulation;
+            }
+        } 
+        
+        
+        /// <summary>
+                 /// Calculate the utilized capacity (as a percentage).
+                 /// </summary>
+                 /// <param name="race"></param>
+                 /// <returns>Capacity in the range 1 - 100 (%).</returns>
         public int Capacity(Race race)
         {
             double maxPopulation = race.MaxPopulation;

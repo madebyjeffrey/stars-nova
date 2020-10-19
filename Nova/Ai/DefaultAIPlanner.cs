@@ -57,7 +57,18 @@ namespace Nova.Ai
         public int TransportCount = 0;
         public int BomberCount = 0;
         public int WarfleetCount = 0;
-
+        private int SurplusPopulationKT
+        { 
+            get
+            {
+                int surplusPopulation = 0;
+                foreach (Star star in clientState.EmpireState.OwnedStars.Values)
+                {
+                    if (star.Capacity(clientState.EmpireState.Race) > 50) surplusPopulation = surplusPopulation + (star.Colonists - star.MaxPopulation(clientState.EmpireState.Race) / 2); // maintain population at 50% - best growth rate
+                }
+                return surplusPopulation / Global.ColonistsPerKiloton;
+            }
+        }
         /// <summary>
         /// Backing store for the TotalTransportKt property.
         /// </summary>
@@ -79,6 +90,12 @@ namespace Nova.Ai
         /// The ShipDesign to use for building transports.
         /// </summary>
         private ShipDesign transportDesign = null;
+        private ShipDesign currentTransportDesign = null;
+        private ShipDesign currentArmedDesign = null;
+        private ShipDesign currentBomberDesign = null;
+        private ShipDesign currentRefuelerDesign = null;
+        private ShipDesign currentMineLayerDesign = null;
+        private ShipDesign currentMineSweeperDesign = null;
 
         /// <summary>
         /// The number of scouted, unowned planets with > 5% habitability.
@@ -192,20 +209,120 @@ namespace Nova.Ai
         }
 
 
+        public ShipDesign AnyTransportDesign
+        {
+            get
+            {
+                if (currentTransportDesign == null)
+                {
+                    ShipDesign transportDesign = null;
+                    foreach (ShipDesign design in clientState.EmpireState.Designs.Values)
+                    {
+                        if (design.Name.Contains("Large Freighter"))
+                        {
+                            if (transportDesign == null) transportDesign = design;
+                            if (design.Engine.RamScoop && !transportDesign.Engine.RamScoop) transportDesign = design; //if the new design has ram scoop engines use it
+                            if ((design.Engine.RamScoop && transportDesign.Engine.RamScoop) && (transportDesign.Engine.OptimalSpeed < design.Engine.OptimalSpeed)) transportDesign = design;
+                            if ((!transportDesign.Engine.RamScoop) && (transportDesign.Engine.OptimalSpeed < design.Engine.OptimalSpeed)) transportDesign = design;
+                        }
+                    }
+                    if (transportDesign == null)
+                    {
+                        foreach (ShipDesign design in clientState.EmpireState.Designs.Values)
+                        {
+                            if (design.Name.Contains("Medium Freighter"))
+                            {
+                                if (transportDesign == null) transportDesign = design;
+                                if (design.Engine.RamScoop && !transportDesign.Engine.RamScoop) transportDesign = design; //if the new design has ram scoop engines use it
+                                if ((design.Engine.RamScoop && transportDesign.Engine.RamScoop) && (transportDesign.Engine.OptimalSpeed < design.Engine.OptimalSpeed)) transportDesign = design;
+                                if ((!transportDesign.Engine.RamScoop) && (transportDesign.Engine.OptimalSpeed < design.Engine.OptimalSpeed)) transportDesign = design;
+                            }
+                        }
+                    }
+                    currentTransportDesign = transportDesign;
+                    return transportDesign;
+                }
+                else return currentTransportDesign;
+            }
+        }
+        public ShipDesign AnyArmedDesign
+        {
+            get
+            {
+                if (currentArmedDesign == null)
+                {
+                    ShipDesign armedDesign = null;
+                    foreach (ShipDesign design in clientState.EmpireState.Designs.Values)
+                    {
+                        if (design.Name.Contains("Cruiser"))
+                        {
+                            if (armedDesign == null) armedDesign = design;
+                            if (design.Engine.RamScoop && !armedDesign.Engine.RamScoop) armedDesign = design; //if the new design has ram scoop engines use it
+                            if ((design.Engine.RamScoop && armedDesign.Engine.RamScoop) && (armedDesign.Engine.OptimalSpeed < design.Engine.OptimalSpeed)) armedDesign = design;
+                            if ((!armedDesign.Engine.RamScoop) && (armedDesign.Engine.OptimalSpeed < design.Engine.OptimalSpeed)) armedDesign = design;
+                        }
+                    }
+                    if (armedDesign == null)
+                    {
+                        foreach (ShipDesign design in clientState.EmpireState.Designs.Values)
+                        {
+                            if (design.Name.Contains("Frigate"))
+                            {
+                                if (armedDesign == null) armedDesign = design;
+                                if (design.Engine.RamScoop && !armedDesign.Engine.RamScoop) armedDesign = design; //if the new design has ram scoop engines use it
+                                if ((design.Engine.RamScoop && armedDesign.Engine.RamScoop) && (armedDesign.Engine.OptimalSpeed < design.Engine.OptimalSpeed)) armedDesign = design;
+                                if ((!armedDesign.Engine.RamScoop) && (armedDesign.Engine.OptimalSpeed < design.Engine.OptimalSpeed)) armedDesign = design;
+                            }
+                        }
+                    }
+                    if (armedDesign == null)
+                    {
+                        foreach (ShipDesign design in clientState.EmpireState.Designs.Values)
+                        {
+                            if (design.Name.Contains("Destroyer"))
+                            {
+                                if (armedDesign == null) armedDesign = design;
+                                if (design.Engine.RamScoop && !armedDesign.Engine.RamScoop) armedDesign = design; //if the new design has ram scoop engines use it
+                                if ((design.Engine.RamScoop && armedDesign.Engine.RamScoop) && (armedDesign.Engine.OptimalSpeed < design.Engine.OptimalSpeed)) armedDesign = design;
+                                if ((!armedDesign.Engine.RamScoop) && (armedDesign.Engine.OptimalSpeed < design.Engine.OptimalSpeed)) armedDesign = design;
+                            }
+                        }
+                    } // if still null should we arm a scout?
+                    currentArmedDesign = armedDesign;
+                    return armedDesign;
+                }
+                else return currentArmedDesign;
+            }
+        }
+
+
         public ShipDesign TransportDesign
         {
 
-            // Tech order: Bio, Elec, Energy, Prop, Weap, Cons
+
             get
             {
                 Component freighterHull = null;
                 Component engine = null;
-
-                if (transportDesign != null)
+                if (transportDesign == null)
                 {
-                    // already have a design set
+                    ShipDesign transportDesign = null;
+                    foreach (ShipDesign design in clientState.EmpireState.Designs.Values)
+                    {
+                        if (design.Name.Contains("Large Freighter"))
+                        {
+                            if (transportDesign == null) transportDesign = design;
+                            if (design.Engine.RamScoop && !transportDesign.Engine.RamScoop) transportDesign = design; //if the new design has ram scoop engines use it
+                            if ((design.Engine.RamScoop && transportDesign.Engine.RamScoop) && (transportDesign.Engine.OptimalSpeed < design.Engine.OptimalSpeed)) transportDesign = design;
+                            if ((!transportDesign.Engine.RamScoop) && (transportDesign.Engine.OptimalSpeed < design.Engine.OptimalSpeed)) transportDesign = design;
+                        }
+                    }
                     return transportDesign;
+
                 }
+
+
+
                 /* TODO - a better transport?
                 else if (clientState.EmpireState.ResearchLevels > new TechLevel(0, 0, 0, 11, 0, 8))
                 {
@@ -281,8 +398,8 @@ namespace Nova.Ai
         {
             get
             {
-                // TODO come up with a better way to determine how much transport to build.
-                return 5000;
+                return this.SurplusPopulationKT;
+                //return 5000;
             }
         }
 

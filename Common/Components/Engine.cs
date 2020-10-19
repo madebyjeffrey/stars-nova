@@ -59,19 +59,38 @@ namespace Nova.Common.Components
         {
             get
             {
-                double MPG = 9.0 * 9.0 / FuelConsumption[9]; 
+                double MPG = 9.0 / (double) FuelConsumption[9]; 
                 for (int i = 8; i >= 0; i--)
                 {
-                    if ((double)(i * i) / FuelConsumption[i] < MPG)
+                    if ((i) /(double) FuelConsumption[i] > MPG*1.1)  // accept 10% higher fuel consumption for a higher warpspeed
                     {
-                        MPG = (double) i * i / FuelConsumption[i];
+                        MPG = i / (double) FuelConsumption[i];
                     }
                     else
                     {
-                        return i - 1;
+                        return i+1 ;
                     }
                 }
-                return 0;
+                return 1;
+            }
+        }
+        public int MostFuelEfficientSpeed
+        {
+            get
+            {
+                double MPG =  9.0 * 9.0 / FuelConsumption[9];
+                for (int i = 8; i >= 0; i--)
+                {
+                    if ( (double)( i) / FuelConsumption[i] > MPG) //we don't care if it takes longer just choose the most fuel efficient speed
+                     {
+                        MPG =  i * i /(double) FuelConsumption[i];
+                    }
+                    else
+                    {
+                        return i+2;
+                    }
+                }
+                return 1;
             }
         }
 
@@ -98,6 +117,8 @@ namespace Nova.Common.Components
                 this.FuelConsumption[i] = existing.FuelConsumption[i];
             }
             this.RamScoop = existing.RamScoop;
+            this.FastestSafeSpeed = existing.FastestSafeSpeed;
+            this.OptimalSpeed = existing.OptimalSpeed;
         }
 
         #endregion

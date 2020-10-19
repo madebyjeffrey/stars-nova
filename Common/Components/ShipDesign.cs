@@ -594,8 +594,15 @@ namespace Nova.Common.Components
                     if (module.AllocatedComponent.Name != null)
                     {
                         module.AllocatedComponent =  allComponents.Fetch(module.AllocatedComponent.Name);
+                        if (module.AllocatedComponent.Type == ItemType.Engine)
+                        {
+                            (module.AllocatedComponent.Properties["Engine"] as Engine).OptimalSpeed
+                                  = (allComponents.Fetch(module.AllocatedComponent.Name).Properties["Engine"] as Engine).OptimalSpeed;
+                            (module.AllocatedComponent.Properties["Engine"] as Engine).FastestSafeSpeed
+                                  = (allComponents.Fetch(module.AllocatedComponent.Name).Properties["Engine"] as Engine).FastestSafeSpeed;
+                        }
                     }
-
+                    
                         // Sumarise the mass & cost
                         Summary.Mass += module.AllocatedComponent.Mass;
                     Summary.Cost += module.AllocatedComponent.Cost;

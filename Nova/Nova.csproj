@@ -403,6 +403,9 @@
     <EmbeddedResource Include="WinForms\Gui\Controls\FleetDetail.resx">
       <DependentUpon>FleetDetail.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\Gui\Controls\PlanetDetail.resx">
+      <DependentUpon>PlanetDetail.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="WinForms\Gui\Dialogs\CargoDialog.resx">
       <DependentUpon>CargoDialog.cs</DependentUpon>
       <SubType>Designer</SubType>

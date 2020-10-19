@@ -297,6 +297,8 @@ namespace Nova.WinForms.Console
                     //gui.NextTurn();
                     consoleTimer.Enabled = true;
                 }
+                int selectedRow = -1;
+                if (playerList.SelectedIndices.Count > 0) selectedRow = playerList.SelectedIndices[0];
                 if (SetPlayerList())
                 {
                     generateTurnMenuItem.Enabled = true;
@@ -315,6 +317,7 @@ namespace Nova.WinForms.Console
                         ThreadPool.QueueUserWorkItem(new WaitCallback(RunAI));
                     }
                 }
+                if (selectedRow > 0) playerList.Items[selectedRow].Selected = true;
             }
             finally
             {

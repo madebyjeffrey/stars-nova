@@ -30,6 +30,8 @@ namespace Nova.Common
     using Nova.Common.Components;
     using Nova.Common.DataStructures;
     using Nova.Common.Waypoints;
+    using Nova.Common.Commands;
+
 
     /// <summary>
     /// Fleet class. A fleet is a container for one or more ships (which may be of
@@ -58,7 +60,7 @@ namespace Nova.Common
         public double FuelAvailable = 0;
         public double TargetDistance = 100;
         public string BattlePlan = "Default";
-       
+        public int maxPopulation = 1000000; //TODO when Race.HasTrait = "AR" starbases have different max populations
         public enum TravelStatus 
         { 
             Arrived, InTransit 
@@ -174,8 +176,8 @@ namespace Nova.Common
             {
                 int speed = 10;
                 foreach (ShipToken token in tokens.Values)
-                {
-                    speed = Math.Min(speed, token.Design.Engine.OptimumSpeed);
+                {                
+                    speed = Math.Min(speed, token.Design.Engine.OptimalSpeed);
                 }
 
                 return speed;
@@ -658,8 +660,59 @@ namespace Nova.Common
             return fuelConsumption;
         }
 
+        /// <summary>
+        /// returns true if the fleet can reach the destination with the current cargo
+        /// 
+        /// </summary>
+        public bool canCurrentlyReach(Star destination, Race race)
+        {
+            double destinationDistance = this.distanceTo(destination);
+            double yearsOfTravel = destinationDistance / (this.SlowestEngine * this.SlowestEngine);
+            double fuelRequired = this.FuelConsumption(this.SlowestEngine, race) * yearsOfTravel;
+            return (this.FuelAvailable > fuelRequired);
+        }
+        /// <summary>
+        /// returns true if the fleet can reach the destination when fully loaded
+        /// 
+        /// </summary>
+        public bool canReach(Star destination, Race race)
+        {
+            double destinationDistance = this.distanceTo(destination);
+            double yearsOfTravel = destinationDistance / (this.SlowestEngine * this.SlowestEngine);
+            double fuelRequired = this.FuelConsumptionWhenFull(this.SlowestEngine, race) * yearsOfTravel;
+            return (this.FuelAvailable > fuelRequired);
+        }
 
-        public bool canReach(StarIntel destination,Race race)
+
+        /// <summary>
+        /// loads the requested population into the fleet and send it to the target
+        /// 
+        /// </summary>
+        public WaypointCommand LoadWaypoint(Star source, int PopulationKT )
+        {
+            // load up
+            CargoTask wpTask = new CargoTask();
+            wpTask.Mode = CargoMode.Load;
+            wpTask.Target = this.InOrbit;
+            wpTask.Amount.ColonistsInKilotons = PopulationKT;
+            wpTask.Amount.Germanium = PopulationKT;
+
+            Waypoint wp = new Waypoint();
+            wp.Task = wpTask;
+            wp.Position = this.InOrbit.Position;
+            wp.WarpFactor = this.SlowestEngine;
+            wp.Destination = source.ToString();
+
+            WaypointCommand loadCommand = new WaypointCommand(CommandMode.Add, wp, this.Key);
+            return loadCommand;
+        }
+
+
+        /// <summary>
+        /// returns true if the fleet can reach the destination when fully loaded
+        /// 
+        /// </summary>
+        public bool canReach(StarIntel destination, Race race)
         {
             double destinationDistance = this.distanceTo(destination);
             double yearsOfTravel = destinationDistance / (this.SlowestEngine * this.SlowestEngine);

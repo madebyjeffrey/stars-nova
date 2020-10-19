@@ -93,7 +93,31 @@ namespace Nova.Common.Components
             Description = copy.Description;
             foreach (string key in copy.Properties.Keys)
             {
-                Properties.Add(key, (ComponentProperty)copy.Properties[key].Clone());
+                if (copy.Type == ItemType.Engine) Properties.Add(key, (Engine)copy.Properties[key].Clone());
+                if (copy.Type == ItemType.Weapon) Properties.Add(key, (Weapon)copy.Properties[key].Clone());
+                if (copy.Type == ItemType.Torpedoes) Properties.Add(key, (Weapon)copy.Properties[key].Clone());
+                if (copy.Type == ItemType.Terraforming) Properties.Add(key, (Terraform)copy.Properties[key].Clone());
+                if (copy.Type == ItemType.StarIntel) Properties.Add(key, (ComponentProperty)copy.Properties[key].Clone());
+                if (copy.Type == ItemType.Starbase) Properties.Add(key, (ComponentProperty)copy.Properties[key].Clone());
+                if (copy.Type == ItemType.Star) Properties.Add(key, (ComponentProperty)copy.Properties[key].Clone());
+                if (copy.Type == ItemType.Ship) Properties.Add(key, (ComponentProperty)copy.Properties[key].Clone());
+                if (copy.Type == ItemType.Shield) Properties.Add(key, (ComponentProperty)copy.Properties[key].Clone());
+                if (copy.Type == ItemType.Scanner) Properties.Add(key, (Scanner)copy.Properties[key].Clone());
+                if (copy.Type == ItemType.PlanetaryInstallations) Properties.Add(key, (ComponentProperty)copy.Properties[key].Clone());
+                if (copy.Type == ItemType.Orbital) Properties.Add(key, (ComponentProperty)copy.Properties[key].Clone());
+                if (copy.Type == ItemType.MiningRobot) Properties.Add(key, (ComponentProperty)copy.Properties[key].Clone());
+                if (copy.Type == ItemType.MineLayer) Properties.Add(key, (MineLayer)copy.Properties[key].Clone());
+                if (copy.Type == ItemType.Mechanical) Properties.Add(key, (ComponentProperty)copy.Properties[key].Clone());
+                if (copy.Type == ItemType.Hull) Properties.Add(key, (Hull)copy.Properties[key].Clone());
+                if (copy.Type == ItemType.Gate) Properties.Add(key, (Gate)copy.Properties[key].Clone());
+                if (copy.Type == ItemType.FleetIntel) Properties.Add(key, (ComponentProperty)copy.Properties[key].Clone());
+                if (copy.Type == ItemType.Fleet) Properties.Add(key, (ComponentProperty)copy.Properties[key].Clone());
+                if (copy.Type == ItemType.Electrical) Properties.Add(key, (ComponentProperty)copy.Properties[key].Clone());
+                if (copy.Type == ItemType.Defense) Properties.Add(key, (Defense)copy.Properties[key].Clone());
+                if (copy.Type == ItemType.Bomb) Properties.Add(key, (Bomb)copy.Properties[key].Clone());
+                if (copy.Type == ItemType.BeamWeapons) Properties.Add(key, (Weapon)copy.Properties[key].Clone());
+                if (copy.Type == ItemType.Armor) Properties.Add(key, (ComponentProperty)copy.Properties[key].Clone());
+
             }
             if (copy.Restrictions != null)
             {

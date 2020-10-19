@@ -65,6 +65,97 @@ namespace Nova.Common.Components
             DetermineRaceComponents(newRace, newTech);
         }
 
+        
+        public Component GetBestBeamWeapon()
+        {
+            Component candidate = null;
+            foreach (Component component in this.Values)
+                if ((component.Type == ItemType.BeamWeapons) && ((component.Properties["Weapon"] as Weapon).Group != WeaponType.shieldSapper))
+                {
+                    if (candidate == null) candidate = component;
+                    if ((component.Properties["Weapon"] as Weapon).Range > (candidate.Properties["Weapon"] as Weapon).Range) candidate = component;
+                    if (((component.Properties["Weapon"] as Weapon).Range == (candidate.Properties["Weapon"] as Weapon).Range) &&
+                        ((component.Properties["Weapon"] as Weapon).Power > (candidate.Properties["Weapon"] as Weapon).Power)) candidate = component;
+                }
+            return candidate ;
+
+        }
+        public Component GetBestTorpedo()
+        {
+            Component candidate = null;
+            foreach (Component component in this.Values)
+                if (component.Type == ItemType.Torpedoes)
+                {
+                    if (candidate == null) candidate = component;
+                    if ((component.Properties["Weapon"] as Weapon).Range > (candidate.Properties["Weapon"] as Weapon).Range) candidate = component;
+                    if (((component.Properties["Weapon"] as Weapon).Range == (candidate.Properties["Weapon"] as Weapon).Range) &&
+                        ((component.Properties["Weapon"] as Weapon).Power > (candidate.Properties["Weapon"] as Weapon).Power)) candidate = component;
+                }
+            return candidate;
+
+        }
+        public Component GetBestBattleComputer()
+        {
+            Component candidate = null;
+            foreach (Component component in this.Values)
+                if ((component.Type == ItemType.Electrical) && (component.Name.Contains("Computer")))
+                {
+                    if (candidate == null) candidate = component;
+                    if ((component.Properties["Computer"] as Computer).Accuracy > (candidate.Properties["Computer"] as Computer).Accuracy) candidate = component;
+                }
+            return candidate;
+
+        }
+        public Component GetBestManeuveringJet()
+        {
+            Component candidate = null;
+            foreach (Component component in this.Values)
+            { // no properties of overthrusters in component !!
+                if ((component.Type == ItemType.Mechanical) && (component.Name.Contains("Maneuvering Jet")) && (candidate == null)) candidate = component; //increases speed by 1/4 square
+                if ((component.Type == ItemType.Mechanical) && (component.Name.Contains("Overthruster"))) candidate = component; // increases speed by 1/2 square
+            }
+            return candidate;
+
+        }
+        public Component GetBestMobileArmour()
+        {
+            Component candidate = null;
+            foreach (Component component in this.Values)
+                if (component.Type == ItemType.Armor)
+                { // Best Armour per KG of mass
+                    if (candidate == null) candidate = component;
+                    if ((component.Properties["Armor"] as IntegerProperty).Value  / (double)( component.Mass) >
+                        (candidate.Properties["Armor"] as IntegerProperty).Value  / (double)( candidate.Mass)) candidate = component;
+                }
+            return candidate;
+
+        }
+        public Component GetBestCapacitor()
+        {
+            Component candidate = null;
+            foreach (Component component in this.Values)
+                if (component.Type == ItemType.Armor)
+                { // Best Armour per KG of mass
+                    if (candidate == null) candidate = component;
+                    if ((component.Properties["Electrical"] as IntegerProperty).Value >
+                        (candidate.Properties["Electrical"] as IntegerProperty).Value ) candidate = component;
+                }
+            return candidate;
+
+        }
+        public Component GetBestShield()
+        {
+            Component candidate = null;
+            foreach (Component component in this.Values)
+                if (component.Type == ItemType.Armor)
+                { // Best shields - shield mass is almost negligible
+                    if (candidate == null) candidate = component;
+                    if ((component.Properties["Shields"] as IntegerProperty).Value  >
+                        (candidate.Properties["Shields"] as IntegerProperty).Value ) candidate = component;
+                }
+            return candidate;
+
+        }
 
         public Component GetBestEngine(Component hullType,bool preferWarp = true)
         {
@@ -84,8 +175,8 @@ namespace Nova.Common.Components
             foreach (Component engine in suitableEngines)
             {
                 if (preferWarp && ((engine.Properties["Engine"] as Engine).FreeWarpSpeed > (best.Properties["Engine"] as Engine).FreeWarpSpeed)) best = engine;
-                if (preferWarp && ((engine.Properties["Engine"] as Engine).FreeWarpSpeed == (best.Properties["Engine"] as Engine).FreeWarpSpeed) && ((engine.Properties["Engine"] as Engine).OptimumSpeed > (best.Properties["Engine"] as Engine).OptimumSpeed)) best = engine;
-                if (!preferWarp && ((engine.Properties["Engine"] as Engine).OptimumSpeed > (best.Properties["Engine"] as Engine).OptimumSpeed)) best = engine;  
+                if (preferWarp && ((engine.Properties["Engine"] as Engine).FreeWarpSpeed == (best.Properties["Engine"] as Engine).FreeWarpSpeed) && ((engine.Properties["Engine"] as Engine).OptimalSpeed > (best.Properties["Engine"] as Engine).OptimalSpeed)) best = engine;
+                if (!preferWarp && ((engine.Properties["Engine"] as Engine).OptimalSpeed > (best.Properties["Engine"] as Engine).OptimalSpeed)) best = engine;  
             }
             return best;
 

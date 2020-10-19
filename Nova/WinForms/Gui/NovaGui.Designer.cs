@@ -47,7 +47,7 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.mapControl);
             this.groupBox2.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.groupBox2.Location = new System.Drawing.Point(374, 24);
+            this.groupBox2.Location = new System.Drawing.Point(474, 24);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(611, 701);
             this.groupBox2.TabIndex = 1;
@@ -57,7 +57,7 @@
             // mapControl
             // 
             this.mapControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mapControl.Location = new System.Drawing.Point(3, 16);
+            this.mapControl.Location = new System.Drawing.Point(03, 16);
             this.mapControl.Name = "mapControl";
             this.mapControl.Size = new System.Drawing.Size(605, 682);
             this.mapControl.TabIndex = 0;
@@ -73,7 +73,7 @@
             });
             this.mainMenu.Location = new System.Drawing.Point(0, 0);
             this.mainMenu.Name = "mainMenu";
-            this.mainMenu.Size = new System.Drawing.Size(993, 24);
+            this.mainMenu.Size = new System.Drawing.Size(1093, 24);
             this.mainMenu.TabIndex = 20;
             this.mainMenu.Text = "menuStrip1";
             // 
@@ -226,7 +226,7 @@
                         | System.Windows.Forms.AnchorStyles.Left)));
             this.messages.Location = new System.Drawing.Point(8, 412);
             this.messages.Name = "messages";
-            this.messages.Size = new System.Drawing.Size(360, 116);
+            this.messages.Size = new System.Drawing.Size(460, 116);
             this.messages.TabIndex = 18;
             this.messages.Year = Global.StartingYear;
             // 
@@ -235,7 +235,7 @@
             this.selectionDetail.Location = new System.Drawing.Point(8, 24);
             this.selectionDetail.Margin = new System.Windows.Forms.Padding(0);
             this.selectionDetail.Name = "selectionDetail";
-            this.selectionDetail.Size = new System.Drawing.Size(360, 406);
+            this.selectionDetail.Size = new System.Drawing.Size(460, 406);
             this.selectionDetail.TabIndex = 21;
             this.selectionDetail.Value = null;
             // 
@@ -244,14 +244,14 @@
             this.selectionSummary.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.selectionSummary.Location = new System.Drawing.Point(8, 534);
             this.selectionSummary.Name = "selectionSummary";
-            this.selectionSummary.Size = new System.Drawing.Size(360, 191);
+            this.selectionSummary.Size = new System.Drawing.Size(460, 191);
             this.selectionSummary.TabIndex = 19;
             this.selectionSummary.Value = null;
             // 
             // NovaGUI
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-            this.ClientSize = new System.Drawing.Size(993, 732);
+            this.ClientSize = new System.Drawing.Size(1093, 732);
             this.Controls.Add(this.messages);
             this.Controls.Add(this.mainMenu);
             this.Controls.Add(this.selectionDetail);
@@ -260,7 +260,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.MainMenuStrip = this.mainMenu;
-            this.MinimumSize = new System.Drawing.Size(928, 770);
+            this.MinimumSize = new System.Drawing.Size(1028, 770);
             this.Name = "NovaGUI";
             this.Text = "Stars! Nova - " + clientState.EmpireState.Race.PluralName;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.NovaGUI_FormClosing);

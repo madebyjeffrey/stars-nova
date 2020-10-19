@@ -67,9 +67,31 @@ namespace Nova.WinForms.Gui
             this.empireState = empireState;
             this.clientState = clientState;
 
-           // InitializeComponent();
+            // InitializeComponent();
         }
+        public void ClearStar()
+        {
+            productionQueue.Clear();
+            starbaseArmor.Text = "";
+            starbaseShields.Text = "";
+            starbaseDamage.Text = "";
+            starbaseCapacity.Text = "";
+            defenseCoverage.Text = "";
+            defenses.Text = "";
+            defenseType.Text = "";
+            factories.Text = "";
+            mines.Text = "";
+            Resources unknown = new Resources(0, 0, 0, 0);
+            resourceDisplay.Value = unknown;
+            scannerType.Text = "";
+            scannerRange.Text = "";
+            population.Text = "unknown";
+            resourceDisplay.ResourceRate = 0;
+            resourceDisplay.ResearchBudget = 0;
+            resourceDisplay.Name = "";
+            resourceDisplay.ResetText();
 
+        }
         /// <Summary>
         /// The change queue button has been pressed.
         /// </Summary>
@@ -144,6 +166,7 @@ namespace Nova.WinForms.Gui
         {
             if (selectedStar == null)
             {
+                ClearStar();
                 return;
             }
 

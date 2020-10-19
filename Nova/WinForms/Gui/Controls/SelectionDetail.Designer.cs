@@ -38,7 +38,7 @@ namespace Nova.WinForms.Gui
             this.planetDetail.Location = new System.Drawing.Point(0, 0);
             this.planetDetail.Margin = new System.Windows.Forms.Padding(0);
             this.planetDetail.Name = "planetDetail1";
-            this.planetDetail.Size = new System.Drawing.Size(361, 460);
+            this.planetDetail.Size = new System.Drawing.Size(461, 460);
             this.planetDetail.TabIndex = 0;
             // 
             // fleetDetail1
@@ -47,7 +47,7 @@ namespace Nova.WinForms.Gui
             this.fleetDetail.Location = new System.Drawing.Point(0, 0);
             this.fleetDetail.Margin = new System.Windows.Forms.Padding(0);
             this.fleetDetail.Name = "fleetDetail1";
-            this.fleetDetail.Size = new System.Drawing.Size(361, 460);
+            this.fleetDetail.Size = new System.Drawing.Size(461, 460);
             this.fleetDetail.TabIndex = 1;
             // 
             // SelectionDetail
@@ -58,7 +58,7 @@ namespace Nova.WinForms.Gui
             this.Controls.Add(this.fleetDetail);
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "SelectionDetail";
-            this.Size = new System.Drawing.Size(361, 460);
+            this.Size = new System.Drawing.Size(461, 460);
             this.ResumeLayout(false);
 
         }

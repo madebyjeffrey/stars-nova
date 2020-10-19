@@ -135,6 +135,7 @@ namespace Nova.WinForms.Gui
             else
             {
                 Enabled = false;
+                planetDetail.ClearStar();
                 return;
             }
 

@@ -97,7 +97,30 @@ namespace Nova.WinForms.Gui
 
             //InitializeComponent();
         }
+        private void wayPoints_DrawItem(object sender,
+            System.Windows.Forms.DrawItemEventArgs e)
+        {
+            // Draw the background of the ListBox control for each item.
+            e.DrawBackground();
+            // Define the default color of the brush as black.
+            System.Drawing.Brush wpBrush = System.Drawing.Brushes.Black;
 
+            // Determine the color of the brush to draw each item based 
+            // on the index of the item to draw.
+            bool isWaypoint0 = true;
+            for (int i = 0; i <= e.Index; i++) if ((wayPoints.Items[0] as Waypoint).Destination != (wayPoints.Items[e.Index] as Waypoint).Destination) isWaypoint0 = false;
+            if (e.Index == 0) wpBrush = System.Drawing.Brushes.BlueViolet;
+            else if (isWaypoint0) wpBrush = System.Drawing.Brushes.LightGray;
+            else wpBrush = System.Drawing.Brushes.Black;
+            
+
+            // Draw the current item text based on the current Font 
+            // and the custom brush settings.
+            e.Graphics.DrawString((wayPoints.Items[e.Index] as Waypoint).Destination ,
+                e.Font, wpBrush, e.Bounds, System.Drawing.StringFormat.GenericDefault);
+            // If the ListBox has focus, draw a focus rectangle around the selected item.
+            e.DrawFocusRectangle();
+        }
         /// <Summary>
         /// Called when the warp factor slider is moved.
         /// </Summary>
@@ -472,6 +495,8 @@ namespace Nova.WinForms.Gui
         /// <param name="fleet">The selected fleet.</param>
         private void SetFleetDetails(Fleet topFleet)
         {
+            wayPoints.DrawMode = DrawMode.OwnerDrawFixed;
+            wayPoints.DrawItem += new DrawItemEventHandler(wayPoints_DrawItem);
             if (topFleet == null)
             {
                 return;
@@ -911,6 +936,12 @@ namespace Nova.WinForms.Gui
             (e.ClickedItem as ToolStripMenuItem).Checked = true;
             UpdateWaypointList(this, new EventArgs());
             Invalidate();
+        }
+
+        private void buttonSplitAll_Click(object sender, EventArgs e)
+        {
+            //TODO
+
         }
     }
 }

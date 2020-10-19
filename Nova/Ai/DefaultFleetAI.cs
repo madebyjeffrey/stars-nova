@@ -127,6 +127,78 @@ namespace Nova.Ai
         }
 
         /// <summary>
+        /// exactly the same as Scout at the moment but will likely get minor tweeks
+        /// </summary>
+        /// <param name="excludedStars"></param>
+        /// <returns></returns>
+        public StarIntel ArmedScout(List<StarIntel> excludedStars)
+        {
+            bool missionAccepted = false;
+
+            // Find a star to scout
+            StarIntel starToScout = ClosestStar(this.fleet, excludedStars);
+            if (starToScout != null)
+            {
+                // Do we need fuel first?
+                if ((fleet.FreeWarpSpeed > 1) || (fleet.FuelAvailable > 100))
+                { // Scout can make fuel or has heaps of fuel available so just keep scouting
+                    SendFleet(starToScout, fleet, new NoTask());
+                    missionAccepted = true;
+                }
+                else
+                {// Scout can't make fuel
+                    double fuelRequired = 0.0;
+                    Fleet nearestFuel = ClosestFuel(fleet);
+                    if (!fleet.CanRefuel)
+                    {
+                        // Can not make fuel, so how much fuel is required to scout and then refuel?
+                        if (nearestFuel != null)
+                        {
+                            int bestWarp = fleet.SlowestEngine;
+                            double bestSpeed = bestWarp * bestWarp;
+                            double speedSquared = bestSpeed * bestSpeed;
+                            double fuelConsumption = fleet.FuelConsumption(bestWarp, clientState.EmpireState.Race);
+                            double distanceSquared = PointUtilities.DistanceSquare(fleet.Position, starToScout.Position); // to the stars
+                            distanceSquared += PointUtilities.DistanceSquare(starToScout.Position, nearestFuel.Position); // and back to fuel (minimum)
+                            double time = Math.Sqrt(distanceSquared / speedSquared);
+                            fuelRequired = time * fuelConsumption;
+                        }
+                        else
+                        {
+                            // OMG there is no fuel! - just keep scouting then?
+                        }
+                    }
+
+
+                    if (fleet.FuelAvailable > fuelRequired)
+                    {
+                        // Fuel is no problem
+                        fleet.Speed = fleet.SlowestEngine;
+                        if (fleet.Speed > 1) fleet.Speed--;
+
+
+                        SendFleet(starToScout, fleet, new NoTask());
+                        missionAccepted = true;
+                    }
+                    else
+                    {
+                        // Refuel before scouting further
+                        SendFleet(nearestFuel, fleet, new NoTask());
+                    }
+                }
+            }
+
+            if (missionAccepted)
+            {
+                return starToScout;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Send the fleet to colonise a planet.
         /// </summary>
         /// <param name="targetStar">The <see cref="StarIntel"/> for the target star to colonise.</param>

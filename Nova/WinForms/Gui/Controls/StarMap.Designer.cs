@@ -43,8 +43,8 @@ namespace Nova.WinForms.Gui
             this.radioButtonGrowth = new System.Windows.Forms.RadioButton();
             this.radioButtonMineralConcentration = new System.Windows.Forms.RadioButton();
             this.radioButtonSurfaceMinerals = new System.Windows.Forms.RadioButton();
-            this.MapPanel = new Nova.WinForms.Gui.StarMapPanel();
             this.radioButtonNovaValue = new System.Windows.Forms.RadioButton();
+            this.MapPanel = new Nova.WinForms.Gui.StarMapPanel();
             this.selectItemMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -168,7 +168,7 @@ namespace Nova.WinForms.Gui
             // radioButtonGrowth
             // 
             this.radioButtonGrowth.AutoSize = true;
-            this.radioButtonGrowth.Location = new System.Drawing.Point(832, 8);
+            this.radioButtonGrowth.Location = new System.Drawing.Point(687, 8);
             this.radioButtonGrowth.Name = "radioButtonGrowth";
             this.radioButtonGrowth.Size = new System.Drawing.Size(144, 17);
             this.radioButtonGrowth.TabIndex = 12;
@@ -199,6 +199,18 @@ namespace Nova.WinForms.Gui
             this.radioButtonSurfaceMinerals.UseVisualStyleBackColor = true;
             this.radioButtonSurfaceMinerals.CheckedChanged += new System.EventHandler(this.radioButtonSurfaceMinerals_CheckedChanged);
             // 
+            // radioButtonNovaValue
+            // 
+            this.radioButtonNovaValue.AutoSize = true;
+            this.radioButtonNovaValue.Location = new System.Drawing.Point(278, 8);
+            this.radioButtonNovaValue.Name = "radioButtonNovaValue";
+            this.radioButtonNovaValue.Size = new System.Drawing.Size(52, 17);
+            this.radioButtonNovaValue.TabIndex = 15;
+            this.radioButtonNovaValue.TabStop = true;
+            this.radioButtonNovaValue.Text = "Value";
+            this.radioButtonNovaValue.UseVisualStyleBackColor = true;
+            this.radioButtonNovaValue.CheckedChanged += new System.EventHandler(this.radioButtonNovaValue_CheckedChanged);
+            // 
             // MapPanel
             // 
             this.MapPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -212,18 +224,6 @@ namespace Nova.WinForms.Gui
             this.MapPanel.Size = new System.Drawing.Size(959, 620);
             this.MapPanel.TabIndex = 6;
             this.MapPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.StarMapMouse);
-            // 
-            // radioButtonNovaValue
-            // 
-            this.radioButtonNovaValue.AutoSize = true;
-            this.radioButtonNovaValue.Location = new System.Drawing.Point(278, 8);
-            this.radioButtonNovaValue.Name = "radioButtonNovaValue";
-            this.radioButtonNovaValue.Size = new System.Drawing.Size(52, 17);
-            this.radioButtonNovaValue.TabIndex = 15;
-            this.radioButtonNovaValue.TabStop = true;
-            this.radioButtonNovaValue.Text = "Value";
-            this.radioButtonNovaValue.UseVisualStyleBackColor = true;
-            this.radioButtonNovaValue.CheckedChanged += new System.EventHandler(this.radioButtonNovaValue_CheckedChanged);
             // 
             // StarMap
             // 

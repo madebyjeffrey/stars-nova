@@ -45,6 +45,7 @@ namespace Nova.Ai
         private DefaultAIPlanner aiPlan = null;
 
         private Star planet;
+        private ShipDesign transportDesign = null;
 
         /// <summary>
         /// Initializing constructor.
@@ -152,18 +153,48 @@ namespace Nova.Ai
             }
             else
             {
-                Report.Information("A.I. planet capacity is high and A.I. is devoting itself to researching better freighters");
+               // Report.Information("A.I. planet capacity is high and A.I. is devoting itself to researching better freighters");
             }
         }
 
         /// <summary>
         /// 
         /// </summary>
+
+
+        public ShipDesign TransportDesign
+        {
+
+            get
+            {
+                if (transportDesign == null)
+                {
+                    ShipDesign transportDesign = null;
+                    foreach (ShipDesign design in clientState.EmpireState.Designs.Values)
+                    {
+                        if (design.Name.Contains("Large Freighter"))
+                        {
+                            if (transportDesign == null) transportDesign = design;
+                            if (design.Engine.RamScoop && !transportDesign.Engine.RamScoop) transportDesign = design; //if the new design has ram scoop engines use it
+                            if ((design.Engine.RamScoop && transportDesign.Engine.RamScoop) && (transportDesign.Engine.OptimalSpeed < design.Engine.OptimalSpeed)) transportDesign = design;
+                            if ((!transportDesign.Engine.RamScoop) && (transportDesign.Engine.OptimalSpeed < design.Engine.OptimalSpeed)) transportDesign = design;
+                        }
+                    }
+
+                }
+                return transportDesign;
+            }
+        }
+
+
         private int BuildShips(int productionIndex)
         {
             productionIndex = BuildScout(productionIndex);
             productionIndex = BuildColonizer(productionIndex);
             productionIndex = BuildTransport(productionIndex);
+            productionIndex = BuildBattleCruiser(productionIndex);
+            //productionIndex = BuildBomber(productionIndex); ?
+            //productionIndex = BuildFuelTransport(productionIndex); ?
 
             return productionIndex;
         } // Build ships
@@ -175,7 +206,7 @@ namespace Nova.Ai
         /// <returns>The updated productionIndex.</returns>
         private int BuildScout(int productionIndex)
         {
-            int earlyScouts = (int)Math.Max(DefaultAIPlanner.EarlyScouts, Math.Sqrt(clientState.EmpireState.StarReports.Count));
+            int earlyScouts = (int)Math.Max(DefaultAIPlanner.EarlyScouts, clientState.EmpireState.StarReports.Count/8);
             if (this.planet.GetResourceRate() > DefaultAIPlanner.LowProduction && this.aiPlan.ScoutCount < earlyScouts)
             {
                 if (this.aiPlan.ScoutDesign != null)
@@ -231,22 +262,44 @@ namespace Nova.Ai
         /// </remarks>
         private int BuildTransport(int productionIndex)
         {
-            if (this.planet.GetResourceRate() > DefaultAIPlanner.LowProduction && this.aiPlan.TotalTransportKt < this.aiPlan.TransportKtRequired)
-            {
-                if (this.aiPlan.TransportDesign != null)
-                {
-                    ProductionOrder transportOrder = new ProductionOrder(1, new ShipProductionUnit(this.aiPlan.TransportDesign), false);
-                    ProductionCommand transportCommand = new ProductionCommand(CommandMode.Add, transportOrder, this.planet.Key, productionIndex);
-                    if (transportCommand.IsValid(clientState.EmpireState))
+            if ((this.aiPlan.AnyTransportDesign != null) && (this.planet.Starbase != null))
+                if (this.planet.Starbase.TotalDockCapacity > this.aiPlan.AnyTransportDesign.Mass)
+
+                    if ((this.planet.GetResourceRate() > DefaultAIPlanner.LowProduction) && (this.planet.Capacity(clientState.EmpireState.Race) > 25))
                     {
-                        transportCommand.ApplyToState(clientState.EmpireState);
-                        clientState.Commands.Push(transportCommand);
-                        productionIndex++;
+                        {
+                            ProductionOrder transportOrder = new ProductionOrder(1, new ShipProductionUnit(this.aiPlan.AnyTransportDesign), false);
+                            ProductionCommand transportCommand = new ProductionCommand(CommandMode.Add, transportOrder, this.planet.Key, productionIndex);
+                            if (transportCommand.IsValid(clientState.EmpireState))
+                            {
+                                transportCommand.ApplyToState(clientState.EmpireState);
+                                clientState.Commands.Push(transportCommand);
+                                productionIndex++;
+                            }
+                        }
                     }
-                }
-            }
             return productionIndex;
         } // BuildTransport()
+        private int BuildBattleCruiser(int productionIndex)
+        {
+            if (this.aiPlan.AnyArmedDesign != null)
+                if ((this.planet.Starbase.TotalDockCapacity > this.aiPlan.AnyArmedDesign.Mass)
+
+                    && ((this.planet.GetResourceRate() > DefaultAIPlanner.LowProduction) ))
+                    {
+                        {
+                            ProductionOrder armedOrder = new ProductionOrder(5, new ShipProductionUnit(this.aiPlan.AnyArmedDesign), false);
+                            ProductionCommand armedCommand = new ProductionCommand(CommandMode.Add, armedOrder, this.planet.Key, productionIndex);
+                            if (armedCommand.IsValid(clientState.EmpireState))
+                            {
+                                armedCommand.ApplyToState(clientState.EmpireState);
+                                clientState.Commands.Push(armedCommand);
+                                productionIndex++;
+                            }
+                        }
+                    }
+            return productionIndex;
+        } 
     }
 }
 

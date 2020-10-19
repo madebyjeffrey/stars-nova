@@ -1157,7 +1157,7 @@ namespace Nova.WinForms.Gui
         /// <Summary>
         /// Set the position of the Star map selection cursor.
         /// </Summary>
-        /// <param name="position">Whete the cursor is to be put.</param>
+        /// <param name="position">Where the cursor is to be put.</param>
         public void SetCursor(NovaPoint position)
         {
             cursorPosition = position;
