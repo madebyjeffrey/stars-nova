@@ -36,6 +36,7 @@ namespace Nova.Common
     public class Star : Mappable
     {
         public bool HasFleetsInOrbit;
+        public bool HasRefuelerInOrbit;
         public ProductionQueue ManufacturingQueue;
         public Resources MineralConcentration;
         public Resources ResourcesOnHand;
@@ -614,6 +615,9 @@ namespace Nova.Common
                         case "hasfleetsinorbit":
                             HasFleetsInOrbit = bool.Parse(mainNode.FirstChild.Value);
                             break;
+                        case "hasrefuelerinorbit":
+                            HasRefuelerInOrbit = bool.Parse(mainNode.FirstChild.Value);
+                            break;
                         case "productionqueue":
                             ManufacturingQueue = new ProductionQueue(mainNode);
                             break;
@@ -718,7 +722,8 @@ namespace Nova.Common
             xmlelStar.AppendChild(ResourcesOnHand.ToXml(xmldoc, "ResourcesOnHand"));
 
             Global.SaveData(xmldoc, xmlelStar, "HasFleetsInOrbit", HasFleetsInOrbit.ToString());
-  
+            Global.SaveData(xmldoc, xmlelStar, "HasRefuelerInOrbit", HasRefuelerInOrbit.ToString());
+
             // Starbase and ThisRace are stored as references only (just the name is saved).
             if (Starbase != null)
             {

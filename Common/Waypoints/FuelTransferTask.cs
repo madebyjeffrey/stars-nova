@@ -25,91 +25,80 @@ namespace Nova.Common.Waypoints
     using System;
     using System.Collections.Generic;
     using System.Xml;
-    
-    using Nova.Common;
 
-    public enum CargoMode
-    {
-        Load = 0,
-        Unload
-    }   
-    
+    using Nova.Common;
+    using Nova.Common.Components;
+
+
+
     /// <summary>
-    /// Performs Star Colonization.
+    /// Performs transfer of fuel between fleets
     /// </summary>
-    public class CargoTask : IWaypointTask
-    {        
+    public class FuelTransferTask : IWaypointTask
+    {
         private List<Message> messages = new List<Message>();
-        
+
         /// <inheritdoc />
         public List<Message> Messages
         {
             get { return messages; }
         }
-        
+
         /// <inheritdoc />
         public string Name
         {
             get
             {
-                if (Mode == CargoMode.Load) 
-                { 
-                    return "Load Cargo"; 
-                }
-                else 
-                { 
-                    return "Unload Cargo"; 
-                }
+                return "Load Fuel";
             }
         }
-        
-        /// <summary>
-        /// Cargo object representing the amount to Load or Unload.
-        /// </summary>
-        public Cargo Amount { get; set; }
 
 
         /// <summary>
-        /// Load or Unload cargo. Mixed operations are represented by more than one Task.
+        /// Int object representing the amount of Fuel to Load.
         /// </summary>
-        public CargoMode Mode { get; set; }
+        public IntegerProperty Amount { get; set; }
+
+
+        /// <summary>
+        /// Load fuel to item (may be negative)
+        /// </summary>
+
         public Item Target { get; set; }
 
 
         /// <summary>
         /// Default Constructor.
         /// </summary>
-        public CargoTask()
+        public FuelTransferTask()
         {
-            Amount = new Cargo();
-            Mode = CargoMode.Unload;
+            Amount = new IntegerProperty();
             Target = new Mappable();
         }
-        
-        
+
+
         /// <summary>
         /// Copy Constructor.
         /// </summary>
         /// <param name="other">CargoTask to copy.</param>
-        public CargoTask(CargoTask copy)
+        public FuelTransferTask(FuelTransferTask copy)
         {
-            Amount = new Cargo(copy.Amount);
-            Mode = copy.Mode;
+            Amount = new IntegerProperty(copy.Amount);
             Target = copy.Target;
         }
-        
-        
+
+
         /// <summary>
         /// Load: Read an object of this class from and XmlNode representation.
         /// </summary>
         /// <param name="node">An XmlNode containing a representation of this object.</param>
-        public CargoTask(XmlNode node)
+        public FuelTransferTask(XmlNode node)
         {
             if (node == null)
             {
                 return;
             }
-            
+
             XmlNode mainNode = node.FirstChild;
             while (mainNode != null)
             {
@@ -117,15 +106,12 @@ namespace Nova.Common.Waypoints
                 {
                     switch (mainNode.Name.ToLower())
                     {
-                        case "cargo":
-                            Amount = new Cargo(mainNode);
+                        case "fuel":
+                            Amount = new IntegerProperty(mainNode);
                             break;
                         case "item":
                             Target = new Item(node);
                             break;
-                        case "mode":
-                            Mode = (CargoMode)Enum.Parse(typeof(CargoMode), mainNode.FirstChild.Value);
-                            break;                             
                     }
                 }
                 catch (Exception e)
@@ -135,13 +121,12 @@ namespace Nova.Common.Waypoints
                 mainNode = mainNode.NextSibling;
             }
         }
-        
-        
+
+
         /// <inheritdoc />
         public XmlElement ToXml(XmlDocument xmldoc)
         {
             XmlElement xmlelTask = xmldoc.CreateElement("CargoTask");
-            Global.SaveData(xmldoc, xmlelTask, "Mode", Mode.ToString());
             if (Target != null) xmlelTask.AppendChild(Target.ToXml(xmldoc));
             xmlelTask.AppendChild(Amount.ToXml(xmldoc));
 
@@ -157,7 +142,7 @@ namespace Nova.Common.Waypoints
 
                 Message message = new Message();
                 message.Audience = fleet.Owner;
-                message.Text = "Fleet " + fleet.Name + " attempted to load/unload cargo to empty space: ";
+                message.Text = "Fleet " + fleet.Name + " attempted to load/unload fuel to empty space: ";
                 Messages.Add(message);
                 return false;
             }
@@ -172,7 +157,7 @@ namespace Nova.Common.Waypoints
 
                         Message message = new Message();
                         message.Audience = fleet.Owner;
-                        message.Text = "Fleet " + fleet.Name + " attempted to load/unload cargo when too far from target: " + target.Name;
+                        message.Text = "Fleet " + fleet.Name + " attempted to load/unload fuel when too far from target: " + target.Name;
                         Messages.Add(message);
                         return false;
                     }
@@ -184,23 +169,13 @@ namespace Nova.Common.Waypoints
                 {
                     if (receiver == null)
                     {
-                        Report.Information("Invalid constructor call to Waypoint.IsValid - Invasion failed - troops slaughtered by !IsValid"); //  ;)
-                        return false;  
+                        Report.Information("Invalid constructor call to Waypoint.IsValid - Fuel dumped in Space"); //  ;)
+                        return false;
                     }
                     else
                     {
-                        bool toReturn = false;
-
-                        InvadeTask invade = new InvadeTask();
-
-                        if (invade.IsValid(fleet, target, sender, receiver))
-                        {
-                            toReturn = invade.Perform(fleet, target, sender, receiver);
-                        }
-
-                        Messages.AddRange(invade.Messages);
-
-                        return toReturn;
+                        Report.Information("Receiving Race had the wrong Fuel nozzles - Fuel dumped in Space"); //  ;)
+                        return true;
                     }
                 }
             }
@@ -230,109 +205,53 @@ namespace Nova.Common.Waypoints
 
         /// <inheritdoc />
         public bool Perform(Fleet fleet, Item target, EmpireData sender, EmpireData receiver)
-        {            
-            switch (Mode)
-            {
-                case CargoMode.Load:
-                    return Load(fleet, target, sender, receiver);
-                    
-                case CargoMode.Unload:
-                    return Unload(fleet, target, sender, receiver);
-            }
-            
-            return false;
-        }
-
-        
-        /// <summary>
-        /// Performs concrete unloading.
-        /// </summary>
-        private bool Unload(Fleet fleet, Item target, EmpireData sender, EmpireData receiver)
-        {
+        {// The existing Client has no controls to add a fuel transfer commands at any place other than waypoint zero 
+            // The existing AI only has no methods (23 Oct 2020) that add fuel transfer commands at waypoint zero (usually Waypoint 1) at some distance from the fleets current location
             if ((target.Type == ItemType.Star) || (target.Type == ItemType.StarIntel))
             {
                 if (sender.OwnedStars.ContainsKey(target.Name))
                 {
                     Star star = sender.OwnedStars[target.Name];
                     {
-                        Message message = new Message();
-                        message.Text = "Fleet " + fleet.Name + " has unloaded its cargo at " + star.Name + ".";
-                        Messages.Add(message);
+                        //Message message = new Message();
+                        //message.Text = "Fleet " + fleet.Name + " has loaded fuel from " + star.Name + ".";
+                        //Messages.Add(message);
 
-                        star.Add(Amount);
-                        fleet.Cargo.Remove(Amount);
-
-                        return true;
-                    }
-                }
-                else return false;
-            }
-            else
-            {
-                if (target.Type == ItemType.Fleet)
-                {
-                    if (sender.OwnedFleets.ContainsKey(target.Key))
-                    {
-                        Fleet other = sender.OwnedFleets[target.Key];
-                        Message message = new Message();
-                        message.Text = "Fleet " + fleet.Name + " has transferred cargo to " + other.Name + ".";
-                        Messages.Add(message);
-
-                        other.Cargo.Add(Amount);
-                        fleet.Cargo.Remove(Amount);
-
-                        return true;
-                    }
-                }
-                else return false;
-            }
-            return false;
-        }
-        
-        
-        /// <summary>
-        /// Performs concrete loading.
-        /// </summary>
-        private bool Load(Fleet fleet, Item target, EmpireData sender, EmpireData receiver)
-        {
-            if ((target.Type == ItemType.Star)|| (target.Type == ItemType.StarIntel))
-            {
-                if (sender.OwnedStars.ContainsKey(target.Name))
-                {
-                    Star star = sender.OwnedStars[target.Name];
-                    {
-                        Message message = new Message();
-                        message.Text = "Fleet " + fleet.Name + " has loaded cargo from " + star.Name + ".";
-                        Messages.Add(message);
-
-                        fleet.Cargo.Add(Amount);
-                        star.Remove(Amount);
-
+                        //fleet.FuelAvailable = fleet.FuelAvailable - (double)Amount.Value;
+                        //interactions between starbases and orbiting fuel is handled elsewhere
                         return true;
                     }
                 }
                 else return false;
             }
             else if (target.Type == ItemType.Fleet)
-                        {
-                if (sender.OwnedFleets.ContainsKey(target.Key))
+            {
+
+                if (sender.OwnedFleets.ContainsKey((target as Fleet).Key))
                 {
-                    Fleet other = sender.OwnedFleets[target.Key];
-
-
+                    Fleet other = sender.OwnedFleets[(target as Fleet).Key];
                     Message message = new Message();
                     message = new Message();
-                    message.Text = "Fleet " + fleet.Name + " has transferred cargo from " + other.Name + ".";
+                    message.Text = "Fleet " + fleet.Name + " has transferred fuel to " + other.Name + ".";
+                    message.Type = "DestToChange";
+                    message.FleetID = fleet.Id;
                     Messages.Add(message);
-
-                    fleet.Cargo.Add(Amount);
-                    other.Cargo.Remove(Amount);
-
+                    message = new Message();
+                    message.Text = "Fleet " + other.Name + " has received fuel from " + fleet.Name + ".";
+                    message.Type = "WarpToChange";
+                    message.FleetID = other.Id;
+                    Messages.Add(message);
+                    double AmountToTransfer = Amount.Value;
+                    if (fleet.FuelAvailable < AmountToTransfer) AmountToTransfer = fleet.FuelAvailable; // existing AI commands just set Amount.value to int.MaxValue
+                    if (other.TotalFuelCapacity- other.FuelAvailable < AmountToTransfer) AmountToTransfer = other.TotalFuelCapacity - other.FuelAvailable;
+                    fleet.FuelAvailable = fleet.FuelAvailable - AmountToTransfer;
+                    other.FuelAvailable = other.FuelAvailable + AmountToTransfer;
                     return true;
                 }
                 return false;
             }
-            return false;
+            else return false;
         }
+    
     }
 }

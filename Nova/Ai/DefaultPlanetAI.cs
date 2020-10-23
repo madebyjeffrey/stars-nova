@@ -194,7 +194,7 @@ namespace Nova.Ai
             productionIndex = BuildTransport(productionIndex);
             productionIndex = BuildBattleCruiser(productionIndex);
             //productionIndex = BuildBomber(productionIndex); ?
-            //productionIndex = BuildFuelTransport(productionIndex); ?
+            productionIndex = BuildRefueler(productionIndex); 
 
             return productionIndex;
         } // Build ships
@@ -280,6 +280,26 @@ namespace Nova.Ai
                     }
             return productionIndex;
         } // BuildTransport()
+
+        private int BuildRefueler(int productionIndex)
+        {
+            if (this.planet.GetResourceRate() > DefaultAIPlanner.LowProduction && !this.planet.HasRefuelerInOrbit)
+            {
+                if (this.aiPlan.currentRefuelerDesign != null)
+                {
+                    ProductionOrder refuelerOrder = new ProductionOrder(1, new ShipProductionUnit(this.aiPlan.currentRefuelerDesign), false);
+                    ProductionCommand refuelerCommand = new ProductionCommand(CommandMode.Add, refuelerOrder, this.planet.Key, productionIndex);
+                    if (refuelerCommand.IsValid(clientState.EmpireState))
+                    {
+                        refuelerCommand.ApplyToState(clientState.EmpireState);
+                        clientState.Commands.Push(refuelerCommand);
+                        productionIndex++;
+                    }
+                }
+            }
+            return productionIndex;
+        } // BuildRefueler()
+
         private int BuildBattleCruiser(int productionIndex)
         {
             if (this.aiPlan.AnyArmedDesign != null)

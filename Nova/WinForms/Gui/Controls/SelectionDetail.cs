@@ -87,11 +87,11 @@ namespace Nova.WinForms.Gui
         /// <param name="Item">The <see cref="Item"/> to display (a <see cref="Fleet"/> or <see cref="Star"/>).</param>
         private void DisplayPlanet(Star star)
         {
+            PlanetDetail.Show();
+            FleetDetail.Hide();  
             PlanetDetail.Value = star;            
             selectedControl = PlanetDetail;
             
-            PlanetDetail.Show();
-            FleetDetail.Hide();  
             Invalidate();
         }
 

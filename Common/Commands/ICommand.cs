@@ -44,6 +44,7 @@ namespace Nova.Common.Commands
     {
         Add,
         Edit,
-        Delete
+        Delete,
+        Insert
     }
 }

@@ -471,6 +471,8 @@ namespace Nova.WinForms.Console
                 listItem.SubItems.Add(yearItem);
 
                 playerList.Items.Add(listItem);
+                playerList.Items[playerList.Items.Count - 1].UseItemStyleForSubItems = false;
+
                 // PlayerList.Invalidate(); // Tried this in an attempt to get the colors to show. Dan - 6 Feb 10
             }
 

@@ -84,6 +84,8 @@ namespace Nova.Common
         
         // This is Fleet Limbo~
         // ??? What is this for?
+        // My guess would be for storing of waypoints for fleets that don't exist at this instant in time
+        // either they will exist later this turn or they existed earlier this turn
         public List<Fleet> TemporaryFleets = new List<Fleet>();
         
         public Dictionary<ushort, EmpireIntel>  EmpireReports   = new Dictionary<ushort, EmpireIntel>();

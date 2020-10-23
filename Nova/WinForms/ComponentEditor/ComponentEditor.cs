@@ -962,6 +962,7 @@ namespace Nova.WinForms.ComponentEditor
                    this.alternateRealityMaxPop.Value = (decimal)hullProperties.ARMaxPop;
                    this.hullCargoCapacity.Value = (decimal)hullProperties.BaseCargo;
                    this.hullInitiative.Value = (decimal)hullProperties.BattleInitiative;
+                    this.HealsOthers.Value = (decimal)hullProperties.HealsOthersPercent;
         
                    try
                    {
@@ -1471,6 +1472,7 @@ namespace Nova.WinForms.ComponentEditor
                hullProperties.ARMaxPop = (int)this.alternateRealityMaxPop.Value;
                hullProperties.BaseCargo = (int)this.hullCargoCapacity.Value;
                hullProperties.BattleInitiative = (int)this.hullInitiative.Value;
+               hullProperties.HealsOthersPercent = (int)this.HealsOthers.Value;
         
                hullProperties.Modules = new List<HullModule>();
                foreach (HullModule module in hullMap)
@@ -1786,6 +1788,11 @@ namespace Nova.WinForms.ComponentEditor
                   this.componentHullAffinity.Items.Add(thing.Name);
               }
           }
+        }
+
+        private void label94_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

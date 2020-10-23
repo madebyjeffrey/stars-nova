@@ -354,6 +354,10 @@ namespace Nova.WinForms.ComponentEditor
             this.componentImage = new Nova.WinForms.ComponentEditor.ImageDisplay();
             this.techRequirements = new Nova.WinForms.ComponentEditor.TechRequirements();
             this.basicProperties = new Nova.WinForms.ComponentEditor.BasicProperties();
+            this.label94 = new System.Windows.Forms.Label();
+            this.HealsOthers = new System.Windows.Forms.NumericUpDown();
+            this.label95 = new System.Windows.Forms.Label();
+            this.label96 = new System.Windows.Forms.Label();
             this.mainMenu.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -479,6 +483,7 @@ namespace Nova.WinForms.ComponentEditor
             ((System.ComponentModel.ISupportInitialize)(this.weaponRange)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.weaponInitiative)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.weaponPower)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.HealsOthers)).BeginInit();
             this.SuspendLayout();
             // 
             // resetFileLocation
@@ -559,7 +564,7 @@ namespace Nova.WinForms.ComponentEditor
             this.helpToolStripMenuItem});
             this.mainMenu.Location = new System.Drawing.Point(0, 0);
             this.mainMenu.Name = "mainMenu";
-            this.mainMenu.Size = new System.Drawing.Size(904, 24);
+            this.mainMenu.Size = new System.Drawing.Size(901, 24);
             this.mainMenu.TabIndex = 2;
             this.mainMenu.Text = "menuStrip1";
             // 
@@ -797,21 +802,21 @@ namespace Nova.WinForms.ComponentEditor
             // hullAffinityToolStripMenuItem
             // 
             this.hullAffinityToolStripMenuItem.Name = "hullAffinityToolStripMenuItem";
-            this.hullAffinityToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.hullAffinityToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.hullAffinityToolStripMenuItem.Text = "Hull Affinity";
             this.hullAffinityToolStripMenuItem.Click += new System.EventHandler(this.MenuItem_AddProperty);
             // 
             // radiationToolStripMenuItem
             // 
             this.radiationToolStripMenuItem.Name = "radiationToolStripMenuItem";
-            this.radiationToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.radiationToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.radiationToolStripMenuItem.Text = "Radiation";
             this.radiationToolStripMenuItem.Click += new System.EventHandler(this.MenuItem_AddProperty);
             // 
             // transportOnlyToolStripMenuItem
             // 
             this.transportOnlyToolStripMenuItem.Name = "transportOnlyToolStripMenuItem";
-            this.transportOnlyToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.transportOnlyToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.transportOnlyToolStripMenuItem.Text = "Transport Only";
             this.transportOnlyToolStripMenuItem.Click += new System.EventHandler(this.MenuItem_AddProperty);
             // 
@@ -910,21 +915,21 @@ namespace Nova.WinForms.ComponentEditor
             // defenseToolStripMenuItem
             // 
             this.defenseToolStripMenuItem.Name = "defenseToolStripMenuItem";
-            this.defenseToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.defenseToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.defenseToolStripMenuItem.Text = "Defense";
             this.defenseToolStripMenuItem.Click += new System.EventHandler(this.MenuItem_AddProperty);
             // 
             // planetaryScannerToolStripMenuItem
             // 
             this.planetaryScannerToolStripMenuItem.Name = "planetaryScannerToolStripMenuItem";
-            this.planetaryScannerToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.planetaryScannerToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.planetaryScannerToolStripMenuItem.Text = "Scanner";
             this.planetaryScannerToolStripMenuItem.Click += new System.EventHandler(this.MenuItem_AddProperty);
             // 
             // terraformingToolStripMenuItem
             // 
             this.terraformingToolStripMenuItem.Name = "terraformingToolStripMenuItem";
-            this.terraformingToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.terraformingToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.terraformingToolStripMenuItem.Text = "Terraforming";
             this.terraformingToolStripMenuItem.Click += new System.EventHandler(this.MenuItem_AddProperty);
             // 
@@ -958,9 +963,9 @@ namespace Nova.WinForms.ComponentEditor
             // 
             // restrictionSummary
             // 
-            this.restrictionSummary.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.restrictionSummary.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.restrictionSummary, 2);
             this.restrictionSummary.ForeColor = System.Drawing.Color.Maroon;
             this.restrictionSummary.Location = new System.Drawing.Point(403, 178);
@@ -974,9 +979,9 @@ namespace Nova.WinForms.ComponentEditor
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.ColumnCount = 4;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 200F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 200F));
@@ -1004,9 +1009,9 @@ namespace Nova.WinForms.ComponentEditor
             // 
             // groupBox3
             // 
-            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox3.Controls.Add(this.description);
             this.groupBox3.Location = new System.Drawing.Point(403, 3);
             this.groupBox3.Name = "groupBox3";
@@ -1018,9 +1023,9 @@ namespace Nova.WinForms.ComponentEditor
             // 
             // description
             // 
-            this.description.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.description.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.description.Location = new System.Drawing.Point(7, 16);
             this.description.Multiline = true;
             this.description.Name = "description";
@@ -1030,9 +1035,9 @@ namespace Nova.WinForms.ComponentEditor
             // 
             // groupBox4
             // 
-            this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox4.Controls.Add(this.componentList);
             this.groupBox4.Location = new System.Drawing.Point(3, 53);
             this.groupBox4.Name = "groupBox4";
@@ -1044,9 +1049,9 @@ namespace Nova.WinForms.ComponentEditor
             // 
             // componentList
             // 
-            this.componentList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.componentList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.componentList.FormattingEnabled = true;
             this.componentList.Location = new System.Drawing.Point(3, 16);
             this.componentList.Name = "componentList";
@@ -1057,9 +1062,9 @@ namespace Nova.WinForms.ComponentEditor
             // 
             // groupBox1
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.groupBox1.Controls.Add(this.componentType);
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
@@ -1100,9 +1105,9 @@ namespace Nova.WinForms.ComponentEditor
             // 
             // groupBox2
             // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.componentName);
             this.groupBox2.Location = new System.Drawing.Point(203, 3);
             this.groupBox2.Name = "groupBox2";
@@ -1121,9 +1126,9 @@ namespace Nova.WinForms.ComponentEditor
             // 
             // groupBox5
             // 
-            this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.groupBox5, 2);
             this.groupBox5.Controls.Add(this.propertyTabs);
             this.groupBox5.Location = new System.Drawing.Point(403, 266);
@@ -1136,9 +1141,9 @@ namespace Nova.WinForms.ComponentEditor
             // propertyTabs
             // 
             this.propertyTabs.Alignment = System.Windows.Forms.TabAlignment.Right;
-            this.propertyTabs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.propertyTabs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.propertyTabs.Controls.Add(this.tabArmor);
             this.propertyTabs.Controls.Add(this.tabMovement);
             this.propertyTabs.Controls.Add(this.tabBomb);
@@ -2546,6 +2551,10 @@ namespace Nova.WinForms.ComponentEditor
             // 
             // groupBox19
             // 
+            this.groupBox19.Controls.Add(this.label96);
+            this.groupBox19.Controls.Add(this.label95);
+            this.groupBox19.Controls.Add(this.HealsOthers);
+            this.groupBox19.Controls.Add(this.label94);
             this.groupBox19.Controls.Add(this.infiniteDock);
             this.groupBox19.Controls.Add(this.label86);
             this.groupBox19.Controls.Add(this.alternateRealityMaxPop);
@@ -3307,7 +3316,7 @@ namespace Nova.WinForms.ComponentEditor
             this.richTextBox1.TabIndex = 3;
             this.richTextBox1.TabStop = false;
             this.richTextBox1.Text = "Note: The nominated mining rate in kT, of each mineral, will be produced at a con" +
-                "centration of 100. Average production is one half this value.";
+    "centration of 100. Average production is one half this value.";
             // 
             // label62
             // 
@@ -3629,7 +3638,7 @@ namespace Nova.WinForms.ComponentEditor
             this.textBox1.Size = new System.Drawing.Size(202, 73);
             this.textBox1.TabIndex = 10;
             this.textBox1.Text = "Each unit of terraforming built will modify one habitability parameter by 1% up t" +
-                "o a maximum of the values indicated.";
+    "o a maximum of the values indicated.";
             // 
             // label73
             // 
@@ -3927,24 +3936,58 @@ namespace Nova.WinForms.ComponentEditor
             this.tableLayoutPanel1.SetRowSpan(this.techRequirements, 2);
             this.techRequirements.Size = new System.Drawing.Size(171, 190);
             this.techRequirements.TabIndex = 0;
-            this.techRequirements.Value = new Nova.Common.TechLevel(0, 0, 0, 0, 0, 0);
             // 
             // basicProperties
             // 
             this.basicProperties.AutoSize = true;
             this.basicProperties.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.basicProperties.Cost = new Nova.Common.Resources(0, 0, 0, 0);
             this.basicProperties.Location = new System.Drawing.Point(203, 266);
             this.basicProperties.Mass = 0;
             this.basicProperties.Name = "basicProperties";
             this.basicProperties.Size = new System.Drawing.Size(171, 192);
             this.basicProperties.TabIndex = 21;
             // 
+            // label94
+            // 
+            this.label94.AutoSize = true;
+            this.label94.Location = new System.Drawing.Point(6, 187);
+            this.label94.Name = "label94";
+            this.label94.Size = new System.Drawing.Size(63, 13);
+            this.label94.TabIndex = 32;
+            this.label94.Text = "Heals Other";
+            this.label94.Click += new System.EventHandler(this.label94_Click);
+            // 
+            // HealsOthers
+            // 
+            this.HealsOthers.Location = new System.Drawing.Point(89, 184);
+            this.HealsOthers.Name = "HealsOthers";
+            this.HealsOthers.Size = new System.Drawing.Size(50, 20);
+            this.HealsOthers.TabIndex = 33;
+            this.HealsOthers.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // label95
+            // 
+            this.label95.AutoSize = true;
+            this.label95.Location = new System.Drawing.Point(7, 203);
+            this.label95.Name = "label95";
+            this.label95.Size = new System.Drawing.Size(90, 13);
+            this.label95.TabIndex = 34;
+            this.label95.Text = "Ships percentage";
+            // 
+            // label96
+            // 
+            this.label96.AutoSize = true;
+            this.label96.Location = new System.Drawing.Point(146, 187);
+            this.label96.Name = "label96";
+            this.label96.Size = new System.Drawing.Size(15, 13);
+            this.label96.TabIndex = 35;
+            this.label96.Text = "%";
+            // 
             // ComponentEditorWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(904, 564);
+            this.ClientSize = new System.Drawing.Size(901, 564);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.mainMenu);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -4112,6 +4155,7 @@ namespace Nova.WinForms.ComponentEditor
             ((System.ComponentModel.ISupportInitialize)(this.weaponRange)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.weaponInitiative)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.weaponPower)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.HealsOthers)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -4434,6 +4478,10 @@ namespace Nova.WinForms.ComponentEditor
         private System.Windows.Forms.Label label76;
         private TechRequirements techRequirements;
         private System.Windows.Forms.Label labelFreeWarpValue;
+        private System.Windows.Forms.NumericUpDown HealsOthers;
+        private System.Windows.Forms.Label label94;
+        private System.Windows.Forms.Label label96;
+        private System.Windows.Forms.Label label95;
     }
 }
 

@@ -43,7 +43,7 @@ namespace Nova.WinForms.Gui
         private ClientData clientData;
         private Stack<ICommand> commands;
 
-        private Fleet topFleet;
+        private Fleet topFleet, lastFleet;
         private Dictionary<long, Fleet> fleetsAtLocation = new Dictionary<long, Fleet>();
 
 
@@ -161,6 +161,8 @@ namespace Nova.WinForms.Gui
                         {
                             // Discard it.
                             commands.Pop();
+                            command.Mode = CommandMode.Edit; // this line does nothing - just highlighting the fact that on the Server we now
+                            command.Index = index;         // want to EDIT a command that EXISTS not one past the end of the list
                         }
                     }
                 }
@@ -170,6 +172,13 @@ namespace Nova.WinForms.Gui
                 if (command.IsValid(empireState))
                 {
                     command.ApplyToState(empireState);
+                    // we use the Index that we get from the listbox.SelectedIndices method to populate
+                    // the Index of the command !!
+                    // If we add new Indices to the fleets command but not to the listbox then we
+                    // are simply adding commands at random places in the waypoint list
+                    //TODO separate the commandList from the WaypointListbox and only display waypoints that the user 
+                    // can edit while maintaining links from the WaypointListbox.index to the commandList.index (obviously not
+                    // one to one)
                 }
 
                 DisplayLegDetails(index);
@@ -208,7 +217,9 @@ namespace Nova.WinForms.Gui
                     UpdateCargoMeters();
                     Invalidate();
                 }
-
+                //OnFleetSelectionChanged(new SelectionArgs(topFleet));
+                wayPoints.DataSource = null;
+                wayPoints.DataSource = topFleet.Waypoints;
                 meterCargo.CargoLevels = topFleet.Cargo;
             }
             catch
@@ -239,6 +250,7 @@ namespace Nova.WinForms.Gui
             if ((topFleet.Waypoints[index].Task is SplitMergeTask) || (topFleet.Waypoints[index].Task is CargoTask))
             {
                 Report.Information("That is a waypoint zero task, removing it may result in a loss of Fleet split, merge, load and unload actions for this fleet and/or other fleets");
+                return;
             }
             else
             {
@@ -253,7 +265,6 @@ namespace Nova.WinForms.Gui
             }
             // Refresh the waypoint list on the GUI.
             UpdateWaypointList(this, new EventArgs());
-
             if (StarmapChanged != null)
             {
                 OnStarmapChanged(EventArgs.Empty);
@@ -276,6 +287,7 @@ namespace Nova.WinForms.Gui
                     if ((topFleet.Waypoints[index].Task is SplitMergeTask) || (topFleet.Waypoints[index].Task is CargoTask))
                     {
                         Report.Information("That is a waypoint zero task, removing it may result in a loss of Fleet split, merge, load and unload actions for this fleet and/or other fleets");
+                        return;
                     }
                     else
                     {
@@ -308,6 +320,11 @@ namespace Nova.WinForms.Gui
         /// <param name="e">A <see cref="EventArgs"/> that contains the event data.</param>
         private void WaypointTaskChanged(object sender, EventArgs e)
         {
+            if (topFleet != lastFleet)
+            {
+                lastFleet = topFleet;
+                return;     //The selected Fleet changed so this event was fired by mistake
+            }
             if (wayPoints.SelectedItems.Count <= 0)
             {
                 return;
@@ -317,6 +334,7 @@ namespace Nova.WinForms.Gui
             if ((topFleet.Waypoints[index].Task is SplitMergeTask) || (topFleet.Waypoints[index].Task is CargoTask))
             {
                 Report.Information("That is a waypoint zero task, editing it may result in a loss of Fleet split, merge, load and unload actions for this fleet and/or other fleets");
+                return;
             }
             else
             {
@@ -752,15 +770,15 @@ namespace Nova.WinForms.Gui
                         found = (topFleet.Waypoints[index].Destination != destination);
                         index++;
                     }
-                                            
-                    Waypoint waypoint = new Waypoint(topFleet.Waypoints[index-1]);
+                    if (found) index--;
+                    Waypoint waypoint = new Waypoint(topFleet.Waypoints[0]);
 
                     waypoint.Task = new SplitMergeTask(
                         splitFleet.SourceComposition,
                         splitFleet.OtherComposition,
                         (otherFleet == null) ? 0 : otherFleet.Key);
 
-                    WaypointCommand command = new WaypointCommand(CommandMode.Add, topFleet.Key, index);
+                    WaypointCommand command = new WaypointCommand(CommandMode.Insert, topFleet.Key, index);
                     
                     
                     command.Waypoint = waypoint;
@@ -825,6 +843,8 @@ namespace Nova.WinForms.Gui
 
                 // Signal the change.
                 OnFleetSelectionChanged(new SelectionArgs(topFleet));
+                wayPoints.DataSource = null;
+                wayPoints.DataSource = topFleet.Waypoints;
             }
         }
 

@@ -259,6 +259,7 @@
     <Compile Include="DataStructures\StarList.cs" />
     <Compile Include="DataStructures\EmpireIntel.cs" />
     <Compile Include="Waypoints\ColoniseTask.cs" />
+    <Compile Include="Waypoints\FuelTransferTask.cs" />
     <Compile Include="Waypoints\InvadeTask.cs" />
     <Compile Include="Waypoints\IWaypointTask.cs" />
     <Compile Include="Waypoints\LayMinesTask.cs" />

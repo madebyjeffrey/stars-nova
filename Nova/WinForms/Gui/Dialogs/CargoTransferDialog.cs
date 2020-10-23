@@ -304,8 +304,8 @@ namespace Nova.ControlLibrary
                         index++;
                     }
 
-
-                    command = new WaypointCommand(CommandMode.Add, waypoint, fleet.Key, index ); //  add task always to the end of waypoint zero commands.
+                    if (found) index--;
+                    command = new WaypointCommand(CommandMode.Insert, waypoint, fleet.Key, index ); //  add task always to the end of waypoint zero commands.
 
                     clientData.Commands.Push(command);
 

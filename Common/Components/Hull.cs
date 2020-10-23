@@ -55,7 +55,7 @@ namespace Nova.Common.Components
         public int ARMaxPop = 0;
         public int ArmorStrength = 0;
         public int BattleInitiative = 0;
-
+        public int HealsOthersPercent = 0;
         #region Construction Initialisation
 
         /// <summary>
@@ -77,6 +77,7 @@ namespace Nova.Common.Components
             ARMaxPop         = existing.ARMaxPop;
             ArmorStrength    = existing.ArmorStrength;
             BattleInitiative = existing.BattleInitiative;
+            HealsOthersPercent = existing.HealsOthersPercent;
 
             Modules = new List<HullModule>();
 
@@ -207,6 +208,10 @@ namespace Nova.Common.Components
                     {
                         BattleInitiative = int.Parse(((XmlText)subnode.FirstChild).Value, System.Globalization.CultureInfo.InvariantCulture);
                     }
+                    else if (subnode.Name.ToLower() == "healsotherspercent")
+                    {
+                        HealsOthersPercent = int.Parse(((XmlText)subnode.FirstChild).Value, System.Globalization.CultureInfo.InvariantCulture);
+                    }
                     else if (subnode.Name.ToLower() == "module")
                     {
                         HullModule module = new HullModule(subnode);
@@ -260,6 +265,11 @@ namespace Nova.Common.Components
             XmlText xmltxtBattleInitiative = xmldoc.CreateTextNode(this.BattleInitiative.ToString(System.Globalization.CultureInfo.InvariantCulture));
             xmlelBattleInitiative.AppendChild(xmltxtBattleInitiative);
             xmlelProperty.AppendChild(xmlelBattleInitiative);
+            // HealsOthersPercent
+            XmlElement xmlelHealsOthersPercent = xmldoc.CreateElement("HealsOthersPercent");
+            XmlText xmltxtHealsOthersPercent = xmldoc.CreateTextNode(this.HealsOthersPercent.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            xmlelHealsOthersPercent.AppendChild(xmltxtHealsOthersPercent);
+            xmlelProperty.AppendChild(xmlelHealsOthersPercent);
             // Modules
             foreach (HullModule module in this.Modules)
             {

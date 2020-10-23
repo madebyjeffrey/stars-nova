@@ -150,12 +150,14 @@ namespace Nova.Common.Commands
                     // if (!empire.OwnedStars[StarKey].ManufacturingQueue.Queue.Contains(ProductionOrder)) {return false;}
                     
                     // Don't allow modification of the total cost.                    
-                    if (!(ProductionOrder.Unit.RemainingCost >= empire.OwnedStars[StarKey].ManufacturingQueue.Queue[Index].Unit.RemainingCost))
+                    if (!(ProductionOrder.Unit.RemainingCost >= empire.OwnedStars[StarKey].ManufacturingQueue.Queue[Index].Unit.RemainingCost)
+                        && (ProductionOrder.Name == empire.OwnedStars[StarKey].ManufacturingQueue.Queue[Index].Unit.Name))
                     {
                         return false;    
                     }                    
                     // Don't allow modification of the remaining cost.  
-                    if (!(ProductionOrder.Unit.Cost >= empire.OwnedStars[StarKey].ManufacturingQueue.Queue[Index].Unit.Cost))
+                    if (!(ProductionOrder.Unit.Cost >= empire.OwnedStars[StarKey].ManufacturingQueue.Queue[Index].Unit.Cost)
+                        && (ProductionOrder.Name == empire.OwnedStars[StarKey].ManufacturingQueue.Queue[Index].Unit.Name))
                     {
                         return false;    
                     }

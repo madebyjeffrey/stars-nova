@@ -198,9 +198,9 @@ namespace Nova.ControlLibrary
                         found = (fleet.Waypoints[index].Destination != destination);
                         index++;
                     }
-                                            
 
-                    command = new WaypointCommand(CommandMode.Add, waypoint, fleet.Key, index); // add task always to the end of waypoint zero commands.
+                    if (found) index--;
+                    command = new WaypointCommand(CommandMode.Insert, waypoint, fleet.Key, index); // add task always to the end of waypoint zero commands.
 
                     clientData.Commands.Push(command);
 
@@ -233,7 +233,7 @@ namespace Nova.ControlLibrary
                                     command.Waypoint.Task.Perform(fleet, other, clientData.EmpireState, null); // Load, Unload
                                 }
                             }
-                           //fleet.Waypoints.Remove(waypoint); // immediate commands should't add a visible waypoint to the ship in the client - we have told the server what to do
+                           //fleet.Waypoints.Remove(waypoint); // immediate commands shouldn't add a visible waypoint to the ship in the client - we have told the server what to do
 
                         }
                     }

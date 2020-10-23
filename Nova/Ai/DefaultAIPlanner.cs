@@ -55,6 +55,8 @@ namespace Nova.Ai
         public int ScoutCount = 0;
         public int ColonizerCount = 0;
         public int TransportCount = 0;
+        public int RefuelerCount = 0;
+        public int RepairerCount = 0;
         public int BomberCount = 0;
         public int WarfleetCount = 0;
         private int SurplusPopulationKT
@@ -90,12 +92,12 @@ namespace Nova.Ai
         /// The ShipDesign to use for building transports.
         /// </summary>
         private ShipDesign transportDesign = null;
-        private ShipDesign currentTransportDesign = null;
-        private ShipDesign currentArmedDesign = null;
-        private ShipDesign currentBomberDesign = null;
-        private ShipDesign currentRefuelerDesign = null;
-        private ShipDesign currentMineLayerDesign = null;
-        private ShipDesign currentMineSweeperDesign = null;
+        public ShipDesign currentTransportDesign = null;
+        public ShipDesign currentArmedDesign = null;
+        public ShipDesign currentBomberDesign = null;
+        public ShipDesign currentRefuelerDesign = null;
+        public ShipDesign currentMineLayerDesign = null;
+        public ShipDesign currentMineSweeperDesign = null;
 
         /// <summary>
         /// The number of scouted, unowned planets with > 5% habitability.
@@ -414,9 +416,17 @@ namespace Nova.Ai
             {
                 this.ColonizerCount++;
             }
-            else if (fleet.Name.Contains("Scout")|| (fleet.Name.Contains("Long Range Scout")))
+            else if (fleet.Name.Contains("Scout") || (fleet.Name.Contains("Long Range Scout")))
             {
                 this.ScoutCount++;
+            }
+            else if ((fleet.Name.Contains("Mobile Mobil")) && (fleet.Waypoints.Count > 1))
+            {
+                this.RefuelerCount++;
+            }
+            else if ((fleet.Name.Contains("Grease Monkey")) && (fleet.Waypoints.Count > 1))
+            {
+                this.RepairerCount++;
             }
             else if (fleet.HasBombers)
             {

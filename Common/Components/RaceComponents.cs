@@ -204,7 +204,7 @@ namespace Nova.Common.Components
         {
             List<Component> possibleTank = new List<Component>();
             foreach (Component component in this.Values)
-                if ((component.Type == ItemType.Mechanical) && component.Name.Contains("Fuel Tank"))
+                if ((component.Type == ItemType.Mechanical) && (component.Properties["Fuel"] as Fuel).Capacity > 0)
                 {
                     possibleTank.Add(component);
                 }
@@ -213,6 +213,40 @@ namespace Nova.Common.Components
             foreach (Component tank in possibleTank)
             {
                 if ((tank.Properties["Fuel"] as Fuel).Capacity > (best.Properties["Fuel"] as Fuel).Capacity) best = tank;
+            }
+            return best;
+
+        }
+        public Component GetBestRefuelerHull()
+        {
+            List<Component> possibleHull = new List<Component>();
+            foreach (Component component in this.Values)
+                if ((component.Type == ItemType.Hull) && (component.Properties["Fuel"] as Fuel).Generation > 0)
+                {
+                    possibleHull.Add(component);
+                }
+            Component best = null;
+            if (possibleHull.Count > 0) best = possibleHull[0];
+            foreach (Component hull in possibleHull)
+            {
+                if ((hull.Properties["Fuel"] as Fuel).Generation > (best.Properties["Fuel"] as Fuel).Generation) best = hull;
+            }
+            return best;
+
+        }
+        public Component GetBestRepairerHull()
+        {
+            List<Component> possibleHull = new List<Component>();
+            foreach (Component component in this.Values)
+                if ((component.Type == ItemType.Hull) && ((component.Properties["HealOthersPercent"] as IntegerProperty).Value > 0))
+                {
+                    possibleHull.Add(component);
+                }
+            Component best = null;
+            if (possibleHull.Count > 0) best = possibleHull[0];
+            foreach (Component hull in possibleHull)
+            {
+                if ((hull.Properties["HealOthersPercent"] as IntegerProperty).Value > (best.Properties["HealOthersPercent"] as IntegerProperty).Value) best = hull;
             }
             return best;
 

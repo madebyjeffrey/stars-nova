@@ -67,15 +67,18 @@ namespace Nova.Ai
                 if (fleet.Owner == clientState.EmpireState.Id)
                 {
                     aiPlan.CountFleet(fleet);
-                    DefaultFleetAI fleetAI = new DefaultFleetAI(fleet, clientState, fuelStations);
-                    fleetAIs.Add(fleet.Id, fleetAI);
-
-                    // reset all waypoint orders
-                    for (int wpIndex = 1; wpIndex < fleet.Waypoints.Count; wpIndex++)
+                    if (fleet.Name.Contains("Scout") || (fleet.Name.Contains("Long Range Scout")))
                     {
-                        WaypointCommand command = new WaypointCommand(CommandMode.Delete, fleet.Key, wpIndex);
-                        command.ApplyToState(clientState.EmpireState);
-                        clientState.Commands.Push(command);
+                        DefaultFleetAI fleetAI = new DefaultFleetAI(fleet, clientState, fuelStations);
+                        fleetAIs.Add(fleet.Id, fleetAI);
+
+                        // reset all waypoint orders
+                        for (int wpIndex = 1; wpIndex < fleet.Waypoints.Count; wpIndex++)
+                        {
+                            WaypointCommand command = new WaypointCommand(CommandMode.Delete, fleet.Key, wpIndex);
+                            command.ApplyToState(clientState.EmpireState);
+                            clientState.Commands.Push(command);
+                        }
                     }
                 }
             }
@@ -88,6 +91,7 @@ namespace Nova.Ai
             HandleColonizing();
             HandleShipDesign();
             HandlePopulationSurplus();
+            HandleFuelImpoverishedFleets();
         }
 
         /// <summary>
@@ -309,6 +313,104 @@ namespace Nova.Ai
                 }
             }
         }
+        private void HandleFuelImpoverishedFleets()
+        {
+            foreach (Message msg in clientState.Messages)
+            {
+                List<Fleet> idleRefuelFleets = new List<Fleet>();
+                foreach (Fleet fleet in clientState.EmpireState.OwnedFleets.Values)
+                {
+                    if (fleet.CanRefuel == false && fleet.Waypoints.Count == 0 && fleet.Cargo.Mass == 0 && fleet.TotalCargoCapacity != 0)
+                    {
+                        idleRefuelFleets.Add(fleet);
+                    }
+                }
+                if (!string.IsNullOrEmpty(msg.Type) && msg.Type == "Fuel")
+                {
+                    if (clientState.EmpireState.OwnedFleets.ContainsKey(msg.FleetID))
+                    {
+                        Fleet crippled = clientState.EmpireState.OwnedFleets[msg.FleetID];
+                        int distanceToCrippled = int.MaxValue;
+                        uint refuelerID = 0;
+                        Fleet chosenRefueler = null;
+                        foreach (Fleet refueler in idleRefuelFleets)
+                        {
+                            if ((refueler.distanceTo(crippled) < distanceToCrippled) && (refueler.Waypoints.Count == 0))
+                            {
+                                distanceToCrippled = (int)refueler.distanceTo(crippled);
+                                refuelerID = refueler.Id;
+                                chosenRefueler = refueler;
+                            }
+                        }
+                        if (chosenRefueler != null)
+                        {
+                            Waypoint waypoint = new Waypoint();
+                            waypoint.Destination = crippled.Name;
+                            waypoint.WarpFactor = chosenRefueler.SlowestEngine;
+                            FuelTransferTask fuelTransferTask = new FuelTransferTask();
+                            fuelTransferTask.Target = crippled;
+                            (fuelTransferTask.Target as Fleet).Id = crippled.Id;
+                            fuelTransferTask.Amount.Value = int.MaxValue;
+                            waypoint.Task = fuelTransferTask;
+                            chosenRefueler.Waypoints.Add(waypoint);
+                        }
+                    }
+                }
+            }
+        }
+
+
+        private void HandleWarpSpeedRecalcRequest() //Something made the fleet ask for it's warp speed to be recalculated
+        {                                           //Maybe it got refueled or it's target moved or it's RamScoop engines have overfilled its fuel tanks
+            foreach (Message msg in clientState.Messages)
+            {
+                if (!string.IsNullOrEmpty(msg.Type) && msg.Type == "WarpToChange")
+                {
+                    if (clientState.EmpireState.OwnedFleets.ContainsKey(msg.FleetID))
+                    {
+                        Fleet fleet = clientState.EmpireState.OwnedFleets[msg.FleetID];
+                        // for the AI the first Waypoint is the destination not the current location?
+                        fleet.Waypoints[0].WarpFactor = fleet.SlowestEngine; //TODO if the destination is a hostile planet don't increase speed
+                    }
+                }
+            }
+        }
+        private void HandleOrphaned() //Something caused the fleet to get "Lost In Space"
+        {                           // It has no waypoints and wants a waypoint
+            foreach (Message msg in clientState.Messages)
+            {
+                if (!string.IsNullOrEmpty(msg.Type) && msg.Type == "DestToChange")
+                {
+                    if (clientState.EmpireState.OwnedFleets.ContainsKey(msg.FleetID))
+                    {
+                        Fleet fleet = clientState.EmpireState.OwnedFleets[msg.FleetID];
+                        if (fleet.Waypoints.Count > 0) return;
+                        // for the AI the first Waypoint is the destination not the current location?
+
+                        int distanceToStar = int.MaxValue;
+                        Star chosenStar = null;
+                        foreach (Star nextStar in clientState.EmpireState.OwnedStars.Values)
+                        {
+                            if (fleet.distanceTo(nextStar) < distanceToStar) 
+                            {
+                                distanceToStar = (int)fleet.distanceTo(nextStar);
+                                chosenStar = nextStar;
+                            }
+                        }
+                        if (chosenStar != null)
+                        {
+                            Waypoint waypoint = new Waypoint();
+                            waypoint.Task = new NoTask();
+                            waypoint.Destination = chosenStar.ToString();
+                            if ((fleet.FreeWarpSpeed > 1) && (!chosenStar.Starbase.CanRefuel)) waypoint.WarpFactor = fleet.FreeWarpSpeed - 1; //fastest rate of fuel generation (based on available evidence)
+                            else waypoint.WarpFactor = fleet.SlowestEngine;
+                        }
+
+                    }
+                }
+            }
+        }
+
         /// <Summary>
         /// Manage research.
         /// Only changes research field after completing the previous research level.
@@ -508,7 +610,10 @@ namespace Nova.Ai
             if (frigateHull != null) designFrigate(frigateHull, " Mosquito");
             if (cruiserHull != null) designFrigate(cruiserHull, " Bee");
             if (BattleCruiserHull != null) designFrigate(BattleCruiserHull, " Light Saber");
-
+            if (clientState.EmpireState.AvailableComponents.GetBestRefuelerHull() != null)
+                aiPlan.currentRefuelerDesign = designRefuelers(clientState.EmpireState.AvailableComponents.GetBestRefuelerHull(), " Mobile Mobil");
+            else aiPlan.currentRefuelerDesign = designRefuelers(allComponents.Fetch("Scout"), " Mobile Mobil ");
+            if (clientState.EmpireState.AvailableComponents.GetBestRepairerHull() != null) designRefuelers(clientState.EmpireState.AvailableComponents.GetBestRefuelerHull(), " Grease Monkey");
 
         }
 
@@ -685,6 +790,68 @@ namespace Nova.Ai
                 }
 
             }
+
+        }
+
+        private ShipDesign designRefuelers(Component Hull, String designPrefix)
+        {
+            // in the early game the A.I. will no doubt make mistakes and get fleets stuck somewhere without fuel
+            // a fleet that manufactures fuel can be sent to rescue those fleets
+            // in the later game the Refueller hull serves multiple purposes when mingled into a fleet (mostly repair but fuel generation is handy)
+            // don't build anything that can't make fuel or it will run out of fuel somewhere
+            bool makesFuel = false;
+            if (Hull.Properties.ContainsKey("Fuel"))
+            {
+                Fuel fuelProperty = Hull.Properties["Fuel"] as Fuel;
+                makesFuel = (fuelProperty.Generation > 0);
+            }
+
+            Component engine = clientState.EmpireState.AvailableComponents.GetBestEngine(Hull, !makesFuel); //If the hull makes fuel then get a fast engine otherwise get a Ramscoop
+            Engine engineSpecs = engine.Properties["Engine"] as Engine;
+            if ((!engineSpecs.RamScoop) &&  (!makesFuel)) return null;
+            bool found = false;
+            String designName = designPrefix + "(" + engineSpecs.OptimalSpeed.ToString() + ")";
+            ShipDesign refueler = new ShipDesign(clientState.EmpireState.GetNextDesignKey());
+            foreach (ShipDesign ship in clientState.EmpireState.Designs.Values) if (ship.Name == designName)
+                {
+                    found = true;
+                    refueler = ship;
+                }
+            if (!found)
+            {
+                refueler.Blueprint = Hull;
+                foreach (HullModule module in refueler.Hull.Modules)
+                {
+                    if (module.ComponentType == "Engine")
+                    {
+                        module.AllocatedComponent = engine as Component;
+                        module.ComponentCount = module.ComponentMaximum;
+                    }
+                    else if (module.ComponentType == "Scanner")
+                    {
+                        module.AllocatedComponent = clientState.EmpireState.AvailableComponents.GetBestScanner(true);
+                        module.ComponentCount = 1;
+                    }
+                    else if (module.ComponentType == "General Purpose")
+                    {
+                        module.AllocatedComponent = clientState.EmpireState.AvailableComponents.GetBestFuelTank();
+                        module.ComponentCount = module.ComponentMaximum;
+                    }
+                }
+                refueler.Icon = new ShipIcon(Hull.ImageFile, (System.Drawing.Bitmap)Hull.ComponentImage);
+
+                refueler.Type = ItemType.Ship;
+                refueler.Name = designName;
+                refueler.Update();
+                DesignCommand command = new DesignCommand(CommandMode.Add, refueler);
+                if (command.IsValid(clientState.EmpireState))
+                {
+                    clientState.Commands.Push(command);
+                    command.ApplyToState(clientState.EmpireState);
+                }
+
+            }
+            return refueler;
 
         }
         private void designColonizers(Component Hull, String designPrefix, Component colonyModule)

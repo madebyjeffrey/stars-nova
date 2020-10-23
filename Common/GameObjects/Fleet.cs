@@ -61,6 +61,7 @@ namespace Nova.Common
         public double TargetDistance = 100;
         public string BattlePlan = "Default";
         public int maxPopulation = 1000000; //TODO when Race.HasTrait = "AR" starbases have different max populations
+        public int TurnYear = -1;  // If Fleet.Name = "Salvage" then decrease the cargo every year for three years then destroy it
         public enum TravelStatus 
         { 
             Arrived, InTransit 
@@ -150,8 +151,8 @@ namespace Nova.Common
                 return tokens;
             }
         }
-        
-        
+
+
         /// <summary>
         /// Return Free Warp speed for fleet.
         /// </summary>
@@ -166,6 +167,19 @@ namespace Nova.Common
                 }
 
                 return speed;
+            }
+        }
+        public int HealsOthersPercent
+        {
+            get
+            {
+                int heals = 0;
+                foreach (ShipToken token in tokens.Values)
+                {
+                    heals = Math.Max(heals, token.Design.HealsOthersPercent);
+                }
+
+                return heals;
             }
         }
 
@@ -792,6 +806,9 @@ namespace Nova.Common
                             Waypoint waypoint = new Waypoint(mainNode);
                             Waypoints.Add(waypoint);
                             break;
+                        case "turnyear":
+                            TurnYear = int.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
 
                         default: break;
                     }
@@ -834,7 +851,11 @@ namespace Nova.Common
             Global.SaveData(xmldoc, xmlelFleet, "FuelAvailable", this.FuelAvailable.ToString(System.Globalization.CultureInfo.InvariantCulture));
             Global.SaveData(xmldoc, xmlelFleet, "FuelCapacity", this.TotalFuelCapacity.ToString(System.Globalization.CultureInfo.InvariantCulture));
             Global.SaveData(xmldoc, xmlelFleet, "TargetDistance", this.TargetDistance.ToString(System.Globalization.CultureInfo.InvariantCulture));
-            
+
+            if (TurnYear > 0)
+            {
+                Global.SaveData(xmldoc, xmlelFleet, "TurnYear", this.TurnYear.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            }
             if (Cargo.Mass > 0)
             {
                 Global.SaveData(xmldoc, xmlelFleet, "CargoCapacity", this.TotalCargoCapacity.ToString(System.Globalization.CultureInfo.InvariantCulture));

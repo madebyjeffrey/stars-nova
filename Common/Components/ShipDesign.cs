@@ -401,6 +401,19 @@ namespace Nova.Common.Components
                 return false;
             }
         }
+        public int HealsOthersPercent
+        {
+            get
+            {
+                if (Blueprint.Properties.ContainsKey("Hull"))
+                {
+                    return Hull.HealsOthersPercent;
+                }
+                // It doesn't even have a Hull!
+                Report.Error("ShipDesign.HealsOthersPercent called on a design with no hull.");
+                return 0;
+            }
+        }
 
         /// <summary>
         /// Get the initiative of the ShipDesign, including computers but not weapon initiative.

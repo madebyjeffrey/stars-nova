@@ -42,6 +42,7 @@ namespace Nova.Common
         public int          Temperature             { get; set; }
         public int          Colonists               { get; set; }
         public bool         HasFleetsInOrbit        { get; set; }
+        public bool         HasRefuelerInOrbit      { get; set; }
         public Fleet        Starbase                { get; set; }
         public Resources    ResourcesOnHand         { get; set; }
         public int          baseRadiation           { get;  set; }
@@ -96,42 +97,45 @@ namespace Nova.Common
                 {
                     switch (mainNode.Name.ToLower())
                     {
-                    case "year":
-                        Year = int.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
-                        break;
-                    case "mineralconcentration":
-                        MineralConcentration = new Resources(mainNode);
-                        break;
-                    case "gravity":
-                        Gravity = int.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
-                        break;
-                    case "radiation":
-                        Radiation = int.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
-                        break;
-                    case "temperature":
-                        Temperature = int.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
-                        break;
-                    case "resourcesonhand":
+                        case "year":
+                            Year = int.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                        case "mineralconcentration":
+                            MineralConcentration = new Resources(mainNode);
+                            break;
+                        case "gravity":
+                            Gravity = int.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                        case "radiation":
+                            Radiation = int.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                        case "temperature":
+                            Temperature = int.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                        case "resourcesonhand":
                             ResourcesOnHand = new Resources(mainNode);
                             break;
-                    case "colonists":
-                        Colonists = int.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
-                        break;
-                    case "hasfleetsinorbit":
-                        HasFleetsInOrbit = bool.Parse(mainNode.FirstChild.Value);
-                        break;
-                    case "starbase":
-                        Starbase = new Fleet(long.Parse(mainNode.FirstChild.Value, System.Globalization.NumberStyles.HexNumber));
-                        break;
-                    case "baseradiation":
-                        baseRadiation = int.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
-                        break;
-                    case "basegravity":
-                        baseGravity = int.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
-                        break;
-                    case "basetemperature":
-                        baseTemperature = int.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
-                        break;
+                        case "colonists":
+                            Colonists = int.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                        case "hasfleetsinorbit":
+                            HasFleetsInOrbit = bool.Parse(mainNode.FirstChild.Value);
+                            break;
+                        case "hasrefuelerinorbit":
+                            HasRefuelerInOrbit = bool.Parse(mainNode.FirstChild.Value);
+                            break;
+                        case "starbase":
+                            Starbase = new Fleet(long.Parse(mainNode.FirstChild.Value, System.Globalization.NumberStyles.HexNumber));
+                            break;
+                        case "baseradiation":
+                            baseRadiation = int.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                        case "basegravity":
+                            baseGravity = int.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                        case "basetemperature":
+                            baseTemperature = int.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
                     }
                 }
                 catch (Exception e)
@@ -163,7 +167,8 @@ namespace Nova.Common
             baseTemperature         = Global.Unset;
             baseGravity             = Global.Unset;
             HasFleetsInOrbit        = false;
-            Starbase                = null;            
+            HasRefuelerInOrbit      = false;
+            Starbase = null;            
         }
  
         
@@ -235,6 +240,7 @@ namespace Nova.Common
                 Temperature = star.Temperature;
                 Starbase = star.Starbase;
                 HasFleetsInOrbit = star.HasFleetsInOrbit;
+                HasRefuelerInOrbit = star.HasRefuelerInOrbit;
                 ResourcesOnHand = star.ResourcesOnHand;
 
             }
@@ -316,9 +322,10 @@ namespace Nova.Common
             Global.SaveData(xmldoc, xmlelStarIntel, "baseTemperature", baseTemperature.ToString(System.Globalization.CultureInfo.InvariantCulture));
 
             Global.SaveData(xmldoc, xmlelStarIntel, "Colonists", Colonists.ToString(System.Globalization.CultureInfo.InvariantCulture));
-            
+
             Global.SaveData(xmldoc, xmlelStarIntel, "HasFleetsInOrbit", HasFleetsInOrbit.ToString());
-            
+            Global.SaveData(xmldoc, xmlelStarIntel, "HasRefuelerInOrbit", HasFleetsInOrbit.ToString());
+
             if (Starbase != null)
             {
                 Global.SaveData(xmldoc, xmlelStarIntel, "Starbase", Starbase.Key.ToString("X"));

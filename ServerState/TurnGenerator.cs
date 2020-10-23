@@ -69,7 +69,7 @@ namespace Nova.Server
             turnSteps = new SortedList<int, ITurnStep>();
             rand = new Random();
             
-            // Now that there is a state, comopose the turn processor.
+            // Now that there is a state, compose the turn processor.
             // TODO ??? (priority 4): Use dependency injection for this? It would
             // generate a HUGE constructor call... a factory to
             // abstract it perhaps? -Aeglos
@@ -83,8 +83,12 @@ namespace Nova.Server
             victoryCheck = new VictoryCheck(this.serverState, this.scores);
             
             turnSteps.Add(SCANSTEP, new ScanStep());
-            turnSteps.Add(BOMBINGSTEP, new BombingStep());
-            turnSteps.Add(STARSTEP, new StarUpdateStep());
+            turnSteps.Add(BOMBINGSTEP, new BombingStep()); //it would be nice to have a ColoniseStep after the BombingStep ?
+            turnSteps.Add(STARSTEP, new StarUpdateStep()); // In Stars! i often use (say) ten SplitCommands to get the Colony Fleets ID larger than the bombing fleet ID so the 
+                                                            // Colony Fleets Colonise Commands are processed after the bombing fleet bombs the planet
+                                                            // I can't change the bomber fleets ID in Stars! or it does not do bombing that turn
+                                                            // it seems that in Stars! the bombing fleet needs to be a bombing fleet at the target Position for an entire turn
+                                                            // before it will carry out any bombing, so moving bombers to a new fleet forfeits their turn
         }
         
         /// <summary>
@@ -96,19 +100,20 @@ namespace Nova.Server
         {
             BackupTurn();
 
-            // Clear the HasFleetsInOrder flag then recalc after ships move
+            // Clear the HasFleetsInOrbit flag then recalc after ships move
             foreach (EmpireData empire in serverState.AllEmpires.Values)
             {
-                 foreach (StarIntel report in this.serverState.AllEmpires[empire.Id].StarReports.Values) report.HasFleetsInOrbit = false;
+                foreach (StarIntel report in this.serverState.AllEmpires[empire.Id].StarReports.Values) report.HasFleetsInOrbit = false;
+                foreach (StarIntel report in this.serverState.AllEmpires[empire.Id].StarReports.Values) report.HasRefuelerInOrbit = false;
             }
 
 
 
 
-                // For now, just copy the command stacks right away.
-                // TODO (priority 6): Integrity check the new turn before
-                // updating the state (cheats, errors).
-                ReadOrders();
+            // For now, just copy the command stacks right away.
+            // TODO (priority 6): Integrity check the new turn before
+            // updating the state (cheats, errors).
+            ReadOrders();
 
             // for all commands of all empires: command.ApplyToState(empire);
             // for WaypointCommand: Add Waypoints to Fleets.
@@ -118,7 +123,8 @@ namespace Nova.Server
             // TODO (priority 4) - split this up into waypoint zero and waypoint 1 actions
 
             //Stars! Split functionality splits the fleets at the current position before moving!!
-            //let's do that here in a new loop first
+            //the Waypoint Zero commands were applied to the EmpireState during the ParseCommands()
+            //but their waypoints have not been removed yet so do that now:
             new SplitFleetStep().Process(serverState);
 
             // ToDo: Step 1 --> Scrap Fleet if waypoint 0 order; here, and only here.
@@ -165,6 +171,7 @@ namespace Nova.Server
                     if (fleet.InOrbit != null)
                     {
                         this.serverState.AllEmpires[empire.Id].StarReports[fleet.InOrbit.Name].HasFleetsInOrbit = true;
+                        if (fleet.Name.Contains("Mobile Mobil")) this.serverState.AllEmpires[empire.Id].StarReports[fleet.InOrbit.Name].HasRefuelerInOrbit = true;
                     }
             }
 
@@ -200,15 +207,23 @@ namespace Nova.Server
             {
                 if (serverState.AllCommands.ContainsKey(empire.Id))
                 {                
-                    new SplitFleetStep().Process(serverState);   //process splits first so the new fleet is created before we try to add the waypont orders for that new fleet 
-                    while (serverState.AllCommands[empire.Id].Count > 0) // Assume orders are executed chronologically then newly created fleets will be available when their waypoint tasks are executed
+                    while (serverState.AllCommands[empire.Id].Count > 0) 
                     {
                         ICommand command = serverState.AllCommands[empire.Id].Pop();
                         
                         if (command.IsValid(empire))
                         {
-                             command.ApplyToState(empire);
-
+                            if (command is WaypointCommand)
+                            {
+                                if (((command as WaypointCommand).Mode == CommandMode.Add) || ((command as WaypointCommand).Mode == CommandMode.Edit))
+                                {
+                                    if ((command as WaypointCommand).Waypoint.Task is CargoTask) (command as WaypointCommand).PreApplyToState(empire, ((command as WaypointCommand).Waypoint.Task as CargoTask).Target);
+                                    else if ((command as WaypointCommand).Waypoint.Task is SplitMergeTask) (command as WaypointCommand).PreApplyToState(empire, null);
+                                    else command.ApplyToState(empire);
+                                }
+                                else (command as WaypointCommand).ApplyToState(empire); // might be a waypoint delete or edit so keep the indexes alligned between server and the clients indexes
+                            }
+                            else command.ApplyToState(empire);
                         }
                         else
                         {
@@ -304,7 +319,9 @@ namespace Nova.Server
             {
                 Message message = new Message();
                 message.Audience = fleet.Owner;
-                message.Text = fleet.Name + " has ran out of fuel.";
+                message.Type = "Fuel";
+                message.Text = fleet.Name + " has run out of fuel.";
+                message.FleetID = fleet.Id;
                 serverState.AllMessages.Add(message);
             }
 
@@ -326,6 +343,9 @@ namespace Nova.Server
         /// 8% orbiting own planet with starbase but 0 dock.
         /// 20 orbiting own planet with dock.
         /// +repair% if stopped or orbiting.
+        /// Stopped or orbiting, with at least one Fuel Transport hull in the fleet additional 5%
+        /// Stopped or orbiting, with at least one Super Fuel Xport hull in the fleet additional 10%
+
         /// TODO (priority 3) - A starbase is not counted towards repairs if it is under attack. 
         /// TODO (priority 3) - reference where these rules are from.
         /// </remarks>
@@ -362,17 +382,20 @@ namespace Nova.Server
                         {
                             // orbiting own planet with dock.
                             repairRate = 20;
+                            repairRate = repairRate + fleet.HealsOthersPercent;
                         }
                         else
                         {
                             // orbiting own planet with starbase but 0 dock.
                             repairRate = 8;
+                            repairRate = repairRate + fleet.HealsOthersPercent;
                         }
                     }
                     else
                     {
                         // friendly planet, no base
                         repairRate = 5;
+                        repairRate = repairRate + fleet.HealsOthersPercent;
                     }
                 }
                 else
@@ -389,6 +412,7 @@ namespace Nova.Server
                 {
                     // stopped in space
                     repairRate = 2;
+                    repairRate = repairRate + fleet.HealsOthersPercent;
                 }
                 else
                 {
@@ -396,7 +420,6 @@ namespace Nova.Server
                     repairRate = 1;
                 }
             }
-
             // repair ships/tokens
             foreach (ShipToken token in fleet.Composition.Values)
             {

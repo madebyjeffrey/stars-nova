@@ -355,7 +355,7 @@ namespace Nova.WinForms.Gui
                 if (numToRemove >= productionOrder.Quantity)
                 {
                     queueList.RemoveProductionOrder(s);
-                    // TODO (priority 3) - select the next item in the list so you can keep presing remove to remove all items.
+                    // TODO (priority 3) - select the next item in the list so you can keep pressing remove to remove all items.
                 }
                 else
                 {
@@ -464,8 +464,8 @@ namespace Nova.WinForms.Gui
                     else
                     {
                         // add the design after the Item selected in the queue
-                        newItem = queueList.InsertProductionOrder(productionOrder, nextIndex+1);
-                        rowSelected = nextIndex+1;
+                        newItem = queueList.InsertProductionOrder(productionOrder, nextIndex);
+                        rowSelected = nextIndex;
                     }
                 }
                 else

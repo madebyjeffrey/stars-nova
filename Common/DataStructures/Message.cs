@@ -36,6 +36,7 @@ namespace Nova.Common
         public int Audience;     // An int representing the destination of the message. 0 means everyone. 
         public string Type;      // Text that indicates the type of event that generated the message.
         public object Event;     // An object used with the Goto button to display more information to the player. See Messages.GotoButton_Click
+        public uint FleetID;     // Required for messages of type "Fuel"
         // Ensure when adding new message types to add code to the Xml functions to handle your object type.
 
         /// <summary>
@@ -51,12 +52,13 @@ namespace Nova.Common
         /// <param name="audience">A string representing the destination of the message. Either a race name or and asterisk.</param>
         /// <param name="messageEvent">An object used with the Goto button to display more information to the player. See Messages.GotoButton_Click.</param>
         /// <param name="text">The text to display in the message box.</param>
-        public Message(int audience, string text, string messageType, object messageEvent)
+        public Message(int audience, string text, string messageType, object messageEvent,uint fleetId = 0)
         {
             Audience = audience;
             Text     = text;
             Type     = messageType;
             Event    = messageEvent;
+            FleetID = fleetId;
         }
 
         /// <summary>
@@ -91,6 +93,12 @@ namespace Nova.Common
                             if (subnode.FirstChild != null)
                             {
                                 Type = subnode.FirstChild.Value;
+                            }
+                            break;
+                        case "fleetid":
+                            if (subnode.FirstChild != null)
+                            {
+                                FleetID = uint.Parse(subnode.FirstChild.Value);
                             }
                             break;
                         case "event":
@@ -132,13 +140,19 @@ namespace Nova.Common
                 Global.SaveData(xmldoc, xmlelMessage, "Type", Type);
             }
 
-            
+            if (FleetID != 0)
+            {
+                Global.SaveData(xmldoc, xmlelMessage, "FleetID", Type);
+            }
+
+
             if (Event != null)
             {
                 switch (Type)
                 {
                     case "TechAdvance":
                     case "NewComponent":
+                    case "Fuel":
                         // No object reference required to be saved.
                         break;
 

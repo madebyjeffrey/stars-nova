@@ -140,27 +140,160 @@ namespace Nova.Common.Commands
             
             return true;
         }
-        
-        
-        /// <inheritdoc />
+
+
+
+        /// <summary>
+        /// There could be dozens of splits and merges of fleets at an individual waypoint during one turn and dozens of new fleets moving in different directions during that turn.
+        /// Process the splits and merges in Chronological Order or the process will be nonsensical!
+        /// The design is clear - reproduce Stars! not some new game where merges are programmed to occur at some point in the future.
+        /// Practical example of Split/Merge using Stars! existing logic:
+        /// The players primary invasion fleet arrives at an opponents Home Planet, after destroying the Station and defense fleet/s the player:
+        /// 1/ Moves the escort ships from the Mine Layer group to the invasion fleet (Mine layer group must have been given the "Lay Mines" order 1 turn before arrival in order to lay mines during the first year at the opponents Home Planet.
+        /// 2/ Player Splits off 4 SpaceMine clearing fleets of 50 (beam weapon) escort ships and one empty freighter in each new fleet from the invasion fleets to move at warp 4 towards the nearest 4 Mine fields 
+        /// 3/ Player Splits off a colonisation Fleet containing a coloniser and any obsolete transports and sets it to "Colonise" so it claims the planets minerals (if invasion Bombers kill off all population during the first turn) before they start to dissipate 
+        /// 4/ Player must increase the Fleet ID so it is higher than the invasion fleets ID (so it tries to colonise AFTER the bombers kill off existing population) so the player creates (say) 8 new fleets that use up the fleet ID's that are smaller than the invasion fleets ID
+        /// 5/ Player merges the Coloniser Fleets vessels into the highest Fleet ID vessel (so it tries to colonise AFTER the bombers kill off existing population)
+        /// 6/ Player spots 2 fat enemy convoys with over 1M tons of capacity and creates 2 new fleets each containing 1 empty transport from the invasion fleet plus 8 of the (beam weapon) escort ships from each of the 4 Mine Clearing Fleets and sends the 2 new fleets after the 2 (hopefully) mineral convoys (needs to be beam weapon ships because the risk of entering min fields is high).
+        /// This is a player move that is made to use the existing Stars! programs behaviour, it could be simplified if we executed "Colonise" orders after (implied) bombing orders, it also implies that Fleet ID's are reused like in Stars!(which we do not do yet)
+        /// To process the splits and merges in chronological order we needs an increasing key on the SplitMerge orders
+        /// if we just iterate through serverState.IterateAllFleets() how do we do the Splits and Merges of the fleets that are created this turn?
+        /// Some possibilities:
+        /// 1/ A constriction that might work in a Beta program might be to prevent splits and merges on newly created fleets (tough sell to the Stars! crowd)
+        /// 2/ We could keep iterating through the Waypoints (serverState.IterateAllFleets()) doing only the next chronological SplitMerge waypoint task on each pass through until no more SplitMerge tasks exist
+        /// 3/ We could do one iteration of the serverState.IterateAllFleets() and get a list of ONLY the SplitMerge tasks (which may be very much smaller than the list of every waypoint), then sort and execute that list in sequence, waypoint tasks for the intermediate (new) fleets must be added in as the fleets are created. How do we transmit the waypoints for the fleets that are not in (serverState.IterateAllFleets()) yet?
+        /// How do we transmit the waypoints for the fleets that are not in (serverState.IterateAllFleets()) yet?
+
+        /// We will implement this: 
+        /// 1/  Execute the Waypoint zero commands (which may include SplitMergeTask and Load/unloadTask or merge (or InvadeTask?) commands for fleets that do not exist yet or that will not exist at the start or WayPoint One processing), 
+        /// 2/  but do not remove them until all Waypoint.Edit and Waypoint.Insert commands are loaded (or their indexes will be nonsensical)
+        /// 3/  Delete the waypoint Zero commands that have already been executed
+
+        /// Stars! only supports splits or merges on turn 0
+        /// Cargo unload or load from the Cargo dialog is also performed on turn 0 and may be done on fleets that don't exist at the start of turn 0 or may be performed on fleets that dont exist at the end of turn 0
+        /// so do load/unload and split/merge in chronological order so the action can be performed on the fleet  while it still exists!
+
+        /// </summary>
+
         public void ApplyToState(EmpireData empire)
         {
             switch (Mode)
+
             {
                 case CommandMode.Add:
                     empire.OwnedFleets[FleetKey].Waypoints.Add(Waypoint);
-                break;
+                    break;
+                case CommandMode.Insert:
+                    empire.OwnedFleets[FleetKey].Waypoints.Insert(Index, Waypoint);
+                    break;
                 case CommandMode.Delete:
                     empire.OwnedFleets[FleetKey].Waypoints.RemoveAt(Index);
-                break;
+                    break;
                 case CommandMode.Edit:
                     empire.OwnedFleets[FleetKey].Waypoints.RemoveAt(Index);
                     empire.OwnedFleets[FleetKey].Waypoints.Insert(Index, Waypoint);
-                break;
+                    break;
             }
         }
-        
-        
+        public void PreApplyToState(EmpireData empire, Item Target)
+        {
+            switch (Mode)
+
+            {
+                case CommandMode.Add:
+                    {
+                        {
+                            if  (Waypoint.Task is SplitMergeTask)// the next waypoint command to be processed might be for the fleet created by this waypoint command
+                        // so we need to create the fleet here so the next command has a fleet to attach to
+                            {
+                                empire.OwnedFleets[FleetKey].Waypoints.Add(Waypoint);  // Add the Waypoint 
+                                if (isWaypointZeroCommand(Waypoint, empire.OwnedFleets[FleetKey]))
+                                {
+                                    if ((Waypoint.Task as SplitMergeTask).IsValid(empire.OwnedFleets[FleetKey], Target, empire, empire))
+                                    {
+                                        Waypoint.Task.Perform(empire.OwnedFleets[FleetKey], Target, empire);  //PrePerform it so the fleets IDs match the commands that follow
+                                    }
+                                }
+                            }
+                            else
+                            {// the next waypoint command to be processed might a Split command for this Fleet
+                             // so we need to Load the Cargo here or the "Other" fleet may end up empty and this fleet may be asked 
+                             // to carry it's full payload of cargo PLUS the payload belonging to the "Other" fleet   :(
+                                if (Waypoint.Task is CargoTask)
+                                {
+                                    empire.OwnedFleets[FleetKey].Waypoints.Add(Waypoint);  // Add the Waypoint 
+                                    if (isWaypointZeroCommand(Waypoint, empire.OwnedFleets[FleetKey]))
+                                    {
+                                        if ((Waypoint.Task as CargoTask).IsValid(empire.OwnedFleets[FleetKey], Target, empire))
+                                        {
+                                            Waypoint.Task.Perform(empire.OwnedFleets[FleetKey], Target, empire); //PrePerform it so the cargo levels are correct when the next Split or Merge happens 
+                                        }
+                                    }
+                                } // we don't remove the waypoint until all waypoints are inserted as a Waypoint.Edit(7,waypoint) will not work too well
+                                  // if we have removed 6 of the waypoints and Waypoint.Count = 1
+                                  // Look in SpliFleetStep.cs for the WaypointZero removals
+                            }
+                            break;
+                        }
+                    }
+                case CommandMode.Insert:
+                    {// the next waypoint command to be processed might be for the fleet created by this waypoint command
+                        // so we need to create the fleet here so the next command has a fleet to attach to
+                        empire.OwnedFleets[FleetKey].Waypoints.Insert(Index,Waypoint);
+                        {
+                            if(Waypoint.Task is SplitMergeTask)
+                            {
+                                if (isWaypointZeroCommand(Waypoint, empire.OwnedFleets[FleetKey]))
+                                {
+                                    if ((Waypoint.Task as SplitMergeTask).IsValid(empire.OwnedFleets[FleetKey], Target, empire,empire))
+                                    {
+                                        Waypoint.Task.Perform(empire.OwnedFleets[FleetKey], Target, empire);
+                                    }
+                                }
+                            }
+                            else
+                            {// the next waypoint command to be processed might a Split command for this Fleet
+                             // so we need to Load the Cargo here or the "Other" fleet may end up empty and this fleet may be asked 
+                             // to carry it's full payload of cargo PLUS the payload belonging to the "Other" fleet   :(
+                                if (Waypoint.Task is CargoTask)
+                                    if (isWaypointZeroCommand(Waypoint, empire.OwnedFleets[FleetKey]))
+                                    {
+                                        if ((Waypoint.Task as CargoTask).IsValid(empire.OwnedFleets[FleetKey], Target, empire))
+                                        {
+                                            Waypoint.Task.Perform(empire.OwnedFleets[FleetKey], Target, empire);
+                                        }
+                                    }
+                            } // we don't remove the waypoint until all waypoints are inserted as a Waypoint.Edit(7,waypoint) will not work too well
+                            // if we have removed 6 of the waypoints and Waypoint.Count = 1
+                            // Look in SplitFleetStep.cs for the WaypointZero removals
+                            break;
+                        }
+                    }
+                case CommandMode.Delete:
+                    // we prevent Deletes in the Waypoint zero list
+                    break;
+                case CommandMode.Edit:
+                    //We prevent edits of Waypoint Zeros
+                    //you can edit a waypoint zero action by adding another action that undoes the first action
+                    break;
+            }
+        }
+
+        private bool isWaypointZeroCommand(Waypoint waypoint,Fleet fleet)
+        {
+            int theIndex = fleet.Waypoints.IndexOf(waypoint);
+            int index = 0;
+            String destination = fleet.Waypoints[0].Destination;
+            bool found = false;
+            while ((!found) && (index <= theIndex))
+            {
+                found = (fleet.Waypoints[index].Destination != destination);
+                index++;
+            }
+            return !found;
+
+        }
+
         /// <summary>
         /// Save: Serialize this property to an <see cref="XmlElement"/>.
         /// </summary>

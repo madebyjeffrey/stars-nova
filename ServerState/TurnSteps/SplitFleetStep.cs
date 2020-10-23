@@ -25,10 +25,24 @@ namespace Nova.Server.TurnSteps
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
-    
+
     using Nova.Common;
     using Nova.Common.Waypoints;
-    
+    public class WaypointComparer : System.Collections.IComparer
+    {
+        // Compares the timestamps of two waypoints.
+        public int Compare(Object A, Object B)
+        {
+            long timestampA;
+            long timestampB;
+            timestampA = (A as Waypoint).guiTimestamp.Ticks;
+            timestampB = (B as Waypoint).guiTimestamp.Ticks;
+            if (timestampA > timestampB) return 1;
+            if (timestampA < timestampB) return -1;
+            if (timestampA == timestampB) return 0;
+            else return 0;
+        }
+    }
     public class SplitFleetStep : ITurnStep
     {
         /// <summary>
@@ -42,7 +56,7 @@ namespace Nova.Server.TurnSteps
         /// 3/ Player Splits off a colonisation Fleet containing a coloniser and any obsolete transports and sets it to "Colonise" so it claims the planets minerals (if invasion Bombers kill off all population during the first turn) before they start to dissipate 
         /// 4/ Player must increase the Fleet ID so it is higher than the invasion fleets ID (so it tries to colonise AFTER the bombers kill off existing population) so the player creates (say) 8 new fleets that use up the fleet ID's that are smaller than the invasion fleets ID
         /// 5/ Player merges the Coloniser Fleets vessels into the highest Fleet ID vessel (so it tries to colonise AFTER the bombers kill off existing population)
-        /// 6/ Player spots 2 fat enemy convoys with over 1M tons of capacity and creates 2 new fleets each containing 1 empty transport from the invasion fleet plus 8 of the (beam weapon) escort ships from each of the 4 Mine Clearing Fleets and sends the 2 new fleets after the 2 (hopefully) mineral convoys (needs to be beam weapon ships because the risk of entering min fields is high).
+        /// 6/ Player spots 2 fat enemy convoys with over 1M tons of capacity and creates 2 new fleets each containing 1 empty transport from the invasion fleet plus 8 of the (beam weapon) escort ships from each of the 4 Mine Clearing Fleets and sends the 2 new fleets after the 2 (hopefully) mineral convoys (needs to be beam weapon ships because the risk of entering mine fields is high).
         /// This is a player move that is made to use the existing Stars! programs behaviour, it could be simplified if we executed "Colonise" orders after (implied) bombing orders, it also implies that Fleet ID's are reused like in Stars!(which we do not do yet)
         /// To process the splits and merges in chronological order we needs an increasing key on the SplitMerge orders
         /// if we just iterate through serverState.IterateAllFleets() how do we do the Splits and Merges of the fleets that are created this turn?
@@ -52,66 +66,45 @@ namespace Nova.Server.TurnSteps
         /// 3/ We could do one iteration of the serverState.IterateAllFleets() and get a list of ONLY the SplitMerge tasks (which may be very much smaller than the list of every waypoint), then sort and execute that list in sequence, waypoint tasks for the intermediate (new) fleets must be added in as the fleets are created. How do we transmit the waypoints for the fleets that are not in (serverState.IterateAllFleets()) yet?
         /// How do we transmit the waypoints for the fleets that are not in (serverState.IterateAllFleets()) yet?
 
-        /// We will try to implement this: 
-        /// 1/  get a list of ONLY the SplitMerge commands (which may include SplitMerge commands for fleets that do not exist yet), 
-        /// 2/  sort that list in chronological sequence
-        /// 3/  execute tasks from that list in chronological sequence (the client must be able to predict the ID's of the Fleets correctly so the commands can be matched to the new fleets for this turn) 
+        /// We will implement this: 
+        /// 1/  Execute the Waypoint zero commands (which may include SplitMergeTask and Load/unloadTask or merge (or InvadeTask?) commands for fleets that do not exist yet or that will not exist at the start or WayPoint One processing), 
+        /// 2/  but do not remove them until all Waypoint.Edit and Waypoint.Insert commands are loaded (or their indexes will be nonsensical)
+        /// 3/  Delete the waypoint Zero commands that have already been executed
 
         /// Stars! only supports splits or merges on turn 0
         /// Cargo unload or load from the Cargo dialog is also performed on turn 0 and may be done on fleets that don't exist at the start of turn 0 or may be performed on fleets that dont exist at the end of turn 0
         /// so do load/unload and split/merge in chronological order so the action can be performed on the fleet  while it still exists!
 
         /// </summary>
+        public struct fleetWaypoint
+        {
+            public fleetWaypoint(Fleet fleet, Waypoint wayPoint)
+            {
+                Fleet = fleet;
+                Waypoint = wayPoint;
+            }
+            public Fleet Fleet { get; }
+            public Waypoint Waypoint { get; }
+        }
         public void Process(ServerData serverState)
         {
-            List<Waypoint> splits = new List<Waypoint>();
+            WaypointComparer wCompare = new WaypointComparer();
+            string WaypointZeroDestination = "";
+            int Index = 0;
             foreach (Fleet fleet in serverState.IterateAllFleets())
             {
-                splits.Clear();
-                foreach  (Waypoint waypoint in fleet.Waypoints)
+                WaypointZeroDestination = fleet.Waypoints[0].Destination;
+                Index = 1;
+                while ((Index < fleet.Waypoints.Count) && (fleet.Waypoints[Index].Destination == WaypointZeroDestination))
                 {
-
-                    if (waypoint.Task is SplitMergeTask && waypoint.Task.IsValid(fleet, null, null))
+                    if ((fleet.Waypoints[Index].Task is SplitMergeTask) || (fleet.Waypoints[Index].Task is CargoTask))
                     {
-
-
-                        EmpireData sender = serverState.AllEmpires[fleet.Owner];
-
-                        waypoint.Task.Perform(fleet, fleet, sender);
-                        splits.Add(waypoint);
+                        fleet.Waypoints.RemoveAt(Index); //Remove waypoints that have already been processed
                     }
-                    if (waypoint.Task is CargoTask) // cargo transfers are allowed in space also (how would you collect minerals from space debris otherwise) interfleet cargo transfers in space are rare but sometimes needed
-                    {
-                        if ((waypoint.Task as CargoTask).Target.Type == ItemType.Star)
-                        {
-                            if (serverState.AllStars.ContainsKey((waypoint.Task as CargoTask).Target.Name.ToString()))
-                            {
-                                Star star = serverState.AllStars[(waypoint.Task as CargoTask).Target.Name.ToString()];
-                                EmpireData sender = serverState.AllEmpires[fleet.Owner];
-                                if (waypoint.Task.IsValid(fleet, star, sender))
-                                {
-                                    waypoint.Task.Perform(fleet, star, sender);
-                                    splits.Add(waypoint);
-                                }
-                            }
-                        }
-                        else  if (serverState.AllEmpires[fleet.Owner].OwnedFleets.ContainsKey((waypoint.Task as CargoTask).Target.Key))
-                        {
-                            EmpireData sender = serverState.AllEmpires[fleet.Owner];
-                            Fleet other = serverState.AllEmpires[fleet.Owner].OwnedFleets[(waypoint.Task as CargoTask).Target.Key];
-                            if (waypoint.Task.IsValid(fleet, other, sender))
-                            {
-
-                                waypoint.Task.Perform(fleet, other, sender);
-                                splits.Add(waypoint);
-                            }
-                        }
-                    }
-                }                
-                foreach (Waypoint waypoint in splits) fleet.Waypoints.Remove(waypoint);
+                }
             }
-
             serverState.CleanupFleets();
         }
     }
 }
+

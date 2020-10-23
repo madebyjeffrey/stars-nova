@@ -464,8 +464,8 @@ namespace Nova.Server
             TurnYear       = Global.StartingYear;            
             StatePathName  = null;  
         }
-        
-        
+
+
         /// <summary>
         /// Iterates through all Fleets in all Empires, in order.
         /// </summary>
@@ -474,8 +474,13 @@ namespace Nova.Server
         {
             return AllEmpires.Values.SelectMany(empire => empire.OwnedFleets.Values);
         }
-        
-        
+
+
+        public IEnumerable<Fleet> IterateAllTempFleets()
+        {
+            return AllEmpires.Values.SelectMany(empire => empire.TemporaryFleets);
+        }
+
         /// <summary>
         /// Iterates through all Designs in all Empires, in order.
         /// </summary>
@@ -541,12 +546,18 @@ namespace Nova.Server
                     foreach (Fleet newFleet in empire.TemporaryFleets)
                     {
                         empire.AddOrUpdateFleet(newFleet);
+                        if ((newFleet.TurnYear > 0) && (newFleet.Name == "Salvage"))
+                        {// TODO find what Stars! equations are for this
+                            newFleet.Cargo.Ironium = newFleet.Cargo.Ironium * 7 / 10;
+                            newFleet.Cargo.Boranium = newFleet.Cargo.Boranium * 7 / 10;
+                            newFleet.Cargo.Germanium = newFleet.Cargo.Germanium * 7 / 10;
+                            if (TurnYear - newFleet.TurnYear > 3) empire.TemporaryFleets.Remove(newFleet);
+                        }
                     }
-                    empire.TemporaryFleets.Clear();   ///just a guess but do we want thes to hang around forever?
+                    //empire.TemporaryFleets.Clear();   ///just a guess but do we want these to hang around forever?
                 }
             }
         }
-
         // See if the fleet is orbiting a star
         public void SetFleetOrbit(Fleet fleet)
         {
