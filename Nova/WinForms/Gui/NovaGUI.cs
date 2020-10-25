@@ -73,7 +73,8 @@ namespace Nova.WinForms.Gui
             {
                 SelectionDetails.FleetDetail.StarmapChanged += MapControl.RefreshStarMap;
                 SelectionDetails.FleetDetail.FleetSelectionChanged += MapControl.SetCursor;
-                SelectionDetails.PlanetDetail.PlanetSelectionChanged += MapControl.SetCursor;
+                SelectionDetails.FleetDetail.FleetSelectionChanged += MapControl.SetCursor;
+                SelectionDetails.FleetDetail.WaypointIndexChanged += MapControl.SetCursor;
 
                 SelectionDetails.FleetDetail.FleetSelectionChanged += SelectionSummary.SummaryChangeSelection;
                 SelectionDetails.PlanetDetail.PlanetSelectionChanged += SelectionSummary.SummaryChangeSelection;

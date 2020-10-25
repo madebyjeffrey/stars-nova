@@ -132,18 +132,37 @@ namespace Nova.Common
        public const int DiscardFleetReportAge = 1;
        
        // Limits
-       public const int MaxFleetAmount              = 512;
-       public const int MaxDesignsAmount            = 16;
-       public const int MaxStarbaseDesignsAmount    = 10;
+       public const int MaxFleetAmount              = 51200;
+       public const int MaxDesignsAmount            = 1600;
+       public const int MaxStarbaseDesignsAmount    = 1000;
        
        // Defaults
        public const int Nobody = 0x00000000; // As an empire Id cannot be 0, it is used for no owner.
        public const int Everyone = Nobody;
        public const int None = Nobody;
        public const int Unset = -10000;
+        // collect all of the AI ship prefixes in one place , maybe we will allow the user to edit them?
 
-       // System
-       public const double TotalFileWaitTime = 8.0; // (s) Maximum time to wait for a file to become available.
+       public const String AiSmallFreighter = " Wheely Bin";
+       public const String AiFreighter = " Wheelbarrow";
+       public const String AiRepairer = " Grease Monkey";
+       public const String AiRefueler = " Mobile Mobil"; 
+       public const String AiDefensiveDestroyer = " Tharunka";
+       public const String AiDefensiveCruiser = " Nulla Nulla";
+       public const String AiDefensiveBattleCruiser = " Woomera";
+       public const String AiBomberCoverFrigate = " Mosquito";
+       public const String AiBomberCoverCruiser = " Green Hornet";
+       public const String AiBomberCoverBattleCruiser = " Dr Death";
+       public const String AiBomber = " Dr Euthanasia";
+       public const String AiColonyShip = " Santa Maria";
+       public const String AiScout = " Walkabout";
+       public const String AiMineLayer = " Pidgeon";
+       public const String AiMineSweeper = " Pool Guy";
+       public const String AiStarbase = " Death Star";
+        // maybe having an array of names that has PRT as one index would be good, easier to send to XML?
+
+        // System
+        public const double TotalFileWaitTime = 8.0; // (s) Maximum time to wait for a file to become available.
        public const int FileWaitRetryTime = 100; // (ms) Time to wait before trying again to access the file.
 
        #endregion

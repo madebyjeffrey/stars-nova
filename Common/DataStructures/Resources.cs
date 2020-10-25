@@ -241,7 +241,17 @@ namespace Nova.Common
 
             return result;
         }
+        public static double operator /(Resources lhs, Resources rhs)
+        {
+            double result = 0.0;
 
+            double i = lhs.Ironium / Math.Max(0.1,rhs.Ironium);  //prevent negative numbers and divide by zero errors
+            double b = lhs.Boranium / Math.Max(0.1,rhs.Boranium);
+            double g = lhs.Germanium / Math.Max(0.1,rhs.Germanium);
+            double e = lhs.Energy / Math.Max(0.1,rhs.Energy);
+            result = Math.Min(Math.Min(Math.Min(i, b), g), e);
+            return result;
+        }
         public static Resources operator *(int lhs, Resources rhs)
         {
             return rhs * lhs;

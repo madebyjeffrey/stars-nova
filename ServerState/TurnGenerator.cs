@@ -105,6 +105,7 @@ namespace Nova.Server
             {
                 foreach (StarIntel report in this.serverState.AllEmpires[empire.Id].StarReports.Values) report.HasFleetsInOrbit = false;
                 foreach (StarIntel report in this.serverState.AllEmpires[empire.Id].StarReports.Values) report.HasRefuelerInOrbit = false;
+                foreach (StarIntel report in this.serverState.AllEmpires[empire.Id].StarReports.Values) report.HasFreeTransportInOrbit = false;
             }
 
 
@@ -171,7 +172,7 @@ namespace Nova.Server
                     if (fleet.InOrbit != null)
                     {
                         this.serverState.AllEmpires[empire.Id].StarReports[fleet.InOrbit.Name].HasFleetsInOrbit = true;
-                        if (fleet.Name.Contains("Mobile Mobil")) this.serverState.AllEmpires[empire.Id].StarReports[fleet.InOrbit.Name].HasRefuelerInOrbit = true;
+                        if (fleet.Name.Contains(Global.AiRefueler)) this.serverState.AllEmpires[empire.Id].StarReports[fleet.InOrbit.Name].HasRefuelerInOrbit = true;
                     }
             }
 

@@ -37,6 +37,7 @@ namespace Nova.Common
     {
         public bool HasFleetsInOrbit;
         public bool HasRefuelerInOrbit;
+        public bool HasFreeTransportInOrbit;
         public ProductionQueue ManufacturingQueue;
         public Resources MineralConcentration;
         public Resources ResourcesOnHand;
@@ -618,6 +619,9 @@ namespace Nova.Common
                         case "hasrefuelerinorbit":
                             HasRefuelerInOrbit = bool.Parse(mainNode.FirstChild.Value);
                             break;
+                        case "hasfreetransportinorbit":
+                            HasFreeTransportInOrbit = bool.Parse(mainNode.FirstChild.Value);
+                            break;
                         case "productionqueue":
                             ManufacturingQueue = new ProductionQueue(mainNode);
                             break;
@@ -723,6 +727,7 @@ namespace Nova.Common
 
             Global.SaveData(xmldoc, xmlelStar, "HasFleetsInOrbit", HasFleetsInOrbit.ToString());
             Global.SaveData(xmldoc, xmlelStar, "HasRefuelerInOrbit", HasRefuelerInOrbit.ToString());
+            Global.SaveData(xmldoc, xmlelStar, "HasFreeTransportInOrbit", HasFreeTransportInOrbit.ToString());
 
             // Starbase and ThisRace are stored as references only (just the name is saved).
             if (Starbase != null)

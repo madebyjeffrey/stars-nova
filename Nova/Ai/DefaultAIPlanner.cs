@@ -53,12 +53,34 @@ namespace Nova.Ai
         public const double MinHabValue = 0.05;
 
         public int ScoutCount = 0;
-        public int ColonizerCount = 0;
-        public int TransportCount = 0;
-        public int RefuelerCount = 0;
-        public int RepairerCount = 0;
+        public int ColonizerCount = 0; 
+        public int TransportCount = 0; //driven by cargo waiting for transport
+        public int RefuelerCount = 0;  
+        public int RepairerCount = 0;  //At a guess we want 1 per 10 Bombercover
         public int BomberCount = 0;
-        public int WarfleetCount = 0;
+        public int DefenderCount = 0; // Hard to calculate without History. 
+        public int BomberCoverCount = 0;
+        public int MineSweeperCount = 0;
+        public int MineLayerCount = 0;
+        public int VisibleMineFields = 0;
+        public int EuthanasiaTargetRating = 0;  //Rating of the Starbase at the enemy planet that we are envading, Total BomberCover rating must be 300% of this because we take damage on the way there then every turn we spend bombing 
+        public int EuthanasiaTargetPopulation = 0;  //Population of the enemy planet that we are envading, the less turns it takes to euthanise them the higher the probability of success
+
+        // EmpireWide weighting to be placed on production of this item 
+        //  For example if a planet has a lot of boronium and can produce 10 bombers in 5 years or 3 destroyers in 5 years
+        // whilst its neighbour has a lot of ironium and can produce 10 destroyers in 5 years or 1 bomber in 5 years
+        // the first planet multiplies the 10 bombers by the "worth to the empire" of each bomber (2) to get 20 points if 
+        // it produces bombers or 3 x 5 points if it produces destroyers so so it makes bombers.
+        // similarly the second planets scores are 2x1 points if it makes bombers or 10x5 if it makes destroyers so it makes destroyers
+        // if the empire needs more destroyers and changes the weighting of destroyers to 10 then both planets will choose to make destroyers
+
+        public int interceptorProductionPriority = 5; //5 where max = 100
+        public int starbaseUpgradePriority = 30; //(AR might bump it to 100)
+        public int coloniserProductionPriority = 5 ;
+        public int mineLayerProductionPriority = 5;
+        public int mineSweeperProductionPriority = 5;
+        public int bomberProductionPriority = 3;
+        public int bomberCoverProductionPriority = 5;
         private int SurplusPopulationKT
         { 
             get
@@ -93,11 +115,17 @@ namespace Nova.Ai
         /// </summary>
         private ShipDesign transportDesign = null;
         public ShipDesign currentTransportDesign = null;
-        public ShipDesign currentArmedDesign = null;
+        public ShipDesign currentColoniserDesign = null;
+        public ShipDesign currentScoutDesign = null;
+        public ShipDesign currentDefenderDesign = null; //general purpose defense / interceptor
         public ShipDesign currentBomberDesign = null;
+        public ShipDesign currentBomberCoverDesign = null; //sole purpose is to protect bombers
         public ShipDesign currentRefuelerDesign = null;
+        public ShipDesign currentReairerDesign = null;// sole purpose is to repair the currentBomberCoverDesign 
         public ShipDesign currentMineLayerDesign = null;
         public ShipDesign currentMineSweeperDesign = null;
+        public ShipDesign currentStarbaseDesign = null;
+        public ShipDesign currentMinimalStarbaseDesign = null;
 
         /// <summary>
         /// The number of scouted, unowned planets with > 5% habitability.
@@ -116,19 +144,9 @@ namespace Nova.Ai
             {
                 if (scoutDesign == null)
                 {
-                    ShipDesign longRangeScout = null;
-                    foreach (ShipDesign design in clientState.EmpireState.Designs.Values)
-                    {
-                        if (design.Name.Contains("Scout"))
-                        {
-                            scoutDesign = design;
-                        }
-                        if (design.Name.Contains("Long Range Scout"))
-                        {
-                            scoutDesign = longRangeScout;
-                        }
-                    }
-                    if (longRangeScout != null) scoutDesign = longRangeScout;
+                    foreach (ShipDesign design in clientState.EmpireState.Designs.Values) if (design.Name.Contains("Scout")) scoutDesign = design;  //designs from StarMapInitializer.PrepareDesigns which don't use global race ship names
+                    foreach (ShipDesign design in clientState.EmpireState.Designs.Values) if (design.Name.Contains("Long Range Scout")) scoutDesign = design; //designs from StarMapInitializer.PrepareDesigns which don't use global race ship names
+                    foreach (ShipDesign design in clientState.EmpireState.Designs.Values) if (design.Name.Contains(Global.AiScout)) scoutDesign = design; //only one design with the prefix - when scouts get destroyed the victor gains part of the tech difference so use low tech scouts with lots of fuel
                 }
                 return scoutDesign;
             }
@@ -143,23 +161,19 @@ namespace Nova.Ai
             {
                 if (colonizerDesign == null)
                 {
+                    List<ShipDesign> colonizers = new List<ShipDesign>();
                     foreach (ShipDesign design in clientState.EmpireState.Designs.Values)
                     {
-                        if (design.Name.Contains("Santa Maria"))
+                        if (design.CanColonize)
                         {
-                            colonizerDesign = design;
+                            colonizers.Add(design);
                         }
                     }
-                    foreach (ShipDesign design in clientState.EmpireState.Designs.Values)
+                    if (colonizers.Count > 0) colonizerDesign = colonizers[0];
+                    foreach (ShipDesign design in colonizers)
                     {
-                        if (design.Name.Contains("Medium Santa Maria"))
-                        {
-                            colonizerDesign = design;
-                        }
-                    }
-                    foreach (ShipDesign design in clientState.EmpireState.Designs.Values)
-                    {
-                        if (design.Name.Contains("Large Santa Maria"))
+                        if ((design.CargoCapacity > ColonizerDesign.CargoCapacity) ||
+                            ((design.CargoCapacity == ColonizerDesign.CargoCapacity) &&(design.BattleSpeed > ColonizerDesign.BattleSpeed)))
                         {
                             colonizerDesign = design;
                         }
@@ -247,11 +261,11 @@ namespace Nova.Ai
                 else return currentTransportDesign;
             }
         }
-        public ShipDesign AnyArmedDesign
+        public ShipDesign defenseDesign 
         {
             get
             {
-                if (currentArmedDesign == null)
+                if (currentDefenderDesign == null)
                 {
                     ShipDesign armedDesign = null;
                     foreach (ShipDesign design in clientState.EmpireState.Designs.Values)
@@ -290,10 +304,10 @@ namespace Nova.Ai
                             }
                         }
                     } // if still null should we arm a scout?
-                    currentArmedDesign = armedDesign;
+                    currentDefenderDesign = armedDesign;
                     return armedDesign;
                 }
-                else return currentArmedDesign;
+                else return currentDefenderDesign;
             }
         }
 
@@ -416,15 +430,15 @@ namespace Nova.Ai
             {
                 this.ColonizerCount++;
             }
-            else if (fleet.Name.Contains("Scout") || (fleet.Name.Contains("Long Range Scout")))
+            else if (fleet.Name.Contains("Scout") || (fleet.Name.Contains("Long Range Scout") || (fleet.Name.Contains(Global.AiScout))))
             {
                 this.ScoutCount++;
             }
-            else if ((fleet.Name.Contains("Mobile Mobil")) && (fleet.Waypoints.Count > 1))
+            else if ((fleet.Name.Contains(Global.AiRefueler)) && (fleet.Waypoints.Count > 1))
             {
                 this.RefuelerCount++;
             }
-            else if ((fleet.Name.Contains("Grease Monkey")) && (fleet.Waypoints.Count > 1))
+            else if ((fleet.Name.Contains(Global.AiRepairer)) && (fleet.Waypoints.Count > 1))
             {
                 this.RepairerCount++;
             }
@@ -437,9 +451,9 @@ namespace Nova.Ai
                 this.TransportCount++;
                 this.totalTransportKt += fleet.TotalCargoCapacity;
             }
-            else if (fleet.IsArmed)
+            else if ((fleet.Name.Contains(Global.AiDefensiveBattleCruiser))|| (fleet.Name.Contains(Global.AiDefensiveCruiser)) || (fleet.Name.Contains(Global.AiDefensiveDestroyer)))
             {
-                this.WarfleetCount++;
+                this.DefenderCount++;
             }
         }
     }

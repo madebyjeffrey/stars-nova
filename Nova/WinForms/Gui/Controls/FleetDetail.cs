@@ -46,7 +46,6 @@ namespace Nova.WinForms.Gui
         private Fleet topFleet, lastFleet;
         private Dictionary<long, Fleet> fleetsAtLocation = new Dictionary<long, Fleet>();
 
-
         /// <summary>
         /// Signals that the Fleet being displayed has changed.
         /// </summary>
@@ -57,6 +56,7 @@ namespace Nova.WinForms.Gui
         /// so the StarMap updates right away.
         /// </Summary>
         public event EventHandler StarmapChanged;
+        public event EventHandler<SelectionArgs> WaypointIndexChanged;
 
 
         /// <Summary>
@@ -200,6 +200,11 @@ namespace Nova.WinForms.Gui
 
             int index = wayPoints.SelectedIndices[0];
             DisplayLegDetails(index);
+            Mappable destination = new Mappable((wayPoints.Items[wayPoints.SelectedIndices[0]] as Waypoint).Position);
+            //destination.Position = (wayPoints.Items[wayPoints.SelectedIndices[0]] as Waypoint).Position;
+            SelectionArgs positionArg = new SelectionArgs(destination);
+            WaypointIndexChanged(this,positionArg);
+
         }
 
         /// <Summary>

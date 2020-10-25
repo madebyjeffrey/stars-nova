@@ -91,8 +91,8 @@ namespace Nova.Ai
             //if population is over 80% capacity and we don't have large freighters yet then just research until we do!
             if (((planet.Capacity(clientState.EmpireState.Race) < 55) || ((clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] >= 3) && (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Propulsion] >= 5)))
                 && ((planet.Capacity(clientState.EmpireState.Race) < 80) || ((clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] >= 8) && (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Propulsion] >= 7))))
-                {
-                    Double earlyProductionMultiplier = 1.0; // Rush factories for 1st 8 years
+            {
+                Double earlyProductionMultiplier = 1.0; // Rush factories for 1st 8 years
                 if (clientState.EmpireState.TurnYear > 2108) earlyProductionMultiplier = 0.3; //then Rush some scouts
                 if (clientState.EmpireState.TurnYear > 2115) earlyProductionMultiplier = 0.5; //then build a mix of stuff
                 if (clientState.EmpireState.TurnYear > 2120) earlyProductionMultiplier = 0.6;
@@ -153,7 +153,7 @@ namespace Nova.Ai
             }
             else
             {
-               // Report.Information("A.I. planet capacity is high and A.I. is devoting itself to researching better freighters");
+                // Report.Information("A.I. planet capacity is high and A.I. is devoting itself to researching better freighters");
             }
         }
 
@@ -189,12 +189,12 @@ namespace Nova.Ai
 
         private int BuildShips(int productionIndex)
         {
+            if (this.planet.Starbase == null) productionIndex = BuidMinimalStarbase(productionIndex);
             productionIndex = BuildScout(productionIndex);
             productionIndex = BuildColonizer(productionIndex);
             productionIndex = BuildTransport(productionIndex);
-            productionIndex = BuildBattleCruiser(productionIndex);
-            //productionIndex = BuildBomber(productionIndex); ?
-            productionIndex = BuildRefueler(productionIndex); 
+            productionIndex = BuidSuitableFleet(productionIndex);
+            productionIndex = BuildRefueler(productionIndex);
 
             return productionIndex;
         } // Build ships
@@ -206,7 +206,7 @@ namespace Nova.Ai
         /// <returns>The updated productionIndex.</returns>
         private int BuildScout(int productionIndex)
         {
-            int earlyScouts = (int)Math.Max(DefaultAIPlanner.EarlyScouts, clientState.EmpireState.StarReports.Count/8);
+            int earlyScouts = (int)Math.Max(DefaultAIPlanner.EarlyScouts, clientState.EmpireState.StarReports.Count / 8);
             if (this.planet.GetResourceRate() > DefaultAIPlanner.LowProduction && this.aiPlan.ScoutCount < earlyScouts)
             {
                 if (this.aiPlan.ScoutDesign != null)
@@ -265,7 +265,7 @@ namespace Nova.Ai
             if ((this.aiPlan.AnyTransportDesign != null) && (this.planet.Starbase != null))
                 if (this.planet.Starbase.TotalDockCapacity > this.aiPlan.AnyTransportDesign.Mass)
 
-                    if ((this.planet.GetResourceRate() > DefaultAIPlanner.LowProduction) && (this.planet.Capacity(clientState.EmpireState.Race) > 25))
+                    if ((this.planet.GetResourceRate() > DefaultAIPlanner.LowProduction) && (this.planet.Capacity(clientState.EmpireState.Race) > 25) && (this.planet.HasFreeTransportInOrbit))
                     {
                         {
                             ProductionOrder transportOrder = new ProductionOrder(1, new ShipProductionUnit(this.aiPlan.AnyTransportDesign), false);
@@ -300,26 +300,105 @@ namespace Nova.Ai
             return productionIndex;
         } // BuildRefueler()
 
-        private int BuildBattleCruiser(int productionIndex)
+        private double howManyCanIBuild(ShipDesign fleet, Resources currentStarbase = null)
+        //how many of this design can this planet build in 8 years
         {
-            if (this.aiPlan.AnyArmedDesign != null)
-                if ((this.planet.Starbase.TotalDockCapacity > this.aiPlan.AnyArmedDesign.Mass)
+            Resources resourcesOnHand = new Resources(planet.ResourcesOnHand);
+            Resources nextOneYears = new Resources(planet.GetMiningRate(planet.MineralConcentration.Ironium), planet.GetMiningRate(planet.MineralConcentration.Boranium), planet.GetMiningRate(planet.MineralConcentration.Germanium), planet.GetFutureResourceRate(0));
+            resourcesOnHand = resourcesOnHand + 8 * nextOneYears;  //rough approximation
+            double howMany = 0;
+            if (currentStarbase == null)
+            {  //fleet
+                if (fleet!=null)  howMany = resourcesOnHand / fleet.Cost;
+            }
+            else
+            {  //Starbase upgrade
+                if (fleet != null) howMany = resourcesOnHand / (fleet.Cost - currentStarbase);
+            }
+            return howMany;
+        }
+        private int BuidSuitableFleet(int productionIndex) //Based on this planets resources and the empire needs
+        {
+            int queueYears;
+            int queueEnergy = 0;
+            foreach (ProductionOrder order in this.planet.ManufacturingQueue.Queue)
+            {
+                queueEnergy += (order.NeededResources() as Resources).Energy;
+            }
+            queueYears = queueEnergy / Math.Max(1, this.planet.ResourcesOnHand.Energy);
+            if (queueYears > 1) return productionIndex;
 
-                    && ((this.planet.GetResourceRate() > DefaultAIPlanner.LowProduction) ))
-                    {
-                        {
-                            ProductionOrder armedOrder = new ProductionOrder(5, new ShipProductionUnit(this.aiPlan.AnyArmedDesign), false);
-                            ProductionCommand armedCommand = new ProductionCommand(CommandMode.Add, armedOrder, this.planet.Key, productionIndex);
-                            if (armedCommand.IsValid(clientState.EmpireState))
-                            {
-                                armedCommand.ApplyToState(clientState.EmpireState);
-                                clientState.Commands.Push(armedCommand);
-                                productionIndex++;
-                            }
-                        }
-                    }
+            double defenseFleets = howManyCanIBuild(aiPlan.currentDefenderDesign) * this.aiPlan.interceptorProductionPriority;
+            double bomberFleets = howManyCanIBuild(aiPlan.currentBomberDesign) * this.aiPlan.bomberProductionPriority;
+            double bomberCoverFleets = howManyCanIBuild(aiPlan.currentBomberCoverDesign) * this.aiPlan.bomberCoverProductionPriority;
+            double starStation = howManyCanIBuild(aiPlan.currentStarbaseDesign, this.planet.Starbase.TotalCost) * this.aiPlan.starbaseUpgradePriority;
+            ShipDesign chosenOne = null;
+            int chosenQty = 1;
+            if ((defenseFleets > bomberFleets) && (defenseFleets > bomberCoverFleets) && (defenseFleets > starStation))
+            {
+                chosenOne = aiPlan.currentDefenderDesign;
+                chosenQty = (int)defenseFleets;
+            }
+            else if ((bomberFleets > defenseFleets) && (bomberFleets > bomberCoverFleets) && (bomberFleets > starStation))
+            {
+                chosenOne = aiPlan.currentBomberDesign;
+                chosenQty = (int)bomberFleets;
+            }
+            else if ((bomberCoverFleets > defenseFleets) && (bomberCoverFleets > bomberFleets) && (bomberCoverFleets > starStation))
+            {
+                chosenOne = aiPlan.currentBomberCoverDesign;
+                chosenQty = (int)bomberCoverFleets;
+            }
+            else if (aiPlan.currentStarbaseDesign != null)
+            if (!this.planet.Starbase.Name.Contains(aiPlan.currentStarbaseDesign.Name))
+            {
+                chosenOne = aiPlan.currentStarbaseDesign;
+                chosenQty = 1; //don't do the Same upgrade multiple times
+            }
+            if (chosenOne != null)
+            {
+                ProductionOrder chosenOrder = new ProductionOrder(chosenQty, new ShipProductionUnit(chosenOne), false);
+                ProductionCommand suitableCommand = new ProductionCommand(CommandMode.Add, chosenOrder, this.planet.Key, productionIndex);
+                foreach (ProductionOrder order in this.planet.ManufacturingQueue.Queue) if (order.Name == chosenOne.Name) return productionIndex;
+                if (suitableCommand.IsValid(clientState.EmpireState))
+                {
+                    suitableCommand.ApplyToState(clientState.EmpireState);
+                    clientState.Commands.Push(suitableCommand);
+                    productionIndex++;
+                }
+            }
             return productionIndex;
-        } 
+        }
+        private int BuidMinimalStarbase(int productionIndex) 
+        {
+            int queueYears;
+            int queueEnergy = 0;
+            foreach (ProductionOrder order in this.planet.ManufacturingQueue.Queue)
+            {
+                queueEnergy += (order.NeededResources() as Resources).Energy;
+            }
+            queueYears = queueEnergy / Math.Max(1, this.planet.ResourcesOnHand.Energy);
+            if (queueYears > 1) return productionIndex;
+
+            ShipDesign smallStarbase = aiPlan.currentMinimalStarbaseDesign;
+
+            if (smallStarbase != null)
+            {
+                ProductionOrder chosenOrder = new ProductionOrder(1, new ShipProductionUnit(smallStarbase), false);
+                ProductionCommand suitableCommand = new ProductionCommand(CommandMode.Add, chosenOrder, this.planet.Key, productionIndex);
+                foreach (ProductionOrder order in this.planet.ManufacturingQueue.Queue) if (order.Name == smallStarbase.Name) return productionIndex;
+                if (suitableCommand.IsValid(clientState.EmpireState))
+                {
+                    suitableCommand.ApplyToState(clientState.EmpireState);
+                    clientState.Commands.Push(suitableCommand);
+                    productionIndex++;
+                }
+            }
+            return productionIndex;
+        }
     }
 }
+    
+    
+
 

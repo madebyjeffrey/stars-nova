@@ -67,7 +67,7 @@ namespace Nova.Ai
                 if (fleet.Owner == clientState.EmpireState.Id)
                 {
                     aiPlan.CountFleet(fleet);
-                    if (fleet.Name.Contains("Scout") || (fleet.Name.Contains("Long Range Scout")))
+                    if (fleet.Name.Contains("Scout") || (fleet.Name.Contains("Long Range Scout")) || (fleet.Name.Contains(Global.AiScout)))
                     {
                         DefaultFleetAI fleetAI = new DefaultFleetAI(fleet, clientState, fuelStations);
                         fleetAIs.Add(fleet.Id, fleetAI);
@@ -85,11 +85,11 @@ namespace Nova.Ai
 
             turnData = clientState.InputTurn;
 
+            HandleShipDesign(); //load designs into AI plan once so other modules can use them
             HandleProduction();
             HandleResearch();
             HandleScouting();
             HandleColonizing();
-            HandleShipDesign();
             HandlePopulationSurplus();
             HandleFuelImpoverishedFleets();
         }
@@ -110,8 +110,8 @@ namespace Nova.Ai
             List<Fleet> scoutFleets = new List<Fleet>();
             foreach (Fleet fleet in clientState.EmpireState.OwnedFleets.Values)
             {
-                if (fleet.Name.Contains("Scout") == true)
-                {
+                if (fleet.Name.Contains("Scout") || (fleet.Name.Contains("Long Range Scout") || (fleet.Name.Contains(Global.AiScout))))
+                    {
                     scoutFleets.Add(fleet);
                 }
             }
@@ -144,7 +144,7 @@ namespace Nova.Ai
             List<Fleet> armedScoutFleets = new List<Fleet>();
             foreach (Fleet fleet in clientState.EmpireState.OwnedFleets.Values)
             {
-                if ((fleet.Name.Contains("Pointy Stick") == true) && (fleet.Waypoints.Count == 1))
+                if ((fleet.Name.Contains(Global.AiDefensiveDestroyer) == true) && (fleet.Waypoints.Count == 1))
                 {
                     armedScoutFleets.Add(fleet);
                 }
@@ -475,12 +475,17 @@ namespace Nova.Ai
                     // Prop 7 - Warp 8 engine
                     targetResearchField = TechLevel.ResearchField.Propulsion;
                 }
+                else if (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Biotechnology] < 4)
+                {
+                    // Bio 4 - carbonic armour
+                    targetResearchField = TechLevel.ResearchField.Biotechnology;
+                }
                 else if (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] < 6)
                 {
                     // Cons 6 - Frigate
                     targetResearchField = TechLevel.ResearchField.Construction;
                 }
-                else if (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Biotechnology] < 4)
+                else if (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Weapons] < 10)
                 {
                     // Bio 4 - Unlock terraform and prep for mines
                     targetResearchField = TechLevel.ResearchField.Biotechnology;
@@ -489,6 +494,11 @@ namespace Nova.Ai
                 {
                     // Energy 3 - Mines and shields
                     targetResearchField = TechLevel.ResearchField.Energy;
+                }
+                else if (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Biotechnology] < 7)
+                {
+                    // Bio 7 - Organic Armor
+                    targetResearchField = TechLevel.ResearchField.Biotechnology;
                 }
                 else if (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] < 9)
                 {
@@ -500,9 +510,14 @@ namespace Nova.Ai
                     // Energy 6 - Shields
                     targetResearchField = TechLevel.ResearchField.Energy;
                 }
-                else if (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Weapons] < 12)
+                else if (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Weapons] < 16)
                 {
                     // Weapons 12 - Jihad Missile
+                    targetResearchField = TechLevel.ResearchField.Weapons;
+                }
+                else if (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Propulsion] < 12)
+                {
+                    // Propulsion 12 - overthruster
                     targetResearchField = TechLevel.ResearchField.Weapons;
                 }
                 else if (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] < 13)
@@ -586,48 +601,59 @@ namespace Nova.Ai
         private void HandleShipDesign()
         {
             AllComponents allComponents = new AllComponents(true, "A.I. shipdesign");
-            designScouts(allComponents.Fetch("Scout"), "Long Range Scout");
-            if ((clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] >= 3) && (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Propulsion] >= 5)) designColonizers(allComponents.Fetch("Medium Freighter"), "Medium Santa Maria", allComponents.Fetch("Colonization Module"));
-            if ((clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] >= 8) && (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Propulsion] >= 7)) designColonizers(allComponents.Fetch("Large Freighter"), "Large Santa Maria", allComponents.Fetch("Colonization Module"));
-            if ((clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] >= 3) && (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Propulsion] >= 5)) designColonizers(allComponents.Fetch("Medium Freighter"), "Medium Freighter", clientState.EmpireState.AvailableComponents.GetBestFuelTank());
-            if ((clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] >= 8) && (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Propulsion] >= 7)) designColonizers(allComponents.Fetch("Large Freighter"), "Large Freighter", clientState.EmpireState.AvailableComponents.GetBestScanner());
+            aiPlan.currentScoutDesign = designScouts(allComponents.Fetch("Scout"), "Long Range Scout");
+            bool found = false;
+            foreach (ShipDesign design in clientState.EmpireState.Designs.Values) if (design.Name.Contains(Global.AiScout)) found = true; //only one design with the prefix - when scouts get destroyed the victor gains part of the tech difference so use low tech scouts with lots of fuel
+            if ((clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Propulsion] >= 3)&& !found) aiPlan.currentScoutDesign = designScouts(allComponents.Fetch("Scout"), Global.AiScout); //It is nice to have a scout design with a warp 6 engine 
+            aiPlan.currentScoutDesign = aiPlan.ScoutDesign;
+            if ((clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] >= 8) && (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Propulsion] >= 7)) aiPlan.currentColoniserDesign = designColonizers(allComponents.Fetch("Large Freighter"), " Grande " + Global.AiColonyShip, allComponents.Fetch("Colonization Module"));
+            else if ((clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] >= 3) && (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Propulsion] >= 5)) aiPlan.currentColoniserDesign =  designColonizers(allComponents.Fetch("Medium Freighter"), " Medio " + Global.AiColonyShip, allComponents.Fetch("Colonization Module"));
+            if ((clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] >= 8) && (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Propulsion] >= 7)) aiPlan.currentTransportDesign = designColonizers(allComponents.Fetch("Large Freighter"), Global.AiFreighter, clientState.EmpireState.AvailableComponents.GetBestScanner());
+            else if ((clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] >= 3) && (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Propulsion] >= 5)) aiPlan.currentTransportDesign = designColonizers(allComponents.Fetch("Medium Freighter"), Global.AiSmallFreighter, clientState.EmpireState.AvailableComponents.GetBestFuelTank());
             Component BattleCruiserHull = null;
             Component cruiserHull = null;
             Component frigateHull = null;
             Component destroyerHull = null;
 
             foreach (Component component in clientState.EmpireState.AvailableComponents.Values)
-            {
-                if ((component.Properties.ContainsKey("Hull")) && (component.Name == "Battle Cruiser")) BattleCruiserHull = component;
+            { // We needs an empirical method for analysing a hulls fitness for each role - the AI will break if Hull names change
+                if ((component.Properties.ContainsKey("Hull")) && (component.Name == "Battleship")) BattleCruiserHull = component;
                 if ((component.Properties.ContainsKey("Hull")) && (component.Name == "Cruiser")) cruiserHull = component;
                 if ((component.Properties.ContainsKey("Hull")) && (component.Name == "Destroyer")) destroyerHull = component;
                 if ((component.Properties.ContainsKey("Hull")) && (component.Name == "Frigate")) frigateHull = component;
             }
 
-            if (destroyerHull != null) designDestroyers(destroyerHull, " Pointy Stick");
-            if (cruiserHull != null) designDestroyers(cruiserHull, " Spear");
-            if (BattleCruiserHull != null) designDestroyers(BattleCruiserHull, " Dr Death");
-            if (frigateHull != null) designFrigate(frigateHull, " Mosquito");
-            if (cruiserHull != null) designFrigate(cruiserHull, " Bee");
-            if (BattleCruiserHull != null) designFrigate(BattleCruiserHull, " Light Saber");
+            if (BattleCruiserHull != null) aiPlan.currentDefenderDesign =  designDestroyers(BattleCruiserHull, Global.AiDefensiveBattleCruiser);
+            else if (cruiserHull != null) aiPlan.currentDefenderDesign = designDestroyers(cruiserHull, Global.AiDefensiveCruiser);
+            else if (destroyerHull != null) aiPlan.currentDefenderDesign = designDestroyers(destroyerHull, Global.AiDefensiveDestroyer);
+            if (frigateHull != null) aiPlan.currentMineSweeperDesign =  designFrigate(frigateHull, Global.AiMineSweeper);
+            if (BattleCruiserHull != null) aiPlan.currentBomberCoverDesign = designFrigate(BattleCruiserHull,Global.AiBomberCoverBattleCruiser ,false);
+            else if (cruiserHull != null) aiPlan.currentBomberCoverDesign = designFrigate(cruiserHull, Global.AiBomberCoverCruiser,false);
+            else if (frigateHull != null) aiPlan.currentBomberCoverDesign = designFrigate(frigateHull, Global.AiBomberCoverFrigate,false);
             if (clientState.EmpireState.AvailableComponents.GetBestRefuelerHull() != null)
-                aiPlan.currentRefuelerDesign = designRefuelers(clientState.EmpireState.AvailableComponents.GetBestRefuelerHull(), " Mobile Mobil");
-            else aiPlan.currentRefuelerDesign = designRefuelers(allComponents.Fetch("Scout"), " Mobile Mobil ");
-            if (clientState.EmpireState.AvailableComponents.GetBestRepairerHull() != null) designRefuelers(clientState.EmpireState.AvailableComponents.GetBestRefuelerHull(), " Grease Monkey");
-
+                aiPlan.currentRefuelerDesign = designRefuelers(clientState.EmpireState.AvailableComponents.GetBestRefuelerHull(), Global.AiRefueler);
+            else aiPlan.currentRefuelerDesign = designRefuelers(allComponents.Fetch("Scout"), Global.AiRefueler); // for earlygame have one scout hull with a fuel tank to use as a refueller
+            if (clientState.EmpireState.AvailableComponents.GetBestRepairerHull() != null) 
+                aiPlan.currentReairerDesign =  designRefuelers(clientState.EmpireState.AvailableComponents.GetBestRefuelerHull(), Global.AiRepairer);
+            aiPlan.currentStarbaseDesign = designStarbase(Global.AiStarbase);
+            aiPlan.currentMinimalStarbaseDesign = designStarbase(Global.AiStarbase,false);
         }
 
-        private void designDestroyers(Component Hull, String designPrefix)
+        private ShipDesign designDestroyers(Component Hull, String designPrefix)
         {
             Component engine = clientState.EmpireState.AvailableComponents.GetBestEngine(Hull, true);
             Component torpedo = clientState.EmpireState.AvailableComponents.GetBestTorpedo();
             Engine engineSpecs = engine.Properties["Engine"] as Engine;
             bool found = false;
             String designName = torpedo.Name + designPrefix + "(" + engineSpecs.OptimalSpeed.ToString() + ")";
-            foreach (ShipDesign ship in clientState.EmpireState.Designs.Values) if (ship.Name == designName) found = true;
+            ShipDesign destroyer = new ShipDesign(clientState.EmpireState.GetNextDesignKey());
+            foreach (ShipDesign ship in clientState.EmpireState.Designs.Values) if (ship.Name == designName)
+                {
+                    found = true;
+                    destroyer = ship;
+                }
             if (!found)
             {
-                ShipDesign destroyer = new ShipDesign(clientState.EmpireState.GetNextDesignKey());
                 destroyer.Blueprint = Hull;
                 foreach (HullModule module in destroyer.Hull.Modules)
                 {
@@ -646,12 +672,12 @@ namespace Nova.Ai
                         module.AllocatedComponent = torpedo;
                         module.ComponentCount = module.ComponentMaximum;
                     }
-                    else if ((module.ComponentType == "Mechanical") || (module.ComponentType == "Scanner Electrical Mechanical") )
+                    else if ((module.ComponentType == "Mechanical") || (module.ComponentType == "Scanner Electrical Mechanical"))
                     {
                         module.AllocatedComponent = clientState.EmpireState.AvailableComponents.GetBestManeuveringJet();
                         module.ComponentCount = module.ComponentMaximum;
                     }
-                    else if  ((module.ComponentType == "Electrical") || (module.ComponentType == "Shield Electrical Mechanical"))
+                    else if ((module.ComponentType == "Electrical") || (module.ComponentType == "Shield Electrical Mechanical"))
                     {
                         module.AllocatedComponent = clientState.EmpireState.AvailableComponents.GetBestBattleComputer();
                         module.ComponentCount = module.ComponentMaximum;
@@ -680,19 +706,91 @@ namespace Nova.Ai
                 }
 
             }
-
+            return destroyer;
         }
-        private void designFrigate(Component Hull, String designPrefix)
+        private ShipDesign designStarbase(String designPrefix,bool populateEverything = true)
         {
+            Component torpedo = clientState.EmpireState.AvailableComponents.GetBestTorpedo();
+            Component armor = clientState.EmpireState.AvailableComponents.GetBestStationArmour();
+            Component shield = clientState.EmpireState.AvailableComponents.GetBestShield();
+            Component beamWeapon = clientState.EmpireState.AvailableComponents.GetBestBeamWeapon();
+            bool found = false;
+            String designName = torpedo.Name.Substring(0,5) + designPrefix + armor.Name.Substring(0,5) + shield.Name.Substring(0,5);
+            ShipDesign starbase = new ShipDesign(clientState.EmpireState.GetNextDesignKey());
+            foreach (ShipDesign ship in clientState.EmpireState.Designs.Values) if (ship.Name == designName)
+                {
+                    found = true;
+                    starbase = ship;
+                }
+            if (!found)
+            {
+                bool hasMinesweeper = false;
+                starbase.Blueprint = clientState.EmpireState.AvailableComponents.GetBestStationHull();
+                if (starbase.Blueprint == null) return null;
+                foreach (HullModule module in starbase.Hull.Modules)
+                {
+                    if ((module.ComponentType == "General Purpose") || (module.ComponentType == "Weapon"))
+                    {
+                        if (hasMinesweeper) module.AllocatedComponent = torpedo;
+                        else
+                        {
+                            module.AllocatedComponent = beamWeapon;
+                            hasMinesweeper = true;
+                        } 
+                        module.ComponentCount = (populateEverything) ? module.ComponentMaximum : module.ComponentMaximum / 3;
+                    }
+                    else if ((module.ComponentType == "Electrical") || (module.ComponentType == "Orbital or Electrical"))
+                    {
+                        module.AllocatedComponent = clientState.EmpireState.AvailableComponents.GetBestBattleComputer();
+                        module.ComponentCount = module.ComponentMaximum;
+                    }
+                    else if ((module.ComponentType == "Armor") || (module.ComponentType == "Shield or Armor"))
+                    {
+                        module.AllocatedComponent = armor;
+                        module.ComponentCount = (populateEverything) ? module.ComponentMaximum : module.ComponentMaximum / 3; 
+                    }
+                    else if (module.ComponentType == "Shield")
+                    {
+                        module.AllocatedComponent = shield;
+                        module.ComponentCount = (populateEverything) ? module.ComponentMaximum : module.ComponentMaximum * 2 / 3; ;
+                    }
+                }
+                starbase.Icon = new ShipIcon(starbase.Blueprint.ImageFile, (System.Drawing.Bitmap)starbase.Blueprint.ComponentImage);
+
+                starbase.Type = ItemType.Starbase;
+                starbase.Name = designName;
+                starbase.Update();
+                DesignCommand command = new DesignCommand(CommandMode.Add, starbase);
+                if (command.IsValid(clientState.EmpireState))
+                {
+                    clientState.Commands.Push(command);
+                    command.ApplyToState(clientState.EmpireState);
+                }
+
+            }
+            return starbase;
+        }
+        private ShipDesign designFrigate(Component Hull, String designPrefix, bool allowUpgrading = true)
+        { // it may seem counter-intuitive to produce obsolete ships but in large battles it is best 
+            // to have all escort ships to be of the same design so damage is shared equally over the (say) 200 escorts
+            // rather than have (say) 5 ships destroyed per battle step
+            // This is because the Battle engine always targets the fleet with the smallest number of vessels
+            //so try not to have a mix of designs in a bombing escort fleet
             Component engine = clientState.EmpireState.AvailableComponents.GetBestEngine(Hull, false);
             Component beam = clientState.EmpireState.AvailableComponents.GetBestBeamWeapon();
             Engine engineSpecs = engine.Properties["Engine"] as Engine;
             bool found = false;
-            String designName = beam.Name + designPrefix + "(" + engineSpecs.OptimalSpeed.ToString() + ")";
-            foreach (ShipDesign ship in clientState.EmpireState.Designs.Values) if (ship.Name == designName) found = true;
+            String designName = null;
+            if (allowUpgrading) designName = beam.Name + designPrefix + "(" + engineSpecs.OptimalSpeed.ToString() + ")";
+            else designName =  designPrefix ;
+            ShipDesign destroyer = new ShipDesign(clientState.EmpireState.GetNextDesignKey());
+            foreach (ShipDesign ship in clientState.EmpireState.Designs.Values) if (ship.Name == designName)
+                {
+                    found = true;
+                    destroyer = ship;
+                }
             if (!found)
             {
-                ShipDesign destroyer = new ShipDesign(clientState.EmpireState.GetNextDesignKey());
                 destroyer.Blueprint = Hull;
                 foreach (HullModule module in destroyer.Hull.Modules)
                 {
@@ -743,21 +841,26 @@ namespace Nova.Ai
                     clientState.Commands.Push(command);
                     command.ApplyToState(clientState.EmpireState);
                 }
-
+                return destroyer;
             }
+            return destroyer;
 
         }
 
-        private void designScouts(Component Hull, String designPrefix)
+        private ShipDesign designScouts(Component Hull, String designPrefix)
         {
             Component engine = clientState.EmpireState.AvailableComponents.GetBestEngine(Hull, true);
             Engine engineSpecs = engine.Properties["Engine"] as Engine;
             bool found = false;
             String designName = designPrefix + "(" + engineSpecs.OptimalSpeed.ToString() + ")";
-            foreach (ShipDesign ship in clientState.EmpireState.Designs.Values) if (ship.Name == designName) found = true;
+            ShipDesign scout = new ShipDesign(clientState.EmpireState.GetNextDesignKey());
+            foreach (ShipDesign ship in clientState.EmpireState.Designs.Values) if (ship.Name == designName)
+                {
+                    found = true;
+                    scout = ship;
+                }
             if (!found)
             {
-                ShipDesign scout = new ShipDesign(clientState.EmpireState.GetNextDesignKey());
                 scout.Blueprint = Hull;
                 foreach (HullModule module in scout.Hull.Modules)
                 {
@@ -790,7 +893,7 @@ namespace Nova.Ai
                 }
 
             }
-
+            return scout;
         }
 
         private ShipDesign designRefuelers(Component Hull, String designPrefix)
@@ -854,16 +957,20 @@ namespace Nova.Ai
             return refueler;
 
         }
-        private void designColonizers(Component Hull, String designPrefix, Component colonyModule)
+        private ShipDesign designColonizers(Component Hull, String designPrefix, Component colonyModule)
         {
             Component engine = clientState.EmpireState.AvailableComponents.GetBestEngine(Hull, true);
             Engine engineSpecs = engine.Properties["Engine"] as Engine;
             bool found = false;
+            ShipDesign coloniser = new ShipDesign(clientState.EmpireState.GetNextDesignKey());
             String designName = designPrefix + "(" + engineSpecs.OptimalSpeed.ToString() + ")";
-            foreach (ShipDesign ship in clientState.EmpireState.Designs.Values) if (ship.Name == designName) found = true;
+            foreach (ShipDesign ship in clientState.EmpireState.Designs.Values) if (ship.Name == designName)
+                {
+                    found = true;
+                    coloniser = ship;
+                }
             if (!found)
             {
-                ShipDesign coloniser = new ShipDesign(clientState.EmpireState.GetNextDesignKey());
                 coloniser.Blueprint = Hull;
                 foreach (HullModule module in coloniser.Hull.Modules)
                 {
@@ -890,7 +997,7 @@ namespace Nova.Ai
                     command.ApplyToState(clientState.EmpireState);
                 }
             }
-
+            return coloniser;
         }
 
         private void SendFleet(Star star, Fleet fleet, IWaypointTask task)

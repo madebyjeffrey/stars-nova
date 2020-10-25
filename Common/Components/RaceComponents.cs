@@ -101,6 +101,7 @@ namespace Nova.Common.Components
                 if ((component.Type == ItemType.Electrical) && (component.Name.Contains("Computer")))
                 {
                     if (candidate == null) candidate = component;
+                    if (component.Properties.ContainsKey("Computer"))
                     if ((component.Properties["Computer"] as Computer).Accuracy > (candidate.Properties["Computer"] as Computer).Accuracy) candidate = component;
                 }
             return candidate;
@@ -111,6 +112,7 @@ namespace Nova.Common.Components
             Component candidate = null;
             foreach (Component component in this.Values)
             { // no properties of overthrusters in component !!
+                if (component.Properties.ContainsKey("Mechanical"))
                 if ((component.Type == ItemType.Mechanical) && (component.Name.Contains("Maneuvering Jet")) && (candidate == null)) candidate = component; //increases speed by 1/4 square
                 if ((component.Type == ItemType.Mechanical) && (component.Name.Contains("Overthruster"))) candidate = component; // increases speed by 1/2 square
             }
@@ -124,8 +126,23 @@ namespace Nova.Common.Components
                 if (component.Type == ItemType.Armor)
                 { // Best Armour per KG of mass
                     if (candidate == null) candidate = component;
-                    if ((component.Properties["Armor"] as IntegerProperty).Value  / (double)( component.Mass) >
-                        (candidate.Properties["Armor"] as IntegerProperty).Value  / (double)( candidate.Mass)) candidate = component;
+                    if (component.Properties.ContainsKey("Armor"))
+                    if ((component.Properties["Armor"] as IntegerProperty).Value / (double)(component.Mass) >
+                        (candidate.Properties["Armor"] as IntegerProperty).Value / (double)(candidate.Mass)) candidate = component;
+                }
+            return candidate;
+
+        }
+        public Component GetBestStationArmour()
+        {
+            Component candidate = null;
+            foreach (Component component in this.Values)
+                if (component.Type == ItemType.Armor)
+                { // Best Armour - ignore mass
+                    if (candidate == null) candidate = component;
+                    if (component.Properties.ContainsKey("Electrical"))
+                    if ((component.Properties["Armor"] as IntegerProperty).Value  >
+                        (candidate.Properties["Armor"] as IntegerProperty).Value ) candidate = component;
                 }
             return candidate;
 
@@ -137,6 +154,7 @@ namespace Nova.Common.Components
                 if (component.Type == ItemType.Armor)
                 { // Best Armour per KG of mass
                     if (candidate == null) candidate = component;
+                    if (component.Properties.ContainsKey("Electrical"))
                     if ((component.Properties["Electrical"] as IntegerProperty).Value >
                         (candidate.Properties["Electrical"] as IntegerProperty).Value ) candidate = component;
                 }
@@ -147,11 +165,28 @@ namespace Nova.Common.Components
         {
             Component candidate = null;
             foreach (Component component in this.Values)
-                if (component.Type == ItemType.Armor)
+                if (component.Type == ItemType.Shield)
                 { // Best shields - shield mass is almost negligible
                     if (candidate == null) candidate = component;
-                    if ((component.Properties["Shields"] as IntegerProperty).Value  >
-                        (candidate.Properties["Shields"] as IntegerProperty).Value ) candidate = component;
+                    if (component.Properties.ContainsKey("Shields"))
+                    if ((component.Properties["Shields"] as IntegerProperty).Value >
+                        (candidate.Properties["Shields"] as IntegerProperty).Value) candidate = component;
+                }
+            return candidate;
+
+        }
+        public Component GetBestStationHull()
+        {
+            Component candidate = null;
+
+
+            foreach (Component component in this.Values)
+                if (component.Type == ItemType.Hull)
+                    if ((component.Properties["Hull"] as Hull).DockCapacity > 0)
+                { 
+                    if (candidate == null) candidate = component;
+                    if ((candidate.Properties["Hull"] as Hull).ArmorStrength >
+                        (component.Properties["Hull"] as Hull).ArmorStrength) candidate = component; //All properties scale up with better designs so just compare one property
                 }
             return candidate;
 
@@ -204,7 +239,8 @@ namespace Nova.Common.Components
         {
             List<Component> possibleTank = new List<Component>();
             foreach (Component component in this.Values)
-                if ((component.Type == ItemType.Mechanical) && (component.Properties["Fuel"] as Fuel).Capacity > 0)
+                if ((component.Type == ItemType.Mechanical) && (component.Properties.ContainsKey("Fuel")))
+                    if ((component.Properties["Fuel"] as Fuel).Capacity > 0)
                 {
                     possibleTank.Add(component);
                 }
@@ -221,7 +257,8 @@ namespace Nova.Common.Components
         {
             List<Component> possibleHull = new List<Component>();
             foreach (Component component in this.Values)
-                if ((component.Type == ItemType.Hull) && (component.Properties["Fuel"] as Fuel).Generation > 0)
+                if ((component.Type == ItemType.Hull) && (component.Properties.ContainsKey("Fuel") ))
+                    if  ((component.Properties["Fuel"] as Fuel).Generation > 0)
                 {
                     possibleHull.Add(component);
                 }
@@ -238,8 +275,9 @@ namespace Nova.Common.Components
         {
             List<Component> possibleHull = new List<Component>();
             foreach (Component component in this.Values)
-                if ((component.Type == ItemType.Hull) && ((component.Properties["HealOthersPercent"] as IntegerProperty).Value > 0))
-                {
+                if ((component.Type == ItemType.Hull) && (component.Properties.ContainsKey("HealOthersPercent")))
+                    if ((component.Properties["HealOthersPercent"] as IntegerProperty).Value > 0)
+                    {
                     possibleHull.Add(component);
                 }
             Component best = null;

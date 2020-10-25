@@ -43,6 +43,7 @@ namespace Nova.Common
         public int          Colonists               { get; set; }
         public bool         HasFleetsInOrbit        { get; set; }
         public bool         HasRefuelerInOrbit      { get; set; }
+        public bool         HasFreeTransportInOrbit { get; set; }
         public Fleet        Starbase                { get; set; }
         public Resources    ResourcesOnHand         { get; set; }
         public int          baseRadiation           { get;  set; }
@@ -124,6 +125,9 @@ namespace Nova.Common
                         case "hasrefuelerinorbit":
                             HasRefuelerInOrbit = bool.Parse(mainNode.FirstChild.Value);
                             break;
+                        case "hasfreetransportinorbit":
+                            HasFreeTransportInOrbit = bool.Parse(mainNode.FirstChild.Value);
+                            break;
                         case "starbase":
                             Starbase = new Fleet(long.Parse(mainNode.FirstChild.Value, System.Globalization.NumberStyles.HexNumber));
                             break;
@@ -168,6 +172,7 @@ namespace Nova.Common
             baseGravity             = Global.Unset;
             HasFleetsInOrbit        = false;
             HasRefuelerInOrbit      = false;
+            HasFreeTransportInOrbit = false;
             Starbase = null;            
         }
  
@@ -241,6 +246,7 @@ namespace Nova.Common
                 Starbase = star.Starbase;
                 HasFleetsInOrbit = star.HasFleetsInOrbit;
                 HasRefuelerInOrbit = star.HasRefuelerInOrbit;
+                HasFreeTransportInOrbit = star.HasFreeTransportInOrbit;
                 ResourcesOnHand = star.ResourcesOnHand;
 
             }
@@ -324,7 +330,8 @@ namespace Nova.Common
             Global.SaveData(xmldoc, xmlelStarIntel, "Colonists", Colonists.ToString(System.Globalization.CultureInfo.InvariantCulture));
 
             Global.SaveData(xmldoc, xmlelStarIntel, "HasFleetsInOrbit", HasFleetsInOrbit.ToString());
-            Global.SaveData(xmldoc, xmlelStarIntel, "HasRefuelerInOrbit", HasFleetsInOrbit.ToString());
+            Global.SaveData(xmldoc, xmlelStarIntel, "HasRefuelerInOrbit", HasRefuelerInOrbit.ToString());
+            Global.SaveData(xmldoc, xmlelStarIntel, "HasFreeTransportInOrbit", HasFreeTransportInOrbit.ToString());
 
             if (Starbase != null)
             {

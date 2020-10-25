@@ -55,10 +55,16 @@ namespace Nova.Common
                 return;
             }
             
-            // Use a new object, no just a reference to the copy's NovaPoint
+            // Use a new object, not just a reference to the copy's NovaPoint
             Position = new NovaPoint(existing.Position);
         }
         
+        public Mappable(NovaPoint target) :
+            base (new Mappable())
+        {
+            Position = new NovaPoint(target);
+        }
+
         /// <summary>
         /// Load: initializing constructor from an XmlNode representing the object (from a save file).
         /// </summary>
