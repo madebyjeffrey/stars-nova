@@ -201,6 +201,9 @@ namespace Nova.Common
         public void Update(Star star, ScanLevel scan, int year)
         {
             Clear();
+            star.HasFleetsInOrbit= HasFleetsInOrbit;
+            star.HasRefuelerInOrbit = HasRefuelerInOrbit;
+            star.HasFreeTransportInOrbit = HasFreeTransportInOrbit;
 
             if (star == null)
             {
@@ -244,9 +247,6 @@ namespace Nova.Common
                 Radiation = star.Radiation;
                 Temperature = star.Temperature;
                 Starbase = star.Starbase;
-                HasFleetsInOrbit = star.HasFleetsInOrbit;
-                HasRefuelerInOrbit = star.HasRefuelerInOrbit;
-                HasFreeTransportInOrbit = star.HasFreeTransportInOrbit;
                 ResourcesOnHand = star.ResourcesOnHand;
 
             }

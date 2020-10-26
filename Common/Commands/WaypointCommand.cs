@@ -191,7 +191,8 @@ namespace Nova.Common.Commands
                     break;
                 case CommandMode.Edit:
                     empire.OwnedFleets[FleetKey].Waypoints.RemoveAt(Index);
-                    empire.OwnedFleets[FleetKey].Waypoints.Insert(Index, Waypoint);
+                    if (empire.OwnedFleets[FleetKey].Waypoints.Count > Index) empire.OwnedFleets[FleetKey].Waypoints.Insert(Index, Waypoint);
+                    else empire.OwnedFleets[FleetKey].Waypoints.Add(Waypoint); //Waypoint.Insert[Insert] past the end of the list is an Add
                     break;
             }
         }
@@ -216,7 +217,7 @@ namespace Nova.Common.Commands
                                 }
                             }
                             else
-                            {// the next waypoint command to be processed might a Split command for this Fleet
+                            {// the next waypoint command to be processed might be a Split command for this Fleet
                              // so we need to Load the Cargo here or the "Other" fleet may end up empty and this fleet may be asked 
                              // to carry it's full payload of cargo PLUS the payload belonging to the "Other" fleet   :(
                                 if (Waypoint.Task is CargoTask)

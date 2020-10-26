@@ -161,8 +161,6 @@ namespace Nova.WinForms.Gui
                         {
                             // Discard it.
                             commands.Pop();
-                            command.Mode = CommandMode.Edit; // this line does nothing - just highlighting the fact that on the Server we now
-                            command.Index = index;         // want to EDIT a command that EXISTS not one past the end of the list
                         }
                     }
                 }
@@ -172,10 +170,6 @@ namespace Nova.WinForms.Gui
                 if (command.IsValid(empireState))
                 {
                     command.ApplyToState(empireState);
-                    // we use the Index that we get from the listbox.SelectedIndices method to populate
-                    // the Index of the command !!
-                    // If we add new Indices to the fleets command but not to the listbox then we
-                    // are simply adding commands at random places in the waypoint list
                     //TODO separate the commandList from the WaypointListbox and only display waypoints that the user 
                     // can edit while maintaining links from the WaypointListbox.index to the commandList.index (obviously not
                     // one to one)

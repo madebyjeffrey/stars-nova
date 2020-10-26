@@ -409,14 +409,14 @@ namespace Nova.WinForms.Gui
                 brushMin,
                 position.X - (int)(minRadius * zoomFactor / 40.0)+1,
                 position.Y - (int)(minRadius * zoomFactor / 40.0),
-                (int)(minRadius * zoomFactor / 20.0),
-                (int) (minRadius * zoomFactor / 20.0),
+                (int)(minRadius * zoomFactor / 20.0) + 1,
+                (int) (minRadius * zoomFactor / 20.0)+1,
                 90,
                 180);
             g.FillPie(
                 brushMax,
-                position.X - (int)(maxRadius * zoomFactor / 40.0),
-                position.Y - (int)(maxRadius * zoomFactor / 40.0),
+                position.X - (int)(maxRadius * zoomFactor / 40.0)+1,
+                position.Y - (int)(maxRadius * zoomFactor / 40.0)+1,
                 (int)(maxRadius * zoomFactor / 20.0),
                 (int)(maxRadius * zoomFactor / 20.0),
                 270,

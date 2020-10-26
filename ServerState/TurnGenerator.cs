@@ -504,8 +504,12 @@ namespace Nova.Server
                         fleet.InOrbit = target;
                         serverState.AllEmpires.TryGetValue(target.Owner, out reciever);
                         if (availableTime != 1.0) availableTime = 0; //In Stars! the fleet looses the rest of the turn as it enters orbit and scans the Star
+                        //To avoid entering orbit (and losing the rest of the turn) when you have penetrating scanners never let a fleet hit a waypoint but force the fleet
+                        // to fly close to stars the you are interested in.
+                        // We could add a new waypoint command "Scan without Entering orbit" for people who don't know how to never let a fleet hit a waypoint but force the fleet
+                        // to fly close to stars that they are interested in scanning that Star.
                     }
-                    
+
                     // -------------------------
                     // Waypoint 1 Tasks
                     // -------------------------
