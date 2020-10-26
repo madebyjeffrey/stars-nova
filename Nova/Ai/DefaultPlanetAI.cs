@@ -67,12 +67,12 @@ namespace Nova.Ai
             Queue<ProductionCommand> clearProductionList = new Queue<ProductionCommand>();
             foreach (ProductionOrder productionOrderToclear in this.planet.ManufacturingQueue.Queue)
             {
-                if (productionOrderToclear.Unit.Cost == productionOrderToclear.Unit.RemainingCost)
+                if ((productionOrderToclear.Unit.Cost == productionOrderToclear.Unit.RemainingCost) && !(productionOrderToclear.Unit is ShipProductionUnit))
                 {
                     ProductionCommand clearProductionCommand = new ProductionCommand(CommandMode.Delete, productionOrderToclear, this.planet.Key);
                     if (clearProductionCommand.IsValid(clientState.EmpireState))
                     {
-                        // Put the items to be cleared in a queue, as the actual cleanup can not be done while itterating the list.
+                        // Put the items to be cleared in a queue, as the actual cleanup can not be done while iterating the list.
                         clearProductionList.Enqueue(clearProductionCommand);
                         clientState.Commands.Push(clearProductionCommand);
                     }

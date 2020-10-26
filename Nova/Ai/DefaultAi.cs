@@ -47,6 +47,12 @@ namespace Nova.Ai
         /// This is the entry point to the AI proper. 
         /// Currently this does not use anything recognized by Computer Science as AI,
         /// just functional programming to complete a list of tasks.
+        /// 95% of the population carry out their jobs using simple heuristics (like this A.I. does)
+        /// so we should also say that 95% of humans do nothing whilst they are working that is recognised 
+        /// by Computer Science as AI.
+        /// This AI can largely adapt to new environments (new component lists) but still fails if 
+        /// the names of hulls are changed. :(
+        /// TODO use another method of picking hulls for each task instead of referring to hulls by name!
         /// </summary>
         public override void DoMove()
         {
@@ -57,6 +63,7 @@ namespace Nova.Ai
             {
                 if (star.Owner == clientState.EmpireState.Id)
                 {
+                    clientState.EmpireState.StarReports[star.Name].Update(star, ScanLevel.Owned, clientState.EmpireState.TurnYear,true);
                     DefaultPlanetAI planetAI = new DefaultPlanetAI(star, clientState, this.aiPlan);
                     planetAIs.Add(star.Key, planetAI);
                 }

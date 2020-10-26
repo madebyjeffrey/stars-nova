@@ -101,12 +101,12 @@ namespace Nova.Server
             BackupTurn();
 
             // Clear the HasFleetsInOrbit flag then recalc after ships move
-            foreach (EmpireData empire in serverState.AllEmpires.Values)
-            {
-                foreach (StarIntel report in this.serverState.AllEmpires[empire.Id].StarReports.Values) report.HasFleetsInOrbit = false;
-                foreach (StarIntel report in this.serverState.AllEmpires[empire.Id].StarReports.Values) report.HasRefuelerInOrbit = false;
-                foreach (StarIntel report in this.serverState.AllEmpires[empire.Id].StarReports.Values) report.HasFreeTransportInOrbit = false;
-            }
+            //foreach (EmpireData empire in serverState.AllEmpires.Values)
+            //{
+            //    //foreach (StarIntel report in this.serverState.AllEmpires[empire.Id].StarReports.Values) report.HasFleetsInOrbit = false;
+            //    //foreach (StarIntel report in this.serverState.AllEmpires[empire.Id].StarReports.Values) report.HasRefuelerInOrbit = false;
+            //    //foreach (StarIntel report in this.serverState.AllEmpires[empire.Id].StarReports.Values) report.HasFreeTransportInOrbit = false;
+            //}
 
 
 
@@ -167,6 +167,8 @@ namespace Nova.Server
 
             foreach (EmpireData empire in serverState.AllEmpires.Values)
             {
+                foreach (StarIntel star in empire.StarReports.Values) star.HasFleetsInOrbit = star.HasFreeTransportInOrbit = star.HasRefuelerInOrbit = false;
+               
                 foreach (Fleet fleet in empire.OwnedFleets.Values)
 
                     if (fleet.InOrbit != null)

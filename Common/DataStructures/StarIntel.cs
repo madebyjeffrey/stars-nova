@@ -198,12 +198,21 @@ namespace Nova.Common
         /// <param name="star">Star to report.</param>
         /// <param name="scan">Amount of Knowledge to set.</param>
         /// <param name="year">Year of the updated data.</param>
-        public void Update(Star star, ScanLevel scan, int year)
+        public void Update(Star star, ScanLevel scan, int year,bool set = false)
         {
+            if (set)
+            {
+                star.HasFleetsInOrbit = HasFleetsInOrbit;
+                star.HasRefuelerInOrbit = HasRefuelerInOrbit;
+                star.HasFreeTransportInOrbit = HasFreeTransportInOrbit;
+            }
             Clear();
-            star.HasFleetsInOrbit= HasFleetsInOrbit;
-            star.HasRefuelerInOrbit = HasRefuelerInOrbit;
-            star.HasFreeTransportInOrbit = HasFreeTransportInOrbit;
+            if (!set)
+            {
+                HasFleetsInOrbit = star.HasFleetsInOrbit;
+                HasRefuelerInOrbit = star.HasRefuelerInOrbit;
+                HasFreeTransportInOrbit = star.HasFreeTransportInOrbit;
+            }
 
             if (star == null)
             {
