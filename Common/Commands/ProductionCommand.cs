@@ -112,7 +112,17 @@ namespace Nova.Common.Commands
                     {
                         try
                         {
-                            if (!(ProductionOrder.Unit.Cost >= empire.Designs[(ProductionOrder.Unit as ShipProductionUnit).DesignKey].Cost))
+                            if (empire.Designs[(ProductionOrder.Unit as ShipProductionUnit).DesignKey].IsStarbase)
+                            {
+                                if (!(ProductionOrder.Unit.Cost >=
+                                    (empire.Designs[(ProductionOrder.Unit as ShipProductionUnit).DesignKey].Cost) - empire.Designs[empire.StarReports[(ProductionOrder.Unit as ShipProductionUnit).Star].Starbase.Key].Cost))
+                                {
+                                    return false;
+                                }
+                            }
+
+                          
+                            else if (!(ProductionOrder.Unit.Cost >= empire.Designs[(ProductionOrder.Unit as ShipProductionUnit).DesignKey].Cost))
                             {
                                 return false;
                             }

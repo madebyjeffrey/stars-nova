@@ -127,7 +127,7 @@ namespace Nova.WinForms.Gui
                 // build anything else
                 item = new ListViewItem();
                 item.Text = design.Name;
-                item.Tag = new ShipProductionUnit(design);
+                item.Tag = new ShipProductionUnit(design, queueStar.Name,clientState.EmpireState);
                 designList.Items.Add(item);
             }
 

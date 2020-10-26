@@ -74,7 +74,7 @@ namespace Nova.Ai
                 if (fleet.Owner == clientState.EmpireState.Id)
                 {
                     aiPlan.CountFleet(fleet);
-                    if (fleet.Name.Contains("Scout") || (fleet.Name.Contains("Long Range Scout")) || (fleet.Name.Contains(Global.AiScout)))
+                    if (fleet.Waypoints.Count == 0)
                     {
                         DefaultFleetAI fleetAI = new DefaultFleetAI(fleet, clientState, fuelStations);
                         fleetAIs.Add(fleet.Id, fleetAI);
@@ -117,7 +117,7 @@ namespace Nova.Ai
             List<Fleet> scoutFleets = new List<Fleet>();
             foreach (Fleet fleet in clientState.EmpireState.OwnedFleets.Values)
             {
-                if (fleet.Name.Contains("Scout") || (fleet.Name.Contains("Long Range Scout") || (fleet.Name.Contains(Global.AiScout))))
+                if ((fleet.Name.Contains("Scout") || (fleet.Name.Contains("Long Range Scout") || (fleet.Name.Contains(Global.AiScout)))) && (fleet.Waypoints.Count == 0))
                     {
                     scoutFleets.Add(fleet);
                 }
@@ -151,7 +151,7 @@ namespace Nova.Ai
             List<Fleet> armedScoutFleets = new List<Fleet>();
             foreach (Fleet fleet in clientState.EmpireState.OwnedFleets.Values)
             {
-                if ((fleet.Name.Contains(Global.AiDefensiveDestroyer) == true) && (fleet.Waypoints.Count == 1))
+                if ((fleet.Name.Contains(Global.AiDefensiveDestroyer) == true) && (fleet.Waypoints.Count == 0))
                 {
                     armedScoutFleets.Add(fleet);
                 }
@@ -186,7 +186,7 @@ namespace Nova.Ai
             List<Fleet> colonyShipsFleets = new List<Fleet>();
             foreach (Fleet fleet in clientState.EmpireState.OwnedFleets.Values)
             {
-                if (fleet.CanColonize == true && fleet.Waypoints.Count == 1)
+                if (fleet.CanColonize == true && fleet.Waypoints.Count == 0)
                 {
                     colonyShipsFleets.Add(fleet);
                 }
@@ -251,7 +251,7 @@ namespace Nova.Ai
             List<Fleet> idleTransportFleets = new List<Fleet>();
             foreach (Fleet fleet in clientState.EmpireState.OwnedFleets.Values)
             {
-                if (fleet.CanColonize == false && fleet.Waypoints.Count == 1 && fleet.Cargo.Mass == 0 && fleet.TotalCargoCapacity != 0)
+                if (fleet.CanColonize == false && fleet.Waypoints.Count == 0 && fleet.Cargo.Mass == 0 && fleet.TotalCargoCapacity != 0)
                 {
                     idleTransportFleets.Add(fleet);
                 }

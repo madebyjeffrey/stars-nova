@@ -211,7 +211,7 @@ namespace Nova.Ai
             {
                 if (this.aiPlan.ScoutDesign != null)
                 {
-                    ProductionOrder scoutOrder = new ProductionOrder(1, new ShipProductionUnit(this.aiPlan.ScoutDesign), false);
+                    ProductionOrder scoutOrder = new ProductionOrder(1, new ShipProductionUnit(this.aiPlan.ScoutDesign,"",clientState.EmpireState), false);
                     ProductionCommand scoutCommand = new ProductionCommand(CommandMode.Add, scoutOrder, this.planet.Key, productionIndex);
                     if (scoutCommand.IsValid(clientState.EmpireState))
                     {
@@ -238,7 +238,7 @@ namespace Nova.Ai
             {
                 if (this.aiPlan.ColonizerDesign != null)
                 {
-                    ProductionOrder colonizerOrder = new ProductionOrder(1, new ShipProductionUnit(this.aiPlan.ColonizerDesign), false);
+                    ProductionOrder colonizerOrder = new ProductionOrder(1, new ShipProductionUnit(this.aiPlan.ColonizerDesign,planet.Name,clientState.EmpireState), false);
                     ProductionCommand colonizerCommand = new ProductionCommand(CommandMode.Add, colonizerOrder, this.planet.Key, productionIndex);
                     if (colonizerCommand.IsValid(clientState.EmpireState))
                     {
@@ -268,7 +268,7 @@ namespace Nova.Ai
                     if ((this.planet.GetResourceRate() > DefaultAIPlanner.LowProduction) && (this.planet.Capacity(clientState.EmpireState.Race) > 25) && (this.planet.HasFreeTransportInOrbit))
                     {
                         {
-                            ProductionOrder transportOrder = new ProductionOrder(1, new ShipProductionUnit(this.aiPlan.AnyTransportDesign), false);
+                            ProductionOrder transportOrder = new ProductionOrder(1, new ShipProductionUnit(this.aiPlan.AnyTransportDesign,"",clientState.EmpireState), false);
                             ProductionCommand transportCommand = new ProductionCommand(CommandMode.Add, transportOrder, this.planet.Key, productionIndex);
                             if (transportCommand.IsValid(clientState.EmpireState))
                             {
@@ -287,7 +287,7 @@ namespace Nova.Ai
             {
                 if (this.aiPlan.currentRefuelerDesign != null)
                 {
-                    ProductionOrder refuelerOrder = new ProductionOrder(1, new ShipProductionUnit(this.aiPlan.currentRefuelerDesign), false);
+                    ProductionOrder refuelerOrder = new ProductionOrder(1, new ShipProductionUnit(this.aiPlan.currentRefuelerDesign,planet.Name,clientState.EmpireState), false);
                     ProductionCommand refuelerCommand = new ProductionCommand(CommandMode.Add, refuelerOrder, this.planet.Key, productionIndex);
                     if (refuelerCommand.IsValid(clientState.EmpireState))
                     {
@@ -357,7 +357,7 @@ namespace Nova.Ai
             }
             if (chosenOne != null)
             {
-                ProductionOrder chosenOrder = new ProductionOrder(chosenQty, new ShipProductionUnit(chosenOne), false);
+                ProductionOrder chosenOrder = new ProductionOrder(chosenQty, new ShipProductionUnit(chosenOne,this.planet.Name,clientState.EmpireState), false);
                 ProductionCommand suitableCommand = new ProductionCommand(CommandMode.Add, chosenOrder, this.planet.Key, productionIndex);
                 foreach (ProductionOrder order in this.planet.ManufacturingQueue.Queue) if (order.Name == chosenOne.Name) return productionIndex;
                 if (suitableCommand.IsValid(clientState.EmpireState))
@@ -384,7 +384,7 @@ namespace Nova.Ai
 
             if (smallStarbase != null)
             {
-                ProductionOrder chosenOrder = new ProductionOrder(1, new ShipProductionUnit(smallStarbase), false);
+                ProductionOrder chosenOrder = new ProductionOrder(1, new ShipProductionUnit(smallStarbase,planet.Name,clientState.EmpireState), false);
                 ProductionCommand suitableCommand = new ProductionCommand(CommandMode.Add, chosenOrder, this.planet.Key, productionIndex);
                 foreach (ProductionOrder order in this.planet.ManufacturingQueue.Queue) if (order.Name == smallStarbase.Name) return productionIndex;
                 if (suitableCommand.IsValid(clientState.EmpireState))

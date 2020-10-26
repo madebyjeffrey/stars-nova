@@ -34,8 +34,8 @@ namespace Nova.Common
         private long designKey;
         private string name;
         private Resources cost;
-        private Resources remainingCost;        
-        
+        private Resources remainingCost;
+        private string star = "";
         public Resources Cost
         {
             get {return cost;}
@@ -55,24 +55,37 @@ namespace Nova.Common
         {
             get {return designKey;}   
         }
-        
-        
+
+        public String Star
+        {
+            get { return star; }
+        }
+
         /// <summary>
         /// initializing constructor.
         /// </summary>
         /// <param name="star">Star with this production queue.</param>
         /// <param name="shipDesign"><see cref="ShipDesign"/> to produce.</param>
-        public ShipProductionUnit(ShipDesign shipDesign)
+        public ShipProductionUnit(ShipDesign shipDesign, String starName ,EmpireData sender)
         {
             shipDesign.Update();
             designKey = shipDesign.Key;
             name = shipDesign.Name;
             cost = shipDesign.Cost;
+            if ((sender.Designs[shipDesign.Key].IsStarbase) && (sender.StarReports[starName].Starbase !=null))
+                cost = shipDesign.Cost
+                 - sender.Designs[sender.StarReports[starName].Starbase.Key].Cost; // A 3rd party client could send then name of a planet with a big starbase in "star"
+                                                                               // so ensure the server ignores the star name and uses the production queues owner.Name
+            cost.Ironium = Math.Max(0, cost.Ironium);                           // TODO find the real formula for starbase upgrades
+            cost.Boranium = Math.Max(0, cost.Boranium);
+            cost.Germanium = Math.Max(0, cost.Germanium);
+            cost.Energy = Math.Max(0, cost.Energy);
             remainingCost = cost;
+            star = starName;
         }
-        
-        
-         /// <summary>
+
+
+        /// <summary>
         /// Load: Read in a ProductionUnit from and XmlNode representation.
         /// </summary>
         /// <param name="node">An XmlNode containing a representation of a ProductionUnit</param>
@@ -99,7 +112,12 @@ namespace Nova.Common
 
                         case "designkey":
                             designKey = long.Parse(mainNode.FirstChild.Value, System.Globalization.NumberStyles.HexNumber);
-                            break;                            
+                            break;
+
+                        case "star":
+                            name = mainNode.FirstChild.Value;
+                            break;
+
                     }
                 }
                 catch (Exception e)
@@ -191,7 +209,8 @@ namespace Nova.Common
 
             Global.SaveData(xmldoc, xmlelUnit, "Name", Name);
             Global.SaveData(xmldoc, xmlelUnit, "DesignKey", designKey.ToString("X"));
-                       
+            if (star!="") Global.SaveData(xmldoc, xmlelUnit, "Star", star);
+
             return xmlelUnit;
         }
     }
