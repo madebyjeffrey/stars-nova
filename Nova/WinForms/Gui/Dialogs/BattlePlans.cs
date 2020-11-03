@@ -66,8 +66,11 @@ namespace Nova.WinForms.Gui
             BattlePlan plan = battlePlans[selection];
 
             this.planName.Text = plan.Name;
-            this.primaryTarget.Text = plan.PrimaryTarget;
-            this.secondaryTarget.Text = plan.SecondaryTarget;
+            this.primaryTarget.SelectedIndex = plan.PrimaryTarget;
+            this.secondaryTarget.SelectedIndex = plan.SecondaryTarget;
+            this.tertiaryTarget.SelectedIndex = plan.TertiaryTarget;
+            this.quaternaryTarget.SelectedIndex = plan.QuaternaryTarget;
+            this.quinaryTarget.SelectedIndex = plan.QuinaryTarget;
             this.tactic.Text = plan.Tactic;
             this.attack.Text = plan.Attack;
         }
@@ -83,6 +86,11 @@ namespace Nova.WinForms.Gui
         private void DoneButton_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void primaryTarget_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

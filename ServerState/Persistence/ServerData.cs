@@ -53,7 +53,8 @@ namespace Nova.Server
         public Dictionary<long, Minefield>      AllMinefields   = new Dictionary<long, Minefield>();
         public List<Message>                    AllMessages     = new List<Message>(); // All messages generated this turn.
 
-        public bool GameInProgress      = false;
+        public bool GameInProgress = false;
+        public bool UseRonBattleOption = true;
         public int TurnYear             = Global.StartingYear;
         public string GameFolder        = null; // The path&folder where client files are held.
         public string StatePathName     = null; // path&file name to the saved state data
@@ -88,10 +89,13 @@ namespace Nova.Server
                         case "serverstate":
                             xmlnode = xmlnode.FirstChild;
                             continue;
-                        
+
                         case "gameinprogress":
                             GameInProgress = bool.Parse(xmlnode.FirstChild.Value);
-                            break;                                                
+                            break;
+                        case "useronbattleoption":
+                            UseRonBattleOption = bool.Parse(xmlnode.FirstChild.Value);
+                            break;
                         case "turnyear":
                             TurnYear = int.Parse(xmlnode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
                             break;                        
@@ -211,9 +215,10 @@ namespace Nova.Server
                         AllStars        = restoredState.AllStars;
                         AllMinefields   = restoredState.AllMinefields;
                         AllMessages     = restoredState.AllMessages;
-        
-                        GameInProgress    = restoredState.GameInProgress;
-                        TurnYear          = restoredState.TurnYear;
+
+                        GameInProgress = restoredState.GameInProgress;
+                        UseRonBattleOption = restoredState.UseRonBattleOption;
+                        TurnYear = restoredState.TurnYear;
                         GameFolder        = restoredState.GameFolder; // The path&folder where client files are held.
                         StatePathName     = restoredState.StatePathName;
                 
@@ -279,8 +284,9 @@ namespace Nova.Server
             // create the outer element
             XmlElement xmlelServerState = xmldoc.CreateElement("ServerState");
             xmlRoot.AppendChild(xmlelServerState);
-            
+
             Global.SaveData(xmldoc, xmlelServerState, "GameInProgress", GameInProgress.ToString());
+            Global.SaveData(xmldoc, xmlelServerState, "useRonBattleOption", UseRonBattleOption.ToString());
             // Global.SaveData(xmldoc, xmlelServerState, "FleetID", FleetID.ToString(System.Globalization.CultureInfo.InvariantCulture));
             Global.SaveData(xmldoc, xmlelServerState, "TurnYear", TurnYear.ToString(System.Globalization.CultureInfo.InvariantCulture));
             Global.SaveData(xmldoc, xmlelServerState, "GameFolder", GameFolder);
@@ -461,6 +467,7 @@ namespace Nova.Server
             
             GameFolder     = null;
             GameInProgress = false;
+            UseRonBattleOption = true;
             TurnYear       = Global.StartingYear;            
             StatePathName  = null;  
         }

@@ -121,7 +121,14 @@ namespace Nova.Common.Components
             }
             return true;
         }
-
+        public Double beamDispersal(Double distanceSquared)
+        {
+            return 100.0 - 10 * (distanceSquared / (Range * Range));  //90% at max range, 100% when at same location
+        }
+        public Double beamDispersalRon(Double distanceSquared,Double gridScaleSquared)
+        {//In Ron battle engine distances are 1/10 of realdistance
+            return 100.0 - 10 * (distanceSquared / (Range * Range * gridScaleSquared));  //90% at max range, 100% when at same location
+        }
         #region Operators
 
         /// <summary>

@@ -37,15 +37,22 @@ namespace Nova.Common.DataStructures
             set;
         }
 
-        public long TargetKey 
+        public long TargetKey
         {
-            get; 
+            get;
             set;
         }
+        public int percentToFire
+        {
+            get;
+            set;
+        }
+
 
         public BattleStepTarget()
         {
             Type = "Target";
+            percentToFire = 100;
         }
 
         /// <summary>
@@ -56,6 +63,7 @@ namespace Nova.Common.DataStructures
             : base(node)
         {
             XmlNode subnode = node.FirstChild;
+            percentToFire = 100; // mostly it is 100% so only put exceptions into XML and default it to 100%
             while (subnode != null)
             {
                 try
@@ -67,6 +75,9 @@ namespace Nova.Common.DataStructures
                             break;
                         case "targetkey":
                             TargetKey = long.Parse(subnode.FirstChild.Value, System.Globalization.NumberStyles.HexNumber);
+                            break;
+                        case "percenttofire":
+                            percentToFire = int.Parse(subnode.FirstChild.Value, System.Globalization.NumberStyles.HexNumber);
                             break;
                     }
                 }
@@ -90,6 +101,7 @@ namespace Nova.Common.DataStructures
             xmlelBattleStepTarget.AppendChild(base.ToXml(xmldoc));
             Global.SaveData(xmldoc, xmlelBattleStepTarget, "StackKey", StackKey.ToString("X"));
             Global.SaveData(xmldoc, xmlelBattleStepTarget, "TargetKey", TargetKey.ToString("X"));
+            if (percentToFire != 100) Global.SaveData(xmldoc, xmlelBattleStepTarget, "PercentToFire", percentToFire.ToString("X"));
 
             return xmlelBattleStepTarget;
         }

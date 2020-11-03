@@ -25,6 +25,7 @@ namespace Nova.WinForms.Gui
     using System;
     using System.Collections.Generic;
     using System.Drawing;
+    using System.Drawing.Drawing2D;
     using System.Linq;
     using System.Text;
     using System.Windows.Forms;
@@ -40,7 +41,7 @@ namespace Nova.WinForms.Gui
         private readonly BattleReport theBattle;
         private readonly Dictionary<long, Stack> myStacks = new Dictionary<long, Stack>();
         private int eventCount;
-
+        private int initialSize = 0;
         /// <Summary>
         /// Initializes a new instance of the BattleViewer class.
         /// </Summary>
@@ -72,6 +73,7 @@ namespace Nova.WinForms.Gui
             battlePanel.BackgroundImage = Nova.Properties.Resources.Plasma;
             battlePanel.BackgroundImageLayout = ImageLayout.Stretch;
             SetStepNumber(theBattle.Steps[eventCount]);
+            ZoomLevel.SelectedIndex = 1;
         }
 
         /// <Summary>
@@ -85,16 +87,73 @@ namespace Nova.WinForms.Gui
             base.OnPaint(e); // added
 
             Graphics graphics = e.Graphics;
-            Size panelSize = battlePanel.Size;
-            float scalingFactor = (float)panelSize.Width /
-                                     (float)Global.MaxWeaponRange;
+            int MaxX = int.MinValue;
+            int MaxY = int.MinValue;
+            int MinX = int.MaxValue;
+            int MinY = int.MaxValue;
+            int MaxArmedX = int.MinValue;
+            int MaxArmedY = int.MinValue;
+            int MinArmedX = int.MaxValue;
+            int MinArmedY = int.MaxValue;
+            Stack selectedStack = null;
+            foreach (Stack stack in myStacks.Values)
+            {
+                if (selectedStack == null) selectedStack = stack;  // TODO priority 0 add a way of selecting which stack the UI zooms in on when "Follow selected stack" is selected.
+                if (stack.Position.X > MaxX) MaxX = stack.Position.X;
+                if (stack.Position.Y > MaxY) MaxY = stack.Position.Y;
+                if (stack.Position.X < MinX) MinX = stack.Position.X;
+                if (stack.Position.Y < MinY) MinY = stack.Position.Y;
+                if (stack.IsArmed)
+                {
+                    if (stack.Position.X > MaxArmedX) MaxArmedX = stack.Position.X;
+                    if (stack.Position.Y > MaxArmedY) MaxArmedY = stack.Position.Y;
+                    if (stack.Position.X < MinArmedX) MinArmedX = stack.Position.X;
+                    if (stack.Position.Y < MinArmedY) MinArmedY = stack.Position.Y;
+                }
+            }
 
-            graphics.PageScale = scalingFactor;
-            graphics.ScaleTransform(0.5F, 0.5F);
+            Size panelSize = battlePanel.Size;
+            if (initialSize == 0) initialSize  =  MaxX;
+
+
+            //if (ZoomLevel.SelectedIndex == 3) graphics.PageScale = (float)((Double)panelSize.Height / (Double)initialSize);
+            //if (ZoomLevel.SelectedIndex == 0) graphics.PageScale = (float)((Double)panelSize.Height / (Double)MaxX - MinX);
+            //if (ZoomLevel.SelectedIndex == 1) graphics.PageScale = (float)((Double)panelSize.Height / (Double)MaxArmedX - MinArmedX);
+            //if (ZoomLevel.SelectedIndex == 2) graphics.PageScale = (float)((Double)panelSize.Height / (Double)2 * Global.MaxWeaponRange);
+            if (ZoomLevel.SelectedIndex == 3) graphics.PageScale = (float)((Double)panelSize.Height / Math.Max(8*Global.MaxWeaponRange, initialSize));
+            if (ZoomLevel.SelectedIndex == 0)
+            {
+                graphics.TranslateTransform(-MinX,-MinY); 
+                graphics.ScaleTransform ((float)((Double)panelSize.Height / Math.Max(8*Global.MaxWeaponRange, (MaxX - MinX))), (float)((Double)panelSize.Height / Math.Max(8*Global.MaxWeaponRange, (MaxX - MinX))), MatrixOrder.Append);// maintain Aspect Ratio
+            }
+            if (ZoomLevel.SelectedIndex == 1)
+            {
+                graphics.TranslateTransform(-MinArmedX,-MinArmedY); 
+                graphics.ScaleTransform((float)((Double)panelSize.Height / Math.Max(8*Global.MaxWeaponRange,(MaxArmedX - MinArmedX))),(float)((Double)panelSize.Height / Math.Max(8*Global.MaxWeaponRange, (MaxArmedX - MinArmedX))), MatrixOrder.Append);// maintain Aspect Ratio
+            }
+            if (ZoomLevel.SelectedIndex == 2)
+            {
+                graphics.TranslateTransform(-selectedStack.Position.X, -selectedStack.Position.Y);
+                graphics.ScaleTransform  ((float)((Double)panelSize.Height / ((Double)16 * Global.MaxWeaponRange)), (float)((Double)panelSize.Height / ((Double)16 * Global.MaxWeaponRange)), MatrixOrder.Append);
+                graphics.TranslateTransform((float)((Double)panelSize.Height / ((Double)32 * Global.MaxWeaponRange)), (float)((Double)panelSize.Height / ((Double)32 * Global.MaxWeaponRange)));
+
+                // graphics.TranslateTransform(Global.MaxWeaponRange, Global.MaxWeaponRange,System.Drawing.Drawing2D.MatrixOrder.Append);
+            }
+            graphics.ScaleTransform(0.85F, 0.85F, MatrixOrder.Append); //put about 5% free space around the selected squares
+            graphics.TranslateTransform(0.05F, 0.05F, MatrixOrder.Append);
 
             foreach (Stack stack in myStacks.Values)
             {
-                graphics.DrawImage(stack.Icon.Image, (Point)stack.Position);
+                if (stack.Token.Armor > 0)
+                {
+                    double scale = graphics.PageScale;
+                    // Create parallelogram for drawing image.
+                    PointF ulCorner = new PointF(stack.Position.X, stack.Position.Y);
+                    PointF urCorner = new PointF(stack.Position.X + stack.Icon.Image.Width / 4, stack.Position.Y);
+                    PointF llCorner = new PointF(stack.Position.X, stack.Position.Y + stack.Icon.Image.Height / 4);
+                    PointF[] destPara = { ulCorner, urCorner, llCorner };
+                    graphics.DrawImage(stack.Icon.Image, destPara);
+                }
             }
         }
 
@@ -144,7 +203,7 @@ namespace Nova.WinForms.Gui
         private void DoBattleStepMovement(BattleStepMovement battleStep)
         {
             Stack stack = null;
-            theBattle.Stacks.TryGetValue(battleStep.StackKey, out stack);
+            myStacks.TryGetValue(battleStep.StackKey, out stack);
 
             if (stack != null)
             {
@@ -156,7 +215,8 @@ namespace Nova.WinForms.Gui
                 ClearStackDetails();
             }
 
-            movedFrom.Text = stack.Position.ToString();
+            if (stack != null) movedFrom.Text = stack.Position.ToString();
+            else movedFrom.Text = "";
             movedTo.Text = battleStep.Position.ToString();
             stack.Position = battleStep.Position;
 
@@ -237,7 +297,7 @@ namespace Nova.WinForms.Gui
                     UpdateTargetDetails(lamb);
                 }
 
-                
+
             }
         }
 
@@ -364,7 +424,9 @@ namespace Nova.WinForms.Gui
             stepNumber.Text = title.ToString();
         }
 
+        private void label4_Click(object sender, EventArgs e)
+        {
 
-
+        }
     }
 }

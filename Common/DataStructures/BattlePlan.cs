@@ -38,8 +38,12 @@ namespace Nova.Common
     {
         // FIXME:(priority 2) This should all be enums!
         public string Name            = "Default";
-        public string PrimaryTarget   = "Armed Ships";
-        public string SecondaryTarget = "Any";
+        public int PrimaryTarget = 0;
+        public int SecondaryTarget = 1;
+        public int TertiaryTarget = 3;
+        public int QuaternaryTarget = 5;
+        public int QuinaryTarget = 6;
+
         public string Tactic          = "Maximise Damage";
         public string Attack          = "Enemies";
         public int TargetId;
@@ -74,10 +78,19 @@ namespace Nova.Common
                             Name = subnode.FirstChild.Value;
                             break;
                         case "primarytarget":
-                            PrimaryTarget = subnode.FirstChild.Value;
+                            PrimaryTarget = int.Parse(subnode.FirstChild.Value);
                             break;
                         case "secondarytarget":
-                            SecondaryTarget = subnode.FirstChild.Value;
+                            SecondaryTarget = int.Parse(subnode.FirstChild.Value);
+                            break;
+                        case "tertiarytarget":
+                            TertiaryTarget = int.Parse(subnode.FirstChild.Value);
+                            break;
+                        case "quaternarytarget":
+                            QuaternaryTarget = int.Parse(subnode.FirstChild.Value);
+                            break;
+                        case "quinarytarget":
+                            QuinaryTarget = int.Parse(subnode.FirstChild.Value);
                             break;
                         case "tactic":
                             Tactic = subnode.FirstChild.Value;
@@ -108,8 +121,11 @@ namespace Nova.Common
             XmlElement xmlelBattlePlan = xmldoc.CreateElement("BattlePlan");
 
             Global.SaveData(xmldoc, xmlelBattlePlan, "Name", Name);
-            Global.SaveData(xmldoc, xmlelBattlePlan, "PrimaryTarget", PrimaryTarget);
-            Global.SaveData(xmldoc, xmlelBattlePlan, "SecondaryTarget", SecondaryTarget);
+            Global.SaveData(xmldoc, xmlelBattlePlan, "PrimaryTarget", ((int)PrimaryTarget).ToString());
+            Global.SaveData(xmldoc, xmlelBattlePlan, "SecondaryTarget", ((int)SecondaryTarget).ToString());
+            Global.SaveData(xmldoc, xmlelBattlePlan, "TertiaryTarget", ((int)TertiaryTarget).ToString());
+            Global.SaveData(xmldoc, xmlelBattlePlan, "QuaternaryTarget", ((int)QuaternaryTarget).ToString());
+            Global.SaveData(xmldoc, xmlelBattlePlan, "QuinaryTarget", ((int)QuinaryTarget).ToString());
             Global.SaveData(xmldoc, xmlelBattlePlan, "Tactic", Tactic);
             Global.SaveData(xmldoc, xmlelBattlePlan, "Attack", Attack);
             Global.SaveData(xmldoc, xmlelBattlePlan, "TargetId", TargetId.ToString("X"));

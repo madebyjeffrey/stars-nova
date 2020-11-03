@@ -251,5 +251,104 @@ namespace Nova.Common.DataStructures
         {
             return Math.Sqrt((Math.Abs(other.X - X) + Math.Abs(other.Y - Y)) * (Math.Abs(other.X - X) + Math.Abs(other.Y - Y)));
         }
+        public double distanceToSquared(NovaPoint other)
+        {
+            return ((Math.Abs(other.X - X) + Math.Abs(other.Y - Y)) * (Math.Abs(other.X - X) + Math.Abs(other.Y - Y)));
+        }
+        public NovaPoint Scale(Double scalar)
+        {
+            NovaPoint scaledVector = new NovaPoint();
+            scaledVector.X = (int)(X * scalar);
+            scaledVector.Y = (int)(Y * scalar);
+            return scaledVector;
+        }
+        /// <summary>
+        /// returns a vector in the same direction as the original but with a length of param name="battleSpeed"
+        /// </summary>
+        /// <param name="battleSpeed"></param>
+        /// <returns></returns>
+        public NovaPoint BattleSpeedVector(Double battleSpeed)
+        {
+            if ((Y == 0) & (X == 0)) return this;
+            NovaPoint scaledVector = new NovaPoint(this);
+            double scalar =  battleSpeed / Math.Sqrt(X * X + Y * Y) ;
+            scaledVector =  scaledVector.Scale(scalar);
+            return scaledVector;
+        }
+
+        public Double lengthSquared()
+        {
+            return X * X + Y * Y;
+        }
+
+        /// <summary>
+        /// angleBetween treats two NovaPoints as vectors and returns the angle between the vectors
+        /// </summary>
+        /// <param name="op1"></param>
+        /// <param name="op2"></param>
+        /// <returns></returns>
+        public int angleBetween(NovaPoint op1, NovaPoint op2)
+        {
+            if ((op1.X == 0) && (op1.Y == 0)) return 0; //standing start in one direction
+            if ((op2.X == 0) && (op2.Y == 0)) return 0; //stopped on a dime
+            System.Windows.Vector v1 = new System.Windows.Vector(op1.X, op1.Y); //Sorry Mac and linux guys if this doesn't work on other platforms - this is a quick fix to try to get the Beta out
+            System.Windows.Vector v2 = new System.Windows.Vector(op2.X, op2.Y); //TODO remove use of System.Windows.Vector.AngleBetween
+            return (int) System.Windows.Vector.AngleBetween(v1, v2);
+        }
+        /// <summary>
+        /// turnAsFastAsPossible - when a target flies by at close range the tagetting routines demand an immediate 180 degree change in velocity of twice the battlespeed
+        /// this routine will provide a path that assumes high angular accelleration and a fixed longitudinal acceleration == BattleSpeed
+        /// </summary>
+        /// <param name="initialDirn"></param>
+        /// <param name="reqdDirn"></param>
+        /// <returns></returns>
+        public NovaPoint turnAsFastAsPossible(NovaPoint initialDirn, NovaPoint reqdDirn)
+        {
+            // this Token will have started a decelleration burn before the actual flyby which gave it some lateral velocity
+            // and reduced its forward momentum (NovaPoint.prepareForFlyby)
+            // The turning manouver may choose to continue that turn or reverse its direction: 
+            // 2nd step either reverse lateral velocity and accelerate by 87% BattleSpeed (in same vector as target)
+            // or bring lateral velocity to zero and accellerate by 97% battlespeed in direction of target (in same vector as target)
+            Random random = new Random();
+                int leftOrRight = Math.Sign(random.Next(-100, 100));
+            NovaPoint newSpeed;
+            if (leftOrRight > 0)
+            {
+                newSpeed = initialDirn.Scale(-1);
+                newSpeed += reqdDirn.Scale(0.87);
+            }
+            else newSpeed = reqdDirn.Scale(0.97);
+            return newSpeed;
+               
+        }
+        /// <summary>
+        /// called just before fleets fly past their enemy 
+        /// </summary>
+        /// <param name="initialDirn"></param> initialDirn and reqdDirn will be almost identical on this move but 180 degrees apart next turn
+        /// <param name="reqdDirn"></param>    unless the other fleet is also turning
+        ///  the magnitude of the direction vectors will == BattleSpeed (as per Nov 2 2020)
+        /// <returns></returns>
+        public NovaPoint prepareForFlyby(NovaPoint initialDirn, NovaPoint reqdDirn)
+        {//NovaPoints are used here to represent velocity vectors!
+            Random random = new Random();
+            // this Token will start a Manouvre that moves it laterally away from other tokens in preparation for all Tokens
+            // rotating their main Propulsion engines (and usually the entire ship) by 180 degrees and engaging maximum thrust
+            // to follow the target after it flies past them
+            // 1st step decellerate by 97% BattleSpeed and impart 1/4 BattleSpeed as lateral velocity 
+            NovaPoint newSpeed = initialDirn.Scale(0.03);
+            int leftOrRight = Math.Sign(random.Next(-100, 100));
+            newSpeed.Y += leftOrRight * initialDirn.Scale(0.25).X; //X and Y transposed to impart lateral velocity
+            newSpeed.X += leftOrRight * initialDirn.Scale(-0.25).Y;
+            return newSpeed;
+        }
+
+        public static NovaPoint operator +(NovaPoint op1, NovaPoint op2)
+        {
+            return new NovaPoint(op1.X + op2.X, op1.Y + op2.Y);
+        }
+        public static NovaPoint operator -(NovaPoint op1, NovaPoint op2)
+        {
+            return new NovaPoint(op1.X - op2.X, op1.Y - op2.Y);
+        }
     }
 }

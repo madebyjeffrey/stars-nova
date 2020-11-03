@@ -32,6 +32,7 @@ namespace Nova.WinForms.Gui
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.battlePanel = new System.Windows.Forms.Panel();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.ZoomLevel = new System.Windows.Forms.ComboBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.stackGroupBox = new System.Windows.Forms.GroupBox();
             this.stackQuantity = new System.Windows.Forms.Label();
@@ -57,6 +58,10 @@ namespace Nova.WinForms.Gui
             this.stepNumber = new System.Windows.Forms.Label();
             this.nextStep = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.targetQuantity = new System.Windows.Forms.Label();
+            this.label19 = new System.Windows.Forms.Label();
+            this.targetKey = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
             this.targetArmor = new System.Windows.Forms.Label();
             this.targetShields = new System.Windows.Forms.Label();
             this.targetOwner = new System.Windows.Forms.Label();
@@ -72,10 +77,6 @@ namespace Nova.WinForms.Gui
             this.label4 = new System.Windows.Forms.Label();
             this.battleLocation = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.label17 = new System.Windows.Forms.Label();
-            this.targetKey = new System.Windows.Forms.Label();
-            this.targetQuantity = new System.Windows.Forms.Label();
-            this.label19 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.stackGroupBox.SuspendLayout();
@@ -87,10 +88,13 @@ namespace Nova.WinForms.Gui
             // 
             // groupBox1
             // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.battlePanel);
             this.groupBox1.Location = new System.Drawing.Point(13, 13);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(600, 600);
+            this.groupBox1.Size = new System.Drawing.Size(870, 652);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Battle View";
@@ -102,14 +106,15 @@ namespace Nova.WinForms.Gui
             this.battlePanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.battlePanel.Location = new System.Drawing.Point(3, 16);
             this.battlePanel.Name = "battlePanel";
-            this.battlePanel.Size = new System.Drawing.Size(594, 581);
+            this.battlePanel.Size = new System.Drawing.Size(864, 633);
             this.battlePanel.TabIndex = 0;
             this.battlePanel.Paint += new System.Windows.Forms.PaintEventHandler(this.OnPaint);
             // 
             // groupBox2
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Controls.Add(this.ZoomLevel);
             this.groupBox2.Controls.Add(this.textBox1);
             this.groupBox2.Controls.Add(this.stackGroupBox);
             this.groupBox2.Controls.Add(this.groupBox6);
@@ -118,12 +123,26 @@ namespace Nova.WinForms.Gui
             this.groupBox2.Controls.Add(this.groupBox3);
             this.groupBox2.Controls.Add(this.battleLocation);
             this.groupBox2.Controls.Add(this.label1);
-            this.groupBox2.Location = new System.Drawing.Point(625, 13);
+            this.groupBox2.Location = new System.Drawing.Point(902, 13);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(653, 658);
+            this.groupBox2.Size = new System.Drawing.Size(472, 658);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Battle Details";
+            // 
+            // ZoomLevel
+            // 
+            this.ZoomLevel.FormattingEnabled = true;
+            this.ZoomLevel.Items.AddRange(new object[] {
+            "Show all ships",
+            "Show all Armed ships",
+            "Follow the selected ship ",
+            "Maintain initial Zoom Setting"});
+            this.ZoomLevel.Location = new System.Drawing.Point(10, 631);
+            this.ZoomLevel.Name = "ZoomLevel";
+            this.ZoomLevel.Size = new System.Drawing.Size(236, 21);
+            this.ZoomLevel.TabIndex = 9;
+            this.ZoomLevel.Text = "Select Zoom Level";
             // 
             // textBox1
             // 
@@ -280,9 +299,9 @@ namespace Nova.WinForms.Gui
             this.groupBox6.Controls.Add(this.label9);
             this.groupBox6.Controls.Add(this.weaponPower);
             this.groupBox6.Controls.Add(this.label8);
-            this.groupBox6.Location = new System.Drawing.Point(337, 353);
+            this.groupBox6.Location = new System.Drawing.Point(287, 317);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(259, 166);
+            this.groupBox6.Size = new System.Drawing.Size(170, 236);
             this.groupBox6.TabIndex = 6;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Weapon Discharge";
@@ -290,7 +309,7 @@ namespace Nova.WinForms.Gui
             // damage
             // 
             this.damage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.damage.Location = new System.Drawing.Point(112, 74);
+            this.damage.Location = new System.Drawing.Point(11, 214);
             this.damage.Name = "damage";
             this.damage.Size = new System.Drawing.Size(141, 18);
             this.damage.TabIndex = 13;
@@ -299,7 +318,7 @@ namespace Nova.WinForms.Gui
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(11, 77);
+            this.label10.Location = new System.Drawing.Point(53, 198);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(47, 13);
             this.label10.TabIndex = 12;
@@ -309,7 +328,7 @@ namespace Nova.WinForms.Gui
             // componentTarget
             // 
             this.componentTarget.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.componentTarget.Location = new System.Drawing.Point(112, 49);
+            this.componentTarget.Location = new System.Drawing.Point(11, 167);
             this.componentTarget.Name = "componentTarget";
             this.componentTarget.Size = new System.Drawing.Size(141, 18);
             this.componentTarget.TabIndex = 11;
@@ -318,7 +337,7 @@ namespace Nova.WinForms.Gui
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(11, 50);
+            this.label9.Location = new System.Drawing.Point(33, 150);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(95, 13);
             this.label9.TabIndex = 10;
@@ -328,7 +347,7 @@ namespace Nova.WinForms.Gui
             // weaponPower
             // 
             this.weaponPower.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.weaponPower.Location = new System.Drawing.Point(112, 25);
+            this.weaponPower.Location = new System.Drawing.Point(11, 116);
             this.weaponPower.Name = "weaponPower";
             this.weaponPower.Size = new System.Drawing.Size(141, 18);
             this.weaponPower.TabIndex = 9;
@@ -337,7 +356,7 @@ namespace Nova.WinForms.Gui
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(11, 28);
+            this.label8.Location = new System.Drawing.Point(37, 95);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(81, 13);
             this.label8.TabIndex = 5;
@@ -348,7 +367,7 @@ namespace Nova.WinForms.Gui
             // 
             this.groupBox5.Controls.Add(this.stepNumber);
             this.groupBox5.Controls.Add(this.nextStep);
-            this.groupBox5.Location = new System.Drawing.Point(10, 565);
+            this.groupBox5.Location = new System.Drawing.Point(10, 495);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(259, 87);
             this.groupBox5.TabIndex = 5;
@@ -393,6 +412,44 @@ namespace Nova.WinForms.Gui
             this.groupBox4.TabIndex = 4;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Weapons Target";
+            // 
+            // targetQuantity
+            // 
+            this.targetQuantity.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.targetQuantity.Location = new System.Drawing.Point(109, 65);
+            this.targetQuantity.Name = "targetQuantity";
+            this.targetQuantity.Size = new System.Drawing.Size(141, 18);
+            this.targetQuantity.TabIndex = 17;
+            this.targetQuantity.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(6, 68);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(53, 13);
+            this.label19.TabIndex = 16;
+            this.label19.Text = "# of ships";
+            this.label19.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // targetKey
+            // 
+            this.targetKey.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.targetKey.Location = new System.Drawing.Point(109, 43);
+            this.targetKey.Name = "targetKey";
+            this.targetKey.Size = new System.Drawing.Size(141, 18);
+            this.targetKey.TabIndex = 15;
+            this.targetKey.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(6, 46);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(55, 13);
+            this.label17.TabIndex = 14;
+            this.label17.Text = "target.Key";
+            this.label17.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // targetArmor
             // 
@@ -478,9 +535,9 @@ namespace Nova.WinForms.Gui
             this.groupBox3.Controls.Add(this.label14);
             this.groupBox3.Controls.Add(this.movedTo);
             this.groupBox3.Controls.Add(this.label4);
-            this.groupBox3.Location = new System.Drawing.Point(337, 46);
+            this.groupBox3.Location = new System.Drawing.Point(290, 49);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(259, 111);
+            this.groupBox3.Size = new System.Drawing.Size(167, 202);
             this.groupBox3.TabIndex = 3;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Movement";
@@ -488,7 +545,7 @@ namespace Nova.WinForms.Gui
             // movedFrom
             // 
             this.movedFrom.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.movedFrom.Location = new System.Drawing.Point(112, 40);
+            this.movedFrom.Location = new System.Drawing.Point(9, 108);
             this.movedFrom.Name = "movedFrom";
             this.movedFrom.Size = new System.Drawing.Size(141, 18);
             this.movedFrom.TabIndex = 5;
@@ -497,7 +554,7 @@ namespace Nova.WinForms.Gui
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(6, 43);
+            this.label14.Location = new System.Drawing.Point(40, 83);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(66, 13);
             this.label14.TabIndex = 4;
@@ -507,7 +564,7 @@ namespace Nova.WinForms.Gui
             // movedTo
             // 
             this.movedTo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.movedTo.Location = new System.Drawing.Point(112, 70);
+            this.movedTo.Location = new System.Drawing.Point(9, 171);
             this.movedTo.Name = "movedTo";
             this.movedTo.Size = new System.Drawing.Size(141, 18);
             this.movedTo.TabIndex = 3;
@@ -516,12 +573,13 @@ namespace Nova.WinForms.Gui
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 72);
+            this.label4.Location = new System.Drawing.Point(46, 148);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(56, 13);
             this.label4.TabIndex = 2;
             this.label4.Text = "Moved To";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label4.Click += new System.EventHandler(this.label4_Click);
             // 
             // battleLocation
             // 
@@ -529,7 +587,7 @@ namespace Nova.WinForms.Gui
             | System.Windows.Forms.AnchorStyles.Right)));
             this.battleLocation.Location = new System.Drawing.Point(102, 21);
             this.battleLocation.Name = "battleLocation";
-            this.battleLocation.Size = new System.Drawing.Size(545, 13);
+            this.battleLocation.Size = new System.Drawing.Size(364, 13);
             this.battleLocation.TabIndex = 1;
             this.battleLocation.Text = "Location";
             // 
@@ -542,49 +600,11 @@ namespace Nova.WinForms.Gui
             this.label1.TabIndex = 0;
             this.label1.Text = "Battle Location:";
             // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(6, 46);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(55, 13);
-            this.label17.TabIndex = 14;
-            this.label17.Text = "target.Key";
-            this.label17.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // targetKey
-            // 
-            this.targetKey.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.targetKey.Location = new System.Drawing.Point(109, 43);
-            this.targetKey.Name = "targetKey";
-            this.targetKey.Size = new System.Drawing.Size(141, 18);
-            this.targetKey.TabIndex = 15;
-            this.targetKey.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // targetQuantity
-            // 
-            this.targetQuantity.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.targetQuantity.Location = new System.Drawing.Point(109, 65);
-            this.targetQuantity.Name = "targetQuantity";
-            this.targetQuantity.Size = new System.Drawing.Size(141, 18);
-            this.targetQuantity.TabIndex = 17;
-            this.targetQuantity.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(6, 68);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(53, 13);
-            this.label19.TabIndex = 16;
-            this.label19.Text = "# of ships";
-            this.label19.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // BattleViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1300, 677);
+            this.ClientSize = new System.Drawing.Size(1386, 677);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -656,5 +676,6 @@ namespace Nova.WinForms.Gui
        private System.Windows.Forms.Label label19;
        private System.Windows.Forms.Label targetKey;
        private System.Windows.Forms.Label label17;
-   }
+        private System.Windows.Forms.ComboBox ZoomLevel;
+    }
 }

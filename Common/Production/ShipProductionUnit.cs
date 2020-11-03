@@ -74,13 +74,14 @@ namespace Nova.Common
             cost = shipDesign.Cost;
             if ((sender.Designs[shipDesign.Key].IsStarbase) && (sender.StarReports[starName].Starbase !=null))
                 cost = shipDesign.Cost
-                 - sender.Designs[sender.StarReports[starName].Starbase.Key].Cost; // A 3rd party client could send then name of a planet with a big starbase in "star"
+                 - sender.Designs[sender.StarReports[starName].Starbase.Key].Cost; // A 3rd party client could send the name of a planet with a big starbase in "star"
                                                                                // so ensure the server ignores the star name and uses the production queues owner.Name
-            cost.Ironium = Math.Max(0, cost.Ironium);                           // TODO find the real formula for starbase upgrades
-            cost.Boranium = Math.Max(0, cost.Boranium);
-            cost.Germanium = Math.Max(0, cost.Germanium);
-            cost.Energy = Math.Max(0, cost.Energy);
-            remainingCost = cost;
+            cost.Ironium = Math.Max(0, cost.Ironium);                           // TODO (priority 1) find the real formula for starbase upgrades
+            cost.Boranium = Math.Max(0, cost.Boranium);                         // Stars! behaviour is close to this: compare each hull.module.allocated in the new design with the old design 
+            cost.Germanium = Math.Max(0, cost.Germanium);                       //and just add the cost of modules that are not the same
+                                                                                // TODO when upgrading to a better Starbase Hull Stars! calculates the cost by mapping modules from the old hull to modules on the new hull - copy that mapping to Nova
+            cost.Energy = Math.Max(0, cost.Energy);                             // both Client and Server and AI need the formula
+            remainingCost = cost;                                               //Server shipProductionCommand.IsValid needs to verify the cost that the Client calculated
             star = starName;
         }
 

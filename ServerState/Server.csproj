@@ -86,6 +86,7 @@
     <Compile Include="Persistence\IntelWriter.cs" />
     <Compile Include="Manufacture.cs" />
     <Compile Include="Persistence\OrderReader.cs" />
+    <Compile Include="RonBattleEngine.cs" />
     <Compile Include="Scores.cs" />
     <Compile Include="Persistence\ServerData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

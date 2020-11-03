@@ -35,43 +35,13 @@ namespace Nova.Server
     /// <summary>
     /// Deal with combat between races.
     /// </summary>
-    public class BattleEngine
+    public class RonBattleEngine
     {
         private readonly Random random = new Random();
-        private readonly int movementPhasesPerRound = 3;
-        private readonly int maxBattleRounds = 16;
-        // The above table as a 2d lookup. Note round 8 moved to the first postion as we use battleRound % 8.
-        private readonly int[,] movementTable = new int[,] 
-        {
-            {
-                0, 1, 0, 1, 0, 1, 0, 1
-            },
-            {
-                1, 1, 1, 0, 1, 1, 1, 0
-            },
-            {
-                1, 1, 1, 1, 1, 1, 1, 1
-            },
-            {
-                1, 2, 1, 1, 1, 2, 1, 1
-            },
-            {
-                1, 2, 1, 2, 1, 2, 1, 2
-            },
-            {
-                2, 2, 2, 1, 2, 2, 2, 1
-            },
-            {
-                2, 2, 2, 2, 2, 2, 2, 2
-            },
-            {
-                2, 3, 2, 2, 2, 3, 2, 2
-            },
-            {
-                2, 3, 2, 3, 2, 3, 2, 3
-            }
-        };
-
+        private readonly int maxBattleRounds = 160;
+        private readonly int gridSize = 1000;
+        private readonly int gridScale = 100; //MUST BE gridSize /10
+        private readonly int gridScaleSquared = 10000; // 
 
         private ServerData serverState;
         private BattleReport battle;
@@ -92,24 +62,30 @@ namespace Nova.Server
         /// <param name="battleReport">
         /// A <see cref="BattleReport"/> onto which to write the battle results.
         /// </param>
-        public BattleEngine(ServerData serverState, BattleReport battleReport)
+        public RonBattleEngine(ServerData serverState, BattleReport BattleReport)
         {
             this.serverState = serverState;
-            this.battle = battleReport;
+            this.battle = BattleReport;
         }
 
         /// <summary>
         /// Deal with any fleet battles. How the battle engine in Stars! works is
-        /// documented in the Stars! FAQ (a copy is included in the documentation).
+        /// documented in the Stars! FAQ (a copy is included in the documentation)
+        /// however fleet 1 has a tremendous advantage and the range of weapons
+        /// is largely ignored as the fleets move too far in one battlestep
+        /// A nimble ship with long range weapons has almost no advantage in stars 
+        /// because fleets usually move from outside weapon range of the best ships
+        /// to well within weapon range of the worst ship instantaneously    :(
+        /// Why bother with ship design at all ?
         /// </summary>
         public void Run()
         {
             // Determine the positions of any potential battles. For a battle to
-            // take place 2 or more fleets must be at the same location.
+            // take place 2 or more fleets must be within weapon range.
 
-            List<List<Fleet>> potentialBattles = DetermineCoLocatedFleets();
+            List<List<Fleet>> potentialBattles = DetermineWeaponRangeFleets();
 
-            // If there are no co-located fleets then there are no fleets at all
+            // If there are no fleets within weapon range then there are no fleets at all
             // so there is nothing more to do so we can give up here.
 
             if (potentialBattles.Count == 0)
@@ -128,7 +104,6 @@ namespace Nova.Server
             {
                 return;
             }
-
             // We now have a list of every collection of fleets of more than one
             // race at the same location. Run through each possible combat zone,
             // build the fleet stacks and invoke the battle at each location
@@ -166,14 +141,16 @@ namespace Nova.Server
                 // not) be fully populated by the time we Serialize the
                 // report. Ensure we take a copy at this point as the "real" stack
                 // will mutate as processing proceeds and even ships may vanish.
-                                
+
                 foreach (Stack stack in battlingStacks)
                 {
+                    //stack.Token.Design.Update();
                     battle.Stacks[stack.Key] = new Stack(stack);
+
                 }
 
                 DoBattle(battlingStacks);
-                
+
                 ReportBattle();
             }
         }
@@ -183,12 +160,12 @@ namespace Nova.Server
         /// is more than one (this scan could be more efficient but this is easier to
         /// read). 
         /// </summary>
-        /// <returns>A list of all lists of co-located fleets.</returns>
-        public List<List<Fleet>> DetermineCoLocatedFleets()
+        /// <returns>A list of all lists of weapon range fleets.</returns>
+        public List<List<Fleet>> DetermineWeaponRangeFleets()
         {
-            List<List<Fleet>> allColocatedFleets = new List<List<Fleet>>();
+            List<List<Fleet>> allWeaponRangeFleets = new List<List<Fleet>>();
             Dictionary<long, bool> fleetDone = new Dictionary<long, bool>();
-            
+
             foreach (Fleet fleetA in serverState.IterateAllFleets())
             {
                 if (fleetDone.ContainsKey(fleetA.Key))
@@ -196,7 +173,7 @@ namespace Nova.Server
                     continue;
                 }
 
-                List<Fleet> coLocatedFleets = new List<Fleet>();
+                List<Fleet> weaponRangeFleets = new List<Fleet>();
 
                 foreach (Fleet fleetB in serverState.IterateAllFleets())
                 {
@@ -205,17 +182,17 @@ namespace Nova.Server
                         continue;
                     }
 
-                    coLocatedFleets.Add(fleetB);
+                    weaponRangeFleets.Add(fleetB);
                     fleetDone[fleetB.Key] = true;
                 }
 
-                if (coLocatedFleets.Count > 1)
+                if (weaponRangeFleets.Count > 1)
                 {
-                    allColocatedFleets.Add(coLocatedFleets);
+                    allWeaponRangeFleets.Add(weaponRangeFleets);
                 }
             }
-            
-            return allColocatedFleets;
+
+            return allWeaponRangeFleets;
         }
 
         /// <summary>
@@ -256,16 +233,16 @@ namespace Nova.Server
         public List<Stack> BuildFleetStacks(Fleet fleet)
         {
             List<Stack> stackList = new List<Stack>();
-            
+
             Stack newStack = null;
-            
+
             foreach (ShipToken token in fleet.Composition.Values)
-            {             
+            {
                 newStack = new Stack(fleet, stackId, token);
-                
+
                 stackList.Add(newStack);
-                
-                stackId++;                
+
+                stackId++;
             }
 
             // Note that each of this Stacks has it's Key UNIQUE within this battle (separate from the
@@ -310,6 +287,7 @@ namespace Nova.Server
             foreach (Stack stack in battlingStacks)
             {
                 empires[stack.Owner] = stack.Owner;
+                stack.Token.Design.Update();
             }
 
             SpaceAllocator spaceAllocator = new SpaceAllocator(empires.Count);
@@ -320,7 +298,7 @@ namespace Nova.Server
             int spaceSize = spaceAllocator.GridAxisCount * Global.MaxWeaponRange;
 
             // spaceAllocator.AllocateSpace(spaceSize);
-            spaceAllocator.AllocateSpace(10); // Set to the standard Stars! battle board size - Dan 26 Jun 11
+            spaceAllocator.AllocateSpace(gridSize); // Set to the standard Stars!Nova battle board size 
             battle.SpaceSize = spaceSize;
 
             // Now allocate a position for each race in the centre of one of the
@@ -328,7 +306,7 @@ namespace Nova.Server
             int index = 0;
             foreach (int empireId in empires.Values)
             {
-                Rectangle newPosition = spaceAllocator.GetBox(index, empires.Values.Count);
+                Rectangle newPosition = spaceAllocator.GetBox(index,empires.Values.Count);
                 Point position = new Point();
 
                 position.X = newPosition.X + (newPosition.Width / 2);
@@ -345,7 +323,7 @@ namespace Nova.Server
             {
                 stack.Position = racePositions[stack.Owner];
             }
-            
+
             // Update the known designs of enemy ships.
             foreach (int empireId in empires.Values)
             {
@@ -387,9 +365,9 @@ namespace Nova.Server
                 }
 
                 MoveStacks(battlingStacks);
-                
+
                 List<WeaponDetails> allAttacks = GenerateAttacks(battlingStacks);
-                
+
                 foreach (WeaponDetails attack in allAttacks)
                 {
                     ProcessAttack(attack);
@@ -397,6 +375,19 @@ namespace Nova.Server
             }
         }
 
+        public struct TargetRow
+        {
+            public TargetRow(Stack fleet,int priority, double attractiveness)
+            {
+                Fleet = fleet;
+                Priority = priority;
+                Attractiveness = attractiveness;
+            }
+            
+            public Stack Fleet { get; }
+            public int Priority { get; }
+            public double Attractiveness { get; }
+        }
         /// <summary>
         /// Select targets (if any). Targets are set on a stack-by-stack basis.
         /// </summary>
@@ -404,39 +395,96 @@ namespace Nova.Server
         /// <returns>The number of targeted stacks.</returns>
         public int SelectTargets(List<Stack> battlingStacks)
         {
+            List<TargetRow> selectedTargets = new List<TargetRow>();
+
             int numberOfTargets = 0;
-            
+
             foreach (Stack wolf in battlingStacks)
             {
                 wolf.Target = null;
 
-                if (wolf.IsArmed == false)
-                {
-                    continue;
-                }
-
-                double maxAttractiveness = 0;
+                //if (wolf.IsArmed == false)  // Unarmed ships need to look for nearby enemy armed ships and run away from them so the need to target them
+                //{
+                //    continue;
+                //}
 
                 foreach (Stack lamb in battlingStacks)
                 {
                     if (AreEnemies(wolf, lamb))
-                    {
-                        double attractiveness = GetAttractiveness(lamb);
-                        if (attractiveness > maxAttractiveness)
-                        {
-                            wolf.Target = lamb;
-                            maxAttractiveness = attractiveness;
-                        }
+                    { 
+                        double attractiveness;
+                        int priority = GetPriority(lamb, wolf);
+                        if (wolf.IsArmed) attractiveness = GetAttractiveness(lamb);
+                        else attractiveness = Math.Abs( 1000.0 / (wolf.Position.distanceToSquared(lamb.Position)+1)); // move away from closest armed
+                        selectedTargets.Add(new TargetRow(lamb, priority, attractiveness));
                     }
                 }
-                
-                if (wolf.Target != null)
-                {
-                    numberOfTargets++;
-                }
+                numberOfTargets++;
+                System.Collections.Generic.IComparer<TargetRow> targetComparer = new TargetComparer();
+                selectedTargets.Sort(targetComparer);
+                wolf.Target = selectedTargets[selectedTargets.Count-1].Fleet; // Why is the last one the best target - seems awkward
+                wolf.TargetList = new List<Stack>();
+                foreach (TargetRow row in selectedTargets) wolf.TargetList.Add(row.Fleet);
+                selectedTargets.Clear();
+            }
+            return numberOfTargets;
+        }
+        public class TargetComparer : System.Collections.Generic.IComparer<TargetRow>
+        {
+            // Compares the priority and attractivness of two targets.
+            public int Compare(TargetRow A, TargetRow B)
+            {
+
+                if (A.Priority > B.Priority) return 1;
+                if (A.Priority < B.Priority) return -1;
+                if ((A.Priority == B.Priority) && (A.Attractiveness > B.Attractiveness)) return 1;
+                if ((A.Priority == B.Priority) && (A.Attractiveness < B.Attractiveness)) return -1;
+                if ((A.Priority == B.Priority) && (A.Attractiveness == B.Attractiveness)) return 0;
+                else return 0; //I don't know how it could get here
+            }
+        }
+        /// <summary>
+        /// Determine how well fleet matches tactic
+        /// </summary>
+        /// <param name="target">A stack.</param>
+        /// <returns>A measure of attractiveness.</returns>
+        /// 
+        public int GetPriority(Stack target, Stack source)
+        {
+            if (target == null || target.IsDestroyed)
+            {
+                return 0;
             }
 
-            return numberOfTargets;
+            
+            
+            BattlePlan planA = serverState.AllEmpires[source.Owner].BattlePlans[source.BattlePlan];
+            if (source.IsArmed)
+            {
+                if (planA == null) return 0;
+
+                if (targetMathchesTargetPriority(planA.PrimaryTarget, target)) return 7;
+                if (targetMathchesTargetPriority(planA.SecondaryTarget, target)) return 6;
+                if (targetMathchesTargetPriority(planA.TertiaryTarget, target)) return 5;
+                if (targetMathchesTargetPriority(planA.QuaternaryTarget, target)) return 4;
+                if (targetMathchesTargetPriority(planA.QuinaryTarget, target)) return 3;
+                return 0;
+            }
+            else if (target.IsArmed && !target.IsStarbase) return 7;
+            else return 0;
+        }
+
+        public bool targetMathchesTargetPriority(int targetPriority,Stack target)
+        {
+            if (target.IsStarbase && targetPriority == (int)Global.Victims.Starbase) return true;
+            if (target.HasBombers && targetPriority == (int)Global.Victims.Bomber) return true;
+            if ((target.Token.Design.PowerRating > 2000) && target.IsArmed && targetPriority == (int)Global.Victims.CapitalShip) return true;
+            if ((target.Token.Design.PowerRating < 2000) && target.IsArmed && targetPriority == (int)Global.Victims.Escort) return true;
+            if (target.IsArmed && targetPriority == (int)Global.Victims.ArmedShip) return true;
+            if (targetPriority == (int)Global.Victims.AnyShip) return true;
+            if (!target.IsArmed && targetPriority == (int)Global.Victims.SupportShip) return true;
+
+            else return false;
         }
 
         /// <summary>
@@ -447,9 +495,9 @@ namespace Nova.Server
         /// FIXME (priority 3) - Implement the Stars! attractiveness model (and possibly others as options). Provide a reference to the source of the algorithm.
         public double GetAttractiveness(Stack target)
         {
-            if (target == null || target.IsDestroyed) 
-            { 
-                return 0; 
+            if (target == null || target.IsDestroyed)
+            {
+                return 0;
             }
 
             double cost = target.Mass + target.TotalCost.Energy;
@@ -494,123 +542,78 @@ namespace Nova.Server
             return false;
         }
 
-         /// <summary>
+        /// <summary>
         /// Move stacks towards their targets (if any). Record each movement in the
         /// battle report.
         /// </summary>
         /// <param name="battlingStacks">All stacks in the battle.</param>
         public void MoveStacks(List<Stack> battlingStacks)
         {
-            // Movement in Squares per Round
-            //                  Round
-            // Movement  1  2  3  4  5  6  7  8
-            // 1/2       1  0  1  0  1  0  1  0
-            // 3/4       1  1  0  1  1  1  0  1
-            // 1         1  1  1  1  1  1  1  1
-            // 1 1/4     2  1  1  1  2  1  1  1
-            // 1 1/2     2  1  2  1  2  1  2  1
-            // 1 3/4     2  2  1  2  2  2  1  2
-            // 2         2  2  2  2  2  2  2  2
-            // 2 1/4     3  2  2  2  3  2  2  2
-            // 2 1/2     3  2  3  2  3  2  3  2
-            // repeats for rounds 9 - 16
+            // Fleets initially advance until their opponents are within weapon range  
+            // then withdraw to keep out of their opponents weapon range.
+            // once your opponent is within weapon range you do not move a further 
+            // 2 squares towards them and let them move a further 3 squares towards
+            // you before you fire.
 
-            // In Stars! each round breaks movement into 3 phases.
-            // Phase 1: All stacks that can move 3 squares this round get to move 1 square.
-            // Phase 2: All stacks that can move 2 or more squares this round get to move 1 square.
-            // Phase 3: All stacks that can move this round get to move 1 square.
-            // TODO (priority 3) - verify that a ship should be able to move 1 square per phase if it has 3 move points, or is it limited to 1 per turn?
-            for (var phase = 1; phase <= movementPhasesPerRound; phase++)
+
+
+
+            foreach (Stack stack in battlingStacks)
             {
-                // TODO (priority 5) - Move in order of ship mass, juggle by 15%
-                foreach (Stack stack in battlingStacks)
+                if (stack.Target != null)
                 {
-                    if (stack.Target != null & !stack.IsStarbase)
+                    NovaPoint vectorToTarget = stack.Target.Position - stack.Position;
+                    int direction = 1;
+                    if (!stack.Token.Design.HasWeapons) direction = -1;
+                    NovaPoint newHeading = vectorToTarget.BattleSpeedVector(stack.BattleSpeed * gridScale).Scale(direction); //unarmed  go away from target
+                    if (stack.VelocityVector == null) stack.VelocityVector = newHeading;
+                    if (stack.Target.VelocityVector == null) stack.Target.VelocityVector = new NovaPoint(0, 0); //when we calculate the move for the target this will be calculated - first time is unknown
+                    if ((stack.Target.IsStarbase) && (vectorToTarget.lengthSquared() < stack.VelocityVector.lengthSquared() ))
                     {
-                        NovaPoint from = stack.Position;
-                        NovaPoint to = stack.Target.Position;
-
-                        int movesThisRound = 1; // FIXME (priority 6) - kludge until I implement the above table 
-                        if (stack.BattleSpeed <= 0.5)
+                        stack.VelocityVector = vectorToTarget; // This will put us on top of the target so ignore other logic
+                        newHeading = vectorToTarget; // travelling at less than BattleSpeed !!
+                    }
+                    else
+                    {
+                        bool collisionDetected = ((vectorToTarget + stack.Target.VelocityVector - newHeading).lengthSquared() <
+                            (vectorToTarget + stack.Target.VelocityVector - newHeading.Scale(2)).lengthSquared());
+                        if (collisionDetected) stack.VelocityVector = stack.VelocityVector.prepareForFlyby(stack.VelocityVector, newHeading);
+                        else
                         {
-                            movesThisRound = movementTable[0, battleRound % 8];
-                        }
-                        else if (stack.BattleSpeed <= 0.75)
-                        {
-                            movesThisRound = movementTable[1, battleRound % 8];
-                        }
-                        else if (stack.BattleSpeed <= 1.0)
-                        {
-                            movesThisRound = movementTable[2, battleRound % 8];
-                        }
-                        else if (stack.BattleSpeed <= 1.25)
-                        {
-                            movesThisRound = movementTable[3, battleRound % 8];
-                        }
-                        else if (stack.BattleSpeed <= 1.5)
-                        {
-                            movesThisRound = movementTable[4, battleRound % 8];
-                        }
-                        else if (stack.BattleSpeed <= 1.75)
-                        {
-                            movesThisRound = movementTable[5, battleRound % 8];
-                        }
-                        else if (stack.BattleSpeed <= 2.0)
-                        {
-                            movesThisRound = movementTable[6, battleRound % 8];
-                        }
-                        else if (stack.BattleSpeed <= 2.25)
-                        {
-                            movesThisRound = movementTable[7, battleRound % 8];
-                        }
-                        else 
-                        {
-                            // stack.BattleSpeed > 2.25
-                            movesThisRound = movementTable[8, battleRound % 8];
-                        }
-
-                        bool moveThisPhase = true;
-                        switch (phase)
-                        {
-                            case 1:
-                                {
-                                    moveThisPhase = movesThisRound == 3;
-                                    break;
-                                }
-                            case 2:
-                                {
-                                    moveThisPhase = movesThisRound >= 2;
-                                    break;
-                                }
-                            case 3:
-                                {
-                                    moveThisPhase = movesThisRound >= 1;
-                                    break;
-                                }
-                        }
-
-                        // stack can move only after accumulating at least 1 move point, and after doing so expends that 1 move point
-                        if (moveThisPhase)
-                        {
-                            stack.Position = PointUtilities.BattleMoveTo(from, to);
-
-                            // Update the battle report with these movements.
-                            BattleStepMovement report = new BattleStepMovement();
-                            report.StackKey = stack.Key;
-                            report.Position = stack.Position;
-                            battle.Steps.Add(report);
+                            double turnAngle = newHeading.angleBetween(stack.VelocityVector, newHeading);
+                            if (turnAngle > 90) // target just passed us do a "turnAsFastAsPossible"
+                            {
+                                stack.VelocityVector.turnAsFastAsPossible(stack.VelocityVector, newHeading);
+                            }
+                            else stack.VelocityVector = newHeading;
                         }
                     }
-                    // TODO (priority 7) - shouldn't stacks without targets flee the battle if their strategy says to do so? they're sitting ducks now!
+                    stack.Position = stack.Position + newHeading;
+
+
+                    // Update the battle report with these movements.
+                    BattleStepMovement report = new BattleStepMovement();
+                    report.StackKey = stack.Key;
+                    report.Position = stack.Position;
+                    battle.Steps.Add(report);
+
                 }
             }
+                // TODO (priority 7) - shouldn't stacks without targets flee the battle if their strategy says to do so? they're sitting ducks now!
+           
         }
 
+
         /// <summary>
-        /// Fire weapons at selected targets.
+        /// Quote from Stars! P L A Y E R S    G U I D E 
+        //If you are using beam weapons and the damage your token can inflict on an
+        //enemy’s token is more than enough to destroy the enemy token, the
+        //remainder is used on additional enemy tokens in the same location, limited
+        //only by the number of ships in the attacking token.
+
         /// </summary>
         /// <param name="battlingStacks">All stacks in the battle.</param>
-        private List<WeaponDetails> GenerateAttacks(List<Stack> battlingStacks)
+    private List<WeaponDetails> GenerateAttacks(List<Stack> battlingStacks)
         {
             // First, identify all of the weapons and their characteristics for
             // every ship stack present at the battle and who they are pointed at.
@@ -621,23 +624,64 @@ namespace Nova.Server
             {
                 if ( ! stack.IsDestroyed) 
                 {
-                    // generate an attack for each weapon slot in the Design (all ships in the Token fire weapons in the same slot at the same time)
+                    /// Quote from Stars! P L A Y E R S    G U I D E 
+                    //Damage is applied as follows: If the damage applied to a token’s armor
+                    //exceeds the remaining armor of one or more of the ships in the token, then
+                    //those ships are destroyed. Any remaining damage is spread over the ENTIRE
+                    //token, with the damage being divided up equally among the remaining ships.
                     foreach (Weapon weaponSystem in stack.Token.Design.Weapons)
                     {
+
+                        int percentToFire = 100;
+                        int percentFired = 0;
+                        int targetIndex = 0;
+                        Double distanceSquared;
+
                         WeaponDetails weapon = new WeaponDetails();
-
                         weapon.SourceStack = stack;
-                        weapon.TargetStack = new WeaponDetails.TargetPercent(stack.Target, 100);
-                        weapon.Weapon = weaponSystem;
+                        //stack.Target = stack.TargetList[0];
+                        bool doOverkill = false; // First pass do just enough damage to probably kill if spare damage left over hit everything some more
 
-                        allAttacks.Add(weapon);
+                        while ((percentFired < 100) && (targetIndex < stack.TargetList.Count)) //falls through if not enough targets
+                        {
+                            Stack stackTarget = stack.TargetList[targetIndex];
+                            weapon.Weapon = weaponSystem;
+                            distanceSquared = stack.Position.distanceToSquared(stackTarget.Position);
+                            if ((weapon.Weapon.Range * weapon.Weapon.Range * gridScaleSquared> distanceSquared) && (stackTarget.TotalArmorStrength > 0))
+                                //maybe we have 300 ships in this stack and the opponent has 300 stacks of 1 ship
+                            {//TODO calculate 3 standard deviations if we have 2700 missiles firing with 85% chance of success
+                                //TODO remember probability math I learned 40 years ago
+                                if (weapon.Weapon.IsMissile)
+                                {// budget for 110% damage to target to allow for rounding errors and 3 standard deviations of the probability distribution
+                                    percentToFire = (int)(110.0 * ((double)(stackTarget.TotalShieldStrength + stackTarget.TotalArmorStrength)) / (weapon.missileAccuracy(stack.Token.Design, stackTarget.Token.Design,weapon.Weapon.Accuracy/100.0) * weapon.Weapon.Power * stack.Token.Quantity / 10.0));// /10.0 because we only fire 10% max per turn with RonBattleEngine
+                                    if (percentToFire > 100) percentToFire = 100;
+                                    if (percentToFire + percentFired > 100) percentToFire = 100 - percentFired;
+                                    weapon.TargetStack = new WeaponDetails.TargetPercent(stackTarget, percentToFire);
+                                    allAttacks.Add(weapon);
+                                }
+                                else
+                                {
+                                    if (weapon.Weapon.IsBeam) // budget for 101% damage to target to allow for rounding errors 
+                                        percentToFire = (int)(101.00 * ((double)(stackTarget.TotalShieldStrength + stackTarget.TotalArmorStrength)) / ((CalculateWeaponPowerRon(stack.Position, weapon.Weapon, stackTarget.Position, 100, stack.Token.Design, stack.Token.Quantity) / 10.0)));
+                                    if (percentToFire > 100) percentToFire = 100;
+                                    if (percentToFire + percentFired > 100) percentToFire = 100 - percentFired;
+                                    weapon.TargetStack = new WeaponDetails.TargetPercent(stackTarget, percentToFire);
+                                    allAttacks.Add(weapon);
+                                }
+                                percentFired = percentFired + percentToFire;
+                            }
+                            targetIndex++;
+                            if ((targetIndex > stack.TargetList.Count) && (!doOverkill) && (percentToFire < 100))
+                            {
+                                targetIndex = 0;
+                                doOverkill = true;
+                            }
+                        }
                     }
                 }
             }
-            
             // Sort the weapon list according to weapon system initiative.
             allAttacks.Sort();
-            
             return allAttacks;
         }
 
@@ -663,12 +707,11 @@ namespace Nova.Server
                 return false;
             }
 
-            // If the target stack is not within the range of this weapon system
-            // then there is no point in trying to fire it.       
-            if (PointUtilities.Distance(attack.SourceStack.Position, attack.TargetStack.Target.Position) > attack.Weapon.Range)
-            {
-                return false;
-            }
+            // We just calculated this    
+            //if (PointUtilities.Distance(attack.SourceStack.Position, attack.TargetStack.Target.Position) > attack.Weapon.Range)
+            //{
+            //    return false;
+            //}
 
             // Target is valid; execute attack. 
             ExecuteAttack(attack);
@@ -692,16 +735,17 @@ namespace Nova.Server
             BattleStepTarget report = new BattleStepTarget();
             report.StackKey = attack.SourceStack.Key;
             report.TargetKey = attack.TargetStack.Target.Key;
+            report.percentToFire = attack.TargetStack.PercentToFire;
             battle.Steps.Add(report);
 
             // Identify the attack parameters that have to take into account
             // factors other than the base values (e.g. jammers, capacitors, etc.)
-            double hitPower = CalculateWeaponPower(attacker.Token.Design, attack.Weapon, target.Token.Design);
-            double accuracy = CalculateWeaponAccuracy(attacker.Token.Design, attack.Weapon, target.Token.Design);
+            double hitPower = CalculateWeaponPowerRon(attacker.Position, attack, target.Position, report.percentToFire, attacker.Token.Design);
+            double accuracy = CalculateWeaponAccuracy(attacker.Token.Design, attack, target.Token.Design);
 
             if (attack.Weapon.IsMissile)
             {
-                FireMissile(attacker, target, hitPower, accuracy);
+                FireMissile(attacker, target, hitPower, attack.missileAccuracy(attacker.Token.Design, attacker.Target.Token.Design,attack.Weapon.Accuracy/100.0));
             }
             else
             {
@@ -734,7 +778,8 @@ namespace Nova.Server
             BattleStepDestroy destroy = new BattleStepDestroy();
             destroy.StackKey = target.Key;
             battle.Steps.Add(destroy);
-
+            //TODO missile velocity must be taken into account - if source initiative is 4001 and target initiative is 4000 does the target have time to fire before the missiles destroy it.
+            // My guess is that as soon as the missiles have "tone" on the target the target would fire at something so fleets with almost identical initiative should both get a shot away
             // remove the Token from the Fleet, if it exists
             if (serverState.AllEmpires[target.Owner].OwnedFleets.ContainsKey(target.ParentKey))
             {
@@ -775,7 +820,7 @@ namespace Nova.Server
 
             DamageArmor(attacker, target, hitPower);
 
-            // TODO (Priority 6) - beam weapon overkill can hit other staks (up to one stack per ship in the attacking stack)
+            // TODO (Priority 6) - beam weapon overkill can hit other stacks (up to one stack per ship in the attacking stack)
         }
 
         /// <summary>
@@ -786,28 +831,35 @@ namespace Nova.Server
         /// <param name="hitPower">Damage the weapon can do.</param>
         /// <param name="accuracy">Missile accuracy.</param>
         /// <remarks>
-        /// FIXME (priority 3) - Missile accuracy is not calculated this way in Stars! The effect of computers and jammers must be considered at the same time.
         /// </remarks>
         private void FireMissile(Stack attacker, Stack target, double hitPower, double accuracy)
         {
-            // First, determine if this missile is going to hit or miss (based on
-            // it's accuracy. 
-            // FIXME (priority 4) - This algorithm for determining hit or miss is crude. We need a better one.
+            // We perform 10 times more movement steps (at 1/10 of the speed) with a battle step between each movement step
+            // so we can only allow 1/10 of the damage at each step
+            hitPower = hitPower / 10;
+            // We might have a stack of 300 ships with 9 weapons of the same type on each ship
+            // the chance of every weapon missing the target would be (normalised chance of one weapon to miss) to the power of 2700
+            // so if (normalised chance of one weapon to miss) = 5% the chance of every weapon missing = 1.6558145985645346574136982345412 e-3513
+            // TODO find someone who remembers probability Math
+            // My guestimate is as follows % hit = P + random(-P/2,+P/2)
+            // Google says The standard deviation (ax) is sqrt[ n * P * ( 1 - P ) ] if that helps :)
+             
+            //Double ax = Math.Sqrt(attacker.Token.Quantity * accuracy  * (1.0 - accuracy));
+            int probability = random.Next(-50, 50);
+            Double percentHit = (accuracy ) + (probability / 100.0) * accuracy /2.0; 
+            if (percentHit > 1) percentHit = 1;
+            if (percentHit < 0.0) percentHit = 0.0;  //put some bounds on the dodgy math - just in case
 
-            int probability = random.Next(0, 100);
+            //  for missiles that miss
+            double minDamage = hitPower * (1-percentHit) / 8; //Perhaps 50% of misses should occur before the hits and 50% should occur after
+            DamageShields(attacker, target, minDamage);
 
-            if (accuracy >= probability)
-            {      // A hit
-                double shieldsHit = hitPower / 2;
+            // and for missiles that hit
+            double shieldsHit = hitPower * percentHit / 2;
+            double armorHit = (hitPower * percentHit / 2) + DamageShields(attacker, target, shieldsHit); // FIXME (Priority 5) - do double damage if it is a capital ship missile and all shields have been depleted.
+            DamageArmor(attacker, target, armorHit);
 
-                double armorHit = (hitPower / 2) + DamageShields(attacker, target, shieldsHit); // FIXME (Priority 5) - do double damage if it is a capital ship missile and all shields have been depleted.
-                DamageArmor(attacker, target, armorHit);
-            }
-            else
-            {                              // A miss
-                double minDamage = hitPower / 8;
-                DamageShields(attacker, target, minDamage);
-            }
+
         }
 
         /// <summary>
@@ -868,9 +920,8 @@ namespace Nova.Server
 
         /// <summary>
         /// Calculate weapon power. For beam weapons, this damage will dissipate over
-        /// the range of the beam (no dissipation at range 0, 5% dissipation at range 1,
-        /// 10% dissipation at range 2 and 15% at range 3). Also capacitors and
-        /// deflectors will modify the weapon power.
+        /// the range of the beam (no dissipation at range 0,
+        /// 10% dissipation at max range. Also capacitors will modify the weapon power.
         ///
         /// For missiles, the power is simply the base power.
         /// </summary>
@@ -878,34 +929,45 @@ namespace Nova.Server
         /// <param name="weapon">Firing weapon.</param>
         /// <param name="target">Ship being fired on.</param>
         /// <returns>Damage weapon is able to do.</returns>
-        private double CalculateWeaponPower(ShipDesign ship, Weapon weapon, ShipDesign target)
+        private double CalculateWeaponPowerRon(NovaPoint source, WeaponDetails weapon, NovaPoint target, int percentToFire, ShipDesign design)
         {
-            // TODO (priority 5) Stub - just return the base power of weapon. Also need to comment the return value of this function with what defenses have been considered by this (when done).
-            return weapon.Power;
-            /*
-           double weaponPower = weapon.GetPower(ship);
-
-           if (weapon.WeaponType == "Beam") {
-              weaponPower -= Math.Pow(0.9, target.Design.BeamDeflectors);
-
-              switch (weapon.Range) {
-              case 1:
-                 weaponPower *= 0.95;             // 5% reduction
-                 break;
-              case 2:
-                 weaponPower *= 0.9;              // 10% reduction
-                 break;
-              case 3:
-                 weaponPower *= 0.85;             // 15% reduction
-                 break;
-              default:
-                 Report.Error("Unexpected beam range");
-                 break;
-              }
-           }
-
-           return weaponPower;
-             * */
+            if (weapon.Weapon.IsBeam)
+            {
+                if (design.Summary.Properties.ContainsKey("Capacitor"))
+                    return (100.0 + (design.Summary.Properties["Capacitor"] as CapacitorProperty).Value) / 100.0 * weapon.Weapon.Power * weapon.beamDispersalRon(source.distanceToSquared(target), gridScaleSquared) * (double)percentToFire * (double)weapon.SourceStack.Composition.Count / 100.0;
+                else return 100;
+            }
+            else return weapon.Weapon.Power * (double)percentToFire * (double)weapon.SourceStack.Composition.Count / 100.0;
+        }
+        private double CalculateWeaponPower(NovaPoint source, WeaponDetails weapon, NovaPoint target, int percentToFire, ShipDesign design)
+        {
+            if (weapon.Weapon.IsBeam)
+            {
+                if (design.Summary.Properties.ContainsKey("Capacitor"))
+                    return (100.0 + (design.Summary.Properties["Capacitor"] as CapacitorProperty).Value) / 100.0 * weapon.Weapon.Power * weapon.beamDispersal(source.distanceToSquared(target)) * (double)percentToFire * (double)weapon.SourceStack.Composition.Count / 100.0;
+                else return 100;
+            }
+            else return weapon.Weapon.Power * (double)percentToFire * (double)weapon.SourceStack.Composition.Count / 100.0;
+        }
+        private double CalculateWeaponPower(NovaPoint source, Weapon weapon, NovaPoint target, int percentToFire, ShipDesign design,int count)
+        {
+            if (weapon.IsBeam)
+            {
+                if (design.Summary.Properties.ContainsKey("Capacitor"))
+                    return (100.0 + (design.Summary.Properties["Capacitor"] as CapacitorProperty).Value) / 100.0 * weapon.Power * weapon.beamDispersal(source.distanceToSquared(target)) * (double)percentToFire * (double)count / 100.0;
+                else return 100;
+            }
+            else return weapon.Power * (double)percentToFire * (double)count / 100.0;
+        }
+        private double CalculateWeaponPowerRon(NovaPoint source, Weapon weapon, NovaPoint target, int percentToFire, ShipDesign design, int count)
+        {//In the Ron battleGrid the distances are multiplied by 10 to get a grid with a 0.1 step
+            if (weapon.IsBeam)
+            {
+                if (design.Summary.Properties.ContainsKey("Capacitor"))
+                    return (100.0 + (design.Summary.Properties["Capacitor"] as CapacitorProperty).Value) / 100.0 * weapon.Power * weapon.beamDispersalRon(source.distanceToSquared(target), gridScaleSquared) * (double)percentToFire * (double)count / 100.0;
+                else return 100;
+            }
+            else return weapon.Power * (double)percentToFire * (double)count / 100.0;
         }
 
         /// <summary>
@@ -918,14 +980,14 @@ namespace Nova.Server
         /// <param name="weapon">Firing weapon.</param>
         /// <param name="target">Ship being fired on.</param>
         /// <returns>Chance that weapon will hit.</returns>
-        private double CalculateWeaponAccuracy(ShipDesign ship, Weapon weapon, ShipDesign target)
+        private double CalculateWeaponAccuracy(ShipDesign ship, WeaponDetails weapon, ShipDesign target)
         {
-            double weaponAccuracy = weapon.Accuracy;
-
-            if (weapon.IsMissile)
+            Double weaponAccuracy;
+            if (weapon.Weapon.IsMissile)
             {
-                // TODO (priority 6) - computers and jammer stuff needs to go here *************
+                weaponAccuracy = weapon.missileAccuracy(ship, target,weapon.Weapon.Accuracy/100.0);
             }
+            else weaponAccuracy = 100;
 
             return weaponAccuracy;
         }

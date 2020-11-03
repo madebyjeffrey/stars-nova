@@ -190,7 +190,8 @@ namespace Nova.Common
             {
                 int speed = 10;
                 foreach (ShipToken token in tokens.Values)
-                {                
+                {
+                    if (token.Design.Engine == null) return 0;
                     speed = Math.Min(speed, token.Design.Engine.OptimalSpeed);
                 }
 
@@ -375,6 +376,7 @@ namespace Nova.Common
                 target.WarpFactor = 0;
             }
         }
+
 
         /// <summary>
         /// Return the current total amour strength of the fleet.

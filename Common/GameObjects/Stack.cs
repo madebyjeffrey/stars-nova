@@ -23,6 +23,7 @@ namespace Nova.Common
 {
     using System;
     using System.Linq;
+    using System.Windows;
     using System.Xml;
     
     using Nova.Common;
@@ -43,7 +44,12 @@ namespace Nova.Common
             get;
             set;
         }
-        
+        public System.Collections.Generic.List<Stack> TargetList
+        {
+            get;
+            set;
+        }
+
         /// <summary>
         /// The Key of the Fleet which originated this Stack.
         /// </summary>
@@ -64,6 +70,11 @@ namespace Nova.Common
             }
         }
 
+        public NovaPoint VelocityVector
+        {
+            get;
+            set;    
+        }
         /// <summary>
         /// Return the current Defense capability of a stack.
         /// </summary>
@@ -144,6 +155,7 @@ namespace Nova.Common
             Key = copy.Key;
             BattlePlan = copy.BattlePlan;            
             Target = copy.Target;
+            TargetList = copy.TargetList;
             InOrbit = copy.InOrbit;
             Token = new ShipToken(copy.Token.Design, copy.Token.Quantity, copy.Token.Armor);
             Token.Shields = copy.Token.Shields;

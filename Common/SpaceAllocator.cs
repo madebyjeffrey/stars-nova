@@ -35,6 +35,7 @@ namespace Nova.Common
     public class SpaceAllocator
     {
         public int GridAxisCount;
+        public int gridSize;
 
         private readonly List<Rectangle> availableBoxes = new List<Rectangle>();
         private readonly Random random = new Random();
@@ -71,6 +72,7 @@ namespace Nova.Common
         /// <param name="spaceSize">The length of one side of the allocatable space (assumed to be a square).</param>
         public void AllocateSpace(int spaceSize)
         {
+            gridSize = spaceSize; //remember size of box
             // Find the size of a box side. This will allow us to find the
             // position of the top left corner of each box and, as we know the
             // length of the side we can determine the rectangle details.
@@ -101,13 +103,14 @@ namespace Nova.Common
         /// available boxes.
         /// </summary>
         /// <returns></returns>
-        public Rectangle GetBox()
+        public Rectangle GetBox(int boxNumber,int NumberOfBoxes)
         {
-            int boxNumber = this.random.Next(0, this.availableBoxes.Count - 1);
-            Rectangle box = availableBoxes[boxNumber];
-
-            this.availableBoxes.RemoveAt(boxNumber);
-            return box;
+            int boxesFromStart = boxNumber * 4 * this.gridSize / NumberOfBoxes;
+            if (boxesFromStart < gridSize) return new Rectangle(0, boxesFromStart, 1, 1);
+            if (boxesFromStart < 2 * gridSize) return new Rectangle(boxesFromStart, gridSize, 1, -1);
+            if (boxesFromStart < 3 * gridSize) return new Rectangle(gridSize, 3 * gridSize - boxesFromStart, -1, 1);
+            if (boxesFromStart < 4 * gridSize) return new Rectangle(4 * gridSize - boxesFromStart, gridSize, -1, -1);
+            else return new Rectangle(0, 0, 1, 1);
         }
     }
 }

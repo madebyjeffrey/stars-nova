@@ -144,8 +144,15 @@ namespace Nova.Common.Components
         {
             get
             {
-                Update(); 
-                return 0;
+                Update();
+                double rating = 0;
+                foreach (Weapon weapon in this.Weapons)
+                {
+                    if (weapon.IsBeam) rating += Global.beamRatingMultiplier[((int)BattleSpeed * 4), weapon.Range] * (Double)weapon.Power;
+                    else if (weapon.Range > 5) rating += weapon.Power;
+                    else rating += 1.5 * weapon.Power;
+                }
+                return (int)rating;
             }
         }
         
@@ -489,10 +496,8 @@ namespace Nova.Common.Components
             get
             {
                 Update();
-                if (Weapons == null)
-                {
-                    return false;
-                }
+                if (Weapons == null)  return false;
+                if (Weapons.Count == 0) return false;
                 return true;
             }
         }
@@ -564,6 +569,13 @@ namespace Nova.Common.Components
         /// </summary>
         public void Update()
         {
+            // We keep Ship Designs populated with different depths of knowledge and this module
+            //  has to guess how much information has already been populated and fill in the rest
+            //  sometimes we guess wrong and don't add enough (like fuel) or we keep adding components
+            //  over and over again (like weapons)
+            // The concept of only populating enough of the design to get the properties we need sounds good
+            //  but in practice we end up clearing and reloading the design over and over because
+            //  we never know how much detail it contains.
             if (Blueprint == null)
             {
                 return; // not much of a ship yet
@@ -573,7 +585,7 @@ namespace Nova.Common.Components
             {
                 return; // still not much of a ship.
             }
-
+            Weapons.Clear();
             // Start by copying the basic properties of the hull
             Summary = new Component(Blueprint);
 
@@ -620,6 +632,7 @@ namespace Nova.Common.Components
                         Summary.Mass += module.AllocatedComponent.Mass;
                     Summary.Cost += module.AllocatedComponent.Cost;
                     // Summarise the properties
+                    
                     foreach (string key in module.AllocatedComponent.Properties.Keys)
                     {
                         SumProperty(module.AllocatedComponent.Properties[key], key, module.ComponentCount);
@@ -646,11 +659,9 @@ namespace Nova.Common.Components
                 case "Capacitor":
                 case "Cargo":
                 case "Cloak":
-                case "Computer":
                 case "Defense":
                 case "Driver":
                 case "Fuel":
-                case "Jammer":
                 case "Movement":
                 case "Orbital Adjuster":
                 case "Radiation":
@@ -671,6 +682,35 @@ namespace Nova.Common.Components
                         Summary.Properties.Add(type, toAdd);
                     }
                     break;
+                case "Jammer":
+                    if (Summary.Properties.ContainsKey(type))
+                    {
+                        ProbabilityProperty toAdd = property.Clone() as ProbabilityProperty; // create a copy 
+                        toAdd = toAdd * componentCount;
+                        Summary.Properties[type].Add(toAdd);
+                    }
+                    else
+                    {
+                        ProbabilityProperty toAdd = property.Clone() as ProbabilityProperty; // create a copy 
+                        toAdd = toAdd * componentCount;
+                        Summary.Properties.Add(type, toAdd);
+                    }
+                    break;
+                case "Computer":
+                    if (Summary.Properties.ContainsKey(type))
+                    {
+                        Computer toAdd = property.Clone() as Computer; // create a copy 
+                        toAdd = toAdd * componentCount;
+                        Summary.Properties[type].Add(toAdd);
+                    }
+                    else
+                    {
+                        Computer toAdd = property.Clone() as Computer; // create a copy 
+                        toAdd = toAdd * componentCount;
+                        Summary.Properties.Add(type, toAdd);
+                    }
+                    break;
+
 
                 // sum up the components in the slot, but keep a separate entry for 'different components'<-- has different meaning for each of these
                 case "Bomb":

@@ -189,7 +189,7 @@ namespace Nova.Common.Components
             {
                 // Allocated Component
                 if (AllocatedComponent != null)
-                    if (AllocatedComponent.Name != null)
+                    if (AllocatedComponent.Name != "")
                 {
                     Global.SaveData(xmldoc, xmlelModule, "AllocatedComponent", AllocatedComponent.Name);
                 }
