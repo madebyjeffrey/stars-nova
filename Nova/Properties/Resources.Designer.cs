@@ -65,7 +65,7 @@ namespace Nova.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap copyright_free_play_button {
             get {
-                object obj = ResourceManager.GetObject("copyright free play button", resourceCulture);
+                object obj = ResourceManager.GetObject("copyright_free_play_button", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -136,27 +136,6 @@ namespace Nova.Properties {
         internal static System.Drawing.Bitmap Plasma {
             get {
                 object obj = ResourceManager.GetObject("Plasma", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap transparent_play_button_icon_video_icon_music_icon_5dc83a249c1ca4_0558760315734031726394__1_ {
-            get {
-                object obj = ResourceManager.GetObject("transparent-play-button-icon-video-icon-music-icon-5dc83a249c1ca4.055876031573403" +
-                        "1726394 (1)", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap transparent_play_button_icon_video_icon_music_icon_5dc83a249c1ca41 {
-            get {
-                object obj = ResourceManager.GetObject("transparent-play-button-icon-video-icon-music-icon-5dc83a249c1ca41", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
