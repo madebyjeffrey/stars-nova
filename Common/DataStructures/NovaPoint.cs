@@ -173,6 +173,11 @@ namespace Nova.Common.DataStructures
             return string.Format("({0}, {1})", X, Y);
         }
 
+        public string ToString(Double gridSize)
+        {
+            return string.Format("({0}, {1})", X/gridSize, Y/gridSize);
+        }
+
         /// <summary>
         /// This method adjusts the X and Y values of this Point to the sum of the X and Y values of this Point and p.
         /// </summary>

@@ -130,7 +130,7 @@ namespace Nova.Server
                 }
                 else
                 {
-                    battle.Location = "coordinates " + sample.Position.ToString();
+                    battle.Location = "coordinates " + sample.Position.Scale((Double) (1.0/gridScale)).ToString();
                 }
 
                 PositionStacks(battlingStacks);
@@ -300,6 +300,7 @@ namespace Nova.Server
             // spaceAllocator.AllocateSpace(spaceSize);
             spaceAllocator.AllocateSpace(gridSize); // Set to the standard Stars!Nova battle board size 
             battle.SpaceSize = spaceSize;
+            battle.GridSize = gridScale;
 
             // Now allocate a position for each race in the centre of one of the
             // allocated spacial chunks.
@@ -407,25 +408,33 @@ namespace Nova.Server
                 //{
                 //    continue;
                 //}
-
+                bool haveIcremented = false;
                 foreach (Stack lamb in battlingStacks)
                 {
-                    if (AreEnemies(wolf, lamb))
+                    if ((AreEnemies(wolf, lamb)) && (lamb.Token.Armor > 0))
                     { 
                         double attractiveness;
                         int priority = GetPriority(lamb, wolf);
                         if (wolf.IsArmed) attractiveness = GetAttractiveness(lamb);
                         else attractiveness = Math.Abs( 1000.0 / (wolf.Position.distanceToSquared(lamb.Position)+1)); // move away from closest armed
                         selectedTargets.Add(new TargetRow(lamb, priority, attractiveness));
+                        if (!haveIcremented)
+                        {
+                            haveIcremented = true;
+                            numberOfTargets++;
+                        }
                     }
                 }
-                numberOfTargets++;
-                System.Collections.Generic.IComparer<TargetRow> targetComparer = new TargetComparer();
-                selectedTargets.Sort(targetComparer);
-                wolf.Target = selectedTargets[selectedTargets.Count-1].Fleet; // Why is the last one the best target - seems awkward
+                wolf.Target = null;
                 wolf.TargetList = new List<Stack>();
-                foreach (TargetRow row in selectedTargets) wolf.TargetList.Add(row.Fleet);
-                selectedTargets.Clear();
+                if (selectedTargets.Count > 0)
+                {
+                    System.Collections.Generic.IComparer<TargetRow> targetComparer = new TargetComparer();
+                    selectedTargets.Sort(targetComparer);
+                    wolf.Target = selectedTargets[selectedTargets.Count - 1].Fleet; // Why is the last one the best target - seems awkward
+                    foreach (TargetRow row in selectedTargets) wolf.TargetList.Add(row.Fleet);
+                    selectedTargets.Clear();
+                }
             }
             return numberOfTargets;
         }
@@ -563,9 +572,11 @@ namespace Nova.Server
                 if (stack.Target != null)
                 {
                     NovaPoint vectorToTarget = stack.Target.Position - stack.Position;
-                    int direction = 1;
-                    if (!stack.Token.Design.HasWeapons) direction = -1;
-                    NovaPoint newHeading = vectorToTarget.BattleSpeedVector(stack.BattleSpeed * gridScale).Scale(direction); //unarmed  go away from target
+                    NovaPoint newHeading;
+                    newHeading = vectorToTarget.BattleSpeedVector(stack.BattleSpeed * gridScale);
+                    if (!stack.Token.Design.HasWeapons)
+                        if (stack.distanceTo(stack.Target)/gridScale < Global.MaxWeaponRange) newHeading = newHeading.Scale(-1.0);  // armed enemy is getting close - run away
+                        else newHeading = new NovaPoint(0, 0);  //we are unarmed so don't do anything unless an enemy approaches
                     if (stack.VelocityVector == null) stack.VelocityVector = newHeading;
                     if (stack.Target.VelocityVector == null) stack.Target.VelocityVector = new NovaPoint(0, 0); //when we calculate the move for the target this will be calculated - first time is unknown
                     if ((stack.Target.IsStarbase) && (vectorToTarget.lengthSquared() < stack.VelocityVector.lengthSquared() ))
@@ -599,7 +610,7 @@ namespace Nova.Server
 
                 }
             }
-                // TODO (priority 7) - shouldn't stacks without targets flee the battle if their strategy says to do so? they're sitting ducks now!
+                
            
         }
 

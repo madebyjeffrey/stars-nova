@@ -573,6 +573,9 @@
     <None Include="Resources\smallplus.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\copyright free play button.jpg" />
     <Content Include="Resources\Diamond_Button.png" />
+    <None Include="Resources\transparent-play-button-icon-video-icon-music-icon-5dc83a249c1ca4.0558760315734031726394 %281%291.jpg" />
+    <None Include="Resources\transparent-play-button-icon-video-icon-music-icon-5dc83a249c1ca4.0558760315734031726394 %281%29.jpg" />
   </ItemGroup>
 </Project>

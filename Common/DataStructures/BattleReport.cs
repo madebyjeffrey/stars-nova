@@ -33,7 +33,8 @@ namespace Nova.Common.DataStructures
         /// Main battle report components.
         /// </summary>
         public string Location  = null;
-        public int SpaceSize    = 0;
+        public int SpaceSize = 0;
+        public int GridSize = 1;
         public int Year         = 0;
         public string Key 
         { 
@@ -81,6 +82,10 @@ namespace Nova.Common.DataStructures
 
                         case "spacesize":
                             SpaceSize = int.Parse(subnode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+
+                        case "gridsize":
+                            GridSize = int.Parse(subnode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
                             break;
 
                         case "year":
@@ -142,6 +147,7 @@ namespace Nova.Common.DataStructures
                 Global.SaveData(xmldoc, xmlelBattleReport, "Location", Location);
             }
             Global.SaveData(xmldoc, xmlelBattleReport, "SpaceSize", SpaceSize.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            Global.SaveData(xmldoc, xmlelBattleReport, "GridSize", GridSize.ToString(System.Globalization.CultureInfo.InvariantCulture));
 
             Global.SaveData(xmldoc, xmlelBattleReport, "Year", Year.ToString(System.Globalization.CultureInfo.InvariantCulture));
 

@@ -73,7 +73,10 @@ namespace Nova.WinForms.Gui
             battlePanel.BackgroundImage = Nova.Properties.Resources.Plasma;
             battlePanel.BackgroundImageLayout = ImageLayout.Stretch;
             SetStepNumber(theBattle.Steps[eventCount]);
-            ZoomLevel.SelectedIndex = 1;
+            ZoomLevel.SelectedIndex = 3;
+            trackBarBattle.Minimum = 0;
+            trackBarBattle.Maximum = theBattle.Steps.Count - 1;
+            numericUpDownSpeed.Value = 5;
         }
 
         /// <Summary>
@@ -155,6 +158,27 @@ namespace Nova.WinForms.Gui
                     graphics.DrawImage(stack.Icon.Image, destPara);
                 }
             }
+            if (eventCount > 0)
+            { 
+            object thisStep = theBattle.Steps[eventCount-1];
+                if (thisStep is BattleStepWeapons)
+                {
+                    BattleStepWeapons fire = (thisStep as BattleStepWeapons);
+                    Stack lamb, wolf;
+                    myStacks.TryGetValue(fire.WeaponTarget.TargetKey, out lamb);
+                    myStacks.TryGetValue(fire.WeaponTarget.StackKey, out wolf);
+                    graphics.DrawLine(Pens.BlueViolet, wolf.Position.X + wolf.Icon.Image.Width / 8, wolf.Position.Y + wolf.Icon.Image.Height / 8, lamb.Position.X + lamb.Icon.Image.Width / 8, lamb.Position.Y + lamb.Icon.Image.Height / 8);
+                    double scale = graphics.PageScale;
+                    // Create parallelogram for drawing image.
+
+                    PointF ulCorner = new PointF(lamb.Position.X, lamb.Position.Y);
+                    PointF urCorner = new PointF(lamb.Position.X + imageListDamage.Images[0].Width / 4, lamb.Position.Y);
+                    PointF llCorner = new PointF(lamb.Position.X, lamb.Position.Y + imageListDamage.Images[0].Height / 4);
+                    PointF[] destPara = { ulCorner, urCorner, llCorner };
+                    graphics.DrawImage(imageListDamage.Images[0], destPara);
+                }
+            }
+
         }
 
         /// <Summary>
@@ -187,6 +211,7 @@ namespace Nova.WinForms.Gui
             if (eventCount < theBattle.Steps.Count - 1)
             {
                 eventCount++;
+                trackBarBattle.Value = eventCount;
             }
             else
             {
@@ -215,10 +240,10 @@ namespace Nova.WinForms.Gui
                 ClearStackDetails();
             }
 
-            if (stack != null) movedFrom.Text = stack.Position.ToString();
+            if (stack != null) movedFrom.Text = stack.Position.ToString(theBattle.GridSize);
             else movedFrom.Text = "";
-            movedTo.Text = battleStep.Position.ToString();
-            stack.Position = battleStep.Position;
+            movedTo.Text = battleStep.Position.ToString(theBattle.GridSize);
+            if (stack != null) stack.Position = battleStep.Position;
 
             // We have moved, clear out the other fields as they are not relevant to this step.
             ClearTargetDetails();
@@ -298,7 +323,9 @@ namespace Nova.WinForms.Gui
                 }
 
 
+                battlePanel.Invalidate();
             }
+
         }
 
         /// <summary>
@@ -428,5 +455,48 @@ namespace Nova.WinForms.Gui
         {
 
         }
+
+        private void ZoomLevel_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            battlePanel.Invalidate();
+        }
+
+        private void Play_Click(object sender, EventArgs e)
+        {
+            timerNext.Interval =  1100-(int)Math.Abs(numericUpDownSpeed.Value * 100);
+            timerNext.Enabled = true;
+        }
+
+        private void trackBarBattle_DragLeave(object sender, EventArgs e)
+        {
+            eventCount = trackBarBattle.Value;
+            //trackBarBattle.Value = eventCount;
+            NextStep_Click(sender, e);
+        }
+
+        private void numericUpDownSpeed_ValueChanged(object sender, EventArgs e)
+        {
+            timerNext.Interval = 1100-(int)Math.Abs(numericUpDownSpeed.Value * 100);
+            if (numericUpDownSpeed.Value == 0) timerNext.Enabled = false;
+        }
+
+        private void timerNext_Tick(object sender, EventArgs e)
+        {
+            if (numericUpDownSpeed.Value < 0) eventCount = eventCount - 2;
+            timerNext.Enabled = true;
+            if ((eventCount >= theBattle.Steps.Count - 1) && (numericUpDownSpeed.Value < 0))
+            {
+                eventCount = theBattle.Steps.Count - 1;
+                numericUpDownSpeed.Value = 0;
+            }
+            else if ((eventCount <= 1) && (numericUpDownSpeed.Value < 0))
+            {
+                eventCount = 0;
+                numericUpDownSpeed.Value = 1;
+            }
+
+            //trackBarBattle.Value = eventCount;
+            NextStep_Click(sender, e);
+       }
     }
 }

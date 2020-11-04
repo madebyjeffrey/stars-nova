@@ -28,6 +28,7 @@ namespace Nova.WinForms.Gui
       /// </Summary>
       private void InitializeComponent()
       {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BattleViewer));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.battlePanel = new System.Windows.Forms.Panel();
@@ -55,6 +56,7 @@ namespace Nova.WinForms.Gui
             this.weaponPower = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.Play = new System.Windows.Forms.Button();
             this.stepNumber = new System.Windows.Forms.Label();
             this.nextStep = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
@@ -77,6 +79,11 @@ namespace Nova.WinForms.Gui
             this.label4 = new System.Windows.Forms.Label();
             this.battleLocation = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.timerNext = new System.Windows.Forms.Timer(this.components);
+            this.trackBarBattle = new System.Windows.Forms.TrackBar();
+            this.numericUpDownSpeed = new System.Windows.Forms.NumericUpDown();
+            this.label18 = new System.Windows.Forms.Label();
+            this.imageListDamage = new System.Windows.Forms.ImageList(this.components);
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.stackGroupBox.SuspendLayout();
@@ -84,6 +91,8 @@ namespace Nova.WinForms.Gui
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarBattle)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpeed)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -114,6 +123,9 @@ namespace Nova.WinForms.Gui
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Controls.Add(this.label18);
+            this.groupBox2.Controls.Add(this.numericUpDownSpeed);
+            this.groupBox2.Controls.Add(this.trackBarBattle);
             this.groupBox2.Controls.Add(this.ZoomLevel);
             this.groupBox2.Controls.Add(this.textBox1);
             this.groupBox2.Controls.Add(this.stackGroupBox);
@@ -140,9 +152,10 @@ namespace Nova.WinForms.Gui
             "Maintain initial Zoom Setting"});
             this.ZoomLevel.Location = new System.Drawing.Point(10, 631);
             this.ZoomLevel.Name = "ZoomLevel";
-            this.ZoomLevel.Size = new System.Drawing.Size(236, 21);
+            this.ZoomLevel.Size = new System.Drawing.Size(259, 21);
             this.ZoomLevel.TabIndex = 9;
             this.ZoomLevel.Text = "Select Zoom Level";
+            this.ZoomLevel.SelectedIndexChanged += new System.EventHandler(this.ZoomLevel_SelectedIndexChanged);
             // 
             // textBox1
             // 
@@ -365,6 +378,7 @@ namespace Nova.WinForms.Gui
             // 
             // groupBox5
             // 
+            this.groupBox5.Controls.Add(this.Play);
             this.groupBox5.Controls.Add(this.stepNumber);
             this.groupBox5.Controls.Add(this.nextStep);
             this.groupBox5.Location = new System.Drawing.Point(10, 495);
@@ -373,6 +387,17 @@ namespace Nova.WinForms.Gui
             this.groupBox5.TabIndex = 5;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Replay Control";
+            // 
+            // Play
+            // 
+            this.Play.Image = global::Nova.Properties.Resources.copyright_free_play_button;
+            this.Play.Location = new System.Drawing.Point(138, 20);
+            this.Play.Name = "Play";
+            this.Play.Size = new System.Drawing.Size(98, 61);
+            this.Play.TabIndex = 4;
+            this.Play.Text = "  Play";
+            this.Play.UseVisualStyleBackColor = true;
+            this.Play.Click += new System.EventHandler(this.Play_Click);
             // 
             // stepNumber
             // 
@@ -600,6 +625,46 @@ namespace Nova.WinForms.Gui
             this.label1.TabIndex = 0;
             this.label1.Text = "Battle Location:";
             // 
+            // timerNext
+            // 
+            this.timerNext.Tick += new System.EventHandler(this.timerNext_Tick);
+            // 
+            // trackBarBattle
+            // 
+            this.trackBarBattle.Location = new System.Drawing.Point(10, 583);
+            this.trackBarBattle.Name = "trackBarBattle";
+            this.trackBarBattle.Size = new System.Drawing.Size(259, 45);
+            this.trackBarBattle.TabIndex = 10;
+            this.trackBarBattle.DragLeave += new System.EventHandler(this.trackBarBattle_DragLeave);
+            // 
+            // numericUpDownSpeed
+            // 
+            this.numericUpDownSpeed.Location = new System.Drawing.Point(319, 629);
+            this.numericUpDownSpeed.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.numericUpDownSpeed.Name = "numericUpDownSpeed";
+            this.numericUpDownSpeed.Size = new System.Drawing.Size(120, 20);
+            this.numericUpDownSpeed.TabIndex = 11;
+            this.numericUpDownSpeed.ValueChanged += new System.EventHandler(this.numericUpDownSpeed_ValueChanged);
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(358, 613);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(38, 13);
+            this.label18.TabIndex = 12;
+            this.label18.Text = "Speed";
+            // 
+            // imageListDamage
+            // 
+            this.imageListDamage.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListDamage.ImageStream")));
+            this.imageListDamage.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageListDamage.Images.SetKeyName(0, "Mole-skin_Shield.png");
+            // 
             // BattleViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -623,6 +688,8 @@ namespace Nova.WinForms.Gui
             this.groupBox4.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarBattle)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpeed)).EndInit();
             this.ResumeLayout(false);
 
       }
@@ -677,5 +744,11 @@ namespace Nova.WinForms.Gui
        private System.Windows.Forms.Label targetKey;
        private System.Windows.Forms.Label label17;
         private System.Windows.Forms.ComboBox ZoomLevel;
+        private System.Windows.Forms.Button Play;
+        private System.Windows.Forms.Timer timerNext;
+        private System.Windows.Forms.NumericUpDown numericUpDownSpeed;
+        private System.Windows.Forms.TrackBar trackBarBattle;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.ImageList imageListDamage;
     }
 }
