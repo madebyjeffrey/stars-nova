@@ -222,7 +222,7 @@ namespace Nova.Server
                         {
                             if (command is WaypointCommand)
                             {
-                                if (((command as WaypointCommand).Mode == CommandMode.Add) || ((command as WaypointCommand).Mode == CommandMode.Edit))
+                                if (((command as WaypointCommand).Mode == CommandMode.Add) || ((command as WaypointCommand).Mode == CommandMode.Edit) || ((command as WaypointCommand).Mode == CommandMode.Insert))
                                 {
                                     if ((command as WaypointCommand).Waypoint.Task is CargoTask) (command as WaypointCommand).PreApplyToState(empire, ((command as WaypointCommand).Waypoint.Task as CargoTask).Target);
                                     else if ((command as WaypointCommand).Waypoint.Task is SplitMergeTask) (command as WaypointCommand).PreApplyToState(empire, null);
@@ -513,7 +513,7 @@ namespace Nova.Server
                         //To avoid entering orbit (and losing the rest of the turn) when you have penetrating scanners never let a fleet hit a waypoint but force the fleet
                         // to fly close to stars the you are interested in.
                         // We could add a new waypoint command "Scan without Entering orbit" for people who don't know how to never let a fleet hit a waypoint but force the fleet
-                        // to fly close to stars that they are interested in scanning that Star.
+                        // to fly close to stars when they are interested in scanning that Star.
                     }
 
                     // -------------------------

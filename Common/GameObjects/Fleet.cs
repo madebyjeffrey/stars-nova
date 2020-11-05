@@ -541,6 +541,8 @@ namespace Nova.Common
         /// Move the fleet towards the waypoint at the top of the list. Fuel is consumed
         /// at the rate of the sum of each of the individual ships (i.e. available fuel
         /// is automatically "pooled" between the ships).
+        /// in Stars! a fleet will reach a planet that is 36.6 light years away in one year when travelling at warp 6!
+        /// TODO priority 0 find the max distance travelled in one year in Stars! at Warp 6 (If 36.6 LY from a planet it seems to get there in one year)
         /// </summary>
         /// <param name="availableTime">The portion of a year left for travel.</param>
         /// <param name="race">The race this fleet belongs to.</param>
@@ -572,7 +574,7 @@ namespace Nova.Common
 
             TravelStatus arrived = TravelStatus.Arrived;
 
-            if (travelTime > availableTime)
+            if (travelTime > availableTime * 1.025)  // Corporate HQ will not pay an extra days wages for 2.5% of a days travel so orders are to nudge the speed a bit and fire the retro rockets a little bit closer to the star and a little bit harder than normal :)
             {
                 travelTime = availableTime;
                 arrived = TravelStatus.InTransit;

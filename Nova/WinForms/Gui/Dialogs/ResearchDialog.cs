@@ -39,7 +39,7 @@ namespace Nova.WinForms.Gui
     /// because relevant data can be read on ClientState.
     /// </Summary>
     public delegate bool ResearchAllocationChanged();
-    
+
     /// <Summary>
     /// Dialog for displaying current research levels and allocating resources to
     /// further research.
@@ -54,13 +54,13 @@ namespace Nova.WinForms.Gui
         public event ResearchAllocationChanged ResearchAllocationChangedEvent;
 
         private readonly bool dialoginitialized;
-        
+
         private readonly ClientData clientState;
 
         private readonly Dictionary<string, RadioButton> buttons = new Dictionary<string, RadioButton>();
         private readonly TechLevel currentLevel;
         private TechLevel.ResearchField targetArea;
-        private readonly int availableEnergy;         
+        private readonly int availableEnergy;
 
         /// <Summary>
         /// Initializes a new instance of the ResearchDialog class.
@@ -81,17 +81,17 @@ namespace Nova.WinForms.Gui
             buttons.Add("Biotechnology", biotechButton);
 
             // Set the currently attained research levels
-            energyLevel.Text        = currentLevel[TechLevel.ResearchField.Energy].ToString();
-            weaponsLevel.Text       = currentLevel[TechLevel.ResearchField.Weapons].ToString();
-            propulsionLevel.Text    = currentLevel[TechLevel.ResearchField.Propulsion].ToString();
-            constructionLevel.Text  = currentLevel[TechLevel.ResearchField.Construction].ToString();
-            electronicsLevel.Text   = currentLevel[TechLevel.ResearchField.Electronics].ToString();
-            biotechLevel.Text       = currentLevel[TechLevel.ResearchField.Biotechnology].ToString();
+            energyLevel.Text = currentLevel[TechLevel.ResearchField.Energy].ToString();
+            weaponsLevel.Text = currentLevel[TechLevel.ResearchField.Weapons].ToString();
+            propulsionLevel.Text = currentLevel[TechLevel.ResearchField.Propulsion].ToString();
+            constructionLevel.Text = currentLevel[TechLevel.ResearchField.Construction].ToString();
+            electronicsLevel.Text = currentLevel[TechLevel.ResearchField.Electronics].ToString();
+            biotechLevel.Text = currentLevel[TechLevel.ResearchField.Biotechnology].ToString();
 
             // Ensure that the correct RadioButton is checked to reflect the
             // current research selection and the budget up-down control is
             // initialized with the correct value.
-            
+
             // Find the first research priority
             // TODO: Implement a proper hierarchy of research ("next research field") system.
             foreach (TechLevel.ResearchField area in Enum.GetValues(typeof(TechLevel.ResearchField)))
@@ -99,7 +99,7 @@ namespace Nova.WinForms.Gui
                 if (this.clientState.EmpireState.ResearchTopics[area] == 1)
                 {
                     targetArea = area;
-                    break;        
+                    break;
                 }
             }
 
@@ -111,7 +111,7 @@ namespace Nova.WinForms.Gui
             availableResources.Text = this.availableEnergy.ToString(System.Globalization.CultureInfo.InvariantCulture);
             budgetPercentage.Value = this.clientState.EmpireState.ResearchBudget;
             dialoginitialized = true;
-
+            populateList();
             ParameterChanged(null, null);
         }
 
@@ -144,29 +144,82 @@ namespace Nova.WinForms.Gui
                     Report.Error("ResearchDialog.cs : CheckChanged() - unrecognised field of research.");
                 }
             }
-            
-            // Populate the expected research benefits list
-            AllComponents allComponents = new AllComponents(true,"Research");
 
-            TechLevel oldResearchLevel = currentLevel;
-            TechLevel newResearchLevel = new TechLevel(oldResearchLevel);
-
-            newResearchLevel[targetArea] = oldResearchLevel[targetArea] + 1;
-            researchBenefits.Items.Clear();
-
-            foreach (Nova.Common.Components.Component component in allComponents.GetAll.Values)
-            {
-                if (component.RequiredTech > oldResearchLevel &&
-                    component.RequiredTech <= newResearchLevel)
-                {
-                    string available = component.Name + " " + component.Type;
-                    researchBenefits.Items.Add(available);
-                }
-            }
+            populateList();
 
             ParameterChanged(null, null);
         }
 
+
+        private void populateList()
+        {
+            // Populate the expected research benefits list
+            AllComponents allComponents = new AllComponents(true, "Research");
+            researchBenefits.Rows.Clear();
+            TechLevel oldResearchLevel = currentLevel;
+            TechLevel newResearchLevel = new TechLevel(oldResearchLevel);
+            TechLevel twoResearchLevel = new TechLevel(oldResearchLevel);
+            TechLevel threeResearchLevel = new TechLevel(oldResearchLevel);
+            TechLevel fourResearchLevel = new TechLevel(1, oldResearchLevel);
+
+            newResearchLevel[targetArea] = oldResearchLevel[targetArea] + 1;
+            twoResearchLevel[targetArea] = oldResearchLevel[targetArea] + 2;
+            threeResearchLevel[targetArea] = oldResearchLevel[targetArea] + 3;
+            fourResearchLevel[targetArea] = fourResearchLevel[targetArea] + 3;
+
+            foreach (Nova.Common.Components.Component component in allComponents.GetAll.Values)
+            {
+                if (component.RequiredTech[targetArea] > oldResearchLevel[targetArea] &&
+                    TechLevel.LessThan(component.RequiredTech, newResearchLevel))
+                {
+                    string available = component.Name + " (" + component.Type+")";
+                    DataGridViewRow row = (DataGridViewRow)researchBenefits.Rows[0].Clone();
+                    row.Cells[0].Value = available;
+                    row.Cells[1].Value = component.RequiredTech.ToString();
+                    row.DefaultCellStyle.ForeColor = System.Drawing.Color.DarkGreen;
+                    researchBenefits.Rows.Add(row);
+                }
+            }
+            foreach (Nova.Common.Components.Component component in allComponents.GetAll.Values)
+            {
+                if (component.RequiredTech[targetArea] > newResearchLevel[targetArea] &&
+                    TechLevel.LessThan(component.RequiredTech, twoResearchLevel))
+                {
+                    string available = component.Name + " (" + component.Type+")";
+                    DataGridViewRow row = (DataGridViewRow)researchBenefits.Rows[0].Clone();
+                    row.Cells[0].Value = available;
+                    row.Cells[1].Value = component.RequiredTech.ToString();
+                    row.DefaultCellStyle.ForeColor = System.Drawing.Color.DarkBlue;
+                    researchBenefits.Rows.Add(row);
+                }
+            }
+            foreach (Nova.Common.Components.Component component in allComponents.GetAll.Values)
+            {
+                if (component.RequiredTech[targetArea] > twoResearchLevel[targetArea] &&
+                    TechLevel.LessThan(component.RequiredTech, threeResearchLevel))
+                {
+                    string available = component.Name + " )" + component.Type+")";
+                    DataGridViewRow row = (DataGridViewRow)researchBenefits.Rows[0].Clone();
+                    row.Cells[0].Value = available;
+                    row.Cells[1].Value = component.RequiredTech.ToString();
+                    row.DefaultCellStyle.ForeColor = System.Drawing.Color.Black;
+                    researchBenefits.Rows.Add(row);
+                }
+            }
+            foreach (Nova.Common.Components.Component component in allComponents.GetAll.Values)
+            {
+                if (component.RequiredTech[targetArea] > threeResearchLevel[targetArea] &&
+                    TechLevel.LessThan(component.RequiredTech, fourResearchLevel))
+                {
+                    string available = component.Name + " (" + component.Type+")";
+                    DataGridViewRow row = (DataGridViewRow)researchBenefits.Rows[0].Clone();
+                    row.Cells[0].Value = available;
+                    row.Cells[1].Value = component.RequiredTech.ToString();
+                    row.DefaultCellStyle.ForeColor = System.Drawing.Color.DarkGray;
+                    researchBenefits.Rows.Add(row);
+                }
+            }
+        }
 
         /// <Summary>
         /// The OK button has been pressed. Just exit the dialog.

@@ -200,13 +200,7 @@ namespace Nova.WinForms.Gui
             }
 
             productionQueue.Populate(selectedStar);
-
-
-
-
-
-
-
+            productionQueue.Visible = true;
 
             Resources wholeQueueCost = new Resources(0, 0, 0, 0);      // resources required to build everything in the Production Queue
             Resources selectedItemCost = new Resources(0, 0, 0, 0);    // resources required to build the selected Item stack in the Production Queue
@@ -453,6 +447,11 @@ namespace Nova.WinForms.Gui
                         }
                     }
                 }
+                productionQueue.Visible = true;
+                productionQueue.Invalidate();
+                if (this.productionQueue.Columns.Count == 0) this.productionQueue.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.description,
+            this.quantity});
             }
 
 

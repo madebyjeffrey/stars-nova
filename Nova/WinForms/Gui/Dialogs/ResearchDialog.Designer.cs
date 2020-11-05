@@ -54,7 +54,6 @@ namespace Nova.WinForms.Gui
             this.label1 = new System.Windows.Forms.Label();
             this.okButton = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.researchBenefits = new System.Windows.Forms.ListBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.numericResources = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
@@ -66,10 +65,14 @@ namespace Nova.WinForms.Gui
             this.label4 = new System.Windows.Forms.Label();
             this.completionResources = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.researchBenefits = new System.Windows.Forms.DataGridView();
+            this.Discovery = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.RequiredTech = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.budgetPercentage)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.researchBenefits)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -90,7 +93,7 @@ namespace Nova.WinForms.Gui
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(223, 245);
+            this.groupBox1.Size = new System.Drawing.Size(190, 245);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Technology Status";
@@ -98,7 +101,7 @@ namespace Nova.WinForms.Gui
             // biotechLevel
             // 
             this.biotechLevel.AutoSize = true;
-            this.biotechLevel.Location = new System.Drawing.Point(173, 211);
+            this.biotechLevel.Location = new System.Drawing.Point(133, 211);
             this.biotechLevel.Name = "biotechLevel";
             this.biotechLevel.Size = new System.Drawing.Size(13, 13);
             this.biotechLevel.TabIndex = 13;
@@ -107,7 +110,7 @@ namespace Nova.WinForms.Gui
             // electronicsLevel
             // 
             this.electronicsLevel.AutoSize = true;
-            this.electronicsLevel.Location = new System.Drawing.Point(173, 180);
+            this.electronicsLevel.Location = new System.Drawing.Point(133, 180);
             this.electronicsLevel.Name = "electronicsLevel";
             this.electronicsLevel.Size = new System.Drawing.Size(13, 13);
             this.electronicsLevel.TabIndex = 12;
@@ -116,7 +119,7 @@ namespace Nova.WinForms.Gui
             // constructionLevel
             // 
             this.constructionLevel.AutoSize = true;
-            this.constructionLevel.Location = new System.Drawing.Point(173, 149);
+            this.constructionLevel.Location = new System.Drawing.Point(133, 149);
             this.constructionLevel.Name = "constructionLevel";
             this.constructionLevel.Size = new System.Drawing.Size(13, 13);
             this.constructionLevel.TabIndex = 11;
@@ -125,7 +128,7 @@ namespace Nova.WinForms.Gui
             // propulsionLevel
             // 
             this.propulsionLevel.AutoSize = true;
-            this.propulsionLevel.Location = new System.Drawing.Point(173, 118);
+            this.propulsionLevel.Location = new System.Drawing.Point(133, 118);
             this.propulsionLevel.Name = "propulsionLevel";
             this.propulsionLevel.Size = new System.Drawing.Size(13, 13);
             this.propulsionLevel.TabIndex = 10;
@@ -134,7 +137,7 @@ namespace Nova.WinForms.Gui
             // weaponsLevel
             // 
             this.weaponsLevel.AutoSize = true;
-            this.weaponsLevel.Location = new System.Drawing.Point(173, 89);
+            this.weaponsLevel.Location = new System.Drawing.Point(133, 89);
             this.weaponsLevel.Name = "weaponsLevel";
             this.weaponsLevel.Size = new System.Drawing.Size(13, 13);
             this.weaponsLevel.TabIndex = 9;
@@ -143,7 +146,7 @@ namespace Nova.WinForms.Gui
             // energyLevel
             // 
             this.energyLevel.AutoSize = true;
-            this.energyLevel.Location = new System.Drawing.Point(173, 56);
+            this.energyLevel.Location = new System.Drawing.Point(133, 56);
             this.energyLevel.Name = "energyLevel";
             this.energyLevel.Size = new System.Drawing.Size(13, 13);
             this.energyLevel.TabIndex = 8;
@@ -225,7 +228,7 @@ namespace Nova.WinForms.Gui
             // 
             this.label2.AutoSize = true;
             this.label2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label2.Location = new System.Drawing.Point(142, 27);
+            this.label2.Location = new System.Drawing.Point(102, 27);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(72, 15);
             this.label2.TabIndex = 1;
@@ -245,7 +248,7 @@ namespace Nova.WinForms.Gui
             // 
             // okButton
             // 
-            this.okButton.Location = new System.Drawing.Point(459, 274);
+            this.okButton.Location = new System.Drawing.Point(556, 318);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 23);
             this.okButton.TabIndex = 1;
@@ -256,20 +259,12 @@ namespace Nova.WinForms.Gui
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.researchBenefits);
-            this.groupBox2.Location = new System.Drawing.Point(250, 149);
+            this.groupBox2.Location = new System.Drawing.Point(208, 149);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(304, 108);
+            this.groupBox2.Size = new System.Drawing.Size(426, 163);
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Expected Research Benefits";
-            // 
-            // researchBenefits
-            // 
-            this.researchBenefits.FormattingEnabled = true;
-            this.researchBenefits.Location = new System.Drawing.Point(10, 20);
-            this.researchBenefits.Name = "researchBenefits";
-            this.researchBenefits.Size = new System.Drawing.Size(288, 82);
-            this.researchBenefits.TabIndex = 0;
             // 
             // groupBox3
             // 
@@ -283,9 +278,9 @@ namespace Nova.WinForms.Gui
             this.groupBox3.Controls.Add(this.label4);
             this.groupBox3.Controls.Add(this.completionResources);
             this.groupBox3.Controls.Add(this.label3);
-            this.groupBox3.Location = new System.Drawing.Point(250, 23);
+            this.groupBox3.Location = new System.Drawing.Point(208, 23);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(304, 108);
+            this.groupBox3.Size = new System.Drawing.Size(426, 108);
             this.groupBox3.TabIndex = 3;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Resource Allocation";
@@ -293,7 +288,7 @@ namespace Nova.WinForms.Gui
             // numericResources
             // 
             this.numericResources.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.numericResources.Location = new System.Drawing.Point(236, 86);
+            this.numericResources.Location = new System.Drawing.Point(358, 86);
             this.numericResources.Name = "numericResources";
             this.numericResources.Size = new System.Drawing.Size(53, 13);
             this.numericResources.TabIndex = 11;
@@ -314,7 +309,7 @@ namespace Nova.WinForms.Gui
             this.budgetPercentage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.budgetPercentage.BackColor = System.Drawing.SystemColors.Info;
             this.budgetPercentage.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.budgetPercentage.Location = new System.Drawing.Point(248, 70);
+            this.budgetPercentage.Location = new System.Drawing.Point(370, 70);
             this.budgetPercentage.Name = "budgetPercentage";
             this.budgetPercentage.Size = new System.Drawing.Size(53, 16);
             this.budgetPercentage.TabIndex = 9;
@@ -338,7 +333,7 @@ namespace Nova.WinForms.Gui
             // availableResources
             // 
             this.availableResources.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.availableResources.Location = new System.Drawing.Point(236, 52);
+            this.availableResources.Location = new System.Drawing.Point(358, 52);
             this.availableResources.Name = "availableResources";
             this.availableResources.Size = new System.Drawing.Size(53, 13);
             this.availableResources.TabIndex = 7;
@@ -357,7 +352,7 @@ namespace Nova.WinForms.Gui
             // completionTime
             // 
             this.completionTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.completionTime.Location = new System.Drawing.Point(236, 35);
+            this.completionTime.Location = new System.Drawing.Point(358, 35);
             this.completionTime.Name = "completionTime";
             this.completionTime.Size = new System.Drawing.Size(53, 13);
             this.completionTime.TabIndex = 4;
@@ -376,7 +371,7 @@ namespace Nova.WinForms.Gui
             // completionResources
             // 
             this.completionResources.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.completionResources.Location = new System.Drawing.Point(236, 18);
+            this.completionResources.Location = new System.Drawing.Point(358, 18);
             this.completionResources.Name = "completionResources";
             this.completionResources.Size = new System.Drawing.Size(53, 13);
             this.completionResources.TabIndex = 2;
@@ -392,11 +387,39 @@ namespace Nova.WinForms.Gui
             this.label3.TabIndex = 1;
             this.label3.Text = "Resources needed to research next level:";
             // 
+            // researchBenefits
+            // 
+            this.researchBenefits.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.researchBenefits.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Discovery,
+            this.RequiredTech});
+            this.researchBenefits.Location = new System.Drawing.Point(6, 19);
+            this.researchBenefits.Name = "researchBenefits";
+            this.researchBenefits.Size = new System.Drawing.Size(417, 138);
+            this.researchBenefits.TabIndex = 0;
+            // 
+            // Discovery
+            // 
+            this.Discovery.Frozen = true;
+            this.Discovery.HeaderText = "Discovery";
+            this.Discovery.Name = "Discovery";
+            this.Discovery.ReadOnly = true;
+            this.Discovery.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.Discovery.Width = 200;
+            // 
+            // RequiredTech
+            // 
+            this.RequiredTech.Frozen = true;
+            this.RequiredTech.HeaderText = "Required Tech";
+            this.RequiredTech.Name = "RequiredTech";
+            this.RequiredTech.ReadOnly = true;
+            this.RequiredTech.Width = 200;
+            // 
             // ResearchDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(562, 309);
+            this.ClientSize = new System.Drawing.Size(646, 353);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.okButton);
@@ -413,6 +436,7 @@ namespace Nova.WinForms.Gui
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.budgetPercentage)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.researchBenefits)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -447,6 +471,8 @@ namespace Nova.WinForms.Gui
        private System.Windows.Forms.Label label5;
        private System.Windows.Forms.Label numericResources;
        private System.Windows.Forms.Label label8;
-       private System.Windows.Forms.ListBox researchBenefits;
-     }
+        private System.Windows.Forms.DataGridView researchBenefits;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Discovery;
+        private System.Windows.Forms.DataGridViewTextBoxColumn RequiredTech;
+    }
 }

@@ -403,7 +403,7 @@ namespace Nova.WinForms.Gui
             this.CurrentRace = clientState.EmpireState.Race.Name;
 
             this.MapControl.initialize(clientState);
-            if (this.CurrentTurn > 2100) loadNextTurnToolStripMenuItem.Enabled = true;
+            loadNextTurnToolStripMenuItem.Enabled = true;
 
 
 
@@ -433,7 +433,7 @@ namespace Nova.WinForms.Gui
             this.CurrentRace = clientState.EmpireState.Race.Name;
 
             this.MapControl.reinitialize(clientState);
-            if (this.CurrentTurn > 2100) loadNextTurnToolStripMenuItem.Enabled = true;
+            loadNextTurnToolStripMenuItem.Enabled = true;
 
 
 

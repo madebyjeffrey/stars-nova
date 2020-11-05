@@ -654,7 +654,7 @@ namespace Nova.WinForms.Gui
             Fleet newFleet = GettopFleetAtLocation();
 
             // Inform of the selection change to all listening objects.
-            OnFleetSelectionChanged(new SelectionArgs(topFleet));
+            OnFleetSelectionChanged(new SelectionArgs(newFleet));
         }
 
         private void ButtonMerge_Click(object sender, EventArgs e)
@@ -886,7 +886,7 @@ namespace Nova.WinForms.Gui
 
         protected virtual void OnFleetSelectionChanged(SelectionArgs e)
         {
-            SetFleetDetails(topFleet);
+            SetFleetDetails(e.Selection as Fleet);
 
             if (FleetSelectionChanged != null)
             {

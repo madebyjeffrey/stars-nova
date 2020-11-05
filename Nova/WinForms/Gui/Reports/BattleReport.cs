@@ -122,7 +122,7 @@ namespace Nova.WinForms.Gui
         private void BattleGridView_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             int battleRow = e.RowIndex;
-
+            if (battleRow == -1) battleRow = 0;
             if (battles.Count == 0)
             {
                 Report.Information("There are no battles to view.");

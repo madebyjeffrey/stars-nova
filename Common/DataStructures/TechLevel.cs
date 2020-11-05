@@ -83,6 +83,16 @@ namespace Nova.Common
             }
         }
 
+
+        public TechLevel(int levelIncrease, TechLevel oldTech)
+        {
+            this.techValues = new Dictionary<string, int>(oldTech.techValues);
+            foreach (string key in ResearchKeys)
+            {
+                this.techValues[key] = this.techValues[key] + levelIncrease;
+            }
+        }
+
         /// <summary>
         /// Constructor setting all levels to individual values.
         /// </summary>
@@ -288,7 +298,23 @@ namespace Nova.Common
 
             return false;
         }
-        
+
+
+        public static bool LessThan(TechLevel lhs, TechLevel rhs)
+        {
+            Dictionary<string, int> lhsT = lhs.techValues;
+            Dictionary<string, int> rhsT = rhs.techValues;
+            bool less = true;
+            foreach (string key in TechLevel.ResearchKeys)
+            {
+                if (lhsT[key] > rhsT[key])
+                {
+                    less = false;
+                }
+            }
+            return less;
+        }
+
         /// <summary>
         /// Setting all levels to zero.
         /// </summary>

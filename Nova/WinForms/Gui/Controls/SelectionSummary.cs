@@ -102,8 +102,8 @@ namespace Nova.WinForms.Gui
                 Invalidate();
             }
 
-            summaryItem = report;            
-
+            summaryItem = report;
+            PlanetSummary.Visible = true;
             this.summaryFrame.Text = "Summary of " + report.Name;
             PlanetSummary.Location = new Point(5, 15);
             PlanetSummary.Value = report;

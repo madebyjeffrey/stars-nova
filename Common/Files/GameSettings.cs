@@ -35,8 +35,8 @@ namespace Nova.Common
     {
         // Map settings
 
-        public int MapWidth = 400;
-        public int MapHeight = 400;
+        public int MapWidth = 800;
+        public int MapHeight = 600;
 
         public int StarSeparation = 10;
         public int StarDensity = 40;
