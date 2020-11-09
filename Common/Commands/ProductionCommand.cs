@@ -114,10 +114,21 @@ namespace Nova.Common.Commands
                         {
                             if (empire.Designs[(ProductionOrder.Unit as ShipProductionUnit).DesignKey].IsStarbase)
                             {
-                                if (!(ProductionOrder.Unit.Cost >=
-                                    (empire.Designs[(ProductionOrder.Unit as ShipProductionUnit).DesignKey].Cost) - empire.Designs[empire.StarReports[(ProductionOrder.Unit as ShipProductionUnit).Star].Starbase.Key].Cost))
+                                if (empire.StarReports[(ProductionOrder.Unit as ShipProductionUnit).Star].Starbase != null)  //Cost is for upgrade
                                 {
-                                    return false;
+                                    if (!(ProductionOrder.Unit.Cost >=
+                                        (empire.Designs[(ProductionOrder.Unit as ShipProductionUnit).DesignKey].Cost) - empire.Designs[empire.StarReports[(ProductionOrder.Unit as ShipProductionUnit).Star].Starbase.Key].Cost))
+                                    {
+                                        return false;
+                                    }
+                                }
+                                else                                                                                          // Cost is to build a new Starbase
+                                {
+                                    if (!(ProductionOrder.Unit.Cost >= (empire.Designs[(ProductionOrder.Unit as ShipProductionUnit).DesignKey].Cost) ))
+                                        {
+                                        return false;
+                                    }
+
                                 }
                             }
 

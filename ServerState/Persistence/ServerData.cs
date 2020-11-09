@@ -553,7 +553,7 @@ namespace Nova.Server
                     foreach (Fleet newFleet in empire.TemporaryFleets)
                     {
                         empire.AddOrUpdateFleet(newFleet);
-                        if ((newFleet.TurnYear > 0) && (newFleet.Name == "Salvage"))
+                        if ((newFleet.TurnYear > 0) && (newFleet.Name == "S A L V A G E"))
                         {// TODO find what Stars! equations are for this
                             newFleet.Cargo.Ironium = newFleet.Cargo.Ironium * 7 / 10;
                             newFleet.Cargo.Boranium = newFleet.Cargo.Boranium * 7 / 10;

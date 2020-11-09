@@ -97,7 +97,7 @@ namespace Nova.Server.TurnSteps
                 Index = 1;
                 while ((Index < fleet.Waypoints.Count) && (fleet.Waypoints[Index].Destination == WaypointZeroDestination))
                 {
-                    if ((fleet.Waypoints[Index].Task is SplitMergeTask) || (fleet.Waypoints[Index].Task is CargoTask))
+                    if ((fleet.Waypoints[Index].Task is SplitMergeTask) || (fleet.Waypoints[Index].Task is CargoTask) || (fleet.Waypoints[Index].Task is NoTask))
                     {
                         fleet.Waypoints.RemoveAt(Index); //Remove waypoints that have already been processed
                     }

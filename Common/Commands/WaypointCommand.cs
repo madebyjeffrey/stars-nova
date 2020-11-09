@@ -228,7 +228,9 @@ namespace Nova.Common.Commands
                                   // if we have removed 6 of the waypoints and Waypoint.Count = 1
                                   // Look in SpliFleetStep.cs for the WaypointZero removals
                             }
-                            break;
+                            foreach (Fleet newFleet in empire.TemporaryFleets) empire.AddOrUpdateFleet(newFleet);
+                            empire.TemporaryFleets.Clear();
+                                break;
                         }
                     }
                 case CommandMode.Insert:
@@ -259,16 +261,21 @@ namespace Nova.Common.Commands
                                         }
                                     }
                             } // we don't remove the waypoint until all waypoints are inserted as a Waypoint.Edit(7,waypoint) will not work too well
-                            // if we have removed 6 of the waypoints and Waypoint.Count = 1
-                            // Look in SplitFleetStep.cs for the WaypointZero removals
+                              // if we have removed 6 of the waypoints and Waypoint.Count = 1
+                              // Look in SplitFleetStep.cs for the WaypointZero removals
+                            foreach (Fleet newFleet in empire.TemporaryFleets) empire.AddOrUpdateFleet(newFleet);
+                            empire.TemporaryFleets.Clear();
+
                             break;
                         }
                     }
                 case CommandMode.Delete:
-                    // we prevent Deletes in the Waypoint zero list
+                    empire.OwnedFleets[FleetKey].Waypoints.Add(Waypoint);  // Add the Waypoint 
+                    // we prevent Deletes in the Waypoint zero list so no need to pre-process it
                     break;
                 case CommandMode.Edit:
-                    //We prevent edits of Waypoint Zeros
+                    empire.OwnedFleets[FleetKey].Waypoints.Add(Waypoint);  // Add the Waypoint 
+                    //We prevent edits of Waypoint Zeros so no need to pre-process it
                     //you can edit a waypoint zero action by adding another action that undoes the first action
                     break;
             }

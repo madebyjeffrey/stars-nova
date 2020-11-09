@@ -154,6 +154,7 @@ namespace Nova.Common
                     case "NewComponent":
                     case "WarpToChange":
                     case "DestToChange":
+                    case "Cheap Engines":
                     case "Fuel":
                         // No object reference required to be saved.
                         break;
