@@ -86,12 +86,18 @@
     <Compile Include="Persistence\IntelWriter.cs" />
     <Compile Include="Manufacture.cs" />
     <Compile Include="Persistence\OrderReader.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="RonBattleEngine.cs" />
     <Compile Include="Scores.cs" />
     <Compile Include="Persistence\ServerData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TurnSteps\BombingStep.cs" />
     <Compile Include="TurnSteps\FirstStep.cs" />
+    <Compile Include="TurnSteps\PostBombingStep.cs" />
     <Compile Include="TurnSteps\ScrapFleetStep.cs" />
     <Compile Include="TurnSteps\SplitFleetStep.cs" />
     <Compile Include="TurnSteps\StarUpdateStep.cs" />
@@ -142,5 +148,17 @@
   -->
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\salvage0000.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\MineralPacket0000.png" />
   </ItemGroup>
 </Project>

@@ -156,6 +156,12 @@ namespace Nova.WinForms.Gui
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.TreeView = new System.Windows.Forms.TreeView();
             this.ListView = new System.Windows.Forms.ListView();
+            this.label16 = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
+            this.novarating = new System.Windows.Forms.Label();
+            this.starsrating = new System.Windows.Forms.Label();
+            this.battlespeed = new System.Windows.Forms.Label();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.HullImage)).BeginInit();
             this.groupBox4.SuspendLayout();
@@ -176,7 +182,7 @@ namespace Nova.WinForms.Gui
             this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.Cancel.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.Cancel.Location = new System.Drawing.Point(698, 624);
+            this.Cancel.Location = new System.Drawing.Point(698, 724);
             this.Cancel.Name = "Cancel";
             this.Cancel.Size = new System.Drawing.Size(75, 23);
             this.Cancel.TabIndex = 0;
@@ -186,7 +192,7 @@ namespace Nova.WinForms.Gui
             // 
             this.SaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.SaveButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.SaveButton.Location = new System.Drawing.Point(618, 624);
+            this.SaveButton.Location = new System.Drawing.Point(618, 724);
             this.SaveButton.Name = "SaveButton";
             this.SaveButton.Size = new System.Drawing.Size(75, 23);
             this.SaveButton.TabIndex = 1;
@@ -209,7 +215,7 @@ namespace Nova.WinForms.Gui
             this.groupBox2.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.groupBox2.Location = new System.Drawing.Point(393, 16);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(373, 591);
+            this.groupBox2.Size = new System.Drawing.Size(373, 691);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "New Design";
@@ -275,6 +281,12 @@ namespace Nova.WinForms.Gui
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.battlespeed);
+            this.groupBox4.Controls.Add(this.starsrating);
+            this.groupBox4.Controls.Add(this.novarating);
+            this.groupBox4.Controls.Add(this.label18);
+            this.groupBox4.Controls.Add(this.label17);
+            this.groupBox4.Controls.Add(this.label16);
             this.groupBox4.Controls.Add(this.label3);
             this.groupBox4.Controls.Add(this.label12);
             this.groupBox4.Controls.Add(this.CargoCapacity);
@@ -295,7 +307,7 @@ namespace Nova.WinForms.Gui
             this.groupBox4.Controls.Add(this.label2);
             this.groupBox4.Location = new System.Drawing.Point(196, 470);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(165, 115);
+            this.groupBox4.Size = new System.Drawing.Size(165, 215);
             this.groupBox4.TabIndex = 15;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Primary Characteristics";
@@ -553,9 +565,9 @@ namespace Nova.WinForms.Gui
             // Description
             // 
             this.Description.AcceptsTab = true;
-            this.Description.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.Description.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.Description.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.Description.Location = new System.Drawing.Point(7, 18);
             this.Description.Multiline = true;
@@ -688,6 +700,7 @@ namespace Nova.WinForms.Gui
             // ListView
             // 
             this.ListView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ListView.HideSelection = false;
             this.ListView.Location = new System.Drawing.Point(0, 0);
             this.ListView.MultiSelect = false;
             this.ListView.Name = "ListView";
@@ -698,10 +711,64 @@ namespace Nova.WinForms.Gui
             this.ListView.SelectedIndexChanged += new System.EventHandler(this.ListSelectionChanged);
             this.ListView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ListView_MouseDown);
             // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(8, 192);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(67, 13);
+            this.label16.TabIndex = 18;
+            this.label16.Text = "Nova Rating";
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(8, 172);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(68, 13);
+            this.label17.TabIndex = 19;
+            this.label17.Text = "Stars! Rating";
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(8, 152);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(65, 13);
+            this.label18.TabIndex = 20;
+            this.label18.Text = "BattleSpeed";
+            // 
+            // novarating
+            // 
+            this.novarating.Location = new System.Drawing.Point(96, 192);
+            this.novarating.Name = "novarating";
+            this.novarating.Size = new System.Drawing.Size(50, 13);
+            this.novarating.TabIndex = 21;
+            this.novarating.Text = "0";
+            this.novarating.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // starsrating
+            // 
+            this.starsrating.Location = new System.Drawing.Point(96, 172);
+            this.starsrating.Name = "starsrating";
+            this.starsrating.Size = new System.Drawing.Size(50, 13);
+            this.starsrating.TabIndex = 22;
+            this.starsrating.Text = "0";
+            this.starsrating.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // battlespeed
+            // 
+            this.battlespeed.Location = new System.Drawing.Point(96, 152);
+            this.battlespeed.Name = "battlespeed";
+            this.battlespeed.Size = new System.Drawing.Size(50, 13);
+            this.battlespeed.TabIndex = 23;
+            this.battlespeed.Text = "0";
+            this.battlespeed.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
             // ShipDesignDialog
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-            this.ClientSize = new System.Drawing.Size(780, 654);
+            this.ClientSize = new System.Drawing.Size(780, 754);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.SaveButton);
@@ -748,6 +815,12 @@ namespace Nova.WinForms.Gui
             }
             base.Dispose(disposing);
         }
-        
+
+        private Label battlespeed;
+        private Label starsrating;
+        private Label novarating;
+        private Label label18;
+        private Label label17;
+        private Label label16;
     }
 }

@@ -74,7 +74,7 @@ namespace Nova.Ai
                 if (fleet.Owner == clientState.EmpireState.Id)
                 {
                     aiPlan.CountFleet(fleet);
-                    if (fleet.Waypoints.Count == 0)
+                    if ((fleet.Waypoints.Count == 0) || ((fleet.Waypoints.Count == 1) && fleet.Waypoints[0].Task is NoTask && fleet.InOrbit.Name == fleet.Waypoints[0].Destination)) 
                     {
                         DefaultFleetAI fleetAI = new DefaultFleetAI(fleet, clientState, fuelStations);
                         fleetAIs.Add(fleet.Id, fleetAI);
@@ -117,7 +117,7 @@ namespace Nova.Ai
             List<Fleet> scoutFleets = new List<Fleet>();
             foreach (Fleet fleet in clientState.EmpireState.OwnedFleets.Values)
             {
-                if ((fleet.Name.Contains("Scout") || (fleet.Name.Contains("Long Range Scout") || (fleet.Name.Contains(Global.AiScout)))) && (fleet.Waypoints.Count == 0))
+                if ((fleet.Name.Contains("Scout") || (fleet.Name.Contains("Long Range Scout") || (fleet.Name.Contains(Global.AiScout)))) && ((fleet.Waypoints.Count == 0) || ((fleet.Waypoints.Count == 1) && fleet.Waypoints[0].Task is NoTask && fleet.InOrbit.Name == fleet.Waypoints[0].Destination)))
                     {
                     scoutFleets.Add(fleet);
                 }
@@ -151,7 +151,7 @@ namespace Nova.Ai
             List<Fleet> armedScoutFleets = new List<Fleet>();
             foreach (Fleet fleet in clientState.EmpireState.OwnedFleets.Values)
             {
-                if ((fleet.Name.Contains(Global.AiDefensiveDestroyer) == true) && (fleet.Waypoints.Count == 0))
+                if ((fleet.Name.Contains(Global.AiDefensiveDestroyer) == true) && ((fleet.Waypoints.Count == 0) || ((fleet.Waypoints.Count == 1) && fleet.Waypoints[0].Task is NoTask && fleet.InOrbit.Name == fleet.Waypoints[0].Destination)))
                 {
                     armedScoutFleets.Add(fleet);
                 }
@@ -186,7 +186,7 @@ namespace Nova.Ai
             List<Fleet> colonyShipsFleets = new List<Fleet>();
             foreach (Fleet fleet in clientState.EmpireState.OwnedFleets.Values)
             {
-                if (fleet.CanColonize == true && fleet.Waypoints.Count == 0)
+                if (fleet.CanColonize == true && ((fleet.Waypoints.Count == 0) || ((fleet.Waypoints.Count == 1) && fleet.Waypoints[0].Task is NoTask && fleet.InOrbit.Name == fleet.Waypoints[0].Destination)))
                 {
                     colonyShipsFleets.Add(fleet);
                 }
@@ -251,7 +251,7 @@ namespace Nova.Ai
             List<Fleet> idleTransportFleets = new List<Fleet>();
             foreach (Fleet fleet in clientState.EmpireState.OwnedFleets.Values)
             {
-                if (fleet.CanColonize == false && fleet.Waypoints.Count == 0 && fleet.Cargo.Mass == 0 && fleet.TotalCargoCapacity != 0)
+                if (fleet.CanColonize == false && ((fleet.Waypoints.Count == 0) || ((fleet.Waypoints.Count == 1) && fleet.Waypoints[0].Task is NoTask && fleet.InOrbit.Name == fleet.Waypoints[0].Destination)) && fleet.Cargo.Mass == 0 && fleet.TotalCargoCapacity != 0)
                 {
                     idleTransportFleets.Add(fleet);
                 }
@@ -327,7 +327,7 @@ namespace Nova.Ai
                 List<Fleet> idleRefuelFleets = new List<Fleet>();
                 foreach (Fleet fleet in clientState.EmpireState.OwnedFleets.Values)
                 {
-                    if (fleet.CanRefuel == false && fleet.Waypoints.Count == 0 && fleet.Cargo.Mass == 0 && fleet.TotalCargoCapacity != 0)
+                    if (fleet.CanRefuel == false && ((fleet.Waypoints.Count == 0) || ((fleet.Waypoints.Count == 1) && fleet.Waypoints[0].Task is NoTask && fleet.InOrbit.Name == fleet.Waypoints[0].Destination)) && fleet.Cargo.Mass == 0 && fleet.TotalCargoCapacity != 0)
                     {
                         idleRefuelFleets.Add(fleet);
                     }
@@ -342,7 +342,7 @@ namespace Nova.Ai
                         Fleet chosenRefueler = null;
                         foreach (Fleet refueler in idleRefuelFleets)
                         {
-                            if ((refueler.distanceTo(crippled) < distanceToCrippled) && (refueler.Waypoints.Count == 0))
+                            if ((refueler.distanceTo(crippled) < distanceToCrippled) && ((refueler.Waypoints.Count == 0) || ((refueler.Waypoints.Count == 1) && refueler.Waypoints[0].Task is NoTask && refueler.InOrbit.Name == refueler.Waypoints[0].Destination)))
                             {
                                 distanceToCrippled = (int)refueler.distanceTo(crippled);
                                 refuelerID = refueler.Id;
@@ -377,7 +377,15 @@ namespace Nova.Ai
                     {
                         Fleet fleet = clientState.EmpireState.OwnedFleets[msg.FleetID];
                         // for the AI the first Waypoint is the destination not the current location?
-                        fleet.Waypoints[0].WarpFactor = fleet.SlowestEngine; //TODO if the destination is a hostile planet don't increase speed
+                        StarIntel dest = new StarIntel();
+                        clientState.EmpireState.StarReports.TryGetValue(fleet.Waypoints[0].Destination, out dest);
+                        if (dest != null)
+                            if ((dest.Owner == Global.Nobody) || (dest.Owner == fleet.Owner))
+                            {
+                                if (fleet.TotalFuelCapacity / fleet.FuelAvailable > 2) fleet.Waypoints[0].WarpFactor = fleet.SlowestEngine; // fuel tank over 1/2 full - increase warp
+                                else fleet.Waypoints[0].WarpFactor = fleet.FreeWarpSpeed - 1; // Best speed for gathering fuel is FreeWarp -1 from observation in Stars!
+                            }
+                        if (fleet.Waypoints[0].WarpFactor == 0) fleet.Waypoints[0].WarpFactor = 1;
                     }
                 }
             }
@@ -391,7 +399,7 @@ namespace Nova.Ai
                     if (clientState.EmpireState.OwnedFleets.ContainsKey(msg.FleetID))
                     {
                         Fleet fleet = clientState.EmpireState.OwnedFleets[msg.FleetID];
-                        if (fleet.Waypoints.Count > 0) return;
+                        if ((fleet.Waypoints.Count == 0) || ((fleet.Waypoints.Count == 1) && fleet.Waypoints[0].Task is NoTask)) return;
                         // for the AI the first Waypoint is the destination not the current location?
 
                         int distanceToStar = int.MaxValue;

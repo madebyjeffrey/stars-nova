@@ -28,6 +28,7 @@ namespace Nova.Server.NewGame
     using Nova.Common;
     using Nova.Common.Components;
 
+
     /// <summary>
     /// This object contains static methods to initialize the star map. 
     /// Note that StarsMapGenerator handles positioning of the stars.
@@ -129,7 +130,7 @@ namespace Nova.Server.NewGame
             AllComponents components = new AllComponents(true, "Race = "+ empire.Race.Name);
             RaceComponents raceComponents = new RaceComponents("Race = " + empire.Race.Name);
             raceComponents.DetermineRaceComponents(empire.Race, empire.ResearchLevels);
-            Component colonyShipHull = null, scoutHull = null;            
+            Component colonyShipHull = null, scoutHull = null, salvageHull = null, mineralPacketHull = null;
             Component colonizer = null;
             Component scaner = components.Fetch("Bat Scanner");
             Component fuelPod = null;
@@ -214,10 +215,29 @@ namespace Nova.Server.NewGame
                 }
             }
             scout.Icon = new ShipIcon(scoutHull.ImageFile, (Bitmap)scoutHull.ComponentImage);
-
             scout.Type = ItemType.Ship;
             scout.Name = "Scout";
             scout.Update();
+
+
+            salvageHull = components.Fetch("S A L V A G E");
+            ShipDesign salvage = new ShipDesign(empire.GetNextDesignKey());
+            salvage.Blueprint = salvageHull;
+            Image debris = Properties.Resources.salvage0000;
+            salvage.Icon = new ShipIcon("F:\\Stars!Nova\\Repos\\svn\\Nova\\Resources\\Salvage0000.png", (Bitmap)debris);
+            salvage.Type = ItemType.Salvage;
+            salvage.Name = "S A L V A G E";
+
+
+
+            mineralPacketHull = components.Fetch("Mineral Packet");
+            ShipDesign mineralPacket = new ShipDesign(empire.GetNextDesignKey());
+            mineralPacket.Blueprint = mineralPacketHull;
+            debris = Properties.Resources.MineralPacket0000;
+            mineralPacket.Icon = new ShipIcon("F:\\Stars!Nova\\Repos\\svn\\Nova\\Resources\\MineralPacket0000.png", (Bitmap)debris);
+            mineralPacket.Type = ItemType.Salvage;
+            mineralPacket.Name = "Mineral Packet";
+
 
             ShipDesign starbase = new ShipDesign(empire.GetNextDesignKey());
             starbase.Name = "Starbase";
@@ -264,6 +284,7 @@ namespace Nova.Server.NewGame
             starbase.Update();
 
             empire.Designs[starbase.Key] = starbase;
+            empire.Designs[salvage.Key] = salvage;
             empire.Designs[cs.Key] = cs;
             empire.Designs[scout.Key] = scout;
             /*

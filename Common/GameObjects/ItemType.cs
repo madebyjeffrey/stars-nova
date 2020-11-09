@@ -54,7 +54,8 @@ namespace Nova.Common
         Fleet,
         Star,
         [Description("Star Report")] StarIntel,
-        [Description("Fleet Report")] FleetIntel
+        [Description("Fleet Report")] FleetIntel,
+        Salvage
     }
     
     public static class ItemTypeExtensions

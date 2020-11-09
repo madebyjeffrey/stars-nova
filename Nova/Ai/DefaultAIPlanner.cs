@@ -339,14 +339,7 @@ namespace Nova.Ai
 
 
 
-                /* TODO - a better transport?
-                else if (clientState.EmpireState.ResearchLevels > new TechLevel(0, 0, 0, 11, 0, 8))
-                {
-                    // build a really good transport
-                    // Super Freighter (Cons 13)? - Not cost effective
-                    // Large Freighter (cons 8), Interspace 10 engine (prop 11), 
-                }
-                 */
+
                 else if (clientState.EmpireState.ResearchLevels > new TechLevel(0, 0, 0, 7, 0, 8))
                 {
                     // build a good transport
@@ -369,12 +362,7 @@ namespace Nova.Ai
                         {
                             module.AllocatedComponent = engine;
                             module.ComponentCount = 2;
-                        } /* TODO Cargo Pod?
-                        else if (module.ComponentType == "Mechanical")
-                        {
-                            module.AllocatedComponent = cargoPod;
-                            module.ComponentCount = 1;
-                        }*/
+                        } 
                     }
                     transportDesign.Icon = new ShipIcon(freighterHull.ImageFile, (Bitmap)freighterHull.ComponentImage);
 
@@ -395,13 +383,7 @@ namespace Nova.Ai
 
                     return transportDesign;
                 }
-                    /* TODO - a medium transport?
-                else if (clientState.EmpireState.ResearchLevels > new TechLevel(0, 0, 0, 3, 0, 3))
-                {
-                    // build a minimal transport
-                    // Medium Freighter (cons 3), Long Hump 6 (prop 3)
-                }
-                     */
+
                 else
                 {
                     // do not build transports - tech too low

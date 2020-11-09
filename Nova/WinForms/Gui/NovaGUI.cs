@@ -310,9 +310,6 @@ namespace Nova.WinForms.Gui
         /// Load Next Turn
         /// </Summary>
         /// <remarks>
-        /// This menu Item has been disabled as it does not currently detect if there is
-        /// a valid next turn.
-        /// TODO (priority 6) - detect when a new turn is available.
         /// </remarks>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">A <see cref="EventArgs"/> that contains the event data.</param>

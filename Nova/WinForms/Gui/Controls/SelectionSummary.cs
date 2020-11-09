@@ -171,7 +171,7 @@ namespace Nova.WinForms.Gui
         /// <param name="sender">The control signaling the event.</param>
         /// <param name="e">The event args, possibly null.</param>
         /// <remarks>
-        /// Currently this occurs when selected via the StarMap, or when the goto button is pressed in teh FleetDetail or PlanetDetail controls.
+        /// Currently this occurs when selected via the StarMap, or when the goto button is pressed in the FleetDetail or PlanetDetail controls.
         /// </remarks>
         public void SummaryChangeSelection(object sender, SelectionArgs e)
         {

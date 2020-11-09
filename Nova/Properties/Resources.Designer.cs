@@ -103,6 +103,26 @@ namespace Nova.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap fleet2 {
+            get {
+                object obj = ResourceManager.GetObject("fleet2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap MineralPacket0000 {
+            get {
+                object obj = ResourceManager.GetObject("MineralPacket0000", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Nova {
             get {
                 object obj = ResourceManager.GetObject("Nova", resourceCulture);
@@ -136,6 +156,16 @@ namespace Nova.Properties {
         internal static System.Drawing.Bitmap Plasma {
             get {
                 object obj = ResourceManager.GetObject("Plasma", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap salvage0000 {
+            get {
+                object obj = ResourceManager.GetObject("salvage0000", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

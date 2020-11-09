@@ -178,6 +178,17 @@ namespace Nova.Common
             Germanium = copy.Germanium;
             ColonistsInKilotons = copy.ColonistsInKilotons;
         }
+        public Cargo Scale(double scalar)
+        {
+            if (scalar > 1) scalar = 1;   // this method is meant for splitting cargo amongst fleet or calculating Salvage - it is not a magical source of minerals
+            if (scalar < 0) scalar = 0;  // we can't create antimatter in a subroutine ! requires E MC squared
+            Cargo scaled = new Cargo(this);
+            scaled.Ironium = (int) (Ironium * scalar);
+            scaled.Boranium = (int) (Boranium * scalar);
+            scaled.Germanium = (int) (Germanium * scalar);
+            scaled.ColonistsInKilotons = (int) (ColonistsInKilotons * scalar);
+            return scaled;
+        }
 
         /// <summary>
         /// Load from XML: initializing constructor from an XML node.

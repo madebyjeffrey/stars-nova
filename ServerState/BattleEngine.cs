@@ -601,7 +601,6 @@ namespace Nova.Server
                             battle.Steps.Add(report);
                         }
                     }
-                    // TODO (priority 7) - shouldn't stacks without targets flee the battle if their strategy says to do so? they're sitting ducks now!
                 }
             }
         }
@@ -739,6 +738,21 @@ namespace Nova.Server
             if (serverState.AllEmpires[target.Owner].OwnedFleets.ContainsKey(target.ParentKey))
             {
                 serverState.AllEmpires[target.Owner].OwnedFleets[target.ParentKey].Composition.Remove(target.Token.Key); // remove the token from the fleet
+                Star inOrbit = null;
+                foreach (Star star in serverState.AllStars.Values)
+                {
+                    if (star.Position.distanceToSquared(target.Position) < 1.4143)
+                    {
+                        inOrbit = star;
+                    }
+                }
+                if (inOrbit != null)
+                {
+                    inOrbit.ResourcesOnHand.Ironium += (int) 0.9 * target.TotalCost.Ironium;
+                    inOrbit.ResourcesOnHand.Boranium += (int) 0.9 * target.TotalCost.Boranium;
+                    inOrbit.ResourcesOnHand.Germanium += (int) 0.9 * target.TotalCost.Germanium; //TODO priority 0 adjust scrap quantity from fleets destroyed in orbit
+                }
+                else CreateSalvage(target.Position,target.TotalCost,target.Owner);
 
                 // remove the fleet if no more tokens
                 if (serverState.AllEmpires[target.Owner].OwnedFleets[target.ParentKey].Composition.Count == 0) 
@@ -752,6 +766,27 @@ namespace Nova.Server
             // remove the token from the Stack (do this last so target.Token remains valid above)
             target.Composition.Remove(target.Key);
         }
+
+        private void CreateSalvage(NovaPoint position, Resources salvage, int empireID)
+        {
+            EmpireData empire = serverState.AllEmpires[empireID];
+            ShipDesign salvageDesign = null;
+            foreach (ShipDesign design in empire.Designs.Values) if (design.Name.Contains("S A L V A G E")) salvageDesign = design;  
+            ShipToken token = new ShipToken(salvageDesign, 1);
+            Fleet fleet = new Fleet(token, null, empire.GetNextFleetKey());
+            fleet.Position = position;
+            fleet.Name = "S A L V A G E";
+
+
+            // Add the fleet to the state data so it can be tracked.
+            serverState.AllEmpires[fleet.Owner].AddOrUpdateFleet(fleet);
+            fleet.Cargo.Ironium = (int)(salvage.Ironium * 0.75);
+            fleet.Cargo.Boranium = (int)(salvage.Boranium * 0.75);
+            fleet.Cargo.Germanium = (int)(salvage.Germanium * 0.75); //TODO priority 0 check salvage conversion ratios
+
+        }
+
+
 
         /// <summary>
         /// Do beam weapon damage.
@@ -775,7 +810,6 @@ namespace Nova.Server
 
             DamageArmor(attacker, target, hitPower);
 
-            // TODO (Priority 6) - beam weapon overkill can hit other staks (up to one stack per ship in the attacking stack)
         }
 
         /// <summary>
@@ -880,32 +914,7 @@ namespace Nova.Server
         /// <returns>Damage weapon is able to do.</returns>
         private double CalculateWeaponPower(ShipDesign ship, Weapon weapon, ShipDesign target)
         {
-            // TODO (priority 5) Stub - just return the base power of weapon. Also need to comment the return value of this function with what defenses have been considered by this (when done).
             return weapon.Power;
-            /*
-           double weaponPower = weapon.GetPower(ship);
-
-           if (weapon.WeaponType == "Beam") {
-              weaponPower -= Math.Pow(0.9, target.Design.BeamDeflectors);
-
-              switch (weapon.Range) {
-              case 1:
-                 weaponPower *= 0.95;             // 5% reduction
-                 break;
-              case 2:
-                 weaponPower *= 0.9;              // 10% reduction
-                 break;
-              case 3:
-                 weaponPower *= 0.85;             // 15% reduction
-                 break;
-              default:
-                 Report.Error("Unexpected beam range");
-                 break;
-              }
-           }
-
-           return weaponPower;
-             * */
         }
 
         /// <summary>
@@ -921,11 +930,6 @@ namespace Nova.Server
         private double CalculateWeaponAccuracy(ShipDesign ship, Weapon weapon, ShipDesign target)
         {
             double weaponAccuracy = weapon.Accuracy;
-
-            if (weapon.IsMissile)
-            {
-                // TODO (priority 6) - computers and jammer stuff needs to go here *************
-            }
 
             return weaponAccuracy;
         }

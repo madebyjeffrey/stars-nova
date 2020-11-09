@@ -142,4 +142,13 @@
   <data name="copyright_free_play_button" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\copyright free play button.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="fleet2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\fleet2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MineralPacket0000" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\mineralpacket0000.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="salvage0000" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\salvage0000.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

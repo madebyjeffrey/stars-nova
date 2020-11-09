@@ -43,11 +43,16 @@ namespace Nova.WinForms.Gui
         private readonly Dictionary<long, ShipDesign> allDesigns;
         private readonly Dictionary<string, int> imageIndices = new Dictionary<string, int>();
         private readonly ImageList componentImages = new ImageList();
-
+        private readonly List<Weapon> weaponlist = new List<Weapon>();
         private Component selectedHull;
+        private Engine engine = null;
         private int designMass;
         private ShipIcon shipIcon;
-
+        private int Capacity = 0;
+        private int engineCount = 0;
+        private double movement = 0;
+        private int designShields = 0;
+        private int designArmor = 0;
 
         /// <Summary>
         /// Initializes a new instance of the ShipDesignDialog class.
@@ -73,7 +78,7 @@ namespace Nova.WinForms.Gui
             HullList.Items.Clear();
             foreach (Component component in clientState.EmpireState.AvailableComponents.Values)
             {
-                if (component.Properties.ContainsKey("Hull"))
+                if ((component.Properties.ContainsKey("Hull")) && ((component.Name != "S A L V A G E") && (component.Name != "Mineral Packet")))
                 {
                     HullList.Items.Add(component.Name);
                 }
@@ -301,6 +306,9 @@ namespace Nova.WinForms.Gui
             int shield = 0;
             int cargo = hull.BaseCargo;
             int fuel = hull.FuelCapacity;
+            engine = null;
+            weaponlist.Clear();
+            movement = 0;
 
             foreach (HullModule module in HullGrid.ActiveModules)
             {
@@ -328,6 +336,19 @@ namespace Nova.WinForms.Gui
                     IntegerProperty cargoProperty = component.Properties["Cargo"] as IntegerProperty;
                     cargo += module.ComponentCount * cargoProperty.Value;
                 }
+                if (component.Properties.ContainsKey("Engine"))
+                {
+                    engine = component.Properties["Engine"] as Engine;
+                    engineCount = module.ComponentCount;
+                }
+                if (component.Properties.ContainsKey("Weapon"))
+                {
+                    for (int weaponCount = 1; weaponCount <= module.ComponentCount;weaponCount++) weaponlist.Add(component.Properties["Weapon"] as Weapon);
+                }
+                if (component.Properties.ContainsKey("Battle Movement"))
+                {
+                    movement += ((DoubleProperty)component.Properties["Battle Movement"]).Value;
+                }
                 if (component.Properties.ContainsKey("Fuel"))
                 {
                     Fuel fuelProperty = component.Properties["Fuel"] as Fuel;
@@ -340,15 +361,85 @@ namespace Nova.WinForms.Gui
 
             ShipMass.Text = designMass.ToString(System.Globalization.CultureInfo.InvariantCulture);
             ShipArmor.Text = armor.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            designArmor = armor;
             ShipShields.Text = shield.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            designShields = shield;
             CargoCapacity.Text = cargo.ToString(System.Globalization.CultureInfo.InvariantCulture);
-            
+            starsrating.Text = NovaPowerRating.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            novarating.Text = PowerRating.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            battlespeed.Text = BattleSpeed.ToString(System.Globalization.CultureInfo.InvariantCulture);
             if (!hull.IsStarbase)
             {
                 MaxCapacity.Text = fuel.ToString(System.Globalization.CultureInfo.InvariantCulture);
             }
         }
 
+        public int NovaPowerRating
+        {
+            get
+            {
+                Update();
+                double rating = 0;
+                foreach (Weapon weapon in weaponlist)
+                {
+                    if (weapon.IsBeam) rating += Global.beamRatingMultiplier[((int)BattleSpeed * 4), weapon.Range] * (Double)weapon.Power;
+                    else if (weapon.Range > 5) rating += weapon.Power;
+                    else rating += 1.5 * weapon.Power;
+                }
+                return (int)rating + designShields + designArmor;
+            }
+        }
+
+        public int PowerRating
+        {
+            get
+            {
+                Update();
+                double rating = 0;
+                foreach (Weapon weapon in weaponlist)
+                {
+                    if (weapon.IsBeam) rating += Global.beamRatingMultiplier[((int)BattleSpeed * 4), weapon.Range] * (Double)weapon.Power;
+                    else if (weapon.Range > 5) rating += weapon.Power;
+                    else rating += 1.5 * weapon.Power;
+                }
+                return (int)rating;
+            }
+        }
+
+        /// <summary>
+        /// Get this design's battle speed (0.0 if it can't move, i.e. star-base).
+        /// </summary>
+        public double BattleSpeed
+        {
+            get
+            {
+                if (Capacity == 0 )
+                {
+                    return 0.0;
+                }
+
+                // From the manual: Movement = (Ideal_Speed_of_Engine - 4) / 4 - (weight / 70 /4 / Number_of_Engines) + (Number_ofManeuvering_Jets / 4) + (Num_Overthrusters / 2)
+                double speed = 0;
+
+                if (engine != null)
+                {
+                    speed = (((double)engine.OptimalSpeed) - 4.0) / 4.0;
+                    speed -= designMass / 70 / 4 / engineCount;
+                }
+                speed += movement;
+                // ship speed is always between 0.5 and 2.5 in increments of 0.25
+                if (speed < 0.5)
+                {
+                    speed = 0.5; // Set a minimum ship speed.
+                }
+                if (speed > 2.5)
+                {
+                    speed = 2.5;
+                }
+                speed = ((double)((int)((speed * 4.0) + 0.5))) / 4.0;
+                return speed;
+            }
+        }
         /// <Summary>
         /// Hull selection changed. Ensure we take a copy of the hull design so that we
         /// don't end up messing with the master copy.
@@ -420,6 +511,7 @@ namespace Nova.WinForms.Gui
             {
                 CapacityType.Text = "Fuel Capacity";
                 CapacityUnits.Text = "mg";
+                Capacity =  hullProperties.FuelCapacity;
                 MaxCapacity.Text = hullProperties.FuelCapacity.ToString(System.Globalization.CultureInfo.InvariantCulture);
             }
 

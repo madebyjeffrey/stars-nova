@@ -645,7 +645,7 @@ namespace Nova.WinForms.Gui
         {
             if (topFleet != null && topFleet.InOrbit != null)
             {
-                OnFleetSelectionChanged(null);
+                OnFleetSelectionChanged(new SelectionArgs(topFleet.InOrbit as Star));
             }
         }
 
@@ -696,7 +696,12 @@ namespace Nova.WinForms.Gui
                     contextMenuWaypointTargets.Items.Insert(1, new ToolStripSeparator());
                 }
                  menuItem.Tag = sortableItem;
-                if (sortableItem.Type == ItemType.StarIntel)
+                if (sortableItem.Type == ItemType.Salvage)
+                {
+                    menuItem.Image = Properties.Resources.salvage0000;
+                    needSep = true;
+                }
+                else if (sortableItem.Type == ItemType.StarIntel)
                 {
                     menuItem.Image = Properties.Resources.planeticon;
                     needSep = true;
@@ -886,7 +891,8 @@ namespace Nova.WinForms.Gui
 
         protected virtual void OnFleetSelectionChanged(SelectionArgs e)
         {
-            SetFleetDetails(e.Selection as Fleet);
+            if (e != null)
+                if (e.Selection is Fleet) SetFleetDetails(e.Selection as Fleet);
 
             if (FleetSelectionChanged != null)
             {

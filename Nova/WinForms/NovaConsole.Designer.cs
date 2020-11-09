@@ -140,6 +140,8 @@ namespace Nova.WinForms.Console
             // runAiCheckBox
             // 
             this.runAiCheckBox.AutoSize = true;
+            this.runAiCheckBox.Checked = true;
+            this.runAiCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.runAiCheckBox.Location = new System.Drawing.Point(236, 63);
             this.runAiCheckBox.Name = "runAiCheckBox";
             this.runAiCheckBox.Size = new System.Drawing.Size(59, 17);
@@ -151,6 +153,8 @@ namespace Nova.WinForms.Console
             // autoGenerateCheckBox
             // 
             this.autoGenerateCheckBox.AutoSize = true;
+            this.autoGenerateCheckBox.Checked = true;
+            this.autoGenerateCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.autoGenerateCheckBox.Location = new System.Drawing.Point(10, 63);
             this.autoGenerateCheckBox.Name = "autoGenerateCheckBox";
             this.autoGenerateCheckBox.Size = new System.Drawing.Size(125, 17);
@@ -276,7 +280,7 @@ namespace Nova.WinForms.Console
             this.toolStripSeparator2,
             this.refreshMenuItem});
             this.turnToolStripMenuItem.Name = "turnToolStripMenuItem";
-            this.turnToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.turnToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
             this.turnToolStripMenuItem.Text = "&Turn";
             // 
             // generateTurnMenuItem

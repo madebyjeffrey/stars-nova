@@ -252,7 +252,7 @@ Are you sure you want to do this?";
             
             foreach (ShipDesign design in designSource.Values)
             {
-                AddToDesignList(design);    
+                if ((design.Name != "S A L V A G E") && (design.Name != "Mineral Packet")) AddToDesignList(design);    
             }
 
             designList.EndUpdate();
@@ -321,7 +321,9 @@ Are you sure you want to do this?";
             this.shipArmor.Text = design.Armor.ToString(System.Globalization.CultureInfo.InvariantCulture);
             this.shipShields.Text = design.Shield.ToString(System.Globalization.CultureInfo.InvariantCulture);
             this.cargoCapacity.Text = design.CargoCapacity.ToString(System.Globalization.CultureInfo.InvariantCulture);
-
+            this.battleSpeed.Text = design.BattleSpeed.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            this.starsRating.Text = design.PowerRating.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            this.novaRating.Text = design.NovaRating.ToString(System.Globalization.CultureInfo.InvariantCulture);
             if (design.Type == ItemType.Starbase)
             {
                 this.capacityType.Text = "Dock Capacity";
@@ -342,6 +344,11 @@ Are you sure you want to do this?";
             {
                 StarmapChanged(this, e);
             }
+        }
+
+        private void label8_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

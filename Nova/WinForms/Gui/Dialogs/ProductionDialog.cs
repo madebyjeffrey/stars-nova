@@ -123,7 +123,7 @@ namespace Nova.WinForms.Gui
                 {
                     continue; // can not build this ship as it is too big for the dock
                 }
-
+                if (design.Name == "S A L V A G E") continue;
                 // build anything else
                 item = new ListViewItem();
                 item.Text = design.Name;

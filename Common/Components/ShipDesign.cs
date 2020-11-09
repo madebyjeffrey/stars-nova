@@ -138,7 +138,7 @@ namespace Nova.Common.Components
         }
 
         /// <summary>
-        /// Get the power rating of this ship - stub: TODO (priority 6).
+        /// Get the power rating of this ship 
         /// </summary>
         public int PowerRating
         {
@@ -155,7 +155,24 @@ namespace Nova.Common.Components
                 return (int)rating;
             }
         }
-        
+
+        public int NovaRating
+        {
+            get
+            {
+                Update();
+                double rating = 0;
+                foreach (Weapon weapon in this.Weapons)
+                {
+                    if (weapon.IsBeam) rating += Global.beamRatingMultiplier[((int)BattleSpeed * 4), weapon.Range] * (Double)weapon.Power;
+                    else if (weapon.Range > 5) rating += weapon.Power;
+                    else rating += 1.5 * weapon.Power;
+                }
+                return (int)rating + Armor + Shield;
+            }
+        }
+
+
         /// <summary>
         /// Get the total FuelCapacity of this ShipDesign.
         /// </summary>
@@ -392,8 +409,7 @@ namespace Nova.Common.Components
         }
 
         /// <summary>
-        /// Get if this is a starbase that can provide unlimited fuel.
-        /// TODO (priority 4) - Fuel transports can refuel too. So can ships with an anti-mater generator (IT component?).
+        /// Get if this is a design that can generate fuel
         /// </summary>
         public bool CanRefuel
         {
@@ -401,7 +417,9 @@ namespace Nova.Common.Components
             {
                 if (Blueprint.Properties.ContainsKey("Hull"))
                 {
-                    return Hull.CanRefuel;
+                    if (Blueprint.Properties.ContainsKey("Fuel"))
+                        return (Hull.CanRefuel || (Blueprint.Properties["Fuel"] as Fuel).Generation > 0);
+                    else return Hull.CanRefuel;
                 }
                 // It doesn't even have a Hull!
                 Report.Error("ShipDesign.CanRefuel called on a design with no hull.");
@@ -440,15 +458,14 @@ namespace Nova.Common.Components
                 }
                 return initiative;
             }
-        }        
-        
+        }
+
         /// <summary>
         /// Get total bomb capability. 
         /// </summary>
         /// <remarks>
-        /// TODO (priority 6) Whatever code uses this seems to be ignoring smart bombs.
         /// </remarks>
-        public Bomb BombCapability
+        public Bomb BombCapabilityConventional
         {
             get
             {
@@ -456,7 +473,15 @@ namespace Nova.Common.Components
                 return ConventionalBombs;
             }
         }
-                
+        public Bomb BombCapabilitySmart
+        {
+            get
+            {
+                Update();
+                return SmartBombs;
+            }
+        }
+
         /// <summary>
         /// Get if the ship is a bomber.
         /// </summary>
@@ -576,6 +601,7 @@ namespace Nova.Common.Components
             // The concept of only populating enough of the design to get the properties we need sounds good
             //  but in practice we end up clearing and reloading the design over and over because
             //  we never know how much detail it contains.
+
             if (Blueprint == null)
             {
                 return; // not much of a ship yet
@@ -586,6 +612,8 @@ namespace Nova.Common.Components
                 return; // still not much of a ship.
             }
             Weapons.Clear();
+            Summary.Properties.Clear(); // StarMapInitialiser.prepareDesign cs.Update enters here with Summary.Properties.engine containing a hullAfinity so clear the whole thing every time  
+                                        // May be just an initialisation problem with Summary.Properties?
             // Start by copying the basic properties of the hull
             Summary = new Component(Blueprint);
 
@@ -795,7 +823,11 @@ namespace Nova.Common.Components
             {
                 return 0; // may be a star base
             }
-
+            int generation = 0;
+            if (Summary.Properties.ContainsKey("Fuel"))
+            {
+                generation = ((Fuel)Summary.Properties["Fuel"]).Generation;
+            }
             double fuelFactor = Engine.FuelConsumption[warp - 1];
             double efficiency = fuelFactor / 100.0;
             double speed = warp * warp;
@@ -806,6 +838,7 @@ namespace Nova.Common.Components
             {
                 fuelConsumption *= 0.85;
             }
+            fuelConsumption -=  generation;
 
             return fuelConsumption;
         }

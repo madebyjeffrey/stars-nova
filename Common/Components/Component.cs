@@ -93,7 +93,8 @@ namespace Nova.Common.Components
             Description = copy.Description;
             foreach (string key in copy.Properties.Keys)
             {
-                if (copy.Type == ItemType.Engine) Properties.Add(key, (Engine)copy.Properties[key].Clone());
+                if ((copy.Type == ItemType.Engine)&&(key == "Engine")) Properties.Add(key, (Engine)copy.Properties[key].Clone());
+                if ((copy.Type == ItemType.Engine) && (key == "Hull Affinity")) Properties.Add(key, (ComponentProperty)copy.Properties[key].Clone());
                 if (copy.Type == ItemType.Weapon) Properties.Add(key, (Weapon)copy.Properties[key].Clone());
                 if (copy.Type == ItemType.Torpedoes) Properties.Add(key, (Weapon)copy.Properties[key].Clone());
                 if (copy.Type == ItemType.Terraforming) Properties.Add(key, (Terraform)copy.Properties[key].Clone());

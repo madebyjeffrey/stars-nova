@@ -1012,7 +1012,7 @@ namespace Nova.WinForms.Gui
             // waypoint to just be a position in space. Otherwise, make the target
             // of the waypoint the selected Item.
             //
-            // To Do: Handle multiple items at the target location
+
 
             if (nearObjects.Count == 0 || snapToObject == false)
             {
@@ -1123,7 +1123,8 @@ namespace Nova.WinForms.Gui
                 }
                 else if (sortableItem.Type == ItemType.FleetIntel)
                 {
-                    menuItem.Image = Properties.Resources.fleet;
+                    if (sortableItem.Owner == clientState.EmpireState.Id) menuItem.Image = Properties.Resources.fleet;
+                    else menuItem.Image = Properties.Resources.fleet2;
                     if (needSep && !doneSep)
                     {
                         selectItemMenu.Items.Insert(selectItemMenu.Items.Count - 1, new ToolStripSeparator());

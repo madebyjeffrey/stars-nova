@@ -663,8 +663,13 @@ namespace Nova.Server
                             {//TODO calculate 3 standard deviations if we have 2700 missiles firing with 85% chance of success
                                 //TODO remember probability math I learned 40 years ago
                                 if (weapon.Weapon.IsMissile)
-                                {// budget for 110% damage to target to allow for rounding errors and 3 standard deviations of the probability distribution
-                                    percentToFire = (int)(110.0 * ((double)(stackTarget.TotalShieldStrength + stackTarget.TotalArmorStrength)) / (weapon.missileAccuracy(stack.Token.Design, stackTarget.Token.Design,weapon.Weapon.Accuracy/100.0) * weapon.Weapon.Power * stack.Token.Quantity / 10.0));// /10.0 because we only fire 10% max per turn with RonBattleEngine
+                                {// budget for 115% damage to target to allow for rounding errors and 3 standard deviations of the probability distribution
+                                    percentToFire = (int)(115.0 * ((double)(stackTarget.TotalShieldStrength + stackTarget.TotalArmorStrength)) / (weapon.missileAccuracy(stack.Token.Design, stackTarget.Token.Design,weapon.Weapon.Accuracy/100.0) * weapon.Weapon.Power * stack.Token.Quantity / 10.0));// /10.0 because we only fire 10% max per turn with RonBattleEngine
+                                    if (doOverkill)
+                                    {
+                                        //enough firepower to kill everything and we had some leftover so send rest of attack against primary target 
+                                        percentToFire = 100; 
+                                    }
                                     if (percentToFire > 100) percentToFire = 100;
                                     if (percentToFire + percentFired > 100) percentToFire = 100 - percentFired;
                                     weapon.TargetStack = new WeaponDetails.TargetPercent(stackTarget, percentToFire);
@@ -783,7 +788,7 @@ namespace Nova.Server
         private void DestroyStack(Stack attacker, Stack target)
         {
             // report the losses
-            battle.Losses[target.Owner] = battle.Losses[target.Owner] + target.Token.Quantity; 
+            battle.Losses[target.Owner] = battle.Losses[target.Owner] + target.Token.Quantity;
 
             // for the battle viewer / report
             BattleStepDestroy destroy = new BattleStepDestroy();
@@ -796,8 +801,25 @@ namespace Nova.Server
             {
                 serverState.AllEmpires[target.Owner].OwnedFleets[target.ParentKey].Composition.Remove(target.Token.Key); // remove the token from the fleet
 
+                serverState.AllEmpires[target.Owner].OwnedFleets[target.ParentKey].Composition.Remove(target.Token.Key); // remove the token from the fleet
+                Star inOrbit = null;
+                foreach (Star star in serverState.AllStars.Values)
+                {
+                    if (star.Position.distanceToSquared(target.Position) < 1.4143)
+                    {
+                        inOrbit = star;
+                    }
+                }
+                if (inOrbit != null)
+                {
+                    inOrbit.ResourcesOnHand.Ironium += (int)0.9 * target.TotalCost.Ironium;
+                    inOrbit.ResourcesOnHand.Boranium += (int)0.9 * target.TotalCost.Boranium;
+                    inOrbit.ResourcesOnHand.Germanium += (int)0.9 * target.TotalCost.Germanium; //TODO priority 0 adjust scrap quantity from fleets destroyed in orbit
+                }
+                else CreateSalvage(target.Position, target.TotalCost,target.Cargo, target.Owner);
+
                 // remove the fleet if no more tokens
-                if (serverState.AllEmpires[target.Owner].OwnedFleets[target.ParentKey].Composition.Count == 0) 
+                if (serverState.AllEmpires[target.Owner].OwnedFleets[target.ParentKey].Composition.Count == 0)
                 {
                     serverState.AllEmpires[target.Owner].OwnedFleets.Remove(target.ParentKey);
                     serverState.AllEmpires[target.Owner].FleetReports.Remove(target.ParentKey);
@@ -807,6 +829,26 @@ namespace Nova.Server
 
             // remove the token from the Stack (do this last so target.Token remains valid above)
             target.Composition.Remove(target.Key);
+        }
+
+        private void CreateSalvage(NovaPoint position, Resources salvage,Cargo cargo, int empireID)
+        {
+            EmpireData empire = serverState.AllEmpires[empireID];
+            ShipDesign salvageDesign = null;
+            foreach (ShipDesign design in empire.Designs.Values) if (design.Name.Contains("S A L V A G E")) salvageDesign = design;  
+            ShipToken token = new ShipToken(salvageDesign, 1);
+            Fleet fleet = new Fleet(token, null, empire.GetNextFleetKey());
+            fleet.Position = position;
+            fleet.Name = "S A L V A G E";
+
+
+            // Add the fleet to the state data so it can be tracked.
+            serverState.AllEmpires[fleet.Owner].AddOrUpdateFleet(fleet);
+            fleet.Cargo = cargo.Scale(0.75); //TODO priority 1 check if we want to allow survivors to be rescued or do we have to murder them all?
+            fleet.Cargo.Ironium += (int)(salvage.Ironium * 0.75); 
+            fleet.Cargo.Boranium += (int)(salvage.Boranium * 0.75);
+            fleet.Cargo.Germanium += (int)(salvage.Germanium * 0.75); //TODO priority 1 check salvage conversion ratios
+
         }
 
         /// <summary>
@@ -919,7 +961,7 @@ namespace Nova.Server
         private void DamageArmor(Stack attacker, Stack target, double hitPower)
         {
             // FIXME (Priority 6) - damage is being spread over all ships in the stack. Should destroy whole ships first, then spread remaining damage.
-            target.Token.Armor -= (int)hitPower;
+            target.Token.Armor -= hitPower;
 
             BattleStepWeapons battleStepReport = new BattleStepWeapons();
             battleStepReport.Damage = hitPower;

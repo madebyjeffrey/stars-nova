@@ -74,13 +74,17 @@ namespace Nova.Common
         {
             get
             {
-                Bomb totalBombs = new Bomb();
+                Bomb totalBombs = new Bomb(); // TODO priority 4 verify if this method of combining Smart and Conventional Bombs is the same as Stars!
                 foreach (ShipToken token in tokens.Values)
                 {
-                    Bomb bomb = token.Design.BombCapability * token.Quantity;
-                    totalBombs.PopKill += bomb.PopKill;
-                    totalBombs.Installations += bomb.Installations;
-                    totalBombs.MinimumKill += bomb.MinimumKill;
+                    Bomb bombC = token.Design.BombCapabilityConventional * token.Quantity;
+                    Bomb bombS = token.Design.BombCapabilityConventional * token.Quantity;
+                    totalBombs.PopKill += bombC.PopKill;
+                    totalBombs.Installations += bombC.Installations;
+                    totalBombs.MinimumKill += bombC.MinimumKill;
+                    totalBombs.PopKill += bombS.PopKill;
+                    totalBombs.Installations += bombS.Installations;
+                    totalBombs.MinimumKill += bombS.MinimumKill;
                 }
                 return totalBombs;
             }
@@ -536,18 +540,80 @@ namespace Nova.Common
             }
         }
 
-        
+       ///
+/// Calculates the point of interception for one object starting at point
+/// <code>a</code> with speed vector <code>v</code> and another object
+///  starting at point <code>b</code> with a speed of <code>s</code>.
+/// 
+/// @see <a
+///      href="http://jaran.de/goodbits/2011/07/17/calculating-an-intercept-course-to-a-target-with-constant-direction-and-velocity-in-a-2-dimensional-plane/">Calculating
+///      an intercept course to a target with constant direction and velocity
+///      (in a 2-dimensional plane)</a>
+/// 
+/// @param a
+//            start vector of the object to be intercepted
+/// @param v
+///            speed vector of the object to be intercepted
+/// @param b
+///            start vector of the intercepting object
+/// @param s
+///            speed of the intercepting object
+/// @return vector of interception or <code>null</code> if object cannot be
+///         intercepted or calculation fails
+/// 
+/// @author Jens Seiler
+///
+        public NovaPoint calculateInterceptionPoint(NovaPoint a, NovaPoint v,  NovaPoint b,  double s)
+        {
+             double ox = a.X - b.X;
+             double oy = a.Y - b.Y;
+
+             double h1 = v.X * v.X + v.Y * v.Y - s * s;
+             double h2 = ox * v.X + oy * v.Y;
+            double t;
+            if (h1 == 0)
+            { // problem collapses into a simple linear equation 
+                t = -(ox * ox + oy * oy) / (2 * h2);
+            }
+            else
+            { // solve the quadratic equation
+                double minusPHalf = -h2 / h1;
+
+                 double discriminant = minusPHalf * minusPHalf - (ox * ox + oy * oy) / h1; // term in brackets is h3
+                if (discriminant < 0)
+                { // no (real) solution then...
+                    return null;
+                }
+
+                 double root = Math.Sqrt(discriminant);
+
+                 double t1 = minusPHalf + root;
+                 double t2 = minusPHalf - root;
+
+                 double tMin = Math.Min(t1, t2);
+                 double tMax = Math.Max(t1, t2);
+
+                t = tMin > 0 ? tMin : tMax; // get the smaller of the two times, unless it's negative
+                if (t < 0)
+                { // we don't want a solution in the past
+                    return null;
+                }
+            }
+
+            // calculate the point of interception using the found intercept time and return it
+            return new NovaPoint((int)(a.X + t * v.X),(int) (a.Y + t * v.Y));
+        }
+
         /// <summary>
         /// Move the fleet towards the waypoint at the top of the list. Fuel is consumed
         /// at the rate of the sum of each of the individual ships (i.e. available fuel
         /// is automatically "pooled" between the ships).
-        /// in Stars! a fleet will reach a planet that is 36.6 light years away in one year when travelling at warp 6!
-        /// TODO priority 0 find the max distance travelled in one year in Stars! at Warp 6 (If 36.6 LY from a planet it seems to get there in one year)
+        /// in Stars! a fleet will reach a planet that is 36.99 light years away in one year when travelling at warp 6! 100.99 LY at warp 10
         /// </summary>
         /// <param name="availableTime">The portion of a year left for travel.</param>
         /// <param name="race">The race this fleet belongs to.</param>
         /// <returns>A TravelStatus indicating arrival or in-transit.</returns>
-        public TravelStatus Move(ref double availableTime, Race race)
+        public TravelStatus Move(ref double availableTime, Race race, ref List<Message> messages,int targetVelocity,NovaPoint targetVelocityVector)
         {
             if (GetTravelStatus() == TravelStatus.Arrived)
             {
@@ -557,13 +623,42 @@ namespace Nova.Common
             Waypoint target = Waypoints[0];
 
             InOrbit = null;
-
-            double legDistance = PointUtilities.Distance(Position, target.Position);
+            // move the lamb and wolf at the same time, at intercept the wolf's travel time equals the lamb's travel time, assume Wolf Follows an Intercept course
+            // Twolf = Tlamb
+            // also Twolf * Twolf = Tlamb * Tlamb
+            // and Twolf = DistWolf / VelocityWolf
+            // and Twolf = Sqrt(deltaXwolf * deltaXwolf + deltaYwolf * deltaYwolf) / (Wolf.WarpFactor * Wolf.WarpFactor)
+            // and Tlamb =  Sqrt(deltaXlamb * deltaXlamb + deltaYlamb * deltaYlamb) / (Lamb.WarpFactor * Lamb.WarpFactor)
+            // and at intercept Wolf.Xintercept = Lamb.Xintercept and Wolf.Yintercept = Lamb.Yintercept and Wolf.PositionIntercept = Lamb.PositionIntercept
+            // and deltaXLamb = Lamb.X0 + Tlamb * VelocityX
+            // and deltaYLamb = Lamb.Y0 + Tlamb * VelocityY
+            // and deltaXWolf = Wolf.X0 + Twolf * VelocityX
+            // and deltaYWolf = Wolf.Y0 + Twolf * VelocityY
+            // give me a minute - the last time I intersected two spaceships using math was 44 years ago
+            //
+            //so Sqrt(deltaXwolf * deltaXwolf + deltaYwolf * deltaYwolf) / (Wolf.WarpFactor * Wolf.WarpFactor) = Sqrt(deltaXlamb * deltaXlamb + deltaYlamb * deltaYlamb) / (Lamb.WarpFactor * Lamb.WarpFactor)
+            //
+            // Sqrt((Wolf.X0 + Twolf * VelocityX) * (Wolf.X0 + Twolf * VelocityX) + (Wolf.Y0 + Twolf * VelocityY) * (Wolf.Y0 + Twolf * VelocityY)) / (Wolf.WarpFactor * Wolf.WarpFactor) = Sqrt((Lamb.X0 + Tlamb * VelocityX) * (Lamb.X0 + Tlamb * VelocityX) + (Lamb.Y0 + Tlamb * VelocityY) * (Lamb.Y0 + Tlamb * VelocityY)) / (Lamb.WarpFactor * Lamb.WarpFactor)
+            // now just add the relationship between VelocityX VelocityY and warpFactor and velocotyVector then solve it
+            // Much easier to Google it - see calculateInterceptionPoint
+            // then we need to perform the battle at that position!
+            // TODO priority 5 stop the Lamb at the intercept point and do the battle there 
+            // for now just go to where the lamb will be at the end of it's move and wait for it to arrive  
+            NovaPoint targetPosition = new NovaPoint(target.Position);
+            if (targetVelocity != 0 ) // if the target is moving
+            {
+                NovaPoint oneYearsTargetTravel = targetVelocityVector.BattleSpeedVector(targetVelocity); // just normalises the direction vector then multiplies it by the speed to get a speed vector
+                targetPosition += oneYearsTargetTravel;
+            }
+            double legDistance = PointUtilities.Distance(Position, targetPosition); 
 
             int warpFactor = target.WarpFactor;
             int speed = warpFactor * warpFactor;
+            double speedStars270j = warpFactor * warpFactor + 1 -1.0/(Double)int.MaxValue;
             double targetTime = legDistance / speed;
+            double targetTimeStars270j = legDistance / speedStars270j;
             double fuelConsumptionRate = FuelConsumption(warpFactor, race);
+            if (warpFactor == 1) fuelConsumptionRate = -1; // From observation of millions of Fleets in Stars! 2.70j
             double fuelTime = FuelAvailable / fuelConsumptionRate;
             double travelTime = targetTime;
 
@@ -574,10 +669,10 @@ namespace Nova.Common
 
             TravelStatus arrived = TravelStatus.Arrived;
 
-            if (travelTime > availableTime * 1.025)  // Corporate HQ will not pay an extra days wages for 2.5% of a days travel so orders are to nudge the speed a bit and fire the retro rockets a little bit closer to the star and a little bit harder than normal :)
-            {
-                travelTime = availableTime;
-                arrived = TravelStatus.InTransit;
+            if (targetTimeStars270j > availableTime)  // Corporate HQ will not pay an extra days wages for 2.5% of a days travel so orders are to nudge the speed a bit and fire the retro rockets a little bit closer to the star and as hard as the passengers can handle :)
+            {                                           // in Stars! 2.70j a 36.88 LY journey to a star will be completed in 1 turn at warp 6 - i assume it will also travel 36.99 LY, it does not travel 37.0 LY
+                travelTime = availableTime;             // this rule only applies if the journey is less than 37LY - on longer journeys 36LY is subtracted per year but the last year of a long journey could be 36.99LY travelled in one year
+                arrived = TravelStatus.InTransit;       // the  A.I. (or player) could exploit this by splitting the journey into a lot of small 36.9999999 LY journeys but that is what Stars! does.
             }
 
             if (travelTime > fuelTime)
@@ -606,6 +701,15 @@ namespace Nova.Common
 
             availableTime -= travelTime;
             int fuelUsed = (int)(fuelConsumptionRate * travelTime);
+            if ((TotalFuelCapacity/FuelAvailable > 2) && (fuelUsed < 0))
+            {
+                Message message = new Message();
+                message.Audience = Owner;
+                message.Text = "Fleet " + Name + "has generated " + fuelUsed.ToString() +"mg of fuel.";
+                message.Type = "WarpToChange";
+                message.Event = this;
+                messages.Add(message);
+            }
             FuelAvailable -= fuelUsed;
 
             // Added check if fleet run out of full it's speed will be changed 
@@ -613,9 +717,18 @@ namespace Nova.Common
             if (arrived == TravelStatus.InTransit && fuelConsumptionRate > this.FuelAvailable)
             {
                 target.WarpFactor = this.FreeWarpSpeed;
+                if (target.WarpFactor == 0) target.WarpFactor = 1; // in Stars every fleet can travel at warp 1 and generate 1mg of fuel per turn
+                Message message = new Message();
+                message.Audience = Owner;
+                message.Text = "Fleet " + Name + "has run out of fuel. Its speed has been reduced to Warp " + this.FreeWarpSpeed.ToString() + ".";
+                message.Type = "WarpToChange";
+                message.Event = this;
+                messages.Add(message);
+
             }
             return arrived;
         }
+
 
         /// <summary>
         /// Return the fuel consumption (mg per year) of the fleet at the specified

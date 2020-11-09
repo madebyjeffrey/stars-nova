@@ -37,6 +37,8 @@ namespace Nova.Common
     [Serializable]
     public class Race
     {
+        public bool encrypted = false;
+        public int newvalue = 0;
         public EnvironmentTolerance GravityTolerance        = new GravityTolerance();
         public EnvironmentTolerance RadiationTolerance      = new RadiationTolerance();
         public EnvironmentTolerance TemperatureTolerance    = new TemperatureTolerance();
@@ -423,6 +425,45 @@ namespace Nova.Common
             return ret;
         }
 
+        
+        public string obfuscated (int source)
+        {
+            Random random = new Random();
+            char[] numerals = { 'X', 'x', '0', 'g', '7', 'd', 'K' };
+            long obfuscate = long.MaxValue - (source + 31) * 23;
+            string dest = "";
+            while (obfuscate > 0)
+            {// do a base7 conversion
+                Char next7 = numerals[obfuscate % 7];
+                if ((random.Next(0, 99) > 67) && next7 == 'K') next7 = 's';
+                if ((random.Next(0, 99) > 45) && next7 == '0') next7 = '1';
+                if ((random.Next(0, 99) > 34) && next7 == 'x') next7 = 'Y';
+                dest = next7 + dest;
+                obfuscate = obfuscate / 7;
+            }
+            return dest;
+        }
+
+        public int deobfuscate (string source)
+        {
+            char[] numerals = { 'X', 'x', '0', 'g', '7', 'd', 'K' };
+            long obfuscate = 0;
+            while (source.Length > 0)
+            {// do a base7 conversion
+                Char next7 = source[0];
+                source = source.Substring(1, source.Length - 1);
+                if (next7 == 's') next7 = 'K';
+                if (next7 == '1') next7 = '0';
+                if (next7 == 'Y') next7 = 'x';
+                obfuscate = obfuscate * 7;
+                int i = 0; while (numerals[i] != next7) i++;
+                obfuscate += i;
+            }
+            long dest = long.MaxValue - obfuscate;
+            dest = (dest / 23) - 31;
+
+            return (int) dest;
+        }
         /// <summary>
         /// Save: Serialize this Race to an <see cref="XmlElement"/>.
         /// </summary>
@@ -431,10 +472,59 @@ namespace Nova.Common
         public XmlElement ToXml(XmlDocument xmldoc)
         {
             XmlElement xmlelRace = xmldoc.CreateElement("Race");
+            if (this.encrypted)
+            {
+                Random random = new Random();
+                int Barkininy = random.Next(1, 1000000);
+                Global.SaveData(xmldoc, xmlelRace, "Barkininy", obfuscated(Barkininy));
+                // OperableFactories
+                Global.SaveData(xmldoc, xmlelRace, "La", obfuscated(OperableFactories));
+                // ColonistsPerResource
+                Global.SaveData(xmldoc, xmlelRace, "pit", obfuscated(ColonistsPerResource));
+                // MineProductionRate
+                Global.SaveData(xmldoc, xmlelRace, "m-ga", obfuscated(MineProductionRate));
+                // MaxPopulation
+                Global.SaveData(xmldoc, xmlelRace, "kai", obfuscated(MaxPopulation));
+                // GrowthRate
+                Global.SaveData(xmldoc, xmlelRace, "bigan", obfuscated((int)GrowthRate));
+                // FactoryProduction
+                Global.SaveData(xmldoc, xmlelRace, "At", obfuscated(FactoryProduction*1000));
+                // MineBuildCost
+                Global.SaveData(xmldoc, xmlelRace, "making", obfuscated(MineBuildCost));
+                // Factory Build Cost
+                Global.SaveData(xmldoc, xmlelRace, "kayo", obfuscated(FactoryBuildCost));
+                // OperableMines
+                Global.SaveData(xmldoc, xmlelRace, "a",obfuscated(OperableMines));
 
-            xmlelRace.AppendChild(GravityTolerance.ToXml(xmldoc, "GravityTolerance"));
-            xmlelRace.AppendChild(RadiationTolerance.ToXml(xmldoc, "RadiationTolerance"));
-            xmlelRace.AppendChild(TemperatureTolerance.ToXml(xmldoc, "TemperatureTolerance"));
+
+
+
+
+            }
+            else
+            {
+
+
+                // MineBuildCost
+                Global.SaveData(xmldoc, xmlelRace, "MineBuildCost", MineBuildCost.ToString(System.Globalization.CultureInfo.InvariantCulture));
+
+                // Factory Build Cost
+                Global.SaveData(xmldoc, xmlelRace, "FactoryBuildCost", FactoryBuildCost.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                // ColonistsPerResource
+                Global.SaveData(xmldoc, xmlelRace, "ColonistsPerResource", ColonistsPerResource.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                // FactoryProduction
+                Global.SaveData(xmldoc, xmlelRace, "FactoryProduction", FactoryProduction.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                // OperableFactories
+                Global.SaveData(xmldoc, xmlelRace, "OperableFactories", OperableFactories.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                // MineProductionRate
+                Global.SaveData(xmldoc, xmlelRace, "MineProductionRate", MineProductionRate.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                // OperableMines
+                Global.SaveData(xmldoc, xmlelRace, "OperableMines", OperableMines.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                // MaxPopulation
+                Global.SaveData(xmldoc, xmlelRace, "MaxPopulation", MaxPopulation.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                // GrowthRate
+                Global.SaveData(xmldoc, xmlelRace, "GrowthRate", GrowthRate.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            }
             // Tech
             xmlelRace.AppendChild(ResearchCosts.ToXml(xmldoc));
 
@@ -449,9 +539,6 @@ namespace Nova.Common
                 }
                 Global.SaveData(xmldoc, xmlelRace, "LRT", trait.Code);
             }
-
-            // MineBuildCost
-            Global.SaveData(xmldoc, xmlelRace, "MineBuildCost", MineBuildCost.ToString(System.Globalization.CultureInfo.InvariantCulture));
 
             // Plural Name
             if (!string.IsNullOrEmpty(PluralName))
@@ -473,23 +560,9 @@ namespace Nova.Common
             {
                 Global.SaveData(xmldoc, xmlelRace, "RaceIconName", Icon.Source);
             }
-            // Factory Build Cost
-            Global.SaveData(xmldoc, xmlelRace, "FactoryBuildCost", FactoryBuildCost.ToString(System.Globalization.CultureInfo.InvariantCulture));
-            // ColonistsPerResource
-            Global.SaveData(xmldoc, xmlelRace, "ColonistsPerResource", ColonistsPerResource.ToString(System.Globalization.CultureInfo.InvariantCulture));
-            // FactoryProduction
-            Global.SaveData(xmldoc, xmlelRace, "FactoryProduction", FactoryProduction.ToString(System.Globalization.CultureInfo.InvariantCulture));
-            // OperableFactories
-            Global.SaveData(xmldoc, xmlelRace, "OperableFactories", OperableFactories.ToString(System.Globalization.CultureInfo.InvariantCulture));
-            // MineProductionRate
-            Global.SaveData(xmldoc, xmlelRace, "MineProductionRate", MineProductionRate.ToString(System.Globalization.CultureInfo.InvariantCulture));
-            // OperableMines
-            Global.SaveData(xmldoc, xmlelRace, "OperableMines", OperableMines.ToString(System.Globalization.CultureInfo.InvariantCulture));
-            // MaxPopulation
-            Global.SaveData(xmldoc, xmlelRace, "MaxPopulation", MaxPopulation.ToString(System.Globalization.CultureInfo.InvariantCulture));
-            // GrowthRate
-            Global.SaveData(xmldoc, xmlelRace, "GrowthRate", GrowthRate.ToString(System.Globalization.CultureInfo.InvariantCulture));
-
+            xmlelRace.AppendChild(GravityTolerance.ToXml(xmldoc, "GravityTolerance"));
+            xmlelRace.AppendChild(RadiationTolerance.ToXml(xmldoc, "RadiationTolerance"));
+            xmlelRace.AppendChild(TemperatureTolerance.ToXml(xmldoc, "TemperatureTolerance"));
             // LeftoverPointTarget
             if ("".Equals(LeftoverPointTarget) || LeftoverPointTarget == null)
             {
@@ -521,6 +594,10 @@ namespace Nova.Common
                         case "gravitytolerance":
                             GravityTolerance.FromXml(xmlnode);
                             break;
+                        case "barkininy":
+                            newvalue = deobfuscate(xmlnode.FirstChild.Value);
+                            encrypted = true;
+                            break;
                         case "radiationtolerance":
                             RadiationTolerance.FromXml(xmlnode);
                             break;
@@ -537,6 +614,9 @@ namespace Nova.Common
 
                         case "minebuildcost":
                             MineBuildCost = int.Parse(xmlnode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                        case "making":
+                            MineBuildCost = deobfuscate(xmlnode.FirstChild.Value);
                             break;
                         case "prt":
                             Traits.SetPrimary(xmlnode.FirstChild.Value);
@@ -571,14 +651,29 @@ namespace Nova.Common
                         case "factorybuildcost":
                             FactoryBuildCost = int.Parse(xmlnode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
                             break;
+                        case "kayo":
+                            FactoryBuildCost = deobfuscate(xmlnode.FirstChild.Value);
+                            break;
                         case "colonistsperresource":
                             ColonistsPerResource = int.Parse(xmlnode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                        case "pit":
+                            ColonistsPerResource = deobfuscate(xmlnode.FirstChild.Value);
                             break;
                         case "factoryproduction":
                             FactoryProduction = int.Parse(xmlnode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
                             break;
+                        case "at":
+                            FactoryProduction = deobfuscate(xmlnode.FirstChild.Value)/1000;
+                            break;
                         case "operablefactories":
                             OperableFactories = int.Parse(xmlnode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                        case "la":
+                            OperableFactories = deobfuscate(xmlnode.FirstChild.Value);
+                            break; 
+                        case "m-ga":
+                            MineProductionRate = deobfuscate(xmlnode.FirstChild.Value);
                             break;
                         case "mineproductionrate":
                             MineProductionRate = int.Parse(xmlnode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
@@ -586,8 +681,14 @@ namespace Nova.Common
                         case "operablemines":
                             OperableMines = int.Parse(xmlnode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
                             break;
+                        case "a":
+                            OperableMines = deobfuscate(xmlnode.FirstChild.Value);
+                            break;
                         case "growthrate":
                             GrowthRate = int.Parse(xmlnode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                        case "bigan":
+                            GrowthRate = deobfuscate(xmlnode.FirstChild.Value);
                             break;
                         case "leftoverpoints":
                             this.LeftoverPointTarget = xmlnode.FirstChild.Value;

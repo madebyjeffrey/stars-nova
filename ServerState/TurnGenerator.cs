@@ -48,6 +48,7 @@ namespace Nova.Server
         private const int FIRSTSTEP = 00;
         private const int STARSTEP = 12;
         private const int BOMBINGSTEP = 19;
+        private const int COLONISESTEP = 92;
         private const int SCANSTEP = 99;
         
         // TODO: (priority 5) refactor all these into ITurnStep(s).
@@ -86,8 +87,9 @@ namespace Nova.Server
             victoryCheck = new VictoryCheck(this.serverState, this.scores);
             
             turnSteps.Add(SCANSTEP, new ScanStep());
-            turnSteps.Add(BOMBINGSTEP, new BombingStep()); //it would be nice to have a ColoniseStep after the BombingStep ?
-            turnSteps.Add(STARSTEP, new StarUpdateStep()); // In Stars! i often use (say) ten SplitCommands to get the Colony Fleets ID larger than the bombing fleet ID so the 
+            turnSteps.Add(BOMBINGSTEP, new BombingStep());  //Do the ColoniseStep after the BombingStep !
+            turnSteps.Add(COLONISESTEP, new PostBombingStep()); //Do the ColoniseStep after the BombingStep !
+            turnSteps.Add(STARSTEP, new StarUpdateStep());  // In Stars! i often use (say) ten SplitCommands to get the Colony Fleets ID larger than the bombing fleet ID so the 
                                                             // Colony Fleets Colonise Commands are processed after the bombing fleet bombs the planet
                                                             // I can't change the bomber fleets ID in Stars! or it does not do bombing that turn
                                                             // it seems that in Stars! the bombing fleet needs to be a bombing fleet at the target Position for an entire turn
@@ -103,13 +105,7 @@ namespace Nova.Server
         {
             BackupTurn();
 
-            // Clear the HasFleetsInOrbit flag then recalc after ships move
-            //foreach (EmpireData empire in serverState.AllEmpires.Values)
-            //{
-            //    //foreach (StarIntel report in this.serverState.AllEmpires[empire.Id].StarReports.Values) report.HasFleetsInOrbit = false;
-            //    //foreach (StarIntel report in this.serverState.AllEmpires[empire.Id].StarReports.Values) report.HasRefuelerInOrbit = false;
-            //    //foreach (StarIntel report in this.serverState.AllEmpires[empire.Id].StarReports.Values) report.HasFreeTransportInOrbit = false;
-            //}
+
 
 
 
@@ -478,7 +474,18 @@ namespace Nova.Server
                 }
                 else
                 {
-                     fleetMoveResult = fleet.Move(ref availableTime, race);
+                    Fleet dest = null;
+                    int targetVelocity = 0;
+                    NovaPoint targetVelocityVector = new NovaPoint(0, 0);
+                    foreach (Fleet target in serverState.IterateAllFleets()) 
+                        if (target.Name == waypointZero.Destination)
+                        {
+                            dest = target;
+                            targetVelocity = target.Waypoints[0].WarpFactor * target.Waypoints[0].WarpFactor;
+                            targetVelocityVector = target.Waypoints[0].Position - target.Position;
+                            continue;
+                        }
+                     fleetMoveResult = fleet.Move(ref availableTime, race,ref serverState.AllMessages, targetVelocity, targetVelocityVector);
                 }
 
                 bool destroyed = checkForMinefields.Check(fleet);
@@ -505,22 +512,30 @@ namespace Nova.Server
                     
                     serverState.AllStars.TryGetValue(waypointZero.Destination, out target);
 
+                    if (target == null) // the long search
+                    {
+                        foreach (Star star in serverState.AllStars.Values)
+                        {
+                            if (star.Position.distanceToSquared (waypointZero.Position) < 1.4143)
+                            {
+                                target = star;
+                            }
+                        }
+                    }
                     if (target != null)
                     {
                         fleet.InOrbit = target;
                         serverState.AllEmpires.TryGetValue(target.Owner, out reciever);
                         if (availableTime != 1.0) availableTime = 0; //In Stars! the fleet looses the rest of the turn as it enters orbit and scans the Star
-                        //To avoid entering orbit (and losing the rest of the turn) when you have penetrating scanners never let a fleet hit a waypoint but force the fleet
-                        // to fly close to stars the you are interested in.
-                        // We could add a new waypoint command "Scan without Entering orbit" for people who don't know how to never let a fleet hit a waypoint but force the fleet
-                        // to fly close to stars when they are interested in scanning that Star.
+                        // We could add a scan-and-go to use up available time but we would need to scan each star visited this year by this Fleet!
+                        // That would require creating a list of each star visited and passing that list to the ScanStep so it is easier to just stop the fleet at the first star visited.
                     }
 
                     // -------------------------
                     // Waypoint 1 Tasks
                     // -------------------------
 
-                    if (waypointZero.Task.IsValid(fleet, target, sender, reciever))
+                    if ((waypointZero.Task.IsValid(fleet, target, sender, reciever)) && (waypointZero.Task is ColoniseTask)) //Don't try to colonise before the BombStep or the user will do hundreds of extra SplitMergeTasks to get the coloniseTask to be performed after the bombing task
                     {
                         waypointZero.Task.Perform(fleet, target, sender, reciever); // ToDo: scrapping fleet may be performed as waypoint 1 task here which is not correct.
                     }

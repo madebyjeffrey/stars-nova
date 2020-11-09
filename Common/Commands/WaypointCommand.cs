@@ -158,12 +158,6 @@ namespace Nova.Common.Commands
         /// This is a player move that is made to use the existing Stars! programs behaviour, it could be simplified if we executed "Colonise" orders after (implied) bombing orders, it also implies that Fleet ID's are reused like in Stars!(which we do not do yet)
         /// To process the splits and merges in chronological order we needs an increasing key on the SplitMerge orders
         /// if we just iterate through serverState.IterateAllFleets() how do we do the Splits and Merges of the fleets that are created this turn?
-        /// Some possibilities:
-        /// 1/ A constriction that might work in a Beta program might be to prevent splits and merges on newly created fleets (tough sell to the Stars! crowd)
-        /// 2/ We could keep iterating through the Waypoints (serverState.IterateAllFleets()) doing only the next chronological SplitMerge waypoint task on each pass through until no more SplitMerge tasks exist
-        /// 3/ We could do one iteration of the serverState.IterateAllFleets() and get a list of ONLY the SplitMerge tasks (which may be very much smaller than the list of every waypoint), then sort and execute that list in sequence, waypoint tasks for the intermediate (new) fleets must be added in as the fleets are created. How do we transmit the waypoints for the fleets that are not in (serverState.IterateAllFleets()) yet?
-        /// How do we transmit the waypoints for the fleets that are not in (serverState.IterateAllFleets()) yet?
-
         /// We will implement this: 
         /// 1/  Execute the Waypoint zero commands (which may include SplitMergeTask and Load/unloadTask or merge (or InvadeTask?) commands for fleets that do not exist yet or that will not exist at the start or WayPoint One processing), 
         /// 2/  but do not remove them until all Waypoint.Edit and Waypoint.Insert commands are loaded (or their indexes will be nonsensical)

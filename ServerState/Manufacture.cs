@@ -44,7 +44,7 @@ namespace Nova.Server
         /// </summary>
         /// <param name="star">The star doing production.</param>
         /// <remarks>
-        /// Dont't preserve resource count as resource depletion is needed to
+        /// Don't preserve resource count as resource depletion is needed to
         /// contribute with leftover resources for research.
         /// </remarks>
         public void Items(Star star)
