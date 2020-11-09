@@ -445,7 +445,7 @@ namespace Nova.WinForms.Gui
             this.Controls.Add(this.label1);
             this.Controls.Add(this.population);
             this.Name = "PlanetSummary";
-            this.Size = new System.Drawing.Size(342, 157);
+            this.Size = new System.Drawing.Size(354, 157);
             this.panel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);

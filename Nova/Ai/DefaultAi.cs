@@ -211,7 +211,7 @@ namespace Nova.Ai
                         if (found != null)
                         {
                             // send fleet to colonise
-                            fleetAIs[colonyShipsFleets.IndexOf(found)].Colonise(report);
+                            fleetAIs[ (colonyShipsFleets[colonyShipsFleets.IndexOf(found)]).Id].Colonise(report);
                             colonyShipsFleets.RemoveAt(colonyShipsFleets.IndexOf(found));
                         }
                         if (colonyShipsFleets.Count == 0)
@@ -326,8 +326,9 @@ namespace Nova.Ai
             {
                 List<Fleet> idleRefuelFleets = new List<Fleet>();
                 foreach (Fleet fleet in clientState.EmpireState.OwnedFleets.Values)
+                    if (fleet.Name.Contains (Global.AiRefueler))
                 {
-                    if (fleet.CanRefuel == false && ((fleet.Waypoints.Count == 0) || ((fleet.Waypoints.Count == 1) && fleet.Waypoints[0].Task is NoTask && fleet.InOrbit.Name == fleet.Waypoints[0].Destination)) && fleet.Cargo.Mass == 0 && fleet.TotalCargoCapacity != 0)
+                    if (fleet.CanRefuel == false && ((fleet.Waypoints.Count == 0) || ((fleet.Waypoints.Count == 1) && fleet.Waypoints[0].Task is NoTask && fleet.InOrbit.Name == fleet.Waypoints[0].Destination)) )
                     {
                         idleRefuelFleets.Add(fleet);
                     }

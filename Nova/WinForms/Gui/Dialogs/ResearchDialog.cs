@@ -198,7 +198,7 @@ namespace Nova.WinForms.Gui
                 if (component.RequiredTech[targetArea] > twoResearchLevel[targetArea] &&
                     TechLevel.LessThan(component.RequiredTech, threeResearchLevel))
                 {
-                    string available = component.Name + " )" + component.Type+")";
+                    string available = component.Name + " (" + component.Type+")";
                     DataGridViewRow row = (DataGridViewRow)researchBenefits.Rows[0].Clone();
                     row.Cells[0].Value = available;
                     row.Cells[1].Value = component.RequiredTech.ToString();

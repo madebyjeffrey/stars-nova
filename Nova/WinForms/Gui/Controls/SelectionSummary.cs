@@ -101,6 +101,12 @@ namespace Nova.WinForms.Gui
                 FleetSummary.Hide();
                 Invalidate();
             }
+            else
+            {
+                PlanetSummary.Hide();
+                FleetSummary.Show();
+                Invalidate();
+            }
 
             summaryItem = report;
             PlanetSummary.Visible = true;
@@ -184,6 +190,16 @@ namespace Nova.WinForms.Gui
             {
                 // Change the selection to the selected object (planet or ship) from the map.
                 Value = e.Selection;
+                if ((e.Selection is Star) && (sender is FleetDetail))
+                {
+                    //PlanetDetail.Show();
+                    //FleetDetail.Hide();
+                    //PlanetDetail.Value = e.Selection;
+                    //selectedControl = PlanetDetail;
+
+                    //Invalidate();
+                    DisplayPlanet(empireState.StarReports[e.Selection.Name]);
+                }
             }
             else
             {

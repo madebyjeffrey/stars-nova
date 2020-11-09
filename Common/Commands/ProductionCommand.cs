@@ -189,7 +189,7 @@ namespace Nova.Common.Commands
             switch (Mode)
             {
                 case CommandMode.Add:
-                    if (empire.OwnedStars[StarKey].ManufacturingQueue.Queue.Count - 1 < Index) empire.OwnedStars[StarKey].ManufacturingQueue.Queue.Insert(Index, ProductionOrder);
+                    if (empire.OwnedStars[StarKey].ManufacturingQueue.Queue.Count  > Index) empire.OwnedStars[StarKey].ManufacturingQueue.Queue.Insert(Index, ProductionOrder);
                     else
                     {
                         empire.OwnedStars[StarKey].ManufacturingQueue.Queue.Add(ProductionOrder);

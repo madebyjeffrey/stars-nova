@@ -152,6 +152,8 @@ namespace Nova.Common
                 {
                     case "TechAdvance":
                     case "NewComponent":
+                    case "WarpToChange":
+                    case "DestToChange":
                     case "Fuel":
                         // No object reference required to be saved.
                         break;
