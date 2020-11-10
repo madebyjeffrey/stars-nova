@@ -535,7 +535,7 @@ namespace Nova.Server
                     // Waypoint 1 Tasks
                     // -------------------------
 
-                    if ((waypointZero.Task.IsValid(fleet, target, sender, reciever)) && (waypointZero.Task is ColoniseTask)) //Don't try to colonise before the BombStep or the user will do hundreds of extra SplitMergeTasks to get the coloniseTask to be performed after the bombing task
+                    if ((waypointZero.Task.IsValid(fleet, target, sender, reciever)) && !(waypointZero.Task is ColoniseTask)) //Don't try to colonise before the BombStep or the user will do hundreds of extra SplitMergeTasks to get the coloniseTask to be performed after the bombing task
                     {
                         waypointZero.Task.Perform(fleet, target, sender, reciever); // ToDo: scrapping fleet may be performed as waypoint 1 task here which is not correct.
                     }

@@ -102,9 +102,6 @@ namespace Nova.Ai
                     {
                         // Fuel is no problem
                         fleet.Speed = fleet.SlowestEngine;
-                        if (fleet.Speed > 1) fleet.Speed--;
-
-
                         SendFleet(starToScout, fleet, new NoTask());
                         missionAccepted = true;
                     }
@@ -389,7 +386,7 @@ namespace Nova.Ai
             w.WarpFactor = fleet.SlowestEngine;
             w.Destination = star.Name;
             w.Task = task;
-
+            fleet.Waypoints.Clear();
             WaypointCommand command = new WaypointCommand(CommandMode.Add, w, fleet.Key);
             command.ApplyToState(clientState.EmpireState);
             clientState.Commands.Push(command);

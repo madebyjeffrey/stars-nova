@@ -87,7 +87,7 @@ namespace Nova.Common.Waypoints
             
             if (star.Colonists != 0)
             {
-                message.Text += " but it is already occupied.";
+                message.Text += " but it is already occupied, ";
                 return false;
             }
             
@@ -110,25 +110,38 @@ namespace Nova.Common.Waypoints
         public bool Perform(Fleet fleet, Item target, EmpireData sender, EmpireData reciever)
         {
             Star star = target as Star;
-            
-            Message message = new Message();            
-            message.Audience = fleet.Owner;            
-            message.Text = " You have colonised " + star.Name + ".";
-            Messages.Add(message);
+            if (star.Colonists > 0)
+            {
+                star.ResourcesOnHand += fleet.Cargo.ToResource();
+                star.Colonists += fleet.Cargo.ColonistNumbers;
+                Message message = new Message();
+                message.Audience = fleet.Owner;
+                message.Text = " colonists added to population. " + star.Name + ".";
+                message.Type = "DestToChange";
+                Messages.Add(message);
+            }
+            else
+            {
 
-            star.ResourcesOnHand = fleet.Cargo.ToResource();
-            star.Colonists = fleet.Cargo.ColonistNumbers;
-            star.Owner = fleet.Owner;
-            star.ThisRace = sender.Race;
-            
-            fleet.TotalCost.Energy = 0;            
-            star.ResourcesOnHand += fleet.TotalCost * 0.75;
-            
-            fleet.Composition.Clear();
-            
-            sender.OwnedStars.Add(star);
-            sender.StarReports[star.Name].Update(star, ScanLevel.Owned, sender.TurnYear);
-            
+                Message message = new Message();
+                message.Audience = fleet.Owner;
+                message.Text = " You have colonised " + star.Name + ".";
+                message.Type = "DestToChange";
+                Messages.Add(message);
+
+                star.ResourcesOnHand = fleet.Cargo.ToResource();
+                star.Colonists = fleet.Cargo.ColonistNumbers;
+                star.Owner = fleet.Owner;
+                star.ThisRace = sender.Race;
+
+                fleet.TotalCost.Energy = 0;
+                star.ResourcesOnHand += fleet.TotalCost * 0.75;
+
+                fleet.Composition.Clear();
+
+                sender.OwnedStars.Add(star);
+                sender.StarReports[star.Name].Update(star, ScanLevel.Owned, sender.TurnYear);
+            }
             return true;
         }
         

@@ -208,7 +208,7 @@ namespace Nova.ControlLibrary
                     {
                         command.ApplyToState(clientData.EmpireState);
 
-                        if ((waypoint.Task as CargoTask).Target.Type == ItemType.Star)
+                        if (((waypoint.Task as CargoTask).Target.Type == ItemType.Star) || ((waypoint.Task as CargoTask).Target.Type == ItemType.StarIntel))
                         {
                             if (clientData.EmpireState.StarReports.ContainsKey((waypoint.Task as CargoTask).Target.Name.ToString()))
                             {

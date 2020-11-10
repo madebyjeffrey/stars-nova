@@ -74,7 +74,7 @@ namespace Nova.Ai
                 if (fleet.Owner == clientState.EmpireState.Id)
                 {
                     aiPlan.CountFleet(fleet);
-                    if ((fleet.Waypoints.Count == 0) || ((fleet.Waypoints.Count == 1) && fleet.Waypoints[0].Task is NoTask && fleet.InOrbit.Name == fleet.Waypoints[0].Destination)) 
+                    if (((fleet.Waypoints.Count == 0) || ((fleet.Waypoints.Count == 1) && fleet.Waypoints[0].Task is NoTask && fleet.InOrbit.Name == fleet.Waypoints[0].Destination)) || ((fleet.Name.Contains("Scout") || (fleet.Name.Contains("Long Range Scout") || (fleet.Name.Contains(Global.AiScout))))))
                     {
                         DefaultFleetAI fleetAI = new DefaultFleetAI(fleet, clientState, fuelStations);
                         fleetAIs.Add(fleet.Id, fleetAI);
@@ -117,7 +117,7 @@ namespace Nova.Ai
             List<Fleet> scoutFleets = new List<Fleet>();
             foreach (Fleet fleet in clientState.EmpireState.OwnedFleets.Values)
             {
-                if ((fleet.Name.Contains("Scout") || (fleet.Name.Contains("Long Range Scout") || (fleet.Name.Contains(Global.AiScout)))) && ((fleet.Waypoints.Count == 0) || ((fleet.Waypoints.Count == 1) && fleet.Waypoints[0].Task is NoTask && fleet.InOrbit.Name == fleet.Waypoints[0].Destination)))
+                if ((fleet.Name.Contains("Scout") || (fleet.Name.Contains("Long Range Scout") || (fleet.Name.Contains(Global.AiScout)))) )
                     {
                     scoutFleets.Add(fleet);
                 }
@@ -251,7 +251,8 @@ namespace Nova.Ai
             List<Fleet> idleTransportFleets = new List<Fleet>();
             foreach (Fleet fleet in clientState.EmpireState.OwnedFleets.Values)
             {
-                if (fleet.CanColonize == false && ((fleet.Waypoints.Count == 0) || ((fleet.Waypoints.Count == 1) && fleet.Waypoints[0].Task is NoTask && fleet.InOrbit.Name == fleet.Waypoints[0].Destination)) && fleet.Cargo.Mass == 0 && fleet.TotalCargoCapacity != 0)
+                if (fleet.CanColonize == false && 
+                    ((fleet.Waypoints.Count == 0) || ((fleet.Waypoints.Count == 1) && fleet.Waypoints[0].Task is NoTask && ((fleet.InOrbit != null) &&(fleet.InOrbit.Name == fleet.Waypoints[0].Destination)) && fleet.Cargo.Mass == 0 && fleet.TotalCargoCapacity != 0)))
                 {
                     idleTransportFleets.Add(fleet);
                 }
