@@ -101,6 +101,7 @@ namespace Nova.Server.TurnSteps
                     {
                         fleet.Waypoints.RemoveAt(Index); //Remove waypoints that have already been processed
                     }
+                    else Index++;
                 }
             }
             serverState.CleanupFleets();

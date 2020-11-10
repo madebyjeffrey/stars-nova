@@ -206,6 +206,7 @@ namespace Nova.Common.Waypoints
                 star.Colonists = remainingAttackers;
                 
                 receiver.OwnedStars.Remove(star);
+                receiver.StarReports[star.Name].Owner = sender.Id;
                 star.Owner = fleet.Owner;
                 sender.OwnedStars.Add(star);
                 sender.StarReports[star.Key].Update(star, ScanLevel.Owned, sender.TurnYear);

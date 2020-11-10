@@ -274,16 +274,14 @@ namespace Nova.Ai
                         bool found = false;
                         List<Fleet> occupiedFleets = new List<Fleet>();
                         Fleet nextTransport = null;
-                        while (!found)
-                        {
-                            foreach (Fleet transport in idleTransportFleets)
-                                if (transport.Position == source.Position)
-                                {
-                                    found = true;
-                                    nextTransport = transport;
-                                    break;
-                                }
-                        }
+                        foreach (Fleet transport in idleTransportFleets)
+                            if (transport.Position == source.Position)
+                            {
+                                found = true;
+                                nextTransport = transport;
+                                break;
+                            }
+                        
                         if (found) //there is a fleet in orbit so use it
                         {
                             foreach (Star target in underPopulated)

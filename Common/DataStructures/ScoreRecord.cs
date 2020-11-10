@@ -34,6 +34,7 @@ namespace Nova.Common
     public sealed class ScoreRecord : IComparable
     {
         public int EmpireId;
+        public string Empire;
         public int Rank;
         public int Score;
         public int Planets;
@@ -78,6 +79,10 @@ namespace Nova.Common
                     {
                         case "empire":
                             EmpireId = int.Parse(subnode.FirstChild.Value, System.Globalization.NumberStyles.HexNumber);
+                            break;
+
+                        case "empireName":
+                            Empire = subnode.FirstChild.Value;
                             break;
 
                         case "rank":
@@ -136,6 +141,7 @@ namespace Nova.Common
 
             // Race;
             Global.SaveData(xmldoc, xmlelScoreRecord, "Empire", EmpireId.ToString("X"));
+            Global.SaveData(xmldoc, xmlelScoreRecord, "EmpireName", Empire);
 
             // Rank;
             Global.SaveData(xmldoc, xmlelScoreRecord, "Rank", Rank.ToString(System.Globalization.CultureInfo.InvariantCulture));

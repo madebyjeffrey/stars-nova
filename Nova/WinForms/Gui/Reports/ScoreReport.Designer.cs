@@ -41,7 +41,7 @@ namespace Nova.WinForms.Gui
             this.escortShips = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.capitalShips = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.techLevels = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.resources = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.totalResources = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.scoreGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -71,7 +71,7 @@ namespace Nova.WinForms.Gui
             this.escortShips,
             this.capitalShips,
             this.techLevels,
-            this.resources});
+            this.totalResources});
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
             dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -142,9 +142,9 @@ namespace Nova.WinForms.Gui
             // 
             // Resources
             // 
-            this.resources.HeaderText = "Resources";
-            this.resources.Name = "Resources";
-            this.resources.ReadOnly = true;
+            this.totalResources.HeaderText = "Resources";
+            this.totalResources.Name = "Resources";
+            this.totalResources.ReadOnly = true;
             // 
             // ScoreReport
             // 
@@ -176,7 +176,7 @@ namespace Nova.WinForms.Gui
         private System.Windows.Forms.DataGridViewTextBoxColumn escortShips;
         private System.Windows.Forms.DataGridViewTextBoxColumn capitalShips;
         private System.Windows.Forms.DataGridViewTextBoxColumn techLevels;
-        private System.Windows.Forms.DataGridViewTextBoxColumn resources;
+        private System.Windows.Forms.DataGridViewTextBoxColumn totalResources;
 
 
     }
