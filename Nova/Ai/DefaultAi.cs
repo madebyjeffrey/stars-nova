@@ -309,10 +309,17 @@ namespace Nova.Ai
                                     nextTransport = transport;
                                     break;
                                 }
-                            SendFleet(source, nextTransport, new CargoTask());
-                            surplusPopulationKT = surplusPopulationKT - nextTransport.Cargo.Mass;
-                            occupiedFleets.Add(nextTransport);
-                            if (surplusPopulationKT <= 0) break;
+                            if (found)  
+                            {
+                                SendFleet(source, nextTransport, new CargoTask());
+                                surplusPopulationKT = surplusPopulationKT - nextTransport.Cargo.Mass;
+                                occupiedFleets.Add(nextTransport);
+                                if (surplusPopulationKT <= 0) break;
+                            }
+                            else
+                            {                   //if not found wait until a better fleet appears
+                                surplusPopulationKT = 0;
+                            }
                         }
                         foreach (Fleet occupied in occupiedFleets) idleTransportFleets.Remove(occupied);
                     }
