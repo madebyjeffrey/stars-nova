@@ -142,9 +142,8 @@ namespace Nova.Common
 
             if (FleetID != 0)
             {
-                Global.SaveData(xmldoc, xmlelMessage, "FleetID", Type);
+                Global.SaveData(xmldoc, xmlelMessage, "FleetID", FleetID);
             }
-
 
             if (Event != null)
             {

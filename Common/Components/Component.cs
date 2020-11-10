@@ -109,7 +109,8 @@ namespace Nova.Common.Components
                 if (copy.Type == ItemType.MiningRobot) Properties.Add(key, (ComponentProperty)copy.Properties[key].Clone());
                 if (copy.Type == ItemType.MineLayer) Properties.Add(key, (MineLayer)copy.Properties[key].Clone());
                 if (copy.Type == ItemType.Mechanical) Properties.Add(key, (ComponentProperty)copy.Properties[key].Clone());
-                if (copy.Type == ItemType.Hull) Properties.Add(key, (Hull)copy.Properties[key].Clone());
+                if ((copy.Type == ItemType.Hull) && (key == "Hull")) Properties.Add(key, (Hull)copy.Properties[key].Clone());
+                if ((copy.Type == ItemType.Hull) && (key == "Fuel")) Properties.Add(key, (Fuel)copy.Properties[key].Clone());
                 if (copy.Type == ItemType.Gate) Properties.Add(key, (Gate)copy.Properties[key].Clone());
                 if (copy.Type == ItemType.FleetIntel) Properties.Add(key, (ComponentProperty)copy.Properties[key].Clone());
                 if (copy.Type == ItemType.Fleet) Properties.Add(key, (ComponentProperty)copy.Properties[key].Clone());

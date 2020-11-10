@@ -530,7 +530,7 @@ namespace Nova.Common
         public TravelStatus GetTravelStatus()
         {
             Waypoint target = Waypoints[0];
-            if (Position == target.Position)
+            if (Position.distanceToSquared(target.Position) < 2)
             {
                 return TravelStatus.Arrived;
             }
@@ -722,6 +722,7 @@ namespace Nova.Common
                 message.Audience = Owner;
                 message.Text = "Fleet " + Name + "has run out of fuel. Its speed has been reduced to Warp " + this.FreeWarpSpeed.ToString() + ".";
                 message.Type = "WarpToChange";
+                message.FleetID = this.Id;
                 message.Event = this;
                 messages.Add(message);
 

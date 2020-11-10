@@ -447,13 +447,18 @@ namespace Nova.Server
         {
             Race race = serverState.AllEmpires[fleet.Owner].Race;
 
-            Waypoint currentPosition = new Waypoint();
-            double availableTime = 1.0;
 
-            while (fleet.Waypoints.Count > 0) 
+             
+
+
+            Waypoint currentPosition = new Waypoint();
+            currentPosition = fleet.Waypoints[0];
+
+            double availableTime = 1.0;
+            while ((fleet.Waypoints.Count > 0) && (fleet.Waypoints[0].Task is NoTask) && (fleet.GetTravelStatus() == Fleet.TravelStatus.Arrived) && (fleet.Waypoints[0].Task is NoTask)) fleet.Waypoints.RemoveAt(0);
+            if ((fleet.Waypoints.Count > 0) && (fleet.Waypoints[0].Task is NoTask))  //Don't throw away colonise or scrap tasks
             {
                 Waypoint waypointZero = fleet.Waypoints[0];
-                   
                 Fleet.TravelStatus fleetMoveResult;
 
                 // -------------------
@@ -501,7 +506,6 @@ namespace Nova.Server
                     currentPosition.Task =  new NoTask();
                     currentPosition.Destination = "Space at " + fleet.Position;
                     currentPosition.WarpFactor = waypointZero.WarpFactor;
-                    break;
                 }
                 else 
                 {

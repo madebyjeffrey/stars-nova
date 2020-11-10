@@ -19,7 +19,7 @@ namespace Nova.Server.TurnSteps
         {
             foreach (Fleet fleet in serverState.IterateAllFleets())
             {
-                int index = 1;
+                int index = 0;
                 int maxIndex = fleet.Waypoints.Count - 1;
                 if (fleet.Waypoints.Count > 0)
                 {
@@ -30,9 +30,12 @@ namespace Nova.Server.TurnSteps
                         {
                             Star target = null;
                             foreach (Star star in serverState.AllStars.Values) if (star.Name == dest0) target = star;
-                            if ((fleet.Waypoints[index].Task.IsValid(fleet, target, null, null)) && (fleet.Waypoints[index].Task is ColoniseTask))
+                            
+                            EmpireData receiver = null;
+                            if ((target is Star) && (target.Owner != 0))  receiver = serverState.AllEmpires[target.Owner];
+                            if ((fleet.Waypoints[index].Task.IsValid(fleet, target, serverState.AllEmpires[fleet.Owner], receiver)) && ((fleet.Waypoints[index].Task is ColoniseTask) || (fleet.Waypoints[index].Task is InvadeTask)))
                             {
-                                fleet.Waypoints[index].Task.Perform(fleet, target, null, null);
+                                fleet.Waypoints[index].Task.Perform(fleet, target, serverState.AllEmpires[fleet.Owner], receiver);
                             }
                             try
                             {
@@ -48,9 +51,9 @@ namespace Nova.Server.TurnSteps
                         }
                         index++;
                     }
-                    serverState.CleanupFleets();
                 }
             }
+            serverState.CleanupFleets();
         }
     }
 }

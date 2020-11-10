@@ -81,8 +81,8 @@ namespace Nova.Common
                             EmpireId = int.Parse(subnode.FirstChild.Value, System.Globalization.NumberStyles.HexNumber);
                             break;
 
-                        case "empireName":
-                            Empire = subnode.FirstChild.Value;
+                        case "empirename":
+                            if (subnode.FirstChild != null)  Empire = subnode.FirstChild.Value;
                             break;
 
                         case "rank":
