@@ -505,15 +505,15 @@ namespace Nova.Ai
                     // Bio 4 - carbonic armour
                     targetResearchField = TechLevel.ResearchField.Biotechnology;
                 }
-                else if (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] < 6)
+                else if (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] < 7)
                 {
-                    // Cons 6 - Frigate
+                    // Cons 6 - Frigate Cons 7 Large Freighter
                     targetResearchField = TechLevel.ResearchField.Construction;
                 }
                 else if (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Weapons] < 10)
                 {
                     // Bio 4 - Unlock terraform and prep for mines
-                    targetResearchField = TechLevel.ResearchField.Biotechnology;
+                    targetResearchField = TechLevel.ResearchField.Weapons;
                 }
                 else if (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Energy] < 3)
                 {

@@ -442,68 +442,71 @@ namespace Nova.WinForms.Gui
         /// <param name="index">Index of the waypoint to display.</param>
         private void DisplayLegDetails(int index)
         {
-            Waypoint thisWaypoint = topFleet.Waypoints[index];
-
-            WaypointTasks.Text = thisWaypoint.Task.Name;
-
-            if (topFleet.Waypoints.Count == 1)
+            if (topFleet.Waypoints.Count > 0)
             {
-                thisWaypoint.WarpFactor = 0;
-            }
+                Waypoint thisWaypoint = topFleet.Waypoints[index];
 
-            topFleet.Waypoints[index] = thisWaypoint;
-            warpFactor.Value = thisWaypoint.WarpFactor;
-            warpText.Text = "Warp " + thisWaypoint.WarpFactor;
+                WaypointTasks.Text = thisWaypoint.Task.Name;
 
-            if (index > 0 && thisWaypoint.WarpFactor > 0)
-            {
-                Waypoint from = topFleet.Waypoints[index - 1];
-                Waypoint to = topFleet.Waypoints[index];
-                double distance = PointUtilities.Distance(from.Position, to.Position);
-
-                double time = distance / (to.WarpFactor * to.WarpFactor);
-
-                double fuelUsed = topFleet.FuelConsumption(to.WarpFactor, empireState.Race)
-
-                                * time;
-
-                legDistance.Text = string.Format("{0}", distance.ToString("f1"));
-                legFuel.Text = string.Format("{0}", fuelUsed.ToString("f1"));
-                legTime.Text = string.Format("{0}", time.ToString("f1"));
-            }
-            else
-            {
-                legDistance.Text = "0";
-                legFuel.Text = "0";
-                legTime.Text = "0";
-            }
-
-            Waypoint previous = null;
-            double fuelRequired = 0;
-
-            // Sum up the total fuel required for all waypoints in the current
-            // route (as long as there is more than one waypoint).
-
-            foreach (Waypoint waypoint in topFleet.Waypoints)
-            {
-                if (previous != null && waypoint.WarpFactor > 0)
+                if (topFleet.Waypoints.Count == 1)
                 {
-                    double distance = PointUtilities.Distance(waypoint.Position, previous.Position);
-                    int warp = waypoint.WarpFactor;
-                    double speed = warp * warp;
-                    double travelTime = distance / speed;
-
-                    fuelRequired += topFleet.FuelConsumption(warp, empireState.Race) * travelTime;
+                    thisWaypoint.WarpFactor = 0;
                 }
-                previous = waypoint;
+
+                topFleet.Waypoints[index] = thisWaypoint;
+                warpFactor.Value = thisWaypoint.WarpFactor;
+                warpText.Text = "Warp " + thisWaypoint.WarpFactor;
+
+                if (index > 0 && thisWaypoint.WarpFactor > 0)
+                {
+                    Waypoint from = topFleet.Waypoints[index - 1];
+                    Waypoint to = topFleet.Waypoints[index];
+                    double distance = PointUtilities.Distance(from.Position, to.Position);
+
+                    double time = distance / (to.WarpFactor * to.WarpFactor);
+
+                    double fuelUsed = topFleet.FuelConsumption(to.WarpFactor, empireState.Race)
+
+                                    * time;
+
+                    legDistance.Text = string.Format("{0}", distance.ToString("f1"));
+                    legFuel.Text = string.Format("{0}", fuelUsed.ToString("f1"));
+                    legTime.Text = string.Format("{0}", time.ToString("f1"));
+                }
+                else
+                {
+                    legDistance.Text = "0";
+                    legFuel.Text = "0";
+                    legTime.Text = "0";
+                }
+
+                Waypoint previous = null;
+                double fuelRequired = 0;
+
+                // Sum up the total fuel required for all waypoints in the current
+                // route (as long as there is more than one waypoint).
+
+                foreach (Waypoint waypoint in topFleet.Waypoints)
+                {
+                    if (previous != null && waypoint.WarpFactor > 0)
+                    {
+                        double distance = PointUtilities.Distance(waypoint.Position, previous.Position);
+                        int warp = waypoint.WarpFactor;
+                        double speed = warp * warp;
+                        double travelTime = distance / speed;
+
+                        fuelRequired += topFleet.FuelConsumption(warp, empireState.Race) * travelTime;
+                    }
+                    previous = waypoint;
+                }
+
+                System.Drawing.Color color = fuelRequired > topFleet.FuelAvailable ? System.Drawing.Color.Red : System.Drawing.Color.Black;
+                routeFuelUse.ForeColor = color;
+                label3.ForeColor = color;
+                label5.ForeColor = color;
+
+                routeFuelUse.Text = fuelRequired.ToString("f1");
             }
-
-            System.Drawing.Color color = fuelRequired > topFleet.FuelAvailable ? System.Drawing.Color.Red : System.Drawing.Color.Black;
-            routeFuelUse.ForeColor = color;
-            label3.ForeColor = color;
-            label5.ForeColor = color;
-
-            routeFuelUse.Text = fuelRequired.ToString("f1");
         }
 
         /// <Summary>

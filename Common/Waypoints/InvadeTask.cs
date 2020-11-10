@@ -207,6 +207,7 @@ namespace Nova.Common.Waypoints
                 
                 receiver.OwnedStars.Remove(star);
                 receiver.StarReports[star.Name].Owner = sender.Id;
+                sender.StarReports[star.Key].Update(star, ScanLevel.InScan, sender.TurnYear);
                 star.Owner = fleet.Owner;
                 sender.OwnedStars.Add(star);
                 sender.StarReports[star.Key].Update(star, ScanLevel.Owned, sender.TurnYear);

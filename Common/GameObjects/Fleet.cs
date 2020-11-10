@@ -370,14 +370,18 @@ namespace Nova.Common
         {
             get
             {
+                if (Waypoints.Count == 0) return 0;
                 Waypoint target = Waypoints[0];
                 return target.WarpFactor;
             }
 
             set
             {
-                Waypoint target = Waypoints[0];
-                target.WarpFactor = 0;
+                if (Waypoints.Count > 0)
+                {
+                    Waypoint target = Waypoints[0];
+                    target.WarpFactor = 0;
+                }
             }
         }
 

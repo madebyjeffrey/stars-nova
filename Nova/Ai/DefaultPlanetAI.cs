@@ -89,6 +89,10 @@ namespace Nova.Ai
             }
             //if population is over 55% capacity and we don't have mediumm freighters yet then just research until we do!
             //if population is over 80% capacity and we don't have large freighters yet then just research until we do!
+            if ((planet.Capacity(clientState.EmpireState.Race) < 55) || ((clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] >= 3) && (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Propulsion] >= 5)))
+            {
+                productionIndex = BuildTransport(productionIndex);
+            }
             if (((planet.Capacity(clientState.EmpireState.Race) < 55) || ((clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] >= 3) && (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Propulsion] >= 5)))
                 && ((planet.Capacity(clientState.EmpireState.Race) < 80) || ((clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] >= 8) && (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Propulsion] >= 7))))
             {
@@ -265,7 +269,7 @@ namespace Nova.Ai
             if ((this.aiPlan.AnyTransportDesign != null) && (this.planet.Starbase != null))
                 if (this.planet.Starbase.TotalDockCapacity > this.aiPlan.AnyTransportDesign.Mass)
 
-                    if ((this.planet.GetResourceRate() > DefaultAIPlanner.LowProduction) && (this.planet.Capacity(clientState.EmpireState.Race) > 25) && (this.planet.HasFreeTransportInOrbit))
+                    if ((this.planet.GetResourceRate() > DefaultAIPlanner.LowProduction) && (this.planet.Capacity(clientState.EmpireState.Race) > 25) && !(this.planet.HasFreeTransportInOrbit))
                     {
                         {
                             ProductionOrder transportOrder = new ProductionOrder(1, new ShipProductionUnit(this.aiPlan.AnyTransportDesign,"",clientState.EmpireState), false);

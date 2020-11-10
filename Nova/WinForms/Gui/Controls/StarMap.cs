@@ -472,16 +472,18 @@ namespace Nova.WinForms.Gui
             if (report.Owner == clientState.EmpireState.Id)
             {
                 Fleet fleet = clientState.EmpireState.OwnedFleets[report.Key];
-                
-                Waypoint first = fleet.Waypoints[0];
-                NovaPoint from = LogicalToDevice(first.Position);
-
-                foreach (Waypoint waypoint in fleet.Waypoints)
+                if (fleet.Waypoints.Count > 0)
                 {
-                    NovaPoint position = waypoint.Position;                 
-        
-                    g.DrawLine(Pens.Blue, (Point)from, (Point)LogicalToDevice(position));
-                    from = LogicalToDevice(position);
+                    Waypoint first = fleet.Waypoints[0];
+                    NovaPoint from = LogicalToDevice(first.Position);
+
+                    foreach (Waypoint waypoint in fleet.Waypoints)
+                    {
+                        NovaPoint position = waypoint.Position;
+
+                        g.DrawLine(Pens.Blue, (Point)from, (Point)LogicalToDevice(position));
+                        from = LogicalToDevice(position);
+                    }
                 }
             }
         }
@@ -1029,18 +1031,20 @@ namespace Nova.WinForms.Gui
             // If the new waypoint is the same as the last one then do nothing.
 
             int lastIndex = fleet.Waypoints.Count - 1;
-            Waypoint lastWaypoint = fleet.Waypoints[lastIndex];
-
-            if (waypoint.Destination == lastWaypoint.Destination)
+            if (fleet.Waypoints.Count > 0)
             {
-                return;
+                Waypoint lastWaypoint = fleet.Waypoints[lastIndex];
+
+                if (waypoint.Destination == lastWaypoint.Destination)
+                {
+                    return;
+                }
             }
-            
             WaypointCommand command = new WaypointCommand(CommandMode.Add, waypoint, fleet.Key);
             
             clientState.Commands.Push(command);
             
-            if (command.IsValid(clientState.EmpireState))
+            if (command.IsValid(clientState.EmpireState))  // TODO priority 5 is adding a new waypoint for a Starbase really valid?
             {
                 command.ApplyToState(clientState.EmpireState);
             }
