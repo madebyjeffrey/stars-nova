@@ -50,7 +50,8 @@ namespace Nova.Common
                     // atempt to retrieve image
                     try
                     {
-                        // image = new Bitmap(Source); // Never works currently so commenting!
+                        RaceIcon icon = AllRaceIcons.Restore(Source);
+                        if (icon != null) image = icon.Image;
                     }
                     catch
                     {

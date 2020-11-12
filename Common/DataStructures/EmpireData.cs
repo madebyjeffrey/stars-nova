@@ -153,7 +153,7 @@ namespace Nova.Common
         public long PeekNextFleetKey()
         {
             
-            return fleetCounter + 1 ;
+            return fleetCounter + 1 | ((long)empireId << 32); ;
         }
 
 
@@ -163,7 +163,7 @@ namespace Nova.Common
         public long PeekFleetKey()
         {
 
-            return fleetCounter;
+            return fleetCounter | ((long)empireId << 32); ;
         }
 
 
@@ -175,7 +175,7 @@ namespace Nova.Common
         public long GetNextDesignKey()
         {
             ++designCounter;
-            return (long)designCounter | ((long)empireId << 32);
+            return (long)designCounter | ((long)empireId << 16);
         }
 
         /// <summary>

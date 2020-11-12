@@ -315,7 +315,7 @@ namespace Nova.Common.Waypoints
                     { 
                         mostVessels = moveCount;
                         designName = left.Composition[key].Design.Name;
-                        right.Name = designName + " #" + fleetNumber.ToString();  //Name of new fleet is taken from the design of the most populous vessel in the fleet
+                        right.Name = designName + " #" + ((int) fleetNumber).ToString();  //Name of new fleet is taken from the design of the most populous vessel in the fleet
 
                     }
                 }

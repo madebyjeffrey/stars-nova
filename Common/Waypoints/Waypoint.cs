@@ -27,7 +27,7 @@ namespace Nova.Common.Waypoints
     using System.Xml;
 
     using Nova.Common.DataStructures;
-    
+
     /// <summary>
     /// Waypoints have a position (i.e. where to go), a destination description
     /// (e.g. a star name), a speed to go there and a task to do on arrival (e.g. 
@@ -36,15 +36,15 @@ namespace Nova.Common.Waypoints
     /// </summary>
     public class Waypoint
     {
-        public NovaPoint Position 
+        public NovaPoint Position
         {
-            get; 
+            get;
             set;
         }
 
-        public int WarpFactor 
+        public int WarpFactor
         {
-            get; 
+            get;
             set;
         }
 
@@ -54,19 +54,19 @@ namespace Nova.Common.Waypoints
             set;
         }
 
-        public IWaypointTask Task 
+        public IWaypointTask Task
         {
-            get; 
+            get;
             set;
         }
 
-        public string Destination 
+        public string Destination
         {
-            get; 
+            get;
             set;
         }
 
-        
+
         /// <summary>
         /// Default constructor.
         /// </summary>
@@ -89,7 +89,26 @@ namespace Nova.Common.Waypoints
             Destination = other.Destination;
             guiTimestamp = DateTime.UtcNow;
         }
-        
+        public NovaPoint destinationCurrentPosition(EmpireData empire)
+
+        {  //TODO refactor the current isolated methods for determining "nearness" into this method
+            // when following another fleet it is necessary to look at that fleets velocity and position and "guess" the position of that fleet
+            // at the end of the turn and travel to the guessed position, the actual position of the target may differ buy some amount of rounding error to where this fleet went to.
+            // so allow a small (rounding error) discrepancy  between the two positions.
+            StarIntel star = null;
+            empire.StarReports.TryGetValue(Destination, out star);
+            if (star == null) // the long search 
+                foreach (StarIntel starIntel in empire.StarReports.Values)
+                {
+                    if (starIntel.Position.distanceToSquared(Position) < 1.4143)
+                    {
+                        star = starIntel;
+                    }
+                }
+
+            if (star == null) return null;
+            else return star.Position;
+        }      
 
         /// <summary>
         /// Load from XML: initializing constructor from an XML node.

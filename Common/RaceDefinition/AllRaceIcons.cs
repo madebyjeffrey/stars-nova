@@ -99,5 +99,30 @@ namespace Nova.Common
             }
             return true;
         }
+
+        public static RaceIcon Restore(string iconName)
+        {
+            RaceIcon icon = null;
+            try
+            {
+                using (Config conf = new Config())
+                {
+                    // load the icon
+
+                    Bitmap i = new Bitmap(Path.Combine(Path.Combine(conf[Global.GraphicsFolderKey], "Race"), iconName));
+                    icon = new RaceIcon(iconName, i);
+
+                }
+            }
+            catch
+            {
+                Report.Error("RaceIcon: Restore() - Failed to load race icons.");
+                return null;
+            }
+            
+            return icon;
+        }
+
+
     }
 }

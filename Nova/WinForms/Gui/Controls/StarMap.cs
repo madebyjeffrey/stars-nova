@@ -365,10 +365,22 @@ namespace Nova.WinForms.Gui
         {
             g.FillRectangle(
                 brush,
-                position.X +5 * offset,
+                position.X + 5 * offset,
                 position.Y - 3 - (int)(height / 3.0 * zoomFactor),
                 3,
-                (int) (height/3.0 * zoomFactor)
+                (int)(height / 3.0 * zoomFactor)
+                );
+        }
+
+
+        private void DrawRaceIcon(Graphics g,Image icon,  Point position)
+        {
+            g.DrawImage(
+                icon,
+                position.X + 5 ,
+                position.Y + 5 
+                ,(float) (icon.Width * zoomFactor /4.0)
+                ,(float) (icon.Height * zoomFactor /4.0)
                 );
         }
 
@@ -415,10 +427,10 @@ namespace Nova.WinForms.Gui
                 180);
             g.FillPie(
                 brushMax,
-                position.X - (int)(maxRadius * zoomFactor / 40.0)+1,
-                position.Y - (int)(maxRadius * zoomFactor / 40.0)+1,
-                (int)(maxRadius * zoomFactor / 20.0),
-                (int)(maxRadius * zoomFactor / 20.0),
+                position.X - (int)(maxRadius * zoomFactor / 40.0),
+                position.Y - (int)(maxRadius * zoomFactor / 40.0),
+                (int)(maxRadius * zoomFactor / 20.0+1),
+                (int)(maxRadius * zoomFactor / 20.0+1),
                 270,
                 180);
         }
@@ -519,6 +531,11 @@ namespace Nova.WinForms.Gui
                 if (maxValue < 0) starBrushMax = Brushes.Red;
                 else starBrushMax = Brushes.Green;
                 FillCircleMinMax(g, starBrushMin, starBrushMax ,(Point)position, Math.Abs( minValue), Math.Abs(maxValue));
+                if (report.Owner != Global.Nobody)
+                {
+                    if (report.Owner == clientState.EmpireState.Id) DrawRaceIcon(g, race.Icon.Image, (Point)position);
+                    else DrawRaceIcon(g, clientState.EmpireState.EmpireReports[report.Owner].Icon.Image, (Point)position);
+                }
             }
 
 
@@ -1044,7 +1061,7 @@ namespace Nova.WinForms.Gui
             
             clientState.Commands.Push(command);
             
-            if (command.IsValid(clientState.EmpireState))  // TODO priority 5 is adding a new waypoint for a Starbase really valid?
+            if (command.IsValid(clientState.EmpireState))  // TODO priority 5 is adding a new waypoint for a Starbase really valid? Will my starbase fly away when i do it?
             {
                 command.ApplyToState(clientState.EmpireState);
             }

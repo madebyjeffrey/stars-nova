@@ -112,11 +112,11 @@ namespace Nova.WinForms.Gui
             if (e.Index == 0) wpBrush = System.Drawing.Brushes.BlueViolet;
             else if (isWaypoint0) wpBrush = System.Drawing.Brushes.LightGray;
             else wpBrush = System.Drawing.Brushes.Black;
-            
+
 
             // Draw the current item text based on the current Font 
             // and the custom brush settings.
-            e.Graphics.DrawString((wayPoints.Items[e.Index] as Waypoint).Destination ,
+            e.Graphics.DrawString((wayPoints.Items[e.Index] as Waypoint).Destination,
                 e.Font, wpBrush, e.Bounds, System.Drawing.StringFormat.GenericDefault);
             // If the ListBox has focus, draw a focus rectangle around the selected item.
             e.DrawFocusRectangle();
@@ -197,7 +197,7 @@ namespace Nova.WinForms.Gui
             Mappable destination = new Mappable((wayPoints.Items[wayPoints.SelectedIndices[0]] as Waypoint).Position);
             //destination.Position = (wayPoints.Items[wayPoints.SelectedIndices[0]] as Waypoint).Position;
             SelectionArgs positionArg = new SelectionArgs(destination);
-            WaypointIndexChanged(this,positionArg);
+            WaypointIndexChanged(this, positionArg);
 
         }
 
@@ -210,7 +210,7 @@ namespace Nova.WinForms.Gui
         {
             try
             {
-                using (CargoDialog cargoDialog = new CargoDialog(topFleet,topFleet.InOrbit, clientData))
+                using (CargoDialog cargoDialog = new CargoDialog(topFleet, topFleet.InOrbit, clientData))
                 {
                     cargoDialog.ShowDialog();
                     UpdateCargoMeters();
@@ -674,7 +674,7 @@ namespace Nova.WinForms.Gui
         private void ShowWaypointContext(object sender, EventArgs e)
         {
             NovaPoint position = new NovaPoint();
- 
+
             int index = wayPoints.SelectedIndices[0];
             Waypoint waypoint = new Waypoint(topFleet.Waypoints[index]);
 
@@ -698,7 +698,7 @@ namespace Nova.WinForms.Gui
                     contextMenuWaypointTargets.Items.Insert(0, menuItem);
                     contextMenuWaypointTargets.Items.Insert(1, new ToolStripSeparator());
                 }
-                 menuItem.Tag = sortableItem;
+                menuItem.Tag = sortableItem;
                 if (sortableItem.Type == ItemType.Salvage)
                 {
                     menuItem.Image = Properties.Resources.salvage0000;
@@ -756,6 +756,7 @@ namespace Nova.WinForms.Gui
             return nearObjects;
         }
 
+
         /// <summary>
         /// Raise the Split/Merge fleet dialog.
         /// </summary>
@@ -786,8 +787,8 @@ namespace Nova.WinForms.Gui
                         (otherFleet == null) ? 0 : otherFleet.Key);
 
                     WaypointCommand command = new WaypointCommand(CommandMode.Insert, topFleet.Key, index);
-                    
-                    
+
+
                     command.Waypoint = waypoint;
 
                     if (command.IsValid(empireState))
@@ -800,7 +801,7 @@ namespace Nova.WinForms.Gui
                         {
                             command.Waypoint.Task.Perform(topFleet, otherFleet, empireState, empireState);
 
-                           // topFleet.Waypoints.Remove(waypoint);
+                            // topFleet.Waypoints.Remove(waypoint);
                             // Now clean and remove empty fleets and update remaining ones
                             // This is done to update the Client State visuals only, the server
                             // will handle this "for real".
@@ -859,13 +860,13 @@ namespace Nova.WinForms.Gui
         {
             CargoTransferDialog cargoTransferDialog = new CargoTransferDialog();
             {
-                cargoTransferDialog.SetFleets(topFleet, GettopFleetAtLocation(),clientData);
+                cargoTransferDialog.SetFleets(topFleet, GettopFleetAtLocation(), clientData);
                 cargoTransferDialog.ShowDialog();
                 UpdateCargoMeters();
                 Invalidate();
             }
 
-            
+
         }
 
         private void RenameClick(object sender, EventArgs e)
@@ -941,7 +942,7 @@ namespace Nova.WinForms.Gui
 
             Mappable target = null;
 
-            foreach(Mappable report in nearObjects)
+            foreach (Mappable report in nearObjects)
             {
                 if (report.Name == name)
                 {
@@ -968,8 +969,106 @@ namespace Nova.WinForms.Gui
 
         private void buttonSplitAll_Click(object sender, EventArgs e)
         {
-            //TODO
+            Fleet nextFleet = keepOneSplitRemainder(topFleet, clientData.EmpireState);
+            while (nextFleet != null) nextFleet = keepOneSplitRemainder(nextFleet,clientData.EmpireState);
+            StarmapChanged(this, e);
+        }
+
+        private Fleet keepOneSplitRemainder(Fleet fleet, EmpireData empire)
+        {                                                                   //  take all but one vessel to the new fleet
+                                                                            // and we can split that fleet recursively
+
+            Dictionary<long, ShipToken> LeftComposition = new Dictionary<long, ShipToken>();
+            Dictionary<long, ShipToken> RightComposition = new Dictionary<long, ShipToken>();
+
+
+            bool first = true;
+            int rightQuantity = 0;
+            foreach (long key in fleet.Composition.Keys)
+            {
+                long newFleetKey = clientData.EmpireState.PeekNextFleetKey();
+                if (first)
+                {
+                    LeftComposition[key] = new ShipToken(fleet.Composition[key].Design, 1);
+                    RightComposition[key] = new ShipToken(fleet.Composition[key].Design, fleet.Composition[key].Quantity - 1);
+                    rightQuantity += RightComposition[key].Quantity - 1;
+                }
+                else
+                {
+                    RightComposition[key] = new ShipToken(fleet.Composition[key].Design, fleet.Composition[key].Quantity);
+                    rightQuantity += RightComposition[key].Quantity;
+                }
+                first = false;
+            }
+
+            if (rightQuantity == 0) return null;
+
+            //find the last waypoint with the current destination - it is the last Waypoint zero command so insert after it
+            int wpindex = 0;
+            String here = fleet.Waypoints[0].Destination;
+            bool found = false;
+            while ((!found) && (wpindex < fleet.Waypoints.Count))
+            {
+                found = (fleet.Waypoints[wpindex].Destination != here);
+                wpindex++;
+            }
+            if (found) wpindex--;
+
+            Waypoint allFleetsDest = null;
+            if (fleet.Waypoints.Count > wpindex) allFleetsDest = fleet.Waypoints[wpindex];
+
+            Waypoint waypoint = new Waypoint(fleet.Waypoints[0]);
+            waypoint.Task = new SplitMergeTask(
+                LeftComposition,
+                RightComposition,
+                0);
+            WaypointCommand command = new WaypointCommand(CommandMode.Insert, fleet.Key, wpindex);
+
+
+
+            Fleet newFleet = null;
+            command.Waypoint = waypoint;
+
+            if (command.IsValid(empireState))
+            {
+                commands.Push(command);
+
+                command.ApplyToState(empireState);
+                // Also perform it here, to update client state for manual split/merge.
+                if (command.Waypoint.Task.IsValid(fleet, null, empireState, empireState))
+                {
+                    command.Waypoint.Task.Perform(fleet, null, empireState, empireState);
+
+                    newFleet = empireState.TemporaryFleets[empireState.TemporaryFleets.Count-1];
+                    empireState.AddOrUpdateFleet(newFleet);
+
+                }
+            }
+
+            if (allFleetsDest != allFleetsDest)
+            {
+                WaypointCommand otherFleet = new WaypointCommand(CommandMode.Add, newFleet.Key, 2);
+                newFleet.Waypoints.Add(allFleetsDest);
+
+                WaypointCommand destCommand = new WaypointCommand(CommandMode.Insert, fleet.Key, wpindex);
+                destCommand.Waypoint = allFleetsDest;
+
+                if (destCommand.IsValid(empireState))
+                {
+                    commands.Push(destCommand);
+
+                    destCommand.ApplyToState(empireState);
+
+                }
+
+            }
+            return newFleet;
 
         }
+
     }
+
 }
+    
+
+
