@@ -104,7 +104,8 @@ namespace Nova.Server.TurnSteps
                 {
                     scanRange = (scanner as Star).ScanRange;
                     penScanRange = (scanner as Star).ScanRange; // TODO:(priority 6) Planetary Pen-Scan not implemented yet.
-                    empire.StarReports[scanner.Name].Update(scanner as Star, ScanLevel.Owned, serverState.TurnYear);    
+                    Message message =  empire.StarReports[scanner.Name].Update(scanner as Star, ScanLevel.Owned, serverState.TurnYear,false, scanner, empire.Race,empire.gravityModCapability, empire.temperatureModCapability, empire.radiationModCapability);
+                    if (message != null) serverState.AllMessages.Add(message);
                 }
                 else
                 {
@@ -151,7 +152,8 @@ namespace Nova.Server.TurnSteps
                         
                         if (empire.StarReports.ContainsKey(scanned.Name))
                         {
-                            empire.StarReports[scanned.Name].Update((scanned as Star), scanLevel, serverState.TurnYear);
+                            Message message =  empire.StarReports[scanned.Name].Update((scanned as Star), scanLevel, serverState.TurnYear,false,scanner,empire.Race, empire.gravityModCapability,empire.temperatureModCapability, empire.radiationModCapability);
+                            if (message != null) serverState.AllMessages.Add(message);
                         }
                         else
                         {

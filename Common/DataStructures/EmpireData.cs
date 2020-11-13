@@ -175,7 +175,7 @@ namespace Nova.Common
         public long GetNextDesignKey()
         {
             ++designCounter;
-            return (long)designCounter | ((long)empireId << 16);
+            return (long)designCounter | ((long)empireId << 32);
         }
 
         /// <summary>

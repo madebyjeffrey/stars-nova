@@ -970,11 +970,12 @@ namespace Nova.WinForms.Gui
         private void buttonSplitAll_Click(object sender, EventArgs e)
         {
             Fleet nextFleet = keepOneSplitRemainder(topFleet, clientData.EmpireState);
-            while (nextFleet != null) nextFleet = keepOneSplitRemainder(nextFleet,clientData.EmpireState);
-            StarmapChanged(this, e);
+            while (nextFleet != null) nextFleet = keepOneSplitRemainder(nextFleet, clientData.EmpireState);
+            OnFleetSelectionChanged(new SelectionArgs(topFleet));
         }
+    
 
-        private Fleet keepOneSplitRemainder(Fleet fleet, EmpireData empire)
+    private Fleet keepOneSplitRemainder(Fleet fleet, EmpireData empire)
         {                                                                   //  take all but one vessel to the new fleet
                                                                             // and we can split that fleet recursively
 
@@ -991,7 +992,7 @@ namespace Nova.WinForms.Gui
                 {
                     LeftComposition[key] = new ShipToken(fleet.Composition[key].Design, 1);
                     RightComposition[key] = new ShipToken(fleet.Composition[key].Design, fleet.Composition[key].Quantity - 1);
-                    rightQuantity += RightComposition[key].Quantity - 1;
+                    rightQuantity += RightComposition[key].Quantity;
                 }
                 else
                 {
@@ -1045,7 +1046,7 @@ namespace Nova.WinForms.Gui
                 }
             }
 
-            if (allFleetsDest != allFleetsDest)
+            if (allFleetsDest != allFleetsDest) //this creates 2 waypoints for some reason so it is commented out for now 
             {
                 WaypointCommand otherFleet = new WaypointCommand(CommandMode.Add, newFleet.Key, 2);
                 newFleet.Waypoints.Add(allFleetsDest);

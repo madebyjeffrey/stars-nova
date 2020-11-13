@@ -27,6 +27,7 @@ namespace Nova.Common
     using Nova.Common.DataStructures;
 
     using Nova.Common.Components;
+    using Nova;
 
     /// <summary>
     /// This module describes the basic things we can
@@ -198,8 +199,9 @@ namespace Nova.Common
         /// <param name="star">Star to report.</param>
         /// <param name="scan">Amount of Knowledge to set.</param>
         /// <param name="year">Year of the updated data.</param>
-        public void Update(Star star, ScanLevel scan, int year,bool set = false)
+        public Message Update(Star star, ScanLevel scan, int year, bool set = false , Item scanner = null, Race race = null, int gravityModCapability = 0, int temperatureModCapability = 0,int radiationModCapability = 0)
         {
+            Message discovered = null;
             if (set)
             {
                 star.HasFleetsInOrbit = HasFleetsInOrbit;
@@ -216,12 +218,12 @@ namespace Nova.Common
 
             if (star == null)
             {
-                return;
+                return null;
             }
 
             if (year < this.Year)
             {
-                return;
+                return null ;
             }
 
             // Information that is always available and doesn't
@@ -248,8 +250,6 @@ namespace Nova.Common
             if (scan >= ScanLevel.InPlace)
             {
 
-                Year = year;
-
                 Owner = star.Owner;
                 MineralConcentration = star.MineralConcentration;
                 Gravity = star.Gravity;
@@ -257,6 +257,18 @@ namespace Nova.Common
                 Temperature = star.Temperature;
                 Starbase = star.Starbase;
                 ResourcesOnHand = star.ResourcesOnHand;
+
+                if ((Year < 0) && (scanner != null) && (this.MinValue(race) > 0)) //skip this step if empire is self-scanning owned stars
+                {
+                    discovered = new Message();
+                    discovered.Audience = scanner.Owner;
+                    discovered.Type = "Star";
+                    discovered.Text = "You have discovered a new habitable planet (" + star.Name + ")  with a current Value of " + this.MinValue(race).ToString() +
+                        " and a Maximum value of " + this.MaxValue(race, gravityModCapability, temperatureModCapability, radiationModCapability).ToString();
+                }
+                else discovered = null;
+                Year = year;
+
 
             }
 
@@ -274,6 +286,7 @@ namespace Nova.Common
                 // We do nothing, as owned Stars are handled
                 // elsewhere.
             }
+            return discovered;
         }
 
         public int MinValue(Race race)

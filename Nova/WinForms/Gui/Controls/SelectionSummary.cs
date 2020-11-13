@@ -79,6 +79,14 @@ namespace Nova.WinForms.Gui
         {
             if (empireState.StarReports[report.Name].Year == Global.Unset)
             {
+                if (FleetSummary.Visible)
+                {
+                    //PlanetDetail.Show();
+                    //FleetDetail.Hide();
+                    //PlanetDetail.Value = e.Selection;
+                    //selectedControl = PlanetDetail;
+                    //Invalidate();
+                }
                 this.summaryFrame.Text = report.Name + " is unexplored";
                 //summaryItem = null;
                 FleetSummary.Hide();
@@ -192,12 +200,6 @@ namespace Nova.WinForms.Gui
                 Value = e.Selection;
                 if ((e.Selection is Star) && (sender is FleetDetail))
                 {
-                    //PlanetDetail.Show();
-                    //FleetDetail.Hide();
-                    //PlanetDetail.Value = e.Selection;
-                    //selectedControl = PlanetDetail;
-
-                    //Invalidate();
                     DisplayPlanet(empireState.StarReports[e.Selection.Name]);
                 }
             }

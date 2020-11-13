@@ -155,6 +155,7 @@ namespace Nova.Common
                     case "DestToChange":
                     case "Cheap Engines":
                     case "Fuel":
+                    case "Star":
                         // No object reference required to be saved.
                         break;
 

@@ -289,17 +289,7 @@ namespace Nova.WinForms.Gui
             }
 
 
-            // (4) Visible fleets.
-
-            foreach (FleetIntel report in clientState.EmpireState.FleetReports.Values)
-            {
-                if (report.Type != ItemType.Starbase)
-                {
-                    DrawFleet(g, report);
-                }
-            }
-
-            // (5) Stars plus starbases and orbiting fleet indications that are
+            // (4) Stars plus starbases and orbiting fleet indications that are
             // the results of scans.
 
             foreach (StarIntel report in clientState.EmpireState.StarReports.Values)
@@ -323,6 +313,17 @@ namespace Nova.WinForms.Gui
                 }
                 DrawOrbitingFleets(g, report);
             }
+
+            // (5) Visible fleets.
+
+            foreach (FleetIntel report in clientState.EmpireState.FleetReports.Values)
+            {
+                if (report.Type != ItemType.Starbase)
+                {
+                    DrawFleet(g, report);
+                }
+            }
+
 
             // (6) Cursor.
 
@@ -375,8 +376,11 @@ namespace Nova.WinForms.Gui
 
         private void DrawRaceIcon(Graphics g,Image icon,  Point position)
         {
+            Bitmap transparent = new Bitmap(icon);
+            Color background = transparent.GetPixel(1, 1);
+            transparent.MakeTransparent(background);
             g.DrawImage(
-                icon,
+                transparent,
                 position.X + 5 ,
                 position.Y + 5 
                 ,(float) (icon.Width * zoomFactor /4.0)
