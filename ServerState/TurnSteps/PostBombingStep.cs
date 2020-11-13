@@ -30,12 +30,19 @@ namespace Nova.Server.TurnSteps
                         {
                             Star target = null;
                             foreach (Star star in serverState.AllStars.Values) if (star.Name == dest0) target = star;
-                            
+
                             EmpireData receiver = null;
-                            if ((target is Star) && (target.Owner != 0))  receiver = serverState.AllEmpires[target.Owner];
+                            if ((target is Star) && (target.Owner != 0)) receiver = serverState.AllEmpires[target.Owner];
                             if ((fleet.Waypoints[index].Task.IsValid(fleet, target, serverState.AllEmpires[fleet.Owner], receiver)) && ((fleet.Waypoints[index].Task is ColoniseTask) || (fleet.Waypoints[index].Task is InvadeTask)))
                             {
                                 fleet.Waypoints[index].Task.Perform(fleet, target, serverState.AllEmpires[fleet.Owner], receiver);
+                                fleet.Waypoints.RemoveAt(index);
+                                maxIndex--;
+                                index--;
+                            }
+                            else
+                            {
+
                             }
                             try
                             {
@@ -45,8 +52,6 @@ namespace Nova.Server.TurnSteps
                             {
                                 Report.Information("Bad waypoint for " + fleet.Name);
                             }
-                            // Task is done, clear it.
-                            fleet.Waypoints[index].Task = new NoTask();
 
                         }
                         index++;

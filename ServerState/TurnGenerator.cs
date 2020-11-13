@@ -451,7 +451,7 @@ namespace Nova.Server
             currentPosition = fleet.Waypoints[0];
 
             double availableTime = 1.0;
-            while ((fleet.Waypoints.Count > 0) && (fleet.Waypoints[0].Task is NoTask)  && (currentPosition == fleet.Waypoints[0])) fleet.Waypoints.RemoveAt(0);
+            while ((fleet.Waypoints.Count > 0) && (fleet.Waypoints[0].Task is NoTask)  && (currentPosition == fleet.Waypoints[0])) fleet.Waypoints.RemoveAt(0);// Remove any useless waypoints at the start of the waypoint list (should only be one useless one)
             if ((fleet.Waypoints.Count > 0)  && (currentPosition != fleet.Waypoints[0]))  //Don't throw away colonise or scrap tasks or invade
             
             {

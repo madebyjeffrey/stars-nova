@@ -184,7 +184,7 @@ namespace Nova.Common.Waypoints
                 {
                     if (receiver == null)
                     {
-                        Report.Information("Invalid constructor call to Waypoint.IsValid - Invasion failed - troops slaughtered by !IsValid"); //  ;)
+                       // Report.Information("Cargo Transfer to enemy Stars not implemeneted - try creating an invasion task"); //  ;)
                         return false;  
                     }
                     else

@@ -103,7 +103,11 @@ namespace Nova.Common.Components
                 if (copy.Type == ItemType.Star) Properties.Add(key, (ComponentProperty)copy.Properties[key].Clone());
                 if (copy.Type == ItemType.Ship) Properties.Add(key, (ComponentProperty)copy.Properties[key].Clone());
                 if (copy.Type == ItemType.Shield) Properties.Add(key, (ComponentProperty)copy.Properties[key].Clone());
-                if (copy.Type == ItemType.Scanner) Properties.Add(key, (Scanner)copy.Properties[key].Clone());
+                if ((copy.Type == ItemType.Scanner) && (key == "Scanner")) Properties.Add(key, (Scanner)copy.Properties[key].Clone());
+                if ((copy.Type == ItemType.Scanner) && (key == "Cloak"))
+                {
+                    Properties.Add(key, (ProbabilityProperty)copy.Properties[key].Clone());
+                }
                 if (copy.Type == ItemType.PlanetaryInstallations) Properties.Add(key, (ComponentProperty)copy.Properties[key].Clone());
                 if (copy.Type == ItemType.Orbital) Properties.Add(key, (ComponentProperty)copy.Properties[key].Clone());
                 if (copy.Type == ItemType.MiningRobot) Properties.Add(key, (ComponentProperty)copy.Properties[key].Clone());

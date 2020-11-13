@@ -210,21 +210,32 @@ namespace Nova.WinForms.Gui
         {
             try
             {
-                using (CargoDialog cargoDialog = new CargoDialog(topFleet, topFleet.InOrbit, clientData))
+                Star target = null;
+                foreach (Star star in empireState.OwnedStars.Values)
+                    if (topFleet.InOrbit == star) target = star;
+                if (target == null)
                 {
-                    cargoDialog.ShowDialog();
-                    UpdateCargoMeters();
-                    Invalidate();
+                    Report.Information("Cargo Transfer to enemy Stars not implemeneted - try creating an invasion task"); //  ;)
                 }
-                //OnFleetSelectionChanged(new SelectionArgs(topFleet));
-                wayPoints.DataSource = null;
-                wayPoints.DataSource = topFleet.Waypoints;
-                meterCargo.CargoLevels = topFleet.Cargo;
+                else
+                {
+                    using (CargoDialog cargoDialog = new CargoDialog(topFleet, topFleet.InOrbit, clientData))
+                    {
+                        cargoDialog.ShowDialog();
+                        UpdateCargoMeters();
+                        Invalidate();
+                    }
+                    //OnFleetSelectionChanged(new SelectionArgs(topFleet));
+                    wayPoints.DataSource = null;
+                    wayPoints.DataSource = topFleet.Waypoints;
+                    meterCargo.CargoLevels = topFleet.Cargo;
+                }
             }
             catch
             {
                 Report.Debug("FleetDetail.cs : CargoButton_Click() - Failed to open cargo dialog.");
             }
+        
         }
 
         /// <Summary>
