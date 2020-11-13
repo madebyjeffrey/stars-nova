@@ -100,7 +100,7 @@ namespace Nova.WinForms.Gui
             this.messageForm.SuspendLayout();
             this.SuspendLayout();
             // 
-            // MessageForm
+            // messageForm
             // 
             this.messageForm.Controls.Add(this.gotoButton);
             this.messageForm.Controls.Add(this.previousButton);
@@ -113,9 +113,9 @@ namespace Nova.WinForms.Gui
             this.messageForm.Size = new System.Drawing.Size(350, 120);
             this.messageForm.TabIndex = 0;
             this.messageForm.TabStop = false;
-            this.messageForm.Text = "Year " + Global.StartingYear.ToString(System.Globalization.CultureInfo.InvariantCulture) + " - No Messages";
+            this.messageForm.Text = "Year 2100 - No Messages";
             // 
-            // GotoButton
+            // gotoButton
             // 
             this.gotoButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.gotoButton.Location = new System.Drawing.Point(8, 84);
@@ -147,13 +147,13 @@ namespace Nova.WinForms.Gui
             // 
             // messageBox
             // 
-            this.messageBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)));
+            this.messageBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.messageBox.BackColor = System.Drawing.Color.White;
             this.messageBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.messageBox.Location = new System.Drawing.Point(104, 25);
             this.messageBox.Name = "messageBox";
-            this.messageBox.Size = new System.Drawing.Size(240, 86);
+            this.messageBox.Size = new System.Drawing.Size(340, 86);
             this.messageBox.TabIndex = 0;
             // 
             // Messages

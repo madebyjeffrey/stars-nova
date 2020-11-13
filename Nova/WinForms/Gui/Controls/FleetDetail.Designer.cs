@@ -490,7 +490,7 @@ namespace Nova.WinForms.Gui
             // typeHeader
             // 
             this.typeHeader.Text = "Type";
-            this.typeHeader.Width = 200;
+            this.typeHeader.Width = 190;
             // 
             // numberHeader
             // 

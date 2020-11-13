@@ -159,7 +159,7 @@ namespace Nova.WinForms.Gui
             // 
             // population
             // 
-            this.population.Location = new System.Drawing.Point(187, 15);
+            this.population.Location = new System.Drawing.Point(287, 15);
             this.population.Name = "population";
             this.population.Size = new System.Drawing.Size(120, 16);
             this.population.TabIndex = 26;
@@ -241,7 +241,7 @@ namespace Nova.WinForms.Gui
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(177, 138);
+            this.label8.Location = new System.Drawing.Point(227, 138);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(44, 13);
             this.label8.TabIndex = 35;
@@ -250,7 +250,7 @@ namespace Nova.WinForms.Gui
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(285, 139);
+            this.label9.Location = new System.Drawing.Point(385, 139);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(29, 13);
             this.label9.TabIndex = 36;
@@ -259,7 +259,7 @@ namespace Nova.WinForms.Gui
             // gravityLevel
             // 
             this.gravityLevel.AutoSize = true;
-            this.gravityLevel.Location = new System.Drawing.Point(308, 31);
+            this.gravityLevel.Location = new System.Drawing.Point(408, 31);
             this.gravityLevel.Name = "gravityLevel";
             this.gravityLevel.Size = new System.Drawing.Size(19, 13);
             this.gravityLevel.TabIndex = 40;
@@ -268,7 +268,7 @@ namespace Nova.WinForms.Gui
             // temperatureLevel
             // 
             this.temperatureLevel.AutoSize = true;
-            this.temperatureLevel.Location = new System.Drawing.Point(308, 47);
+            this.temperatureLevel.Location = new System.Drawing.Point(408, 47);
             this.temperatureLevel.Name = "temperatureLevel";
             this.temperatureLevel.Size = new System.Drawing.Size(31, 13);
             this.temperatureLevel.TabIndex = 41;
@@ -277,7 +277,7 @@ namespace Nova.WinForms.Gui
             // radiationLevel
             // 
             this.radiationLevel.AutoSize = true;
-            this.radiationLevel.Location = new System.Drawing.Point(308, 64);
+            this.radiationLevel.Location = new System.Drawing.Point(408, 64);
             this.radiationLevel.Name = "radiationLevel";
             this.radiationLevel.Size = new System.Drawing.Size(29, 13);
             this.radiationLevel.TabIndex = 42;
@@ -292,7 +292,7 @@ namespace Nova.WinForms.Gui
             this.panel1.Controls.Add(this.germaniumGauge);
             this.panel1.Location = new System.Drawing.Point(76, 85);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(231, 51);
+            this.panel1.Size = new System.Drawing.Size(331, 51);
             this.panel1.TabIndex = 43;
             // 
             // ironiumGauge
@@ -307,7 +307,7 @@ namespace Nova.WinForms.Gui
             this.ironiumGauge.Minimum = 0D;
             this.ironiumGauge.Name = "ironiumGauge";
             this.ironiumGauge.ShowText = false;
-            this.ironiumGauge.Size = new System.Drawing.Size(230, 10);
+            this.ironiumGauge.Size = new System.Drawing.Size(330, 10);
             this.ironiumGauge.TabIndex = 28;
             this.ironiumGauge.TopValue = 500D;
             this.ironiumGauge.Units = null;
@@ -325,7 +325,7 @@ namespace Nova.WinForms.Gui
             this.boraniumGauge.Minimum = 0D;
             this.boraniumGauge.Name = "boraniumGauge";
             this.boraniumGauge.ShowText = false;
-            this.boraniumGauge.Size = new System.Drawing.Size(230, 10);
+            this.boraniumGauge.Size = new System.Drawing.Size(330, 10);
             this.boraniumGauge.TabIndex = 29;
             this.boraniumGauge.TopValue = 500D;
             this.boraniumGauge.Units = null;
@@ -343,7 +343,7 @@ namespace Nova.WinForms.Gui
             this.germaniumGauge.Minimum = 0D;
             this.germaniumGauge.Name = "germaniumGauge";
             this.germaniumGauge.ShowText = false;
-            this.germaniumGauge.Size = new System.Drawing.Size(230, 10);
+            this.germaniumGauge.Size = new System.Drawing.Size(330, 10);
             this.germaniumGauge.TabIndex = 30;
             this.germaniumGauge.TopValue = 500D;
             this.germaniumGauge.Units = null;
@@ -358,7 +358,7 @@ namespace Nova.WinForms.Gui
             this.panel2.Controls.Add(this.radiationGauge);
             this.panel2.Location = new System.Drawing.Point(77, 29);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(231, 51);
+            this.panel2.Size = new System.Drawing.Size(331, 51);
             this.panel2.TabIndex = 44;
             // 
             // gravityGauge
@@ -373,7 +373,7 @@ namespace Nova.WinForms.Gui
             this.gravityGauge.Minimum = 0D;
             this.gravityGauge.Name = "gravityGauge";
             this.gravityGauge.ShowText = false;
-            this.gravityGauge.Size = new System.Drawing.Size(230, 10);
+            this.gravityGauge.Size = new System.Drawing.Size(330, 10);
             this.gravityGauge.TabIndex = 31;
             this.gravityGauge.TopValue = 85D;
             this.gravityGauge.Units = null;
@@ -391,7 +391,7 @@ namespace Nova.WinForms.Gui
             this.temperatureGauge.Minimum = 0D;
             this.temperatureGauge.Name = "temperatureGauge";
             this.temperatureGauge.ShowText = false;
-            this.temperatureGauge.Size = new System.Drawing.Size(230, 10);
+            this.temperatureGauge.Size = new System.Drawing.Size(330, 10);
             this.temperatureGauge.TabIndex = 32;
             this.temperatureGauge.TopValue = 85D;
             this.temperatureGauge.Units = null;
@@ -409,7 +409,7 @@ namespace Nova.WinForms.Gui
             this.radiationGauge.Minimum = 0D;
             this.radiationGauge.Name = "radiationGauge";
             this.radiationGauge.ShowText = false;
-            this.radiationGauge.Size = new System.Drawing.Size(230, 10);
+            this.radiationGauge.Size = new System.Drawing.Size(330, 10);
             this.radiationGauge.TabIndex = 33;
             this.radiationGauge.TopValue = 85D;
             this.radiationGauge.Units = null;
@@ -445,7 +445,7 @@ namespace Nova.WinForms.Gui
             this.Controls.Add(this.label1);
             this.Controls.Add(this.population);
             this.Name = "PlanetSummary";
-            this.Size = new System.Drawing.Size(354, 157);
+            this.Size = new System.Drawing.Size(454, 157);
             this.panel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
