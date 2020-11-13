@@ -295,10 +295,17 @@ namespace Nova.Ai
                                         loadCargo.ApplyToState(clientState.EmpireState);
                                         clientState.Commands.Push(loadCargo);
 
+                                        CargoTask unload = new CargoTask();
+                                        unload.Mode = CargoMode.Unload;
+                                        unload.Amount.ColonistsInKilotons = nextTransport.TotalCargoCapacity;
+                                        unload.Amount.Germanium = nextTransport.TotalCargoCapacity;
+                                        unload.Target = target;
                                         SendFleet(target, nextTransport, new CargoTask());
                                         surplusPopulationKT = surplusPopulationKT - nextTransport.TotalCargoCapacity;
                                         occupiedFleets.Add(nextTransport);
                                         if (surplusPopulationKT <= 0) break;
+                                        underPopulated.RemoveAt(underPopulated.IndexOf(target)); //send next transport to another planet
+                                        break; // nextTransport sent so leave this loop 
                                     }
                                     surplusPopulationKT = 0;  // tried all targets and none valid so skip this source
                             }
@@ -323,7 +330,7 @@ namespace Nova.Ai
                                     surplusPopulationKT = 0;
                                 }
                             }
-                            foreach (Fleet occupied in occupiedFleets) idleTransportFleets.Remove(occupied);
+                            //foreach (Fleet occupied in occupiedFleets) idleTransportFleets.Remove(occupied);
                         }
                     }
                 }

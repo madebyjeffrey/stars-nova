@@ -724,7 +724,7 @@ namespace Nova.Common
                 if (target.WarpFactor == 0) target.WarpFactor = 1; // in Stars every fleet can travel at warp 1 and generate 1mg of fuel per turn
                 Message message = new Message();
                 message.Audience = Owner;
-                message.Text = "Fleet " + Name + "has run out of fuel. Its speed has been reduced to Warp " + this.FreeWarpSpeed.ToString() + ".";
+                message.Text = "Fleet " + Name + " has run out of fuel. Its speed has been reduced to Warp " + this.FreeWarpSpeed.ToString() + ".";
                 message.Type = "WarpToChange";
                 message.FleetID = this.Id;
                 message.Event = this;
@@ -830,8 +830,8 @@ namespace Nova.Common
             CargoTask wpTask = new CargoTask();
             wpTask.Mode = CargoMode.Load;
             wpTask.Target = this.InOrbit;
-            wpTask.Amount.ColonistsInKilotons = PopulationKT;
-            wpTask.Amount.Germanium = PopulationKT;
+            wpTask.Amount.ColonistsInKilotons = PopulationKT*3/4;
+            wpTask.Amount.Germanium = PopulationKT/4;
 
             Waypoint wp = new Waypoint();
             wp.Task = wpTask;
