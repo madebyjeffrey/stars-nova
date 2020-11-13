@@ -38,19 +38,20 @@ namespace Nova.Server.TurnSteps
                                 fleet.Waypoints[index].Task.Perform(fleet, target, serverState.AllEmpires[fleet.Owner], receiver);
                                 fleet.Waypoints.RemoveAt(index);
                                 maxIndex--;
+                                try
+                                {
+                                    if (fleet.Waypoints.Count  > 0)
+                                    serverState.AllMessages.AddRange(fleet.Waypoints[index].Task.Messages);
+                                }
+                                catch
+                                {
+                                    Report.Information("Bad waypoint for " + fleet.Name + " Empire " + fleet.Owner.ToString());
+                                }
                                 index--;
                             }
                             else
                             {
 
-                            }
-                            try
-                            {
-                                serverState.AllMessages.AddRange(fleet.Waypoints[index].Task.Messages);
-                            }
-                            catch
-                            {
-                                Report.Information("Bad waypoint for " + fleet.Name);
                             }
 
                         }

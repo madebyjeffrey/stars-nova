@@ -563,7 +563,7 @@ namespace Nova.Server
                     }
                     catch
                     {
-                        Report.Information("Bad waypoint for " + fleet.Name);
+                        Report.Information("Bad waypoint for " + fleet.Name + " Empire " + fleet.Owner.ToString());
                     }
 
 
