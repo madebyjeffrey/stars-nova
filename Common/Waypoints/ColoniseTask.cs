@@ -88,7 +88,7 @@ namespace Nova.Common.Waypoints
             if (star.Colonists != 0)
             {
                 message.Text += " but it is already occupied, ";
-                return false;
+                return true;
             }
             
             if (fleet.Cargo.ColonistsInKilotons == 0)
@@ -110,13 +110,13 @@ namespace Nova.Common.Waypoints
         public bool Perform(Fleet fleet, Item target, EmpireData sender, EmpireData reciever)
         {
             Star star = target as Star;
-            if (star.Colonists > 0)
+            if ((star.Colonists > 0) && (sender == reciever))
             {
                 star.ResourcesOnHand += fleet.Cargo.ToResource();
                 star.Colonists += fleet.Cargo.ColonistNumbers;
                 Message message = new Message();
                 message.Audience = fleet.Owner;
-                message.Text = " colonists added to population. " + star.Name + ".";
+                message.Text = " colonists beamed to surface of " + star.Name + "."; // This helps the AI by emtying the Colonizer
                 message.Type = "DestToChange";
                 Messages.Add(message);
             }

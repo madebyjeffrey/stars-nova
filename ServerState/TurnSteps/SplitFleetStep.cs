@@ -93,15 +93,18 @@ namespace Nova.Server.TurnSteps
             int Index = 0;
             foreach (Fleet fleet in serverState.IterateAllFleets())
             {
-                WaypointZeroDestination = fleet.Waypoints[0].Destination;
-                Index = 1;
-                while ((Index < fleet.Waypoints.Count) && (fleet.Waypoints[Index].Destination == WaypointZeroDestination))
+                if (fleet.Waypoints.Count > 0)
                 {
-                    if ((fleet.Waypoints[Index].Task is SplitMergeTask) || (fleet.Waypoints[Index].Task is CargoTask) || (fleet.Waypoints[Index].Task is NoTask))
+                    WaypointZeroDestination = fleet.Waypoints[0].Destination;
+                    Index = 1;
+                    while ((Index < fleet.Waypoints.Count) && (fleet.Waypoints[Index].Destination == WaypointZeroDestination))
                     {
-                        fleet.Waypoints.RemoveAt(Index); //Remove waypoints that have already been processed
+                        if ((fleet.Waypoints[Index].Task is SplitMergeTask) || (fleet.Waypoints[Index].Task is CargoTask) || (fleet.Waypoints[Index].Task is NoTask))
+                        {
+                            fleet.Waypoints.RemoveAt(Index); //Remove waypoints that have already been processed
+                        }
+                        else Index++;
                     }
-                    else Index++;
                 }
             }
             serverState.CleanupFleets();

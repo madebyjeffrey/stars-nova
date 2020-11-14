@@ -33,7 +33,7 @@ namespace Nova.WinForms.Gui
     using Nova.Common;
     using Nova.Common.Commands;
     using Nova.Common.DataStructures; 
-    using Nova.Common.Waypoints;    
+    using Nova.Common.Waypoints;
 
     /// <Summary>
     /// StarMap is the control which holds the actual playing map. 
@@ -45,45 +45,45 @@ namespace Nova.WinForms.Gui
         /// selection information. Mostly used to assert where it is
         /// a fleet or a Star.
         /// </Summary>
-        public event EventHandler<SelectionArgs> SelectionRequested; 
-        
+        public event EventHandler<SelectionArgs> SelectionRequested;
+
         /// <Summary>
         /// These events should be fired when the users changes the
         /// selection in the map with the mouse. Use it to report
         /// selection changes to other components of the GUI.
         /// </Summary>    
-        public event EventHandler<SelectionArgs> SelectionChanged;        
-       
+        public event EventHandler<SelectionArgs> SelectionChanged;
+
         public event EventHandler<EventArgs> WaypointChanged;
 
-        private readonly Point[] triangle = 
-        { 
-            new Point(0, 5), 
+        private readonly Point[] triangle =
+        {
+            new Point(0, 5),
             new Point(-5, -5),
-            new Point(5, -5) 
+            new Point(5, -5)
         };
 
-        private readonly Point[] cursorShape = 
-        { 
-            new Point(0, 0), 
+        private readonly Point[] cursorShape =
+        {
+            new Point(0, 0),
             new Point(-5, -12),
             new Point(0, -9),
-            new Point(5, -12) 
+            new Point(5, -12)
         };
 
         private readonly Dictionary<long, Minefield> visibleMinefields = new Dictionary<long, Minefield>();
         private readonly Font nameFont;
-        
+
         private Intel turnData;
         private ClientData clientState;
-        private NovaPoint cursorPosition    = new Point(0, 0);
-        private NovaPoint lastClick         = new Point(0, 0);
+        private NovaPoint cursorPosition = new Point(0, 0);
+        private NovaPoint lastClick = new Point(0, 0);
 
-        private NovaPoint logical           = new Point(0, 0);  // Size of the logical coordinate system (size of the game universe).        
-        private NovaPoint extent            = new Point(0, 0);   // How big is the logical map in terms of Size
-        private NovaPoint displayOffset     = new NovaPoint(0, 0); // If extent is less then the panel size this is used to center the map in the panel
-        private NovaPoint scrollOffset      = new NovaPoint(0, 0); // Where the scroll bars are set to
-        private double zoomFactor           = 1.0;              // Is used to adjust the Extent of the map.
+        private NovaPoint logical = new Point(0, 0);  // Size of the logical coordinate system (size of the game universe).        
+        private NovaPoint extent = new Point(0, 0);   // How big is the logical map in terms of Size
+        private NovaPoint displayOffset = new NovaPoint(0, 0); // If extent is less then the panel size this is used to center the map in the panel
+        private NovaPoint scrollOffset = new NovaPoint(0, 0); // Where the scroll bars are set to
+        private double zoomFactor = 1.0;              // Is used to adjust the Extent of the map.
 
         private readonly NovaPoint extraSpace = new NovaPoint(40, 40); // Extra padding round the map for star names etc.
 
@@ -92,7 +92,7 @@ namespace Nova.WinForms.Gui
         private bool displayStarNames = true;
         private bool displayBackground = true;
         private bool displayBorders = false;
-        
+
         private int selection;
         private const double MinZoom = 0.2;
         private const double MaxZoom = 5;
@@ -101,7 +101,7 @@ namespace Nova.WinForms.Gui
         /// Initializes a new instance of the StarMap class.
         /// </Summary>
         public StarMap()
-        {            
+        {
             InitializeComponent();
 
             MouseWheel += StarMap_MouseWheel;
@@ -189,27 +189,27 @@ namespace Nova.WinForms.Gui
             {
                 return;
             }
-            
+
             // Erase previous drawings.
-            g.Clear(Color.Black);     
-   
+            g.Clear(Color.Black);
+
             // (0) Draw the image backdrop and universe borders          
             NovaPoint backgroundOrigin = LogicalToDevice(new NovaPoint(0, 0));
             backgroundOrigin.Offset(-20, -20);
             NovaPoint backgroundExtent = LogicalToDevice(logical);
             backgroundExtent.Offset(20, 20);
-            
+
 
             Size renderSize = new Size();
             renderSize.Height = backgroundExtent.Y - backgroundOrigin.Y;
             renderSize.Width = backgroundExtent.X - backgroundOrigin.X;
-            
+
             g.Clip = new Region(new Rectangle((Point)backgroundOrigin, renderSize));
-            
-            
+
+
             // This is the specified area which represents the playing universe      
             Rectangle backgroundArea = new Rectangle((Point)backgroundOrigin, renderSize);
-            
+
             if (this.displayBackground == true)
             {
                 Image backdrop = Nova.Properties.Resources.Plasma;
@@ -218,7 +218,7 @@ namespace Nova.WinForms.Gui
                 // memory leak under Mono on Linux.
                 backdrop.Dispose();
             }
-            
+
             if (this.displayBorders == true)
             {
                 Pen borderPen = new Pen(Brushes.DimGray);
@@ -226,7 +226,7 @@ namespace Nova.WinForms.Gui
                 g.DrawRectangle(borderPen, backgroundArea);
                 borderPen.Dispose();
             }
-            
+
             Color lrScancolor = Color.FromArgb(128, 128, 0, 0);
             SolidBrush lrScanBrush = new SolidBrush(lrScancolor);
 
@@ -327,7 +327,7 @@ namespace Nova.WinForms.Gui
 
             // (6) Cursor.
 
-            NovaPoint position = LogicalToDevice(this.cursorPosition);          
+            NovaPoint position = LogicalToDevice(this.cursorPosition);
             position.Y += 5;
             g.TranslateTransform(position.X, position.Y);
             g.RotateTransform(180f);
@@ -348,7 +348,7 @@ namespace Nova.WinForms.Gui
             Color coordcolor = Color.FromArgb(255, 255, 255, 0);
             SolidBrush coordBrush = new SolidBrush(coordcolor);
             string str = "Cursor Location (logical): " + this.cursorPosition.X.ToString(System.Globalization.CultureInfo.InvariantCulture) + "," + this.cursorPosition.Y.ToString(System.Globalization.CultureInfo.InvariantCulture);
-            g.DrawString(str, font, coordBrush, 0, 20);                      
+            g.DrawString(str, font, coordBrush, 0, 20);
             str = "Zoom Factor: " + this.zoomFactor.ToString(System.Globalization.CultureInfo.InvariantCulture);
             g.DrawString(str, font, coordBrush, 0, 40);
             str = "ScrollOffset: " + scrollOffset;
@@ -373,18 +373,34 @@ namespace Nova.WinForms.Gui
                 );
         }
 
-
-        private void DrawRaceIcon(Graphics g,Image icon,  Point position)
+        Bitmap Posturize(Bitmap input)
         {
+            Color background = input.GetPixel(0, 0);
+            for (int row = 0;row < input.Height;row++)
+            {
+                for (int column = 0; column < input.Width; column++)
+                    if ((Math.Abs((int)input.GetPixel(row, column).R - (int)background.R) < 8)
+                    && (Math.Abs((int)input.GetPixel(row, column).G - (int)background.G) < 8)
+                    && (Math.Abs((int)input.GetPixel(row, column).B - (int)background.B) < 8)) input.SetPixel(row,column,background);
+            }
+            return input;
+        }
+
+
+    private void DrawRaceIcon(Graphics g,Image icon,  Point position, int influence)
+        {
+            if (influence < 250000) influence = 250000;
+            if (influence > 500000) influence = 500000;
             Bitmap transparent = new Bitmap(icon);
-            Color background = transparent.GetPixel(1, 1);
+            Color background = transparent.GetPixel(0, 0);
+            transparent = Posturize(transparent); // TODO on large maps doing this multiple times adds extra overhead
             transparent.MakeTransparent(background);
             g.DrawImage(
                 transparent,
                 position.X + 5 ,
-                position.Y + 5 
-                ,(float) (icon.Width * zoomFactor /4.0)
-                ,(float) (icon.Height * zoomFactor /4.0)
+                position.Y - 5 - (float) (icon.Height * zoomFactor / 4.0 * influence/ 250000.0 )
+                , (float) (icon.Width * zoomFactor / 4.0 * influence / 250000.0)
+                ,(float) (icon.Height * zoomFactor / 4.0 * influence / 250000.0)
                 );
         }
 
@@ -537,8 +553,8 @@ namespace Nova.WinForms.Gui
                 FillCircleMinMax(g, starBrushMin, starBrushMax ,(Point)position, Math.Abs( minValue), Math.Abs(maxValue));
                 if (report.Owner != Global.Nobody)
                 {
-                    if (report.Owner == clientState.EmpireState.Id) DrawRaceIcon(g, race.Icon.Image, (Point)position);
-                    else DrawRaceIcon(g, clientState.EmpireState.EmpireReports[report.Owner].Icon.Image, (Point)position);
+                    if (report.Owner == clientState.EmpireState.Id) DrawRaceIcon(g, race.Icon.Image, (Point)position, report.Colonists);
+                    else DrawRaceIcon(g, clientState.EmpireState.EmpireReports[report.Owner].Icon.Image, (Point)position, report.Colonists);
                 }
             }
 

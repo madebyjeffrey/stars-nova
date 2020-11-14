@@ -714,9 +714,13 @@ namespace Nova.Common
                     {
                         stack.Token.Design = Designs[stack.Token.Key];
                     }
-                    else
+                    else if (EmpireReports[stack.Owner].Designs.ContainsKey(stack.Token.Key))
                     {
                         stack.Token.Design = EmpireReports[stack.Owner].Designs[stack.Token.Key];
+                    }
+                    else
+                    {
+                        foreach (ShipDesign design in Designs.Values) if (design.Name == "S A L V A G E") stack.Token.Design = design; //we don't know yet so display something
                     }
                 }
             }

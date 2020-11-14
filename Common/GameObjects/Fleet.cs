@@ -663,9 +663,10 @@ namespace Nova.Common
             double targetTimeStars270j = legDistance / speedStars270j;
             double fuelConsumptionRate = FuelConsumption(warpFactor, race);
             if (warpFactor == 1) fuelConsumptionRate = -1; // From observation of millions of Fleets in Stars! 2.70j
-            double fuelTime = FuelAvailable / fuelConsumptionRate;
+            double fuelTime = targetTime; // Let's say we have enough fuel until we prove that we don't
+            if (fuelConsumptionRate > 0)  fuelTime = FuelAvailable / fuelConsumptionRate;
             double travelTime = targetTime;
-
+            if (fuelTime < 0) fuelTime = targetTime; //we're not in Kansas anymore or we are making more fuel than we are using
             // Determine just how long we have available to travel towards the
             // waypoint target. This will be the smaller of target time (the ideal
             // case, we get there) available time (didn't get there but still can

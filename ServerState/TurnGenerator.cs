@@ -318,15 +318,15 @@ namespace Nova.Server
 
             // Check for no fuel.
 
-            if (fleet.FuelAvailable == 0 && !fleet.IsStarbase)
-            {
-                Message message = new Message();
-                message.Audience = fleet.Owner;
-                message.Type = "Fuel";
-                message.Text = fleet.Name + " has run out of fuel.";
-                message.FleetID = fleet.Id;
-                serverState.AllMessages.Add(message);
-            }
+            //if (fleet.FuelAvailable == 0 && !fleet.IsStarbase)
+            //{
+            //    Message message = new Message();
+            //    message.Audience = fleet.Owner;
+            //    message.Type = "Fuel";
+            //    message.Text = fleet.Name + " has run out of fuel.";
+            //    message.FleetID = fleet.Id;
+            //    serverState.AllMessages.Add(message);
+            //}
 
             return false;
         }
@@ -446,146 +446,149 @@ namespace Nova.Server
         private bool UpdateFleet(Fleet fleet)
         {
             Race race = serverState.AllEmpires[fleet.Owner].Race;
-            Waypoint firstWaypoint = fleet.Waypoints[0];
-            Waypoint currentPosition = null;
-            currentPosition = fleet.Waypoints[0];
-
-            double availableTime = 1.0;
-            while ((fleet.Waypoints.Count > 0) && (fleet.Waypoints[0].Task is NoTask)  && (currentPosition == fleet.Waypoints[0])) fleet.Waypoints.RemoveAt(0);// Remove any useless waypoints at the start of the waypoint list (should only be one useless one)
-            if ((fleet.Waypoints.Count > 0)  && (currentPosition != fleet.Waypoints[0]))  //Don't throw away colonise or scrap tasks or invade
-            
+            if (fleet.Waypoints.Count > 0)
             {
-                Waypoint waypointZero = fleet.Waypoints[0];
-                Fleet.TravelStatus fleetMoveResult;
+                Waypoint firstWaypoint = fleet.Waypoints[0];
+                Waypoint currentPosition = null;
+                currentPosition = fleet.Waypoints[0];
 
-                // -------------------
-                // Move
-                // -------------------
+                double availableTime = 1.0;
+                while ((fleet.Waypoints.Count > 0) && (fleet.Waypoints[0].Task is NoTask) && (currentPosition == fleet.Waypoints[0])) fleet.Waypoints.RemoveAt(0);// Remove any useless waypoints at the start of the waypoint list (should only be one useless one)
+                if ((fleet.Waypoints.Count > 0) && (currentPosition != fleet.Waypoints[0]))  //Don't throw away colonise or scrap tasks or invade
 
-                // Check for Cheap Engines failing to start
-                if (waypointZero.WarpFactor > 6 && race.Traits.Contains("CE") && rand.Next(10) == 1)
                 {
-                    // Engines fail
-                    Message message = new Message();
-                    message.Audience = fleet.Owner;
-                    message.Text = "Fleet " + fleet.Name + "'s engines failed to start. Fleet has not moved this turn.";
-                    message.Type = "Cheap Engines";
-                    message.Event = this;
-                    serverState.AllMessages.Add(message);
-                    fleetMoveResult = Fleet.TravelStatus.InTransit;
-                }
-                else
-                {
-                    Fleet dest = null;
-                    int targetVelocity = 0;
-                    NovaPoint targetVelocityVector = new NovaPoint(0, 0);
-                    foreach (Fleet target in serverState.IterateAllFleets()) 
-                        if (target.Name == waypointZero.Destination)
-                        {
-                            dest = target;
-                            targetVelocity = target.Waypoints[0].WarpFactor * target.Waypoints[0].WarpFactor;
-                            targetVelocityVector = target.Waypoints[0].Position - target.Position;
-                            continue;
-                        }
-                    fleetMoveResult = fleet.Move(ref availableTime, race,ref serverState.AllMessages, targetVelocity, targetVelocityVector);
-                }
+                    Waypoint waypointZero = fleet.Waypoints[0];
+                    Fleet.TravelStatus fleetMoveResult;
 
-                bool destroyed = checkForMinefields.Check(fleet);
+                    // -------------------
+                    // Move
+                    // -------------------
 
-                if (destroyed == true)
-                {
-                    return true;
-                }
-
-                if (fleetMoveResult == Fleet.TravelStatus.InTransit)
-                {
-                    Waypoint newCurrentPosition = new Waypoint();
-                    newCurrentPosition.Position = fleet.Position;
-                    newCurrentPosition.Destination = "Space at " + fleet.Position.ToString();
-                    newCurrentPosition.Task = new NoTask();
-                    fleet.Waypoints.Insert(0, newCurrentPosition);
-                    fleet.InOrbit = null;
-                }
-                else
-                {
-                    // Arrived
-                    EmpireData sender = serverState.AllEmpires[fleet.Owner];
-                    EmpireData reciever = null;
-                    Star target = null;
-
-                    serverState.AllStars.TryGetValue(waypointZero.Destination, out target);
-
-                    if (target == null) // the long search - we might have followed a fleet here and we had to calculate their expected position at the end of turn so some rounding error is possible
+                    // Check for Cheap Engines failing to start
+                    if (waypointZero.WarpFactor > 6 && race.Traits.Contains("CE") && rand.Next(10) == 1)
                     {
-                        foreach (Star star in serverState.AllStars.Values)
-                        {
-                            if (star.Position.distanceToSquared(waypointZero.Position) < 1.4143)
-                            {
-                                target = star;
-                            }
-                        }
-                    }
-                    if (target != null)
-                    {
-                        fleet.InOrbit = target;
-                        fleet.Waypoints[0].Position = target.Position;
-                        fleet.Waypoints[0].Destination = target.Name;
-                        serverState.AllEmpires.TryGetValue(target.Owner, out reciever);
-                        if (availableTime != 1.0) availableTime = 0; //In Stars! the fleet looses the rest of the turn as it enters orbit and scans the Star (And the crew check out the local pub)
-                        // We could add a scan-and-go to use up available time but we would need to scan each star visited this year by this Fleet! (and not allow the crew off the ship)
-                        // That would require creating a list of each star visited and passing that list to the ScanStep, for now it is easier to just stop the fleet at the first star visited.
+                        // Engines fail
+                        Message message = new Message();
+                        message.Audience = fleet.Owner;
+                        message.Text = "Fleet " + fleet.Name + "'s engines failed to start. Fleet has not moved this turn.";
+                        message.Type = "Cheap Engines";
+                        message.Event = this;
+                        serverState.AllMessages.Add(message);
+                        fleetMoveResult = Fleet.TravelStatus.InTransit;
                     }
                     else
                     {
-                        fleet.Waypoints[0].Position = fleet.Position;
+                        Fleet dest = null;
+                        int targetVelocity = 0;
+                        NovaPoint targetVelocityVector = new NovaPoint(0, 0);
+                        foreach (Fleet target in serverState.IterateAllFleets())
+                            if (target.Name == waypointZero.Destination)
+                            {
+                                dest = target;
+                                targetVelocity = target.Waypoints[0].WarpFactor * target.Waypoints[0].WarpFactor;
+                                targetVelocityVector = target.Waypoints[0].Position - target.Position;
+                                continue;
+                            }
+                        fleetMoveResult = fleet.Move(ref availableTime, race, ref serverState.AllMessages, targetVelocity, targetVelocityVector);
+                    }
+
+                    bool destroyed = checkForMinefields.Check(fleet);
+
+                    if (destroyed == true)
+                    {
+                        return true;
+                    }
+
+                    if (fleetMoveResult == Fleet.TravelStatus.InTransit)
+                    {
+                        Waypoint newCurrentPosition = new Waypoint();
+                        newCurrentPosition.Position = fleet.Position;
+                        newCurrentPosition.Destination = "Space at " + fleet.Position.ToString();
+                        newCurrentPosition.Task = new NoTask();
+                        fleet.Waypoints.Insert(0, newCurrentPosition);
                         fleet.InOrbit = null;
                     }
+                    else
+                    {
+                        // Arrived
+                        EmpireData sender = serverState.AllEmpires[fleet.Owner];
+                        EmpireData reciever = null;
+                        Star target = null;
 
-                    // -------------------------
-                    // Waypoint 1 Tasks
-                    // -------------------------
+                        serverState.AllStars.TryGetValue(waypointZero.Destination, out target);
 
-                    if ((!(waypointZero.Task is ColoniseTask)) && (!(waypointZero.Task is ScrapTask)))//ScrapTask is after the battle - not sure why - that's just how Stars! did it
-
-                    {//Don't try to colonise before the BombStep or the user might do dozens of extra SplitMergeTasks to get the coloniseTask to be performed after the bombing task
-                        if (waypointZero.Task.IsValid(fleet, target, sender, reciever))
+                        if (target == null) // the long search - we might have followed a fleet here and we had to calculate their expected position at the end of turn so some rounding error is possible
                         {
-                            currentPosition = fleet.Waypoints[0];
-                            waypointZero.Task.Perform(fleet, target, sender, reciever);
-                            currentPosition.Task = new NoTask();
-                            currentPosition.Position = fleet.Position;
-                            fleet.Waypoints.Insert(0, currentPosition);
+                            foreach (Star star in serverState.AllStars.Values)
+                            {
+                                if (star.Position.distanceToSquared(waypointZero.Position) < 1.4143)
+                                {
+                                    target = star;
+                                }
+                            }
                         }
-                    }
-                    try
-                    {
-                        serverState.AllMessages.AddRange(waypointZero.Task.Messages);
-                    }
-                    catch
-                    {
-                        Report.Information("Bad waypoint for " + fleet.Name + " Empire " + fleet.Owner.ToString());
-                    }
+                        if (target != null)
+                        {
+                            fleet.InOrbit = target;
+                            fleet.Waypoints[0].Position = target.Position;
+                            fleet.Waypoints[0].Destination = target.Name;
+                            serverState.AllEmpires.TryGetValue(target.Owner, out reciever);
+                            if (availableTime != 1.0) availableTime = 0; //In Stars! the fleet looses the rest of the turn as it enters orbit and scans the Star (And the crew check out the local pub)
+                                                                         // We could add a scan-and-go to use up available time but we would need to scan each star visited this year by this Fleet! (and not allow the crew off the ship)
+                                                                         // That would require creating a list of each star visited and passing that list to the ScanStep, for now it is easier to just stop the fleet at the first star visited.
+                                                                         // There could also need to be a list of battles at every planet visited during this turn, the battles would need to be resolved during the move step ?
+                        }
+                        else
+                        {
+                            fleet.Waypoints[0].Position = fleet.Position;
+                            fleet.InOrbit = null;
+                        }
+
+                        // -------------------------
+                        // Waypoint 1 Tasks
+                        // -------------------------
+
+                        if ((!(waypointZero.Task is ColoniseTask)) && (!(waypointZero.Task is ScrapTask)))//ScrapTask is after the battle - not sure why - that's just how Stars! did it
+
+                        {//Don't try to colonise before the BombStep or the user might do dozens of extra SplitMergeTasks to get the coloniseTask to be performed after the bombing task
+                            if (waypointZero.Task.IsValid(fleet, target, sender, reciever))
+                            {
+                                currentPosition = fleet.Waypoints[0];
+                                waypointZero.Task.Perform(fleet, target, sender, reciever);
+                                currentPosition.Task = new NoTask();
+                                currentPosition.Position = fleet.Position;
+                                fleet.Waypoints.Insert(0, currentPosition);
+                            }
+                        }
+                        try
+                        {
+                            serverState.AllMessages.AddRange(waypointZero.Task.Messages);
+                        }
+                        catch
+                        {
+                            Report.Information("Bad waypoint for " + fleet.Name + " Empire " + fleet.Owner.ToString());
+                        }
 
 
+
+                    }
 
                 }
 
-            }
+                if (fleet.Waypoints.Count == 0)
+                {
+                    fleet.Waypoints.Add(firstWaypoint);
+                }
+                if (fleet.Waypoints.Count > 1)
+                {
+                    Waypoint nextWaypoint = fleet.Waypoints[1];
 
-            if (fleet.Waypoints.Count == 0)
-            {
-                fleet.Waypoints.Add(firstWaypoint);
+                    double dx = fleet.Position.X - nextWaypoint.Position.X;
+                    double dy = fleet.Position.Y - nextWaypoint.Position.Y;
+                    fleet.Bearing = ((Math.Atan2(dy, dx) * 180) / Math.PI) + 90;
+                }
             }
-            if (fleet.Waypoints.Count > 1)
-            {
-                Waypoint nextWaypoint = fleet.Waypoints[1];
-
-                double dx = fleet.Position.X - nextWaypoint.Position.X;
-                double dy = fleet.Position.Y - nextWaypoint.Position.Y;
-                fleet.Bearing = ((Math.Atan2(dy, dx) * 180) / Math.PI) + 90;
-            }
-
-            // ??? (priority 4) - why does this always return false.
+            // ??? (priority 4) - why does this always return false. - if warp speed too high the fleet may vanish
             return false;
         }
         

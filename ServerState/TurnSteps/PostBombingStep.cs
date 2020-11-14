@@ -35,19 +35,30 @@ namespace Nova.Server.TurnSteps
                             if ((target is Star) && (target.Owner != 0)) receiver = serverState.AllEmpires[target.Owner];
                             if ((fleet.Waypoints[index].Task.IsValid(fleet, target, serverState.AllEmpires[fleet.Owner], receiver)) && ((fleet.Waypoints[index].Task is ColoniseTask) || (fleet.Waypoints[index].Task is InvadeTask)))
                             {
-                                fleet.Waypoints[index].Task.Perform(fleet, target, serverState.AllEmpires[fleet.Owner], receiver);
-                                fleet.Waypoints.RemoveAt(index);
-                                maxIndex--;
+                                bool invading = false;
+                                if ((receiver != null) && (receiver != serverState.AllEmpires[fleet.Owner]))
+                                {
+                                    fleet.Waypoints[index].Task = new NoTask();
+                                    invading = true;
+                                    IWaypointTask invade = new InvadeTask();
+                                    invade.Perform(fleet, target, serverState.AllEmpires[fleet.Owner],receiver); //Not exactly how Stars! does it but it should make programming the AI easier
+                                }
+                                else fleet.Waypoints[index].Task.Perform(fleet, target, serverState.AllEmpires[fleet.Owner], receiver);
                                 try
                                 {
-                                    if (fleet.Waypoints.Count  > 0)
+                                    if (index < fleet.Waypoints.Count)
                                     serverState.AllMessages.AddRange(fleet.Waypoints[index].Task.Messages);
                                 }
                                 catch
                                 {
                                     Report.Information("Bad waypoint for " + fleet.Name + " Empire " + fleet.Owner.ToString());
                                 }
-                                index--;
+                                if (!invading)
+                                {
+                                    fleet.Waypoints.RemoveAt(index);
+                                    maxIndex--;
+                                    index--;
+                                }
                             }
                             else
                             {

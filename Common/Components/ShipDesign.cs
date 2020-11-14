@@ -168,7 +168,8 @@ namespace Nova.Common.Components
                     else if (weapon.Range > 5) rating += weapon.Power;
                     else rating += 1.5 * weapon.Power;
                 }
-                return (int)rating + Armor + Shield;
+                if (rating == 0) return 0;
+                else return (int)rating + Shield + Armor;
             }
         }
 

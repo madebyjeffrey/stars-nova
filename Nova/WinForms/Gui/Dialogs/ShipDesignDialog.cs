@@ -386,7 +386,8 @@ namespace Nova.WinForms.Gui
                     else if (weapon.Range > 5) rating += weapon.Power;
                     else rating += 1.5 * weapon.Power;
                 }
-                return (int)rating + designShields + designArmor;
+                if (rating == 0) return 0;
+                else return (int)rating + designShields + designArmor;
             }
         }
 
