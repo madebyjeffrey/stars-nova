@@ -383,7 +383,9 @@ namespace Nova.Ai
         {
             Waypoint w = new Waypoint();
             w.Position = star.Position;
-            w.WarpFactor = fleet.SlowestEngine;
+            if ((fleet.FuelConsumption(fleet.SlowestEngine, clientState.EmpireState.Race) < 0) && (fleet.TotalFuelCapacity / fleet.FuelAvailable < 3)) w.WarpFactor = fleet.SlowestEngine + 1; //we are making fuel faster than we are using it
+            else if ((fleet.FuelConsumption(fleet.SlowestEngine, clientState.EmpireState.Race) < 0) && (fleet.TotalFuelCapacity / fleet.FuelAvailable >= 5)) w.WarpFactor = fleet.SlowestEngine - 1; //Fuel is low so make some more  
+            else w.WarpFactor = fleet.SlowestEngine;
             w.Destination = star.Name;
             w.Task = task;
             fleet.Waypoints.Clear();

@@ -801,7 +801,7 @@ namespace Nova.Common
         /// returns true if the fleet can reach the destination with the current cargo
         /// 
         /// </summary>
-        public bool canCurrentlyReach(Star destination, Race race)
+        public bool canCurrentlyReach(StarIntel destination, Race race)
         {
             double destinationDistance = this.distanceTo(destination);
             double yearsOfTravel = destinationDistance / (this.SlowestEngine * this.SlowestEngine);

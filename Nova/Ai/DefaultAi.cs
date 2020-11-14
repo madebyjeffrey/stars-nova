@@ -248,6 +248,7 @@ namespace Nova.Ai
         /// </Summary>
         private void HandlePopulationSurplus()
         {
+            int maxTransportCapacity = 0;
             List<Fleet> idleTransportFleets = new List<Fleet>();
             foreach (Fleet fleet in clientState.EmpireState.OwnedFleets.Values)
             {
@@ -255,13 +256,19 @@ namespace Nova.Ai
                     ((fleet.Waypoints.Count == 0) || ((fleet.Waypoints.Count == 1) && fleet.Waypoints[0].Task is NoTask && ((fleet.InOrbit != null) &&(fleet.InOrbit.Name == fleet.Waypoints[0].Destination)) && fleet.Cargo.Mass == 0 && fleet.TotalCargoCapacity != 0)))
                 {
                     idleTransportFleets.Add(fleet);
+                    if (fleet.TotalCargoCapacity > maxTransportCapacity) maxTransportCapacity = fleet.TotalCargoCapacity;
                 }
             }
-            List<Star> underPopulated = new List<Star>();
+            List<string> underPopulated = new List<string>();
             foreach (Star star in clientState.EmpireState.OwnedStars.Values)
             {
                 if (star.Capacity(clientState.EmpireState.Race) < 25)   //if less than 50% growth is reduced
-                    underPopulated.Add(star);
+                    underPopulated.Add(star.Name);
+            }
+            foreach (StarIntel star in clientState.EmpireState.StarReports.Values)
+            {
+                if ((star.Owner != 0) && (star.Owner != clientState.EmpireState.Id) && (star.Colonists < (maxTransportCapacity/2)) && (star.MinValue(clientState.EmpireState.Race) > 50))    
+                    underPopulated.Add(star.Name);  //throw in some invade tasks 
             }
             if (underPopulated.Count >0)
             {
@@ -285,8 +292,8 @@ namespace Nova.Ai
 
                             if (found) //there is a fleet in orbit so use it
                             {
-                                foreach (Star target in underPopulated)
-                                    if (nextTransport.canCurrentlyReach(target, clientState.EmpireState.Race))
+                                foreach (string target in underPopulated)
+                                    if (nextTransport.canCurrentlyReach(clientState.EmpireState.StarReports[target], clientState.EmpireState.Race))
                                     {
                                         WaypointCommand loadCargo = null;
                                         if (surplusPopulationKT > nextTransport.TotalCargoCapacity)
@@ -299,20 +306,20 @@ namespace Nova.Ai
                                         unload.Mode = CargoMode.Unload;
                                         unload.Amount.ColonistsInKilotons = nextTransport.TotalCargoCapacity;
                                         unload.Amount.Germanium = nextTransport.TotalCargoCapacity;
-                                        unload.Target = target;
-                                        SendFleet(target, nextTransport, new CargoTask());
+                                        unload.Target = clientState.EmpireState.StarReports[target];
+                                        SendFleet(clientState.EmpireState.StarReports[target], nextTransport, new CargoTask());
                                         surplusPopulationKT = surplusPopulationKT - nextTransport.TotalCargoCapacity;
                                         occupiedFleets.Add(nextTransport);
                                         if (surplusPopulationKT <= 0) break;
                                         underPopulated.RemoveAt(underPopulated.IndexOf(target)); //send next transport to another planet
                                         break; // nextTransport sent so leave this loop 
                                     }
-                                    surplusPopulationKT = 0;  // tried all targets and none valid so skip this source
+                                    if (underPopulated.Count == 0) surplusPopulationKT = 0;  // no more targets
                             }
                             else // there are no fleets in orbit so send one there
                             {
                                 foreach (Fleet transport in idleTransportFleets)
-                                    if (nextTransport.canCurrentlyReach(source, clientState.EmpireState.Race))
+                                    if (nextTransport.canCurrentlyReach(clientState.EmpireState.StarReports[source.Name], clientState.EmpireState.Race))
                                     {
                                         found = true;
                                         nextTransport = transport;
@@ -320,7 +327,7 @@ namespace Nova.Ai
                                     }
                                 if (found)
                                 {
-                                    SendFleet(source, nextTransport, new CargoTask());
+                                    SendFleet(clientState.EmpireState.StarReports[source.Name], nextTransport, new CargoTask());
                                     surplusPopulationKT = surplusPopulationKT - nextTransport.Cargo.Mass;
                                     occupiedFleets.Add(nextTransport);
                                     if (surplusPopulationKT <= 0) break;
@@ -330,7 +337,7 @@ namespace Nova.Ai
                                     surplusPopulationKT = 0;
                                 }
                             }
-                            //foreach (Fleet occupied in occupiedFleets) idleTransportFleets.Remove(occupied);
+                            foreach (Fleet occupied in occupiedFleets) idleTransportFleets.Remove(occupied);
                         }
                     }
                 }
@@ -512,9 +519,9 @@ namespace Nova.Ai
                     // Bio 4 - carbonic armour
                     targetResearchField = TechLevel.ResearchField.Biotechnology;
                 }
-                else if (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] < 7)
+                else if (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] < 8)
                 {
-                    // Cons 6 - Frigate Cons 7 Large Freighter
+                    // Cons 6 - Frigate Cons 8 Large Freighter
                     targetResearchField = TechLevel.ResearchField.Construction;
                 }
                 else if (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Weapons] < 10)
@@ -1032,7 +1039,7 @@ namespace Nova.Ai
             return coloniser;
         }
 
-        private void SendFleet(Star star, Fleet fleet, IWaypointTask task)
+        private void SendFleet(StarIntel star, Fleet fleet, IWaypointTask task)
         {
             Waypoint w = new Waypoint();
             w.Position = star.Position;

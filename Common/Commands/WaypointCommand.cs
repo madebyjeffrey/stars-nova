@@ -22,6 +22,7 @@
 namespace Nova.Common.Commands
 {
     using System;
+    using System.Collections.Generic;
     using System.Xml;
     
     using Nova.Common.Waypoints;
@@ -54,8 +55,13 @@ namespace Nova.Common.Commands
             get;
             set;
         }
-        
-        
+        private List<Message> messages = new List<Message>();
+
+        public List<Message> Messages
+        {
+            get { return messages; }
+        }
+
         /// <summary>
         /// Default Constructor.
         /// </summary>
@@ -258,6 +264,14 @@ namespace Nova.Common.Commands
                                         if ((Waypoint.Task as CargoTask).IsValid(empire.OwnedFleets[FleetKey], Target, empire))
                                         {
                                             Waypoint.Task.Perform(empire.OwnedFleets[FleetKey], Target, empire);
+                                        }
+                                        try
+                                        {
+                                            Messages.AddRange(Waypoint.Task.Messages);
+                                        }
+                                        catch
+                                        {
+                                            Report.Information("Bad waypoint for " + empire.OwnedFleets[FleetKey].Name + " Empire " + empire.OwnedFleets[FleetKey].Owner.ToString());
                                         }
                                     }
                             } // we don't remove the waypoint until all waypoints are inserted as a Waypoint.Edit(7,waypoint) will not work too well

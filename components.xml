@@ -5376,12 +5376,11 @@ This scanner is capable of determining planetary statistics whilst in orbit.</De
     <Race_Restrictions />
     <Image>Ship/Super_Fuel_Transport0000.png</Image>
     <Property>
-      <Capacity>0</Capacity>
+      <Capacity>2250</Capacity>
       <Generation>200</Generation>
       <Type>Fuel</Type>
     </Property>
     <Property>
-      <FuelCapacity>2250</FuelCapacity>
       <DockCapacity>0</DockCapacity>
       <ARMaxPop>0</ARMaxPop>
       <BaseCargo>0</BaseCargo>
@@ -6073,12 +6072,11 @@ This scanner is capable of determining planetary statistics whilst in orbit.</De
     </Race_Restrictions>
     <Image>Ship/Fuel_Transport0000.png</Image>
     <Property>
-      <Capacity>0</Capacity>
+      <Capacity>750</Capacity>
       <Generation>200</Generation>
       <Type>Fuel</Type>
     </Property>
     <Property>
-      <FuelCapacity>750</FuelCapacity>
       <DockCapacity>0</DockCapacity>
       <ARMaxPop>0</ARMaxPop>
       <BaseCargo>0</BaseCargo>
