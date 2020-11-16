@@ -63,7 +63,7 @@ namespace Nova.Common.Waypoints
             }    
         }
         
-        public bool IsValid(Fleet fleet, Item target, EmpireData sender, EmpireData receiver)
+        public bool IsValid(Fleet fleet, Item target, EmpireData sender, EmpireData receiver,out Message messageOut)
         {
             Message message = new Message();
             Messages.Add(message);            
@@ -73,19 +73,21 @@ namespace Nova.Common.Waypoints
             if (fleet.NumberOfMines == 0)
             {
                 message.Text = fleet.Name + " attempted to lay mines. The order has been canceled because no ship in the fleet has a mine laying pod.";
+                messageOut = message;
                 return false;
             }
             
             Messages.Clear();
+            messageOut = null;
             return true;           
         }
         
-        public bool Perform(Fleet fleet, Item target, EmpireData sender, EmpireData receiver)
+        public bool Perform(Fleet fleet, Item target, EmpireData sender, EmpireData receiver,out Message message)
         {
             // See if a Minefield is already here (owned by us). We allow a
             // certaintolerance in distance because it is unlikely that the
             // waypoint has been set exactly right.
-            
+
             //TODO: Implement per empire minefields.
             /*foreach (Minefield minefield in serverState.AllMinefields.Values)
             {
@@ -108,6 +110,7 @@ namespace Nova.Common.Waypoints
             newField.NumberOfMines = fleet.NumberOfMines;
     
             serverState.AllMinefields[newField.Key] = newField;*/
+            message = null;
             return true;
         }
         

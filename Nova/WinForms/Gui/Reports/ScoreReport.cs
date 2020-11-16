@@ -41,7 +41,7 @@ namespace Nova.WinForms.Gui
         /// Initializes a new instance of the ScoreReport class.
         /// </Summary>
         public ScoreReport(List<ScoreRecord> allScores)
-        {
+        {            
             this.allScores = allScores;
             
             InitializeComponent();
@@ -61,22 +61,46 @@ namespace Nova.WinForms.Gui
 
             foreach (ScoreRecord score in allScores)
             {
-                int i = 0;
-                int numColumns = 10;
-                string[] row = new string[numColumns];
 
-                row[i++] = score.Empire;
-                row[i++] = score.Rank.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                row[i++] = score.Score.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                row[i++] = score.Planets.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                row[i++] = score.Starbases.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                row[i++] = score.UnarmedShips.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                row[i++] = score.EscortShips.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                row[i++] = score.CapitalShips.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                row[i++] = score.TechLevel.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                row[i++] = score.Resources.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                DataGridViewRow RowDef = new DataGridViewRow();
+                DataGridViewCell RaceIcon = new DataGridViewImageCell();
+                RowDef.Cells.Add(RaceIcon);
+                DataGridViewCell Race = new DataGridViewTextBoxCell();
+                RowDef.Cells.Add(Race);
+                DataGridViewCell Rank = new DataGridViewTextBoxCell();
+                RowDef.Cells.Add(Rank);
+                DataGridViewCell Score = new DataGridViewTextBoxCell();
+                RowDef.Cells.Add(Score);
+                DataGridViewCell Planets = new DataGridViewTextBoxCell();
+                RowDef.Cells.Add(Planets);
+                DataGridViewCell Starbases = new DataGridViewTextBoxCell();
+                RowDef.Cells.Add(Starbases);
+                DataGridViewCell UnarmedShips = new DataGridViewTextBoxCell();
+                RowDef.Cells.Add(UnarmedShips);
+                DataGridViewCell EscortShips = new DataGridViewTextBoxCell();
+                RowDef.Cells.Add(EscortShips);
+                DataGridViewCell CapitalShips = new DataGridViewTextBoxCell();
+                RowDef.Cells.Add(CapitalShips);
+                DataGridViewCell TechLevel = new DataGridViewTextBoxCell();
+                RowDef.Cells.Add(TechLevel);
+                DataGridViewCell Resources = new DataGridViewTextBoxCell();
+                RowDef.Cells.Add(Resources);
 
-                this.scoreGridView.Rows.Add(row);
+                RowDef.Height = 64;
+
+                RowDef.Cells[0].Value = score.EmpireIcon;
+                RowDef.Cells[1].Value = score.Empire.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                RowDef.Cells[2].Value = score.Rank.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                RowDef.Cells[3].Value = score.Score.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                RowDef.Cells[4].Value = score.Planets.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                RowDef.Cells[5].Value = score.Starbases.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                RowDef.Cells[6].Value = score.UnarmedShips.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                RowDef.Cells[7].Value = score.EscortShips.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                RowDef.Cells[8].Value = score.CapitalShips.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                RowDef.Cells[9].Value = score.TechLevel.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                RowDef.Cells[10].Value = score.Resources.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+                this.scoreGridView.Rows.Add(RowDef);
             }
 
             this.scoreGridView.AutoResizeColumns();

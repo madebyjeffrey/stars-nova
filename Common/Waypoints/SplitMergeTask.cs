@@ -192,20 +192,21 @@ namespace Nova.Common.Waypoints
 
         
         /// <inheritdoc />
-        public bool IsValid(Fleet fleet, Item target, EmpireData sender, EmpireData receiver)
+        public bool IsValid(Fleet fleet, Item target, EmpireData sender, EmpireData receiver, out Message message)
         {
             // fleet is the original fleet to split, or the recipient of a merge.
             // target (as Fleet) is the new fleet in a split, or the fleet to be merged into FirstFleet.           
-            
+
             // TODO (priority 5) - Validate SplitMergeTask:
             // fleet & target valid vs sender versions
             // FirstFleet cargo + SecondFleet cargo = original cargo from either fleet + target or senders's fleets.
+            message = null;
             return true;
         }
         
         
         /// <inheritdoc />
-        public bool Perform(Fleet fleet, Item target, EmpireData sender, EmpireData receiver)
+        public bool Perform(Fleet fleet, Item target, EmpireData sender, EmpireData receiver,out Message message)
         { 
             Fleet secondFleet = null;
             
@@ -241,7 +242,7 @@ namespace Nova.Common.Waypoints
                 // Now send new Fleets to limbo pending inclusion.
                 sender.TemporaryFleets.Add(secondFleet);                
             }
-
+            message = null;
             return true;            
         }
 

@@ -274,9 +274,9 @@ namespace Nova.Ai
             {
                 foreach (Star source in clientState.EmpireState.OwnedStars.Values)
                 {
-                    if (source.Capacity(clientState.EmpireState.Race) > 50)   //if more than 50% growth is reduced
+                    if (source.Capacity(clientState.EmpireState.Race) > 45)   //if more than 50% growth is reduced
                     {
-                        int surplusPopulationKT = (int)((source.Colonists - source.MaxPopulation(clientState.EmpireState.Race) / 2) / Global.ColonistsPerKiloton); // maintain population at 50% - best growth rate
+                        int surplusPopulationKT = (int)((source.Colonists - source.MaxPopulation(clientState.EmpireState.Race) *0.45) / Global.ColonistsPerKiloton); // maintain population at 50% - best growth rate
                         while (surplusPopulationKT > 0)
                         {
                             bool found = false;
@@ -307,7 +307,7 @@ namespace Nova.Ai
                                         unload.Amount.ColonistsInKilotons = nextTransport.TotalCargoCapacity;
                                         unload.Amount.Germanium = nextTransport.TotalCargoCapacity;
                                         unload.Target = clientState.EmpireState.StarReports[target];
-                                        SendFleet(clientState.EmpireState.StarReports[target], nextTransport, new CargoTask());
+                                        SendFleet(clientState.EmpireState.StarReports[target], nextTransport, unload);
                                         surplusPopulationKT = surplusPopulationKT - nextTransport.TotalCargoCapacity;
                                         occupiedFleets.Add(nextTransport);
                                         if (surplusPopulationKT <= 0) break;
@@ -319,7 +319,7 @@ namespace Nova.Ai
                             else // there are no fleets in orbit so send one there
                             {
                                 foreach (Fleet transport in idleTransportFleets)
-                                    if (nextTransport.canCurrentlyReach(clientState.EmpireState.StarReports[source.Name], clientState.EmpireState.Race))
+                                    if (transport.canCurrentlyReach(clientState.EmpireState.StarReports[source.Name], clientState.EmpireState.Race))
                                     {
                                         found = true;
                                         nextTransport = transport;
@@ -629,7 +629,8 @@ namespace Nova.Ai
                 command.Topics[targetResearchField] = 1;
             }
 
-            if (command.IsValid(clientState.EmpireState))
+            Message message;
+            if (command.IsValid(clientState.EmpireState,out message))
             {
                 clientState.Commands.Push(command);
                 command.ApplyToState(clientState.EmpireState);
@@ -738,7 +739,8 @@ namespace Nova.Ai
                 destroyer.Name = designName;
                 destroyer.Update();
                 DesignCommand command = new DesignCommand(CommandMode.Add, destroyer);
-                if (command.IsValid(clientState.EmpireState))
+                Message message;
+                if (command.IsValid(clientState.EmpireState,out message))
                 {
                     clientState.Commands.Push(command);
                     command.ApplyToState(clientState.EmpireState);
@@ -800,7 +802,8 @@ namespace Nova.Ai
                 starbase.Name = designName;
                 starbase.Update();
                 DesignCommand command = new DesignCommand(CommandMode.Add, starbase);
-                if (command.IsValid(clientState.EmpireState))
+                Message message;
+                if (command.IsValid(clientState.EmpireState,out message))
                 {
                     clientState.Commands.Push(command);
                     command.ApplyToState(clientState.EmpireState);
@@ -875,7 +878,8 @@ namespace Nova.Ai
                 destroyer.Name = designName;
                 destroyer.Update();
                 DesignCommand command = new DesignCommand(CommandMode.Add, destroyer);
-                if (command.IsValid(clientState.EmpireState))
+                Message message;
+                if (command.IsValid(clientState.EmpireState,out message))
                 {
                     clientState.Commands.Push(command);
                     command.ApplyToState(clientState.EmpireState);
@@ -925,7 +929,8 @@ namespace Nova.Ai
                 scout.Name = designName;
                 scout.Update();
                 DesignCommand command = new DesignCommand(CommandMode.Add, scout);
-                if (command.IsValid(clientState.EmpireState))
+                Message message;
+                if (command.IsValid(clientState.EmpireState,out message))
                 {
                     clientState.Commands.Push(command);
                     command.ApplyToState(clientState.EmpireState);
@@ -986,7 +991,8 @@ namespace Nova.Ai
                 refueler.Name = designName;
                 refueler.Update();
                 DesignCommand command = new DesignCommand(CommandMode.Add, refueler);
-                if (command.IsValid(clientState.EmpireState))
+                Message message;
+                if (command.IsValid(clientState.EmpireState,out message))
                 {
                     clientState.Commands.Push(command);
                     command.ApplyToState(clientState.EmpireState);
@@ -1030,7 +1036,8 @@ namespace Nova.Ai
                 coloniser.Name = designName;
                 coloniser.Update();
                 DesignCommand command = new DesignCommand(CommandMode.Add, coloniser);
-                if (command.IsValid(clientState.EmpireState))
+                Message message;
+                if (command.IsValid(clientState.EmpireState,out message))
                 {
                     clientState.Commands.Push(command);
                     command.ApplyToState(clientState.EmpireState);

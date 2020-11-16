@@ -1080,11 +1080,13 @@ namespace Nova.WinForms.Gui
             WaypointCommand command = new WaypointCommand(CommandMode.Add, waypoint, fleet.Key);
             
             clientState.Commands.Push(command);
-            
-            if (command.IsValid(clientState.EmpireState))  // TODO priority 5 is adding a new waypoint for a Starbase really valid? Will my starbase fly away when i do it?
+
+            Nova.Common.Message message;
+            if (command.IsValid(clientState.EmpireState, out message))  // TODO priority 5 is adding a new waypoint for a Starbase really valid? Will my starbase fly away when i do it?
             {
                 command.ApplyToState(clientState.EmpireState);
             }
+            else Report.Information(message.Text);
 
             RefreshStarMap(this, EventArgs.Empty);
 

@@ -70,7 +70,8 @@ namespace Nova.Ai
                 if ((productionOrderToclear.Unit.Cost == productionOrderToclear.Unit.RemainingCost) && !(productionOrderToclear.Unit is ShipProductionUnit))
                 {
                     ProductionCommand clearProductionCommand = new ProductionCommand(CommandMode.Delete, productionOrderToclear, this.planet.Key);
-                    if (clearProductionCommand.IsValid(clientState.EmpireState))
+                    Message message;
+                    if (clearProductionCommand.IsValid(clientState.EmpireState,out message))
                     {
                         // Put the items to be cleared in a queue, as the actual cleanup can not be done while iterating the list.
                         clearProductionList.Enqueue(clearProductionCommand);
@@ -97,7 +98,7 @@ namespace Nova.Ai
                 && ((planet.Capacity(clientState.EmpireState.Race) < 80) || ((clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] >= 8) && (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Propulsion] >= 7))))
             {
                 Double earlyProductionMultiplier = 1.0; // Rush factories for 1st 8 years
-                if (clientState.EmpireState.TurnYear > 2108) earlyProductionMultiplier = 0.3; //then Rush some scouts
+                if (clientState.EmpireState.TurnYear > 2106) earlyProductionMultiplier = 0.3; //then Rush some scouts
                 if (clientState.EmpireState.TurnYear > 2115) earlyProductionMultiplier = 0.5; //then build a mix of stuff
                 if (clientState.EmpireState.TurnYear > 2120) earlyProductionMultiplier = 0.6;
                 // build factories (limited by Germanium, and don't want to use it all)
@@ -115,7 +116,8 @@ namespace Nova.Ai
                         ProductionOrder factoryOrder = new ProductionOrder(factoriesToBuild, new FactoryProductionUnit(clientState.EmpireState.Race), false);
                         ProductionCommand factoryCommand = new ProductionCommand(CommandMode.Add, factoryOrder, this.planet.Key, FactoryProductionPrecedence);
                         productionIndex++;
-                        if (factoryCommand.IsValid(clientState.EmpireState))
+                        Message message;
+                        if (factoryCommand.IsValid(clientState.EmpireState,out message))
                         {
                             factoryCommand.ApplyToState(clientState.EmpireState);
                             this.clientState.Commands.Push(factoryCommand);
@@ -130,7 +132,8 @@ namespace Nova.Ai
                     ProductionOrder mineOrder = new ProductionOrder(maxMines - this.planet.Mines, new MineProductionUnit(clientState.EmpireState.Race), false);
                     ProductionCommand mineCommand = new ProductionCommand(CommandMode.Add, mineOrder, this.planet.Key, Math.Min(MineProductionPrecedence, productionIndex));
                     productionIndex++;
-                    if (mineCommand.IsValid(clientState.EmpireState))
+                    Message message;
+                    if (mineCommand.IsValid(clientState.EmpireState,out message))
                     {
                         mineCommand.ApplyToState(clientState.EmpireState);
                         clientState.Commands.Push(mineCommand);
@@ -147,7 +150,8 @@ namespace Nova.Ai
                     ProductionOrder defenseOrder = new ProductionOrder(defenseToBuild, new DefenseProductionUnit(), false);
                     ProductionCommand defenseCommand = new ProductionCommand(CommandMode.Add, defenseOrder, this.planet.Key, productionIndex);
                     productionIndex++;
-                    if (defenseCommand.IsValid(clientState.EmpireState))
+                    Message message;
+                    if (defenseCommand.IsValid(clientState.EmpireState, out message))
                     {
                         defenseCommand.ApplyToState(clientState.EmpireState);
                         //clientState.Commands.Push(defenseCommand); // build defenses in specific circumstances NOT on EVERY planet?
@@ -215,9 +219,10 @@ namespace Nova.Ai
             {
                 if (this.aiPlan.ScoutDesign != null)
                 {
-                    ProductionOrder scoutOrder = new ProductionOrder(1, new ShipProductionUnit(this.aiPlan.ScoutDesign,"",clientState.EmpireState), false);
+                    ProductionOrder scoutOrder = new ProductionOrder(1, new ShipProductionUnit(this.aiPlan.ScoutDesign,planet.Name,clientState.EmpireState), false);
                     ProductionCommand scoutCommand = new ProductionCommand(CommandMode.Add, scoutOrder, this.planet.Key, productionIndex);
-                    if (scoutCommand.IsValid(clientState.EmpireState))
+                    Message message;
+                    if (scoutCommand.IsValid(clientState.EmpireState,out message))
                     {
                         scoutCommand.ApplyToState(clientState.EmpireState);
                         clientState.Commands.Push(scoutCommand);
@@ -244,12 +249,14 @@ namespace Nova.Ai
                 {
                     ProductionOrder colonizerOrder = new ProductionOrder(1, new ShipProductionUnit(this.aiPlan.ColonizerDesign,planet.Name,clientState.EmpireState), false);
                     ProductionCommand colonizerCommand = new ProductionCommand(CommandMode.Add, colonizerOrder, this.planet.Key, productionIndex);
-                    if (colonizerCommand.IsValid(clientState.EmpireState))
+                    Message message;
+                    if (colonizerCommand.IsValid(clientState.EmpireState, out message))
                     {
                         colonizerCommand.ApplyToState(clientState.EmpireState);
                         clientState.Commands.Push(colonizerCommand);
                         productionIndex++;
                     }
+                    else Report.Information(message.Text);
                 }
             }
             return productionIndex;
@@ -272,14 +279,16 @@ namespace Nova.Ai
                     if ((this.planet.GetResourceRate() > DefaultAIPlanner.LowProduction) && (this.planet.Capacity(clientState.EmpireState.Race) > 25) && !(this.planet.HasFreeTransportInOrbit))
                     {
                         {
-                            ProductionOrder transportOrder = new ProductionOrder(1, new ShipProductionUnit(this.aiPlan.AnyTransportDesign,"",clientState.EmpireState), false);
+                            ProductionOrder transportOrder = new ProductionOrder(1, new ShipProductionUnit(this.aiPlan.AnyTransportDesign,planet.Name,clientState.EmpireState), false);
                             ProductionCommand transportCommand = new ProductionCommand(CommandMode.Add, transportOrder, this.planet.Key, productionIndex);
-                            if (transportCommand.IsValid(clientState.EmpireState))
+                            Message message;
+                            if (transportCommand.IsValid(clientState.EmpireState, out message))
                             {
                                 transportCommand.ApplyToState(clientState.EmpireState);
                                 clientState.Commands.Push(transportCommand);
                                 productionIndex++;
                             }
+                            else Report.Information(message.Text);
                         }
                     }
             return productionIndex;
@@ -293,12 +302,14 @@ namespace Nova.Ai
                 {
                     ProductionOrder refuelerOrder = new ProductionOrder(1, new ShipProductionUnit(this.aiPlan.currentRefuelerDesign,planet.Name,clientState.EmpireState), false);
                     ProductionCommand refuelerCommand = new ProductionCommand(CommandMode.Add, refuelerOrder, this.planet.Key, productionIndex);
-                    if (refuelerCommand.IsValid(clientState.EmpireState))
+                    Message message;
+                    if (refuelerCommand.IsValid(clientState.EmpireState, out message))
                     {
                         refuelerCommand.ApplyToState(clientState.EmpireState);
                         clientState.Commands.Push(refuelerCommand);
                         productionIndex++;
                     }
+                    else Report.Information(message.Text);
                 }
             }
             return productionIndex;
@@ -364,12 +375,14 @@ namespace Nova.Ai
                 ProductionOrder chosenOrder = new ProductionOrder(chosenQty, new ShipProductionUnit(chosenOne,this.planet.Name,clientState.EmpireState), false);
                 ProductionCommand suitableCommand = new ProductionCommand(CommandMode.Add, chosenOrder, this.planet.Key, productionIndex);
                 foreach (ProductionOrder order in this.planet.ManufacturingQueue.Queue) if (order.Name == chosenOne.Name) return productionIndex;
-                if (suitableCommand.IsValid(clientState.EmpireState))
+                Message message;
+                if (suitableCommand.IsValid(clientState.EmpireState, out message))
                 {
                     suitableCommand.ApplyToState(clientState.EmpireState);
                     clientState.Commands.Push(suitableCommand);
                     productionIndex++;
                 }
+                else Report.Information(message.Text);
             }
             return productionIndex;
         }
@@ -391,12 +404,14 @@ namespace Nova.Ai
                 ProductionOrder chosenOrder = new ProductionOrder(1, new ShipProductionUnit(smallStarbase,planet.Name,clientState.EmpireState), false);
                 ProductionCommand suitableCommand = new ProductionCommand(CommandMode.Add, chosenOrder, this.planet.Key, productionIndex);
                 foreach (ProductionOrder order in this.planet.ManufacturingQueue.Queue) if (order.Name == smallStarbase.Name) return productionIndex;
-                if (suitableCommand.IsValid(clientState.EmpireState))
+                Message message;
+                if (suitableCommand.IsValid(clientState.EmpireState, out message))
                 {
                     suitableCommand.ApplyToState(clientState.EmpireState);
                     clientState.Commands.Push(suitableCommand);
                     productionIndex++;
                 }
+                else Report.Information(message.Text);
             }
             return productionIndex;
         }

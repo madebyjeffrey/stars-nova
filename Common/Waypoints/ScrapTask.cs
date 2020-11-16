@@ -63,8 +63,9 @@ namespace Nova.Common.Waypoints
             }    
         }
         
-        public bool IsValid(Fleet fleet, Item target, EmpireData sender, EmpireData receiver = null)
+        public bool IsValid(Fleet fleet, Item target, EmpireData sender, EmpireData receiver, out Message message)
         {
+            message = null;
             return true; // fleet.GetTravelStatus() == Fleet.TravelStatus.Arrived;           
         }
         
@@ -87,7 +88,7 @@ namespace Nova.Common.Waypoints
         /// next year. Scrapping at a planet gives you 45% of the minerals and 35% of
         /// the resources.These resources are not strictly additive.
         /// </remarks>
-        public bool Perform(Fleet fleet, Item target, EmpireData sender, EmpireData receiver = null)
+        public bool Perform(Fleet fleet, Item target, EmpireData sender, EmpireData receiver, out Message messageOut)
         {
             Message message = new Message();
             Messages.Add(message);
@@ -100,6 +101,7 @@ namespace Nova.Common.Waypoints
             if (fleet.InOrbit == null || target == null || !(target is Star))
             {
                 // TODO (priority 4) - create a scrap packet in space
+                messageOut = new Message(sender.Id, "Scrap in space not implemented yet", "Invalid Command", null);
                 return false;
             }
             else
@@ -138,6 +140,7 @@ namespace Nova.Common.Waypoints
             }
             
             fleet.Composition.Clear(); // disapear the ships. The (now empty) fleet will be cleaned up latter.
+            messageOut = message;
             return true;
         }
         

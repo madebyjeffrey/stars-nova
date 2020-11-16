@@ -46,7 +46,7 @@ namespace Nova.Server
 
             foreach (EmpireData empire in serverState.AllEmpires.Values)
             {
-                scores.Add(GetScoreRecord(empire.Id,empire.Race.Name));
+                scores.Add(GetScoreRecord(empire.Id,empire.Race.Name,empire.Race.Icon));
             }
 
             SetRanks(scores);
@@ -57,9 +57,9 @@ namespace Nova.Server
         /// <summary>
         /// Build a <see cref="ScoreRecord"/> for a given race.
         /// </summary>
-        /// <param name="raceName">The name fo the race to build a <see cref="ScoreRecord"/> for.</param>
+        /// <param name="raceName">The name for the race to build a <see cref="ScoreRecord"/> for.</param>
         /// <returns>A <see cref="ScoreRecord"/> for the given race.</returns>
-        private ScoreRecord GetScoreRecord(int empireId,string empire)
+        private ScoreRecord GetScoreRecord(int empireId,string empire,RaceIcon raceIcon)
         {
             double totalScore = 0;
             ScoreRecord score = new ScoreRecord();
@@ -144,6 +144,7 @@ namespace Nova.Server
 
             score.EmpireId = empireId;
             score.Empire = empire;
+            score.EmpireIcon = raceIcon.Image;
             if (serverState.AllTechLevels.ContainsKey(empireId))
             {
                 score.TechLevel = serverState.AllTechLevels[empireId];

@@ -171,12 +171,14 @@ namespace Nova.WinForms.Gui
                 }
             }
             DesignCommand command = new DesignCommand(CommandMode.Add, newDesign);
-            
-            if (command.IsValid(clientState.EmpireState))
+
+            Nova.Common.Message message;
+            if (command.IsValid(clientState.EmpireState,out message))
             {
                 clientState.Commands.Push(command);
                 command.ApplyToState(clientState.EmpireState);
             }
+            Report.Information(message.Text);
             Close();
         }
 
@@ -382,7 +384,7 @@ namespace Nova.WinForms.Gui
                 double rating = 0;
                 foreach (Weapon weapon in weaponlist)
                 {
-                    if (weapon.IsBeam) rating += Global.beamRatingMultiplier[((int)BattleSpeed * 4), weapon.Range] * (Double)weapon.Power;
+                    if (weapon.IsBeam) rating += Global.beamRatingMultiplier[((int)BattleSpeed * 4), weapon.Range-1] * (Double)weapon.Power;
                     else if (weapon.Range > 5) rating += weapon.Power;
                     else rating += 1.5 * weapon.Power;
                 }
@@ -399,7 +401,7 @@ namespace Nova.WinForms.Gui
                 double rating = 0;
                 foreach (Weapon weapon in weaponlist)
                 {
-                    if (weapon.IsBeam) rating += Global.beamRatingMultiplier[((int)BattleSpeed * 4), weapon.Range] * (Double)weapon.Power;
+                    if (weapon.IsBeam) rating += Global.beamRatingMultiplier[((int)BattleSpeed * 4), weapon.Range-1] * (Double)weapon.Power;
                     else if (weapon.Range > 5) rating += weapon.Power;
                     else rating += 1.5 * weapon.Power;
                 }

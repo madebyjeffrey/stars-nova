@@ -68,21 +68,24 @@ namespace Nova.Common.Commands
         /// </summary>
         /// <param name="empire">The empire issuing/requesting the fleet rename command.</param>
         /// <returns>True if the fleet can be renamed.</returns>
-        public bool IsValid(EmpireData empire)
+        public bool IsValid(EmpireData empire, out Message message)
         {
             // check the fleet belongs to the race seeking to rename it
             if ( ! empire.OwnedFleets.ContainsKey(FleetKey))
             {
+                message = new Message(empire.Id, "Can't rename Fleets that you don't own","Invalid Command",null);
                 return false;
             }
 
-            // check the name is valie
+            // check the name is valid
             if (string.IsNullOrEmpty(NewName))
             {
+                message = new Message(empire.Id, "Invalid name for ship - rename failed", "Invalid Command", null);
                 return false;
             }
 
             // otherwise, all is good
+            message = null;
             return true;
         }
 
@@ -90,12 +93,14 @@ namespace Nova.Common.Commands
         /// Perform the rename command.
         /// </summary>
         /// <param name="empire">The empire issuing/requesting the fleet rename command.</param>
-        public void ApplyToState(EmpireData empire)
+        public Message ApplyToState(EmpireData empire)
         {
-            if (this.IsValid(empire))
+            Message message = null;
+            if (this.IsValid(empire,out message))
             {
                 empire.OwnedFleets[FleetKey].Name = this.NewName;
             }
+            return message;
         }
 
 

@@ -74,7 +74,7 @@ namespace Nova.Common
             cost = shipDesign.Cost;
             if ((sender.Designs[shipDesign.Key].IsStarbase) && (sender.StarReports[starName].Starbase !=null))
                 cost = shipDesign.Cost
-                 - sender.Designs[sender.StarReports[starName].Starbase.Key].Cost; // A 3rd party client could send the name of a planet with a big starbase in "star"
+                 - sender.OwnedStars[starName].Starbase.TotalCost; // A 3rd party client could send the name of a planet with a big starbase in "star"
                                                                                // so ensure the server ignores the star name and uses the production queues owner.Name
             cost.Ironium = Math.Max(0, cost.Ironium);                           // TODO (priority 1) find the real formula for starbase upgrades
             cost.Boranium = Math.Max(0, cost.Boranium);                         // Stars! behaviour is close to this: compare each hull.module.allocated in the new design with the old design 
@@ -116,7 +116,7 @@ namespace Nova.Common
                             break;
 
                         case "star":
-                            name = mainNode.FirstChild.Value;
+                            star = mainNode.FirstChild.Value;
                             break;
 
                     }
@@ -186,8 +186,12 @@ namespace Nova.Common
                     percentBuildable = 1 - ((double)lacking.Energy / remainingCost.Energy);
                 }
                 
-                // What we spend on the partial builld.
-                star.ResourcesOnHand -= remainingCost * percentBuildable;    
+                // What we spend on the partial build.
+                star.ResourcesOnHand -= remainingCost * percentBuildable;
+                if (star.ResourcesOnHand.Ironium < 0) star.ResourcesOnHand.Ironium = 0;   // correct rounding errors that reduce resources below zero
+                if (star.ResourcesOnHand.Boranium < 0) star.ResourcesOnHand.Boranium = 0;
+                if (star.ResourcesOnHand.Germanium < 0) star.ResourcesOnHand.Germanium = 0;
+                if (star.ResourcesOnHand.Energy < 0) star.ResourcesOnHand.Energy = 0;
                 remainingCost -= remainingCost * percentBuildable;
                 
                 return false;
@@ -195,6 +199,10 @@ namespace Nova.Common
             else
             {
                 star.ResourcesOnHand -= remainingCost;
+                if (star.ResourcesOnHand.Ironium < 0) star.ResourcesOnHand.Ironium = 0;   // correct rounding errors that reduce resources below zero
+                if (star.ResourcesOnHand.Boranium < 0) star.ResourcesOnHand.Boranium = 0;
+                if (star.ResourcesOnHand.Germanium < 0) star.ResourcesOnHand.Germanium = 0;
+                if (star.ResourcesOnHand.Energy < 0) star.ResourcesOnHand.Energy = 0;
                 return true;
             }
         }

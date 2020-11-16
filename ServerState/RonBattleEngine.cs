@@ -365,7 +365,7 @@ namespace Nova.Server
                     break;
                 }
 
-                MoveStacks(battlingStacks);
+                MoveStacks(battlingStacks,battleRound);
 
                 List<WeaponDetails> allAttacks = GenerateAttacks(battlingStacks);
 
@@ -556,7 +556,7 @@ namespace Nova.Server
         /// battle report.
         /// </summary>
         /// <param name="battlingStacks">All stacks in the battle.</param>
-        public void MoveStacks(List<Stack> battlingStacks)
+        public void MoveStacks(List<Stack> battlingStacks,int battleRound)
         {
             // Fleets initially advance until their opponents are within weapon range  
             // then withdraw to keep out of their opponents weapon range.
@@ -574,7 +574,7 @@ namespace Nova.Server
                     NovaPoint vectorToTarget = stack.Target.Position - stack.Position;
                     NovaPoint newHeading;
                     newHeading = vectorToTarget.BattleSpeedVector(stack.BattleSpeed * gridScale);
-                    if (!stack.Token.Design.HasWeapons)
+                    if ((!stack.Token.Design.HasWeapons) || (battleRound < 5))
                         if (stack.distanceTo(stack.Target)/gridScale < Global.MaxWeaponRange) newHeading = newHeading.Scale(-1.0);  // armed enemy is getting close - run away
                         else newHeading = new NovaPoint(0, 0);  //we are unarmed so don't do anything unless an enemy approaches
                     if (stack.VelocityVector == null) stack.VelocityVector = newHeading;
@@ -599,6 +599,7 @@ namespace Nova.Server
                             else stack.VelocityVector = newHeading;
                         }
                     }
+                    NovaPoint oldPosition = stack.Position;
                     stack.Position = stack.Position + newHeading;
 
 
@@ -606,7 +607,7 @@ namespace Nova.Server
                     BattleStepMovement report = new BattleStepMovement();
                     report.StackKey = stack.Key;
                     report.Position = stack.Position;
-                    battle.Steps.Add(report);
+                    if (oldPosition != stack.Position) battle.Steps.Add(report);
 
                 }
             }

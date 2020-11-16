@@ -86,7 +86,7 @@ namespace Nova.Server.TurnSteps
             public Fleet Fleet { get; }
             public Waypoint Waypoint { get; }
         }
-        public void Process(ServerData serverState)
+        public Message Process(ServerData serverState)
         {
             WaypointComparer wCompare = new WaypointComparer();
             string WaypointZeroDestination = "";
@@ -108,6 +108,7 @@ namespace Nova.Server.TurnSteps
                 }
             }
             serverState.CleanupFleets();
+            return null;
         }
     }
 }

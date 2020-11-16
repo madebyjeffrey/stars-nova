@@ -79,27 +79,30 @@ namespace Nova.Common.Commands
         }
         
         
-        public bool IsValid(EmpireData empire)
+        public bool IsValid(EmpireData empire, out Message message)
         {
             if (Budget < 0 || Budget > 100)
             {
+                message = new Message(empire.Id, Budget + "% is not a valid research percentage", "Invalid Command", null);
                 return false;
             }
             
             // Invalidate if nothing really changed.
             if (Budget == empire.ResearchBudget && Topics == empire.ResearchTopics)
             {
+                message = null;
                 return false;
             }
-            
+            message = null;
             return true;
         }
         
         
-        public void ApplyToState(EmpireData empire)
+        public Message ApplyToState(EmpireData empire)
         {
             empire.ResearchBudget = Budget;
             empire.ResearchTopics = Topics;
+            return null;
         }
         
         

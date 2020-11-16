@@ -63,7 +63,7 @@ namespace Nova.Common.Waypoints
             }    
         }
         
-        public bool IsValid(Fleet fleet, Item target, EmpireData sender, EmpireData receiver)
+        public bool IsValid(Fleet fleet, Item target, EmpireData sender, EmpireData receiver, out Message messageOut)
         {
             Message message = new Message();
             Messages.Add(message);
@@ -76,6 +76,7 @@ namespace Nova.Common.Waypoints
             if (fleet.InOrbit == null || target == null || !(target is Star))
             {
                 message.Text += "but the target is not a planet.";
+                messageOut = message;
                 return false;
             }
 
@@ -84,6 +85,7 @@ namespace Nova.Common.Waypoints
             if (fleet.Cargo.ColonistsInKilotons == 0)
             {
                 message.Text += "but there are no troops on board.";
+                messageOut = message;
                 return false;
             }
     
@@ -97,6 +99,7 @@ namespace Nova.Common.Waypoints
                 fleet.Cargo.ColonistsInKilotons = 0;
                 
                 message.Text += star.Name + " but it is already ours. Troops have joined the local populace.";
+                messageOut = message;
                 return false;
             }
             
@@ -104,6 +107,7 @@ namespace Nova.Common.Waypoints
             {
                 // This star has not been colonised. Can't invade.
                 message.Text += star.Name + " but it is not colonised. You must send a ship with a colony module and orders to colonise to take this system.";
+                messageOut = message;
                 return false;
             }
             
@@ -115,6 +119,7 @@ namespace Nova.Common.Waypoints
                 case PlayerRelation.Neutral:
                     {
                         message.Text += star.Name + " but the " + sender.EmpireReports[star.Owner].RaceName + " are not our enemies. Order has been cancelled.";
+                        messageOut = message;
                         return false;
                     }
                 case PlayerRelation.Enemy:
@@ -134,13 +139,14 @@ namespace Nova.Common.Waypoints
             if (star.Starbase != null)
             {
                 message.Text += star.Name + " but the starbase at " + star.Name + " would kill all invading troops. Order has been cancelled.";
+                messageOut = message;
                 return false;
             }
-
+            messageOut = null;
             return true;          
         }
         
-        public bool Perform(Fleet fleet, Item target, EmpireData sender, EmpireData receiver)
+        public bool Perform(Fleet fleet, Item target, EmpireData sender, EmpireData receiver, out Message messageOut)
         {
             Star star = (Star)target;
             
@@ -174,8 +180,10 @@ namespace Nova.Common.Waypoints
             int defenderStrength = (int)(star.Colonists * defenderBonus);
             int attackerStrength = (int)(troopsOnGround * attackerBonus);
             int survivorStrength = defenderStrength - attackerStrength; // will be negative if attacker wins
-
-            string messageText = fleet.Owner + "'s fleet " + fleet.Name + " attacked " +
+            String Empirename = "";
+            if (sender.EmpireReports.ContainsKey((ushort)fleet.Owner)) Empirename = sender.EmpireReports[fleet.Owner].RaceName;
+            else Empirename = sender.Race.Name;
+            string messageText = Empirename + "'s fleet " + fleet.Name + " attacked " +
                                  star.Name + " with " + troops + " troops. ";
 
             if (survivorStrength > 0)
@@ -191,9 +199,13 @@ namespace Nova.Common.Waypoints
                             " colonists were killed in the attack.";
 
                 wolfMessage.Text = messageText;
+                wolfMessage.Type = "StarIntel";
+                wolfMessage.Event = star.Position;
                 Messages.Add(wolfMessage);
 
                 lambMessage.Text = messageText;
+                lambMessage.Type = "StarIntel";
+                wolfMessage.Event = star.Position;
                 Messages.Add(lambMessage);
             }
             else if (survivorStrength < 0)
@@ -209,7 +221,9 @@ namespace Nova.Common.Waypoints
                 receiver.StarReports[star.Name].Owner = sender.Id;
                 sender.StarReports[star.Key].Update(star, ScanLevel.InScan, sender.TurnYear);
                 star.Owner = fleet.Owner;
-                sender.OwnedStars.Add(star);
+                Star check = null;
+                sender.OwnedStars.TryGetValue(star.Name, out check);
+                if (check == null) sender.OwnedStars.Add(star);
                 sender.StarReports[star.Key].Update(star, ScanLevel.Owned, sender.TurnYear);
                 
                 messageText += "The defenders were slain but "
@@ -240,7 +254,8 @@ namespace Nova.Common.Waypoints
                 star.Factories = 0;
                 star.Owner = Global.Nobody;
             }
-            
+            if (Messages.Count > 0) messageOut = Messages[0];
+            else messageOut = null;
             return true; 
         }
         

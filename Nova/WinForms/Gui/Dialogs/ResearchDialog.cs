@@ -232,14 +232,15 @@ namespace Nova.WinForms.Gui
             ResearchCommand command = new ResearchCommand();
             command.Budget = (int)budgetPercentage.Value;
             command.Topics.Zero();
-            command.Topics[targetArea] = 1;    
-            
-            if (command.IsValid(clientState.EmpireState))
+            command.Topics[targetArea] = 1;
+
+            Nova.Common.Message message;
+            if (command.IsValid(clientState.EmpireState, out message))
             {
                 clientState.Commands.Push(command);
                 command.ApplyToState(clientState.EmpireState);
             }
-            
+            else Report.Information(message.Text);
             // This is done for synchronization. We wait for the event handlers
             // to return something (and thus complete) before closing the Form and invalidating
             // all event handlers and delegates thus crashing everything into the fiery void of despair.

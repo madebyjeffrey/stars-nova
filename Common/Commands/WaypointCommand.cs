@@ -137,13 +137,14 @@ namespace Nova.Common.Commands
         
         
         /// <inheritdoc />
-        public bool IsValid(EmpireData empire)
+        public bool IsValid(EmpireData empire, out Message message)
         {
             if (!empire.OwnedFleets.ContainsKey(FleetKey))
             {
+                message = new Message(empire.Id, " trying to add a Waypoint for a Fleet that you do not own", "Invalid Command", null);
                 return false;
             }
-            
+            message = null;
             return true;
         }
 
@@ -175,30 +176,33 @@ namespace Nova.Common.Commands
 
         /// </summary>
 
-        public void ApplyToState(EmpireData empire)
+        public Message ApplyToState(EmpireData empire)
         {
             switch (Mode)
 
             {
                 case CommandMode.Add:
                     empire.OwnedFleets[FleetKey].Waypoints.Add(Waypoint);
-                    break;
+                    return null;
                 case CommandMode.Insert:
                     empire.OwnedFleets[FleetKey].Waypoints.Insert(Index, Waypoint);
-                    break;
+                    return null;
                 case CommandMode.Delete:
                     empire.OwnedFleets[FleetKey].Waypoints.RemoveAt(Index);
-                    break;
+                    return null;
                 case CommandMode.Edit:
                     empire.OwnedFleets[FleetKey].Waypoints.RemoveAt(Index);
                     if (empire.OwnedFleets[FleetKey].Waypoints.Count > Index) empire.OwnedFleets[FleetKey].Waypoints.Insert(Index, Waypoint);
                     else empire.OwnedFleets[FleetKey].Waypoints.Add(Waypoint); //Waypoint.Insert[Insert] past the end of the list is an Add
-                    break;
+                    return null;
             }
+            return null;
+
         }
-        public void PreApplyToState(EmpireData empire, Item Target)
+        public Message PreApplyToState(EmpireData empire, Item Target)
         {
-            switch (Mode)
+             Message message = null;
+             switch (Mode)
 
             {
                 case CommandMode.Add:
@@ -210,9 +214,14 @@ namespace Nova.Common.Commands
                                 empire.OwnedFleets[FleetKey].Waypoints.Add(Waypoint);  // Add the Waypoint 
                                 if (isWaypointZeroCommand(Waypoint, empire.OwnedFleets[FleetKey]))
                                 {
-                                    if ((Waypoint.Task as SplitMergeTask).IsValid(empire.OwnedFleets[FleetKey], Target, empire, empire))
+                                    if ((Waypoint.Task as SplitMergeTask).IsValid(empire.OwnedFleets[FleetKey], Target, empire, empire,out message))
                                     {
-                                        Waypoint.Task.Perform(empire.OwnedFleets[FleetKey], Target, empire);  //PrePerform it so the fleets IDs match the commands that follow
+                                        Waypoint.Task.Perform(empire.OwnedFleets[FleetKey], Target, empire, null, out message);  //PrePerform it so the fleets IDs match the commands that follow
+                                        return message;
+                                    }
+                                    else
+                                    {
+                                        return message;
                                     }
                                 }
                             }
@@ -225,10 +234,12 @@ namespace Nova.Common.Commands
                                     empire.OwnedFleets[FleetKey].Waypoints.Add(Waypoint);  // Add the Waypoint 
                                     if (isWaypointZeroCommand(Waypoint, empire.OwnedFleets[FleetKey]))
                                     {
-                                        if ((Waypoint.Task as CargoTask).IsValid(empire.OwnedFleets[FleetKey], Target, empire))
+                                        if ((Waypoint.Task as CargoTask).IsValid(empire.OwnedFleets[FleetKey], Target, empire, null, out message))
                                         {
-                                            Waypoint.Task.Perform(empire.OwnedFleets[FleetKey], Target, empire); //PrePerform it so the cargo levels are correct when the next Split or Merge happens 
+                                            Waypoint.Task.Perform(empire.OwnedFleets[FleetKey], Target, empire, null, out message); //PrePerform it so the cargo levels are correct when the next Split or Merge happens 
+                                            return message;
                                         }
+                                        else return message;
                                     }
                                 } // we don't remove the waypoint until all waypoints are inserted as a Waypoint.Edit(7,waypoint) will not work too well
                                   // if we have removed 6 of the waypoints and Waypoint.Count = 1
@@ -236,7 +247,7 @@ namespace Nova.Common.Commands
                             }
                             foreach (Fleet newFleet in empire.TemporaryFleets) empire.AddOrUpdateFleet(newFleet);
                             empire.TemporaryFleets.Clear();
-                                break;
+                            return null;
                         }
                     }
                 case CommandMode.Insert:
@@ -248,10 +259,11 @@ namespace Nova.Common.Commands
                             {
                                 if (isWaypointZeroCommand(Waypoint, empire.OwnedFleets[FleetKey]))
                                 {
-                                    if ((Waypoint.Task as SplitMergeTask).IsValid(empire.OwnedFleets[FleetKey], Target, empire,empire))
+                                    if ((Waypoint.Task as SplitMergeTask).IsValid(empire.OwnedFleets[FleetKey], Target, empire,empire,out message))
                                     {
-                                        Waypoint.Task.Perform(empire.OwnedFleets[FleetKey], Target, empire);
+                                        Waypoint.Task.Perform(empire.OwnedFleets[FleetKey], Target, empire, null, out message);
                                     }
+                                    return message;
                                 }
                             }
                             else
@@ -261,18 +273,12 @@ namespace Nova.Common.Commands
                                 if (Waypoint.Task is CargoTask)
                                     if (isWaypointZeroCommand(Waypoint, empire.OwnedFleets[FleetKey]))
                                     {
-                                        if ((Waypoint.Task as CargoTask).IsValid(empire.OwnedFleets[FleetKey], Target, empire))
+                                        if ((Waypoint.Task as CargoTask).IsValid(empire.OwnedFleets[FleetKey], Target, empire, null, out message))
                                         {
-                                            Waypoint.Task.Perform(empire.OwnedFleets[FleetKey], Target, empire);
+                                            Waypoint.Task.Perform(empire.OwnedFleets[FleetKey], Target, empire, null, out message);
+                                            return message;
                                         }
-                                        try
-                                        {
-                                            Messages.AddRange(Waypoint.Task.Messages);
-                                        }
-                                        catch
-                                        {
-                                            Report.Information("Bad waypoint for " + empire.OwnedFleets[FleetKey].Name + " Empire " + empire.OwnedFleets[FleetKey].Owner.ToString());
-                                        }
+                                        else return message;
                                     }
                             } // we don't remove the waypoint until all waypoints are inserted as a Waypoint.Edit(7,waypoint) will not work too well
                               // if we have removed 6 of the waypoints and Waypoint.Count = 1
@@ -280,19 +286,20 @@ namespace Nova.Common.Commands
                             foreach (Fleet newFleet in empire.TemporaryFleets) empire.AddOrUpdateFleet(newFleet);
                             empire.TemporaryFleets.Clear();
 
-                            break;
+                            return null;
                         }
                     }
                 case CommandMode.Delete:
                     empire.OwnedFleets[FleetKey].Waypoints.Add(Waypoint);  // Add the Waypoint 
                     // we prevent Deletes in the Waypoint zero list so no need to pre-process it
-                    break;
+                    return null;
                 case CommandMode.Edit:
                     empire.OwnedFleets[FleetKey].Waypoints.Add(Waypoint);  // Add the Waypoint 
                     //We prevent edits of Waypoint Zeros so no need to pre-process it
                     //you can edit a waypoint zero action by adding another action that undoes the first action
-                    break;
+                    return null;
             }
+            return null;
         }
 
         private bool isWaypointZeroCommand(Waypoint waypoint,Fleet fleet)

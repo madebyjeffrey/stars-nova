@@ -204,7 +204,8 @@ namespace Nova.ControlLibrary
 
                     clientData.Commands.Push(command);
 
-                    if (command.IsValid(clientData.EmpireState))
+                    Nova.Common.Message message;
+                    if (command.IsValid(clientData.EmpireState, out message))
                     {
                         command.ApplyToState(clientData.EmpireState);
 
@@ -214,30 +215,35 @@ namespace Nova.ControlLibrary
                             {
                                 StarIntel star = clientData.EmpireState.StarReports[(waypoint.Task as CargoTask).Target.Name.ToString()];
                                 // Also perform it here, to update client state for manual xfer.
-                                if (command.Waypoint.Task.IsValid(fleet, star, clientData.EmpireState, null))
+                                if (command.Waypoint.Task.IsValid(fleet, star, clientData.EmpireState, null, out message))
                                 {
-                                    command.Waypoint.Task.Perform(fleet, star, clientData.EmpireState, null); // Load, Unload
+                                    command.Waypoint.Task.Perform(fleet, star, clientData.EmpireState, null, out message); // Load, Unload
+                                    if (message != null) Report.Information(message.Text);
                                 }
+                                else Report.Information(message.Text);
                             }
                             //fleet.Waypoints.Remove(waypoint); // immediate commands shouldn't add a visible waypoint to the ship in the client - we have told the server what to do
                         }
-                        else  if (clientData.EmpireState.OwnedFleets.ContainsKey((waypoint.Task as CargoTask).Target.Key))
+                        else if (clientData.EmpireState.OwnedFleets.ContainsKey((waypoint.Task as CargoTask).Target.Key))
                         {
                             Fleet other = clientData.EmpireState.OwnedFleets[(waypoint.Task as CargoTask).Target.Key];
-                            if (waypoint.Task.IsValid(fleet, other, clientData.EmpireState,null))
+                            if (waypoint.Task.IsValid(fleet, other, clientData.EmpireState, null,out message))
                             {
 
                                 // Also perform it here, to update client state for manual xfer.
-                                if (command.Waypoint.Task.IsValid(fleet, other, clientData.EmpireState, null))
+                                if (command.Waypoint.Task.IsValid(fleet, other, clientData.EmpireState, null, out message))
                                 {
-                                    command.Waypoint.Task.Perform(fleet, other, clientData.EmpireState, null); // Load, Unload
+                                    command.Waypoint.Task.Perform(fleet, other, clientData.EmpireState, null, out message); // Load, Unload
+                                    if (message != null) Report.Information(message.Text);
                                 }
+                                else Report.Information(message.Text);
                             }
-                           //fleet.Waypoints.Remove(waypoint); // immediate commands shouldn't add a visible waypoint to the ship in the client - we have told the server what to do
+                            else Report.Information(message.Text);
+                            //fleet.Waypoints.Remove(waypoint); // immediate commands shouldn't add a visible waypoint to the ship in the client - we have told the server what to do
 
                         }
                     }
-                    
+                    else Report.Information(message.Text);
                 }
             }
             

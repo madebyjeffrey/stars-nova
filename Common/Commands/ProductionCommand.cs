@@ -101,7 +101,7 @@ namespace Nova.Common.Commands
         }
         
         
-        public bool IsValid(EmpireData empire)
+        public bool IsValid(EmpireData empire, out Message message)
         {
             switch (Mode)
             {
@@ -114,18 +114,25 @@ namespace Nova.Common.Commands
                         {
                             if (empire.Designs[(ProductionOrder.Unit as ShipProductionUnit).DesignKey].IsStarbase)
                             {
-                                if (empire.StarReports[(ProductionOrder.Unit as ShipProductionUnit).Star].Starbase != null)  //Cost is for upgrade
+                                if (((ProductionOrder.Unit as ShipProductionUnit).Star == null) || ((ProductionOrder.Unit as ShipProductionUnit).Star == ""))
                                 {
+                                    message = new Message(empire.Id, "Starbase Upgrade command has no StarName: " + empire.Designs[(ProductionOrder.Unit as ShipProductionUnit).DesignKey], "Invalid Command", null);
+                                    return false;
+                                }
+                                if (empire.OwnedStars[(ProductionOrder.Unit as ShipProductionUnit).Star].Starbase != null)  
+                                {                                                                                                       //Cost is for upgrade
                                     if (!(ProductionOrder.Unit.Cost >=
-                                        (empire.Designs[(ProductionOrder.Unit as ShipProductionUnit).DesignKey].Cost) - empire.Designs[empire.StarReports[(ProductionOrder.Unit as ShipProductionUnit).Star].Starbase.Key].Cost))
+                                        (empire.Designs[(ProductionOrder.Unit as ShipProductionUnit).DesignKey].Cost) - empire.OwnedStars[(ProductionOrder.Unit as ShipProductionUnit).Star].Starbase.TotalCost))
                                     {
+                                        message = new Message(empire.Id, "Starbase Upgrade cost appears fraudulent: " + empire.Designs[(ProductionOrder.Unit as ShipProductionUnit).DesignKey], "Invalid Command", null);
                                         return false;
                                     }
-                                }
-                                else                                                                                          // Cost is to build a new Starbase
+                                }       
+                                else                                                                                                     // Cost is to build a new Starbase
                                 {
                                     if (!(ProductionOrder.Unit.Cost >= (empire.Designs[(ProductionOrder.Unit as ShipProductionUnit).DesignKey].Cost) ))
                                         {
+                                        message = new Message(empire.Id, "Starbase Construction cost appears fraudulent: " + empire.Designs[(ProductionOrder.Unit as ShipProductionUnit).DesignKey], "Invalid Command", null);
                                         return false;
                                     }
 
@@ -135,32 +142,37 @@ namespace Nova.Common.Commands
                           
                             else if (!(ProductionOrder.Unit.Cost >= empire.Designs[(ProductionOrder.Unit as ShipProductionUnit).DesignKey].Cost))
                             {
+                                message = new Message(empire.Id, "Ship Construction cost appears fraudulent: " + empire.Designs[(ProductionOrder.Unit as ShipProductionUnit).DesignKey], "Invalid Command", null);
                                 return false;
                             }
                         }
                         catch (System.Collections.Generic.KeyNotFoundException)
                         {
+                            message = new Message(empire.Id, "Exception determining validity of a Ship Construction command" + empire.Designs[(ProductionOrder.Unit as ShipProductionUnit).DesignKey], "Invalid Command", null);
                             return false;
                         }
                     }                    
                     if (ProductionOrder.Unit is FactoryProductionUnit)
                     {
                         if (!(ProductionOrder.Unit.Cost >= empire.Race.GetFactoryResources())) 
-                        { 
-                            return false; 
+                        {
+                            message = new Message(empire.Id, "Factory Construction cost appears fraudulent: " , "Invalid Command", null);
+                            return false;
                         }
                     }                    
                     if (ProductionOrder.Unit is MineProductionUnit)
                     {
                         if (!(ProductionOrder.Unit.Cost >= empire.Race.GetMineResources())) 
-                        { 
-                            return false; 
+                        {
+                            message = new Message(empire.Id, "Mine Construction cost appears fraudulent: ", "Invalid Command", null);
+                            return false;
                         }
                     }                    
                     // Don't add cheated pre-built units.
                     if (!(ProductionOrder.Unit.Cost == ProductionOrder.Unit.RemainingCost)) 
-                    { 
-                        return false; 
+                    {
+                        message = new Message(empire.Id, "Construction cost appears fraudulent: ", "Invalid Command", null);
+                        return false;
                     }
                     break;
                 
@@ -174,15 +186,16 @@ namespace Nova.Common.Commands
                     if (!(ProductionOrder.Unit.RemainingCost >= empire.OwnedStars[StarKey].ManufacturingQueue.Queue[Index].Unit.RemainingCost)
                         && (ProductionOrder.Name == empire.OwnedStars[StarKey].ManufacturingQueue.Queue[Index].Unit.Name))
                     {
+                        message = new Message(empire.Id, "Construction cost appears fraudulent: ", "Invalid Command", null);
                         return false;    
                     }                    
                     // Don't allow modification of the remaining cost.  
                     if (!(ProductionOrder.Unit.Cost >= empire.OwnedStars[StarKey].ManufacturingQueue.Queue[Index].Unit.Cost)
                         && (ProductionOrder.Name == empire.OwnedStars[StarKey].ManufacturingQueue.Queue[Index].Unit.Name))
                     {
-                        return false;    
+                        message = new Message(empire.Id, "Construction cost appears fraudulent: ", "Invalid Command", null);
                     }
-                     
+
                     break;
                 
                 case CommandMode.Delete:
@@ -190,12 +203,12 @@ namespace Nova.Common.Commands
                     // if (!empire.OwnedStars[StarKey].ManufacturingQueue.Queue.Contains(ProductionOrder)) {return false;} // FIXME (priority 5) - flase positive prevents deletion of production items.
                     break;
             }
-            
+            message = null;
             return true;
         }
         
         
-        public void ApplyToState(EmpireData empire)
+        public Message ApplyToState(EmpireData empire)
         {
             switch (Mode)
             {
@@ -206,15 +219,16 @@ namespace Nova.Common.Commands
                         empire.OwnedStars[StarKey].ManufacturingQueue.Queue.Add(ProductionOrder);
                         Index = empire.OwnedStars[StarKey].ManufacturingQueue.Queue.Count - 1;
                     }
-                    break;
+                    return null;
                 case CommandMode.Edit:
                     empire.OwnedStars[StarKey].ManufacturingQueue.Queue.RemoveAt(Index);
                     empire.OwnedStars[StarKey].ManufacturingQueue.Queue.Insert(Index, ProductionOrder);
-                    break;
+                    return null;
                 case CommandMode.Delete:
                     empire.OwnedStars[StarKey].ManufacturingQueue.Queue.RemoveAt(Index);
-                    break;
-            }    
+                    return null;
+            }
+            return null;
         }
         
         

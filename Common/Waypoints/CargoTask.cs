@@ -150,7 +150,7 @@ namespace Nova.Common.Waypoints
 
 
         /// <inheritdoc />
-        public bool IsValid(Fleet fleet, Item target, EmpireData sender, EmpireData receiver = null)
+        public bool IsValid(Fleet fleet, Item target, EmpireData sender, EmpireData receiver , out Message messageOut)
         {
             if (target == null)
             {
@@ -159,6 +159,7 @@ namespace Nova.Common.Waypoints
                 message.Audience = fleet.Owner;
                 message.Text = "Fleet " + fleet.Name + " attempted to load/unload cargo to empty space: ";
                 Messages.Add(message);
+                messageOut = message;
                 return false;
             }
             if ((target.Type == ItemType.Star) || (target.Type == ItemType.StarIntel))
@@ -174,6 +175,7 @@ namespace Nova.Common.Waypoints
                         message.Audience = fleet.Owner;
                         message.Text = "Fleet " + fleet.Name + " attempted to load/unload cargo when too far from target: " + target.Name;
                         Messages.Add(message);
+                        messageOut = message;
                         return false;
                     }
                 }
@@ -184,7 +186,9 @@ namespace Nova.Common.Waypoints
                 {
                     if (receiver == null)
                     {
-                       // Report.Information("Cargo Transfer to enemy Stars not implemeneted - try creating an invasion task"); //  ;)
+                        // Report.Information("Cargo Transfer to enemy Stars not implemeneted - try creating an invasion task"); //  ;)
+                        Message message = new Message(sender.Id, "Cargo Transfer to enemy Stars not implemeneted - try creating an invasion task", "Invalid Command", null);
+                        messageOut = message; 
                         return false;  
                     }
                     else
@@ -192,14 +196,15 @@ namespace Nova.Common.Waypoints
                         bool toReturn = false;
 
                         InvadeTask invade = new InvadeTask();
-
-                        if (invade.IsValid(fleet, target, sender, receiver))
+                        Message message = null;
+                        if (invade.IsValid(fleet, target, sender, receiver,out message))
                         {
-                            toReturn = invade.Perform(fleet, target, sender, receiver);
+                            toReturn = invade.Perform(fleet, target, sender, receiver,out message);
                         }
 
                         Messages.AddRange(invade.Messages);
-
+                        if (invade.Messages.Count > 0) messageOut = invade.Messages[0];
+                        else messageOut = null;
                         return toReturn;
                     }
                 }
@@ -218,28 +223,32 @@ namespace Nova.Common.Waypoints
                         message.Audience = fleet.Owner;
                         message.Text = "Fleet " + fleet.Name + " attempted to load/unload cargo when too far from target: " + target.Name;
                         Messages.Add(message);
+                        messageOut = message;
                         return false;
                     }
                 }
 
             }
-
+            messageOut = null;
             return true;
         }
 
 
         /// <inheritdoc />
-        public bool Perform(Fleet fleet, Item target, EmpireData sender, EmpireData receiver)
+        public bool Perform(Fleet fleet, Item target, EmpireData sender, EmpireData receiver ,out  Message message)
         {            
             switch (Mode)
             {
                 case CargoMode.Load:
+                    message = null;
                     return Load(fleet, target, sender, receiver);
                     
                 case CargoMode.Unload:
+                    message = null;
                     return Unload(fleet, target, sender, receiver);
             }
-            
+
+            message = null;
             return false;
         }
 

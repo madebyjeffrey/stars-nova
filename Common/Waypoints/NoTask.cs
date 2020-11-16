@@ -60,13 +60,15 @@ namespace Nova.Common.Waypoints
             
         }
         
-        public bool IsValid(Fleet fleet, Item target, EmpireData sender, EmpireData receiver)
+        public bool IsValid(Fleet fleet, Item target, EmpireData sender, EmpireData receiver, out Message message)
         {
+            message = null;
             return true;           
         }
         
-        public bool Perform(Fleet fleet, Item target, EmpireData sender, EmpireData receiver)
+        public bool Perform(Fleet fleet, Item target, EmpireData sender, EmpireData receiver, out Message message)
         {
+            message = null;
             return true;
         }
         

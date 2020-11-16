@@ -22,7 +22,8 @@
 namespace Nova.Server.TurnSteps
 {
     using System;
-    
+    using Nova.Common;
+
     /// <summary>
     /// Defines the API for any TurnStep used by the TurnGenerator.
     /// </summary>
@@ -31,7 +32,7 @@ namespace Nova.Server.TurnSteps
         /// <summary>
         /// Executes this turnstep.
         /// </summary>
-        void Process(ServerData serverState);
+        Message Process(ServerData serverState);
     }
 }
 

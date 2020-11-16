@@ -28,17 +28,19 @@ namespace Nova.Server.TurnSteps
     
     using Nova.Common;
     using Nova.Common.Waypoints;
-    
+
+
     public class ScrapFleetStep : ITurnStep
     {
-        public void Process(ServerData serverState)
+        public Message Process(ServerData serverState)
         {
+            Message message = null; ;
             foreach (Fleet fleet in serverState.IterateAllFleets())
             {
                 if (fleet.Waypoints.Count > 0)
                 {
                     Waypoint waypointZero = fleet.Waypoints[0];
-                    if (waypointZero.Task is ScrapTask && waypointZero.Task.IsValid(fleet, null, null))
+                    if (waypointZero.Task is ScrapTask && waypointZero.Task.IsValid(fleet, null, null,null , out message))
                     {
                         Star targetStar = null;
                         serverState.AllStars.TryGetValue(waypointZero.Destination, out targetStar);
@@ -49,12 +51,13 @@ namespace Nova.Server.TurnSteps
 
                         EmpireData sender = serverState.AllEmpires[fleet.Owner];
 
-                        waypointZero.Task.Perform(fleet, targetStar, sender);
+                        waypointZero.Task.Perform(fleet, targetStar, sender,null , out message);
                     }
                 }
             }
 
             serverState.CleanupFleets();
+            return message;
         }
     }
 }

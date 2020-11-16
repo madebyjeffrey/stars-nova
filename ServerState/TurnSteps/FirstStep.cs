@@ -38,7 +38,7 @@ namespace Nova.Server.TurnSteps
         {
         }
         
-        public void Process(ServerData serverState)
+        public Message Process(ServerData serverState)
         {
             this.serverState = serverState;
             
@@ -57,7 +57,8 @@ namespace Nova.Server.TurnSteps
                         empire.StarReports.Add(star.Key, star.GenerateReport(ScanLevel.None, serverState.TurnYear));    
                     }
                 }
-            }  
+            }
+            return null;
         }
     }
 }

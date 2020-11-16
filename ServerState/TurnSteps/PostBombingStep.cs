@@ -15,8 +15,9 @@ namespace Nova.Server.TurnSteps
     /// </summary>
     class PostBombingStep : ITurnStep
     {
-        public void Process(ServerData serverState)
+        public Message Process(ServerData serverState)
         {
+            Message message = null;
             foreach (Fleet fleet in serverState.IterateAllFleets())
             {
                 int index = 0;
@@ -33,17 +34,23 @@ namespace Nova.Server.TurnSteps
 
                             EmpireData receiver = null;
                             if ((target is Star) && (target.Owner != 0)) receiver = serverState.AllEmpires[target.Owner];
-                            if ((fleet.Waypoints[index].Task.IsValid(fleet, target, serverState.AllEmpires[fleet.Owner], receiver)) && ((fleet.Waypoints[index].Task is ColoniseTask) || (fleet.Waypoints[index].Task is InvadeTask)))
+                            if ((fleet.Waypoints[index].Task.IsValid(fleet, target, serverState.AllEmpires[fleet.Owner], receiver,out message)) && ((fleet.Waypoints[index].Task is ColoniseTask) || (fleet.Waypoints[index].Task is InvadeTask)))
                             {
+                                if (message != null) serverState.AllMessages.Add(message);
+                                message = null;
                                 bool invading = false;
                                 if ((receiver != null) && (receiver != serverState.AllEmpires[fleet.Owner]))
                                 {
                                     fleet.Waypoints[index].Task = new NoTask();
                                     invading = true;
                                     IWaypointTask invade = new InvadeTask();
-                                    invade.Perform(fleet, target, serverState.AllEmpires[fleet.Owner],receiver); //Not exactly how Stars! does it but it should make programming the AI easier
+                                    invade.Perform(fleet, target, serverState.AllEmpires[fleet.Owner],receiver,out message); //Not exactly how Stars! does it but it should make programming the AI easier
+                                    if (message != null) serverState.AllMessages.Add(message);
+                                    message = null;
                                 }
-                                else fleet.Waypoints[index].Task.Perform(fleet, target, serverState.AllEmpires[fleet.Owner], receiver);
+                                else fleet.Waypoints[index].Task.Perform(fleet, target, serverState.AllEmpires[fleet.Owner], receiver,out message);
+                                if (message != null) serverState.AllMessages.Add(message);
+                                message = null;
                                 try
                                 {
                                     if (index < fleet.Waypoints.Count)
@@ -62,7 +69,7 @@ namespace Nova.Server.TurnSteps
                             }
                             else
                             {
-
+                                if (message != null) serverState.AllMessages.Add(message);
                             }
 
                         }
@@ -71,6 +78,7 @@ namespace Nova.Server.TurnSteps
                 }
             }
             serverState.CleanupFleets();
+            return message;
         }
     }
 }

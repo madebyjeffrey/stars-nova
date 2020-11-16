@@ -183,13 +183,14 @@ Are you sure you want to do this?";
             ShipDesign design = designList.SelectedItems[0].Tag as ShipDesign;
 
             DesignCommand command = new DesignCommand(CommandMode.Delete, design.Key);
-            
-            if (command.IsValid(clientState.EmpireState))
+
+            Nova.Common.Message message;
+            if (command.IsValid(clientState.EmpireState, out message))
             {
                 clientState.Commands.Push(command);
                 command.ApplyToState(clientState.EmpireState);
             }
-            
+            else Report.Information(message.Text);
             DesignOwner_SelectedIndexChanged(null, null);
 
             // Ensure the Star map is updated in case we've completely removed any

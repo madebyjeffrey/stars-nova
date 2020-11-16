@@ -114,49 +114,53 @@ namespace Nova.Common.Commands
         
         
         
-        public bool IsValid(EmpireData empire)
+        public bool IsValid(EmpireData empire, out Message message)
         {           
             switch (Mode)
             {
                 case CommandMode.Add:
                     if (empire.Designs.ContainsKey(Design.Key))
                     {
-                        // Cant re-add same design.
+                        message = new Message(empire.Id, "Cant re-add same design:" + Design.Name, "Invalid Command", null);
                         return false;
                     }
                 break;
-                case CommandMode.Delete: // Botch cases check for existing design before editing/deleting.
+                case CommandMode.Delete: // Both cases check for existing design before editing/deleting.
                 case CommandMode.Edit:
                     if (!empire.Designs.ContainsKey(Design.Key))
                     {
+                        message = new Message(empire.Id, "Cant re-add same design:" + Design.Name, "Invalid Command", null);
                         return false;
                     }
                 break;
             }
-            
+
+            message = new Message(empire.Id, "Design:" + Design.Name + " added", "Invalid Command", null);
             return true;
         }
         
         
         
-        public void ApplyToState(EmpireData empire)
+        public Message ApplyToState(EmpireData empire)
         {
             switch (Mode)
             {
                 case CommandMode.Add:
                     Design.Update();
                     empire.Designs.Add(Design.Key, Design);
-                break;
+                    return null;
                 case CommandMode.Delete:
                     empire.Designs.Remove(Design.Key);                
                     UpdateFleetCompositions(empire);
-                break;
+                    return null;
                 case CommandMode.Edit:
                     empire.Designs.Remove(Design.Key);
                     UpdateFleetCompositions(empire);
                     empire.Designs.Add(Design.Key, Design);
-                break;
+                    return null;
+
             }
+                    return null;
         }
         
         

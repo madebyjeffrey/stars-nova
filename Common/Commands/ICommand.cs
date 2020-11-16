@@ -33,9 +33,9 @@ namespace Nova.Common.Commands
     /// </remarks>
     public interface ICommand
     {
-        bool IsValid(EmpireData empire);
+        bool IsValid(EmpireData empire, out Message messsage);
         
-        void ApplyToState(EmpireData empire);
+        Message ApplyToState(EmpireData empire);
         
         XmlElement ToXml(XmlDocument xmldoc);
     }

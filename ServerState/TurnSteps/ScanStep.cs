@@ -40,7 +40,7 @@ namespace Nova.Server.TurnSteps
         }
         
         
-        public void Process(ServerData serverState)
+        public Message Process(ServerData serverState)
         {
             this.serverState = serverState;
             
@@ -48,7 +48,8 @@ namespace Nova.Server.TurnSteps
             {                            
                 AddStars(empire);
                 Scan(empire);
-            }  
+            }
+            return null;
         }
         
         

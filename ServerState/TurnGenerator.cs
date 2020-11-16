@@ -161,7 +161,8 @@ namespace Nova.Server
                        
             foreach (ITurnStep turnStep in turnSteps.Values)
             {
-                turnStep.Process(serverState);    
+                Message message = turnStep.Process(serverState);
+                if (message != null) serverState.AllMessages.Add(message);
             }
 
 
@@ -175,6 +176,7 @@ namespace Nova.Server
                     {
                         this.serverState.AllEmpires[empire.Id].StarReports[fleet.InOrbit.Name].HasFleetsInOrbit = true;
                         if (fleet.Name.Contains(Global.AiRefueler)) this.serverState.AllEmpires[empire.Id].StarReports[fleet.InOrbit.Name].HasRefuelerInOrbit = true;
+                        if (fleet.Name.Contains(Global.AiFreighter) && (fleet.Waypoints.Count < 2)) this.serverState.AllEmpires[empire.Id].StarReports[fleet.InOrbit.Name].HasFreeTransportInOrbit = true;
                     }
             }
 
@@ -213,9 +215,10 @@ namespace Nova.Server
                     while (serverState.AllCommands[empire.Id].Count > 0) 
                     {
                         ICommand command = serverState.AllCommands[empire.Id].Pop();
-                        
-                        if (command.IsValid(empire))
+                        Message message = null; 
+                        if (command.IsValid(empire, out message))
                         {
+                            if (null != message) serverState.AllMessages.Add(message);
                             if (command is WaypointCommand)
                             {
                                 if (((command as WaypointCommand).Mode == CommandMode.Add) || ((command as WaypointCommand).Mode == CommandMode.Edit) || ((command as WaypointCommand).Mode == CommandMode.Insert))
@@ -226,12 +229,25 @@ namespace Nova.Server
                                 }
                                 else (command as WaypointCommand).ApplyToState(empire); // might be a waypoint delete or edit so keep the indexes alligned between server and the clients indexes
                             }
-                            else command.ApplyToState(empire);
+                            else
+                            {
+                                message = command.ApplyToState(empire);
+                                if (null != message) serverState.AllMessages.Add(message);
+                                message = null;
+                            }
                         }
                         else
                         {
-                            // TODO (priority 4) - Flag invalid orders to all players. Preferably give some indication of why it is invalid for debugging custom clients/AIs.
+                            if (null != message)
+                            {
+                                serverState.AllMessages.Add(message);
+                                Report.Information(message.Text);
+                            }
+                            message = new Message(empire.Id, "Invalid " + command.GetType().Name + "command for " + empire.Race.Name, "Invalid Command", null);
+                            serverState.AllMessages.Add(message);
+                            if (null != message) serverState.AllMessages.Add(message);
                         }
+
                     }
                 }
                 
@@ -551,14 +567,18 @@ namespace Nova.Server
                         if ((!(waypointZero.Task is ColoniseTask)) && (!(waypointZero.Task is ScrapTask)))//ScrapTask is after the battle - not sure why - that's just how Stars! did it
 
                         {//Don't try to colonise before the BombStep or the user might do dozens of extra SplitMergeTasks to get the coloniseTask to be performed after the bombing task
-                            if (waypointZero.Task.IsValid(fleet, target, sender, reciever))
+                            Message message;
+                            if (waypointZero.Task.IsValid(fleet, target, sender, reciever, out message))
                             {
+                                if (null != message) serverState.AllMessages.Add(message);
                                 currentPosition = fleet.Waypoints[0];
-                                waypointZero.Task.Perform(fleet, target, sender, reciever);
+                                waypointZero.Task.Perform(fleet, target, sender, reciever, out message);
+                                if (null != message) serverState.AllMessages.Add(message); 
                                 currentPosition.Task = new NoTask();
                                 currentPosition.Position = fleet.Position;
                                 fleet.Waypoints.Insert(0, currentPosition);
                             }
+                            else if (null != message) serverState.AllMessages.Add(message);
                         }
                         try
                         {

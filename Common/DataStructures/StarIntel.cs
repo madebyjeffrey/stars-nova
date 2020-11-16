@@ -262,7 +262,8 @@ namespace Nova.Common
                 {
                     discovered = new Message();
                     discovered.Audience = scanner.Owner;
-                    discovered.Type = "Star";
+                    discovered.Type = "StarIntel";
+                    discovered.Event = star.Position;
                     discovered.Text = "You have discovered a new habitable planet (" + star.Name + ")  with a current Value of " + this.MinValue(race).ToString() +
                         " and a Maximum value of " + this.MaxValue(race, gravityModCapability, temperatureModCapability, radiationModCapability).ToString();
                 }

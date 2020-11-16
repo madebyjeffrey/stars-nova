@@ -135,7 +135,7 @@ namespace Nova.Common.Waypoints
 
 
         /// <inheritdoc />
-        public bool IsValid(Fleet fleet, Item target, EmpireData sender, EmpireData receiver = null)
+        public bool IsValid(Fleet fleet, Item target, EmpireData sender, EmpireData receiver ,out Message messageOut)
         {
             if (target == null)
             {
@@ -144,6 +144,7 @@ namespace Nova.Common.Waypoints
                 message.Audience = fleet.Owner;
                 message.Text = "Fleet " + fleet.Name + " attempted to load/unload fuel to empty space: ";
                 Messages.Add(message);
+                messageOut = message;
                 return false;
             }
             if ((target.Type == ItemType.Star) || (target.Type == ItemType.StarIntel))
@@ -159,6 +160,7 @@ namespace Nova.Common.Waypoints
                         message.Audience = fleet.Owner;
                         message.Text = "Fleet " + fleet.Name + " attempted to load/unload fuel when too far from target: " + target.Name;
                         Messages.Add(message);
+                        messageOut = message;
                         return false;
                     }
                 }
@@ -169,12 +171,14 @@ namespace Nova.Common.Waypoints
                 {
                     if (receiver == null)
                     {
-                        Report.Information("Invalid constructor call to Waypoint.IsValid - Fuel dumped in Space"); //  ;)
+                        Message message = new Message(sender.Id, "Fleet " + fleet.Name + " - Invalid constructor call to Waypoint.IsValid - Fuel dumped in Space", "Invalid Command", null);
+                        messageOut = message;
                         return false;
                     }
                     else
                     {
-                        Report.Information("Receiving Race had the wrong Fuel nozzles - Fuel dumped in Space"); //  ;)
+                        Message message = new Message(sender.Id, "Fleet " + fleet.Name + " Receiving Race had the wrong Fuel nozzles - Fuel dumped in Space", "Invalid Command", null);
+                        messageOut = message;
                         return true;
                     }
                 }
@@ -193,36 +197,41 @@ namespace Nova.Common.Waypoints
                         message.Audience = fleet.Owner;
                         message.Text = "Fleet " + fleet.Name + " attempted to load/unload cargo when too far from target: " + target.Name;
                         Messages.Add(message);
+                        messageOut = message;
                         return false;
                     }
                 }
 
             }
-
+            messageOut = null;
             return true;
         }
 
 
         /// <inheritdoc />
-        public bool Perform(Fleet fleet, Item target, EmpireData sender, EmpireData receiver)
+        public bool Perform(Fleet fleet, Item target, EmpireData sender, EmpireData receiver, out Message messageOut)
         {// The existing Client has no controls to add a fuel transfer commands at any place other than waypoint zero 
-            // The existing AI only has no methods (23 Oct 2020) that add fuel transfer commands at waypoint zero (usually Waypoint 1) at some distance from the fleets current location
+            // The existing AI only has no methods (23 Oct 2020) that add fuel transfer commands at waypoint zero (usually Waypoint 1) or at some distance from the fleets current location
             if ((target.Type == ItemType.Star) || (target.Type == ItemType.StarIntel))
             {
                 if (sender.OwnedStars.ContainsKey(target.Name))
                 {
                     Star star = sender.OwnedStars[target.Name];
                     {
-                        //Message message = new Message();
-                        //message.Text = "Fleet " + fleet.Name + " has loaded fuel from " + star.Name + ".";
-                        //Messages.Add(message);
-
                         //fleet.FuelAvailable = fleet.FuelAvailable - (double)Amount.Value;
                         //interactions between starbases and orbiting fuel is handled elsewhere
+                        messageOut = null;
                         return true;
                     }
                 }
-                else return false;
+                else
+                {
+                    Message message = new Message();
+                    message.Text = "Fleet " + fleet.Name + " tried to load fuel to/from " + target.Name + ".";
+                    Messages.Add(message);
+                    messageOut = null;
+                    return false;
+                }
             }
             else if (target.Type == ItemType.Fleet)
             {
@@ -232,25 +241,31 @@ namespace Nova.Common.Waypoints
                     Fleet other = sender.OwnedFleets[(target as Fleet).Key];
                     Message message = new Message();
                     message = new Message();
-                    message.Text = "Fleet " + fleet.Name + " has transferred fuel to " + other.Name + ".";
-                    message.Type = "DestToChange";
-                    message.FleetID = fleet.Id;
-                    Messages.Add(message);
-                    message = new Message();
                     message.Text = "Fleet " + other.Name + " has received fuel from " + fleet.Name + ".";
                     message.Type = "WarpToChange";
                     message.FleetID = other.Id;
                     Messages.Add(message);
+                    message = new Message();
+                    message.Text = "Fleet " + fleet.Name + " has transferred fuel to " + other.Name + ".";
+                    message.Type = "DestToChange";
+                    message.FleetID = fleet.Id;
+                    Messages.Add(message);
                     double AmountToTransfer = Amount.Value;
                     if (fleet.FuelAvailable < AmountToTransfer) AmountToTransfer = fleet.FuelAvailable; // existing AI commands just set Amount.value to int.MaxValue
-                    if (other.TotalFuelCapacity- other.FuelAvailable < AmountToTransfer) AmountToTransfer = other.TotalFuelCapacity - other.FuelAvailable;
+                    if (other.TotalFuelCapacity - other.FuelAvailable < AmountToTransfer) AmountToTransfer = other.TotalFuelCapacity - other.FuelAvailable;
                     fleet.FuelAvailable = fleet.FuelAvailable - AmountToTransfer;
                     other.FuelAvailable = other.FuelAvailable + AmountToTransfer;
+                    messageOut = message;
                     return true;
                 }
+                messageOut = null;
                 return false;
             }
-            else return false;
+            else
+            {
+                messageOut = null;
+                return false;
+            }
         }
     
     }

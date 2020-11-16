@@ -10,7 +10,7 @@ namespace Nova.Server.TurnSteps
 
     class BombingStep : ITurnStep
     {
-        public void Process(ServerData serverState)
+        public Message Process(ServerData serverState)
         {
             Bombing bombing = new Bombing(serverState);
 
@@ -21,6 +21,7 @@ namespace Nova.Server.TurnSteps
                     bombing.Bomb(fleet, serverState.AllStars[fleet.InOrbit.Name]);
                 }
             }
-        }
+         return null;
+       }
     }
 }

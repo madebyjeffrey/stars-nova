@@ -43,6 +43,7 @@ namespace Nova.WinForms.Gui
     /// </Summary>
     public class Messages : System.Windows.Forms.UserControl
     {
+        public event EventHandler<SelectionArgs> doStarIntelStuff = null;
         private List<Common.Message> messages;
         private int currentMessage;
         private int turnYear;
@@ -233,6 +234,13 @@ namespace Nova.WinForms.Gui
             if (thisMessage.Event is BattleReport)
             {
                 DoDialog(new BattleViewer(thisMessage.Event as BattleReport));
+            }
+            if (thisMessage.Event is StarIntel)
+            {
+                
+                Mappable destination = new Mappable((thisMessage.Event as StarIntel).Position);
+                SelectionArgs positionArg = new SelectionArgs(destination);
+                if (doStarIntelStuff != null) doStarIntelStuff(sender, positionArg);
             }
 
         }

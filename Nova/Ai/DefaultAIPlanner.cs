@@ -375,7 +375,8 @@ namespace Nova.Ai
 
                     DesignCommand command = new DesignCommand(CommandMode.Add, transportDesign);
 
-                    if (command.IsValid(clientState.EmpireState))
+                    Message message;
+                    if (command.IsValid(clientState.EmpireState,out message))
                     {
                         clientState.Commands.Push(command);
                         command.ApplyToState(clientState.EmpireState);

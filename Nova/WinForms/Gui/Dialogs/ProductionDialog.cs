@@ -515,11 +515,13 @@ namespace Nova.WinForms.Gui
             while (queueList.ProductionCommands.Count > 0)
             {
                 ICommand command = queueList.ProductionCommands.Dequeue();
-                if (command.IsValid(clientState.EmpireState))
+                Nova.Common.Message message;
+                if (command.IsValid(clientState.EmpireState,out message))
                 {
                     clientState.Commands.Push(command);
                     command.ApplyToState(clientState.EmpireState);
                 }
+                else Report.Information(message.Text);
             }
             
             Close();

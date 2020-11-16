@@ -83,6 +83,7 @@ namespace Nova.WinForms.Gui
                 MapControl.SelectionRequested += SelectionDetails.CurrentSelection;
                 MapControl.SelectionChanged += SelectionDetails.DetailChangeSelection;
                 MapControl.WaypointChanged += SelectionDetails.FleetDetail.UpdateWaypointList;
+                Messages.doStarIntelStuff += SelectionDetails.DetailChangeSelection;
             }
         }
 

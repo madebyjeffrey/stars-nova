@@ -126,7 +126,10 @@ namespace Nova.Common
 
                         case "scorerecord":
                             ScoreRecord newScore = new ScoreRecord(xmlnode);
+                            if (EmpireState.EmpireReports.ContainsKey((ushort)newScore.EmpireId)) newScore.EmpireIcon = EmpireState.EmpireReports[(ushort)(newScore.EmpireId)].Icon.Image;
+                            else newScore.EmpireIcon = EmpireState.Race.Icon.Image;
                             AllScores.Add(newScore);
+
                             break;
 
                         case "minefield":

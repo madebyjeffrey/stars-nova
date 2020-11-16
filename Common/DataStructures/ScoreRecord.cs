@@ -26,6 +26,7 @@ namespace Nova.Common
     using System.Collections.Generic;
     using System.Text;
     using System.Xml;
+    using System.Drawing;
 
     /// <summary>
     /// Keeps details of the data needed for the Score report.
@@ -34,6 +35,7 @@ namespace Nova.Common
     public sealed class ScoreRecord : IComparable
     {
         public int EmpireId;
+        public Image EmpireIcon;
         public string Empire;
         public int Rank;
         public int Score;

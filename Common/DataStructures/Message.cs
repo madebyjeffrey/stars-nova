@@ -109,6 +109,10 @@ namespace Nova.Common
                             Event = subnode.FirstChild.Value;
                             break;
 
+                        case "StarID":
+                            Event = subnode.FirstChild.Value;
+                            break;
+
                         default: break;
                     }
                 }
@@ -156,11 +160,16 @@ namespace Nova.Common
                     case "Cheap Engines":
                     case "Fuel":
                     case "Star":
+                    case "Invalid Command":
                         // No object reference required to be saved.
                         break;
 
                     case "Minefield":
                         Global.SaveData(xmldoc, xmlelMessage, "Event", (Event as Minefield).Key);
+                        break;
+
+                    case "StarIntel":
+                        Global.SaveData(xmldoc, xmlelMessage, "Event", Event.ToString() );
                         break;
 
                     case "BattleReport":

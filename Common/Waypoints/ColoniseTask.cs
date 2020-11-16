@@ -68,7 +68,7 @@ namespace Nova.Common.Waypoints
             }    
         }
         
-        public bool IsValid(Fleet fleet, Item target, EmpireData sender, EmpireData reciever)
+        public bool IsValid(Fleet fleet, Item target, EmpireData sender, EmpireData reciever, out Message messageOut)
         {
             Message message = new Message();
             Messages.Add(message);
@@ -79,6 +79,7 @@ namespace Nova.Common.Waypoints
             if (fleet.InOrbit == null || target == null || !(target is Star))
             {
                 message.Text += "something that is not a star.";
+                messageOut = message;
                 return false;
             }
             
@@ -88,42 +89,48 @@ namespace Nova.Common.Waypoints
             if (star.Colonists != 0)
             {
                 message.Text += " but it is already occupied, ";
+                messageOut = message;
                 return true;
             }
             
             if (fleet.Cargo.ColonistsInKilotons == 0)
             {
                 message.Text += " but no colonists were on board.";
+                messageOut = message;
                 return false;
             }
             
             if (fleet.CanColonize == false)
             {
                 message.Text += " but no ships with colonization module were present.";
+                messageOut = message;
                 return false;
             }
             
             Messages.Clear();
+            messageOut = null;
             return true;           
         }
         
-        public bool Perform(Fleet fleet, Item target, EmpireData sender, EmpireData reciever)
+        public bool Perform(Fleet fleet, Item target, EmpireData sender, EmpireData reciever, out Message messageOut)
         {
+            Message message = null;
             Star star = target as Star;
-            if ((star.Colonists > 0) && (sender == reciever))
-            {
+            if (fleet.Owner == star.Owner)            {
                 star.ResourcesOnHand += fleet.Cargo.ToResource();
                 star.Colonists += fleet.Cargo.ColonistNumbers;
-                Message message = new Message();
+                message = new Message();
+                message.Text = fleet.Cargo.ColonistNumbers.ToString() + " colonists beamed to surface of " + star.Name + "."; // This helps the AI by emptying the Colonizer
+                fleet.Cargo.Clear();
                 message.Audience = fleet.Owner;
-                message.Text = " colonists beamed to surface of " + star.Name + "."; // This helps the AI by emtying the Colonizer
                 message.Type = "DestToChange";
+                messageOut = message;
                 Messages.Add(message);
             }
-            else
+            else if (0 == star.Owner)
             {
 
-                Message message = new Message();
+                message = new Message();
                 message.Audience = fleet.Owner;
                 message.Text = " You have colonised " + star.Name + ".";
                 message.Type = "DestToChange";
@@ -131,6 +138,7 @@ namespace Nova.Common.Waypoints
 
                 star.ResourcesOnHand = fleet.Cargo.ToResource();
                 star.Colonists = fleet.Cargo.ColonistNumbers;
+                fleet.Cargo.Clear();
                 star.Owner = fleet.Owner;
                 star.ThisRace = sender.Race;
 
@@ -142,6 +150,7 @@ namespace Nova.Common.Waypoints
                 sender.OwnedStars.Add(star);
                 sender.StarReports[star.Name].Update(star, ScanLevel.Owned, sender.TurnYear);
             }
+            messageOut = message;
             return true;
         }
         

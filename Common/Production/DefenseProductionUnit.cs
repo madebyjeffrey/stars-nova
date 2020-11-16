@@ -139,12 +139,20 @@ namespace Nova.Common
                 // What we spend on the partial builld.
                 star.ResourcesOnHand -= RemainingCost * percentBuildable;
                 RemainingCost -= RemainingCost * percentBuildable;
+                if (star.ResourcesOnHand.Ironium < 0) star.ResourcesOnHand.Ironium = 0;   // correct rounding errors that reduce resources below zero
+                if (star.ResourcesOnHand.Boranium < 0) star.ResourcesOnHand.Boranium = 0;
+                if (star.ResourcesOnHand.Germanium < 0) star.ResourcesOnHand.Germanium = 0;
+                if (star.ResourcesOnHand.Energy < 0) star.ResourcesOnHand.Energy = 0;
 
                 return false;
             }
             else // Fully build this unit.
             {
                 star.ResourcesOnHand -= RemainingCost;
+                if (star.ResourcesOnHand.Ironium < 0) star.ResourcesOnHand.Ironium = 0;   // correct rounding errors that reduce resources below zero
+                if (star.ResourcesOnHand.Boranium < 0) star.ResourcesOnHand.Boranium = 0;
+                if (star.ResourcesOnHand.Germanium < 0) star.ResourcesOnHand.Germanium = 0;
+                if (star.ResourcesOnHand.Energy < 0) star.ResourcesOnHand.Energy = 0;
                 star.Defenses++;
                 return true;
             }  

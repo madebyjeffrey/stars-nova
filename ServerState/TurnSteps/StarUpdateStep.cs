@@ -40,7 +40,7 @@ namespace Nova.Server.TurnSteps
            
         }
         
-        public void Process(ServerData serverState)
+        public Message Process(ServerData serverState)
         {
             this.serverState = serverState;
             manufacture = new Manufacture(serverState);
@@ -85,6 +85,7 @@ namespace Nova.Server.TurnSteps
                 star.UpdateResearch(serverState.AllEmpires[star.Owner].ResearchBudget);
                 star.UpdateResources();
             }
+            return null;
         }
         
         /// <summary>
