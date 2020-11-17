@@ -337,6 +337,7 @@ Are you sure you want to do this?";
                 this.capacityUnits.Text = "mg";
                 this.maxCapacity.Text = design.FuelCapacity.ToString(System.Globalization.CultureInfo.InvariantCulture);
             }
+            checkBoxObsolete.Checked = design.Obsolete;
         }
         
         protected virtual void OnStarmapChanged(EventArgs e)
@@ -350,6 +351,27 @@ Are you sure you want to do this?";
         private void label8_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void checkBoxObsolete_CheckStateChanged(object sender, EventArgs e)
+        {
+            if (checkBoxObsolete.Checked) 
+            {
+                ShipDesign design = designList.SelectedItems[0].Tag as ShipDesign;
+                design.Update();
+                if (!design.Obsolete)
+                    {
+                    DesignCommand command = new DesignCommand(CommandMode.Edit, design.Key);
+
+                    Nova.Common.Message message;
+                    if (command.IsValid(clientState.EmpireState, out message))
+                    {
+                        clientState.Commands.Push(command);
+                        command.ApplyToState(clientState.EmpireState);
+                    }
+                    else Report.Information(message.Text);
+                }
+            }
         }
     }
 }

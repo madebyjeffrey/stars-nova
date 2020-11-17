@@ -46,6 +46,12 @@ namespace Nova.WinForms.Gui
             this.hullImage = new System.Windows.Forms.PictureBox();
             this.hullGrid = new Nova.ControlLibrary.HullGrid();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.novaRating = new System.Windows.Forms.Label();
+            this.starsRating = new System.Windows.Forms.Label();
+            this.battleSpeed = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.cargoCapacity = new System.Windows.Forms.Label();
@@ -70,12 +76,8 @@ namespace Nova.WinForms.Gui
             this.label1 = new System.Windows.Forms.Label();
             this.done = new System.Windows.Forms.Button();
             this.delete = new System.Windows.Forms.Button();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.battleSpeed = new System.Windows.Forms.Label();
-            this.starsRating = new System.Windows.Forms.Label();
-            this.novaRating = new System.Windows.Forms.Label();
+            this.labelObsolete = new System.Windows.Forms.Label();
+            this.checkBoxObsolete = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -262,6 +264,60 @@ namespace Nova.WinForms.Gui
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Primary Characteristics";
             // 
+            // novaRating
+            // 
+            this.novaRating.Location = new System.Drawing.Point(79, 198);
+            this.novaRating.Name = "novaRating";
+            this.novaRating.Size = new System.Drawing.Size(63, 13);
+            this.novaRating.TabIndex = 24;
+            this.novaRating.Text = "0";
+            this.novaRating.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // starsRating
+            // 
+            this.starsRating.Location = new System.Drawing.Point(92, 178);
+            this.starsRating.Name = "starsRating";
+            this.starsRating.Size = new System.Drawing.Size(50, 13);
+            this.starsRating.TabIndex = 23;
+            this.starsRating.Text = "0";
+            this.starsRating.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // battleSpeed
+            // 
+            this.battleSpeed.Location = new System.Drawing.Point(92, 158);
+            this.battleSpeed.Name = "battleSpeed";
+            this.battleSpeed.Size = new System.Drawing.Size(50, 13);
+            this.battleSpeed.TabIndex = 22;
+            this.battleSpeed.Text = "0";
+            this.battleSpeed.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(6, 178);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(68, 13);
+            this.label12.TabIndex = 21;
+            this.label12.Text = "Stars! Rating";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(6, 198);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(67, 13);
+            this.label10.TabIndex = 20;
+            this.label10.Text = "Nova Rating";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(6, 158);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(65, 13);
+            this.label9.TabIndex = 19;
+            this.label9.Text = "BattleSpeed";
+            // 
             // label11
             // 
             this.label11.AutoSize = true;
@@ -441,6 +497,7 @@ namespace Nova.WinForms.Gui
             this.designResources.Name = "designResources";
             this.designResources.Size = new System.Drawing.Size(150, 64);
             this.designResources.TabIndex = 10;
+            this.designResources.Value = new Nova.Common.Resources(0, 0, 0, 0);
             // 
             // designName
             // 
@@ -480,65 +537,32 @@ namespace Nova.WinForms.Gui
             this.delete.UseVisualStyleBackColor = true;
             this.delete.Click += new System.EventHandler(this.Delete_Click);
             // 
-            // label9
+            // labelObsolete
             // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(6, 158);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(65, 13);
-            this.label9.TabIndex = 19;
-            this.label9.Text = "BattleSpeed";
+            this.labelObsolete.AutoSize = true;
+            this.labelObsolete.Location = new System.Drawing.Point(16, 632);
+            this.labelObsolete.Name = "labelObsolete";
+            this.labelObsolete.Size = new System.Drawing.Size(257, 13);
+            this.labelObsolete.TabIndex = 10;
+            this.labelObsolete.Text = "Obsolete - Hide this design on the Production Screen";
             // 
-            // label10
+            // checkBoxObsolete
             // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(6, 198);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(67, 13);
-            this.label10.TabIndex = 20;
-            this.label10.Text = "Nova Rating";
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(6, 178);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(68, 13);
-            this.label12.TabIndex = 21;
-            this.label12.Text = "Stars! Rating";
-            // 
-            // battleSpeed
-            // 
-            this.battleSpeed.Location = new System.Drawing.Point(92, 158);
-            this.battleSpeed.Name = "battleSpeed";
-            this.battleSpeed.Size = new System.Drawing.Size(50, 13);
-            this.battleSpeed.TabIndex = 22;
-            this.battleSpeed.Text = "0";
-            this.battleSpeed.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // starsRating
-            // 
-            this.starsRating.Location = new System.Drawing.Point(92, 178);
-            this.starsRating.Name = "starsRating";
-            this.starsRating.Size = new System.Drawing.Size(50, 13);
-            this.starsRating.TabIndex = 23;
-            this.starsRating.Text = "0";
-            this.starsRating.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // novaRating
-            // 
-            this.novaRating.Location = new System.Drawing.Point(79, 198);
-            this.novaRating.Name = "novaRating";
-            this.novaRating.Size = new System.Drawing.Size(63, 13);
-            this.novaRating.TabIndex = 24;
-            this.novaRating.Text = "0";
-            this.novaRating.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.checkBoxObsolete.AutoSize = true;
+            this.checkBoxObsolete.Location = new System.Drawing.Point(288, 632);
+            this.checkBoxObsolete.Name = "checkBoxObsolete";
+            this.checkBoxObsolete.Size = new System.Drawing.Size(15, 14);
+            this.checkBoxObsolete.TabIndex = 11;
+            this.checkBoxObsolete.UseVisualStyleBackColor = true;
+            this.checkBoxObsolete.CheckStateChanged += new System.EventHandler(this.checkBoxObsolete_CheckStateChanged);
             // 
             // DesignManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(778, 718);
+            this.Controls.Add(this.checkBoxObsolete);
+            this.Controls.Add(this.labelObsolete);
             this.Controls.Add(this.delete);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox2);
@@ -560,6 +584,7 @@ namespace Nova.WinForms.Gui
             this.groupBox4.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
       }
 
@@ -609,5 +634,7 @@ namespace Nova.WinForms.Gui
         private System.Windows.Forms.Label novaRating;
         private System.Windows.Forms.Label starsRating;
         private System.Windows.Forms.Label battleSpeed;
+        private System.Windows.Forms.Label labelObsolete;
+        private System.Windows.Forms.CheckBox checkBoxObsolete;
     }
 }

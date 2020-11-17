@@ -328,7 +328,11 @@ namespace Nova.Ai
             }
             else
             {  //Starbase upgrade
-                if (fleet != null) howMany = resourcesOnHand / (fleet.Cost - currentStarbase);
+                if (fleet != null)
+                {
+                    if (fleet.Cost == currentStarbase) howMany = 0;
+                    else howMany = resourcesOnHand / (fleet.Cost - currentStarbase);
+                }
             }
             return howMany;
         }
@@ -342,11 +346,13 @@ namespace Nova.Ai
             }
             queueYears = queueEnergy / Math.Max(1, this.planet.ResourcesOnHand.Energy);
             if (queueYears > 1) return productionIndex;
+            Resources currentStarbase = new Resources();
+            if (this.planet.Starbase != null) currentStarbase = this.planet.Starbase.TotalCost;
 
             double defenseFleets = howManyCanIBuild(aiPlan.currentDefenderDesign) * this.aiPlan.interceptorProductionPriority;
             double bomberFleets = howManyCanIBuild(aiPlan.currentBomberDesign) * this.aiPlan.bomberProductionPriority;
             double bomberCoverFleets = howManyCanIBuild(aiPlan.currentBomberCoverDesign) * this.aiPlan.bomberCoverProductionPriority;
-            double starStation = howManyCanIBuild(aiPlan.currentStarbaseDesign, this.planet.Starbase.TotalCost) * this.aiPlan.starbaseUpgradePriority;
+            double starStation = howManyCanIBuild(aiPlan.currentStarbaseDesign, currentStarbase ) * this.aiPlan.starbaseUpgradePriority;
             ShipDesign chosenOne = null;
             int chosenQty = 1;
             if ((defenseFleets > bomberFleets) && (defenseFleets > bomberCoverFleets) && (defenseFleets > starStation))
@@ -365,7 +371,7 @@ namespace Nova.Ai
                 chosenQty = (int)bomberCoverFleets;
             }
             else if (aiPlan.currentStarbaseDesign != null)
-            if (!this.planet.Starbase.Name.Contains(aiPlan.currentStarbaseDesign.Name))
+            if ((this.planet.Starbase != null) && (!this.planet.Starbase.Name.Contains(aiPlan.currentStarbaseDesign.Name)))
             {
                 chosenOne = aiPlan.currentStarbaseDesign;
                 chosenQty = 1; //don't do the Same upgrade multiple times

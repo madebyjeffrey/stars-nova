@@ -40,7 +40,14 @@ namespace Nova.Common.Components
             set;
         }
 
-        // Note there are get properties for: Armor, Shield, FuelCapcity, CargoCapacity, etc
+        // Obsolete designs do not appear in the production dialog - allows the user to hide designs that they do not want built again
+        public bool Obsolete
+        {
+            get;
+            set;
+        }
+
+        // Note there are get properties for: Armor, Shield, FuelCapacity, CargoCapacity, etc
 
         // The Summary is a 'super' component with properties representing the sum of all 
         // components added to the ship. 
@@ -572,6 +579,7 @@ namespace Nova.Common.Components
             : base(designkey)
         {
             Key = designkey;
+            Obsolete = false;
         }
 
         /// <summary>
@@ -584,6 +592,7 @@ namespace Nova.Common.Components
             copy.Update();
             Icon = (ShipIcon)copy.Icon.Clone();
             Blueprint = new Component(copy.Blueprint);
+            Obsolete = false;
             Update();
         }
 
@@ -870,6 +879,7 @@ namespace Nova.Common.Components
         {
             XmlElement xmlelShipDesign = xmldoc.CreateElement("ShipDesign");
             xmlelShipDesign.AppendChild(base.ToXml(xmldoc));
+            Global.SaveData(xmldoc, xmlelShipDesign, "Obsolete", Obsolete ? 1 : 0);
             Global.SaveData(xmldoc, xmlelShipDesign, "Icon", Icon.Source);
             xmlelShipDesign.AppendChild(Blueprint.ToXml(xmldoc));            
             return xmlelShipDesign;
@@ -891,6 +901,9 @@ namespace Nova.Common.Components
                     {
                         case "component":
                             Blueprint = new Component(mainNode);
+                            break;
+                        case "obsolete":
+                            Obsolete =  (int.Parse(mainNode.FirstChild.Value) == 1);
                             break;
                         case "icon":
                             string iconSource = mainNode.FirstChild.Value;

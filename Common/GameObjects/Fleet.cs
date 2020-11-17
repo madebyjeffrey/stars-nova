@@ -487,7 +487,7 @@ namespace Nova.Common
             : base(copy)
         {
         }
-        
+
         /// <summary>
         /// Fleet construction based on a ShipToken and some parameters from a star (this is
         /// the usual case for most fleets when a new ship is manufactured at a star).
@@ -499,26 +499,49 @@ namespace Nova.Common
             tokens.Add(token.Key, token);
 
             FuelAvailable = TotalFuelCapacity;
+            Type = ItemType.Fleet;
+
+            // Have one waypoint to reflect the fleet's current position and the
+            // planet it is in orbit around.
+
+            Waypoint w = new Waypoint();
+            w.Position = star.Position;
+            w.Destination = star.Name;
+            w.WarpFactor = 0;
+
+            Waypoints.Add(w);
+
+            // Inititialise the fleet elements that come from the star.
+
+            Position = star.Position;
+            InOrbit = star;
+            Key = newKey;
+        }
+        public Fleet(ShipToken token, NovaPoint position, long newKey)
+        {
+            tokens.Add(token.Key, token);
+
+            FuelAvailable = TotalFuelCapacity;
             Type          = ItemType.Fleet;
 
             // Have one waypoint to reflect the fleet's current position and the
             // planet it is in orbit around.
          
             Waypoint w    = new Waypoint();      
-            w.Position    = star.Position;
-            w.Destination = star.Name;
+            w.Position    = position;
+            w.Destination = position.ToString();
             w.WarpFactor  = 0;
 
             Waypoints.Add(w);
 
             // Inititialise the fleet elements that come from the star.
 
-            Position     = star.Position;       
-            InOrbit      = star;                
+            Position     = position;       
+            InOrbit      = null;                
             Key          = newKey;    
         }
-        
-        
+
+
         /// <summary>
         /// Fleet construction based on a ship and some parameters from a star (this is
         /// the usual case for most fleets when a new ship is manufactured at a star).

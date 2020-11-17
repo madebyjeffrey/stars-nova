@@ -773,7 +773,7 @@ namespace Nova.Server
             ShipDesign salvageDesign = null;
             foreach (ShipDesign design in empire.Designs.Values) if (design.Name.Contains("S A L V A G E")) salvageDesign = design;  
             ShipToken token = new ShipToken(salvageDesign, 1);
-            Fleet fleet = new Fleet(token, null, empire.GetNextFleetKey());
+            Fleet fleet = new Fleet(token, position, empire.GetNextFleetKey());
             fleet.Position = position;
             fleet.Name = "S A L V A G E";
 

@@ -101,6 +101,7 @@ namespace Nova.WinForms.Gui
             // Add player designs
             foreach (ShipDesign design in clientState.EmpireState.Designs.Values)
             {
+                if (design.Obsolete) continue;
 
                 // prevent the current starbase design from being re-used
                 if (starbase != null)

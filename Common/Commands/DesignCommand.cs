@@ -126,13 +126,17 @@ namespace Nova.Common.Commands
                     }
                 break;
                 case CommandMode.Delete: // Both cases check for existing design before editing/deleting.
-                case CommandMode.Edit:
                     if (!empire.Designs.ContainsKey(Design.Key))
                     {
                         message = new Message(empire.Id, "Cant re-add same design:" + Design.Name, "Invalid Command", null);
                         return false;
                     }
                 break;
+                case CommandMode.Edit:
+                    {
+                        message = new Message(empire.Id,  Design.Name + " obsolete status set to ", (!Design.Obsolete).ToString(),null);
+                        return true;
+                    }
             }
 
             message = new Message(empire.Id, "Design:" + Design.Name + " added", "Invalid Command", null);
@@ -154,9 +158,12 @@ namespace Nova.Common.Commands
                     UpdateFleetCompositions(empire);
                     return null;
                 case CommandMode.Edit:
+                    ShipDesign oldDesign = new ShipDesign(Design.Key);
+                    empire.Designs.TryGetValue(Design.Key,out oldDesign);
+                    oldDesign.Update();                    
                     empire.Designs.Remove(Design.Key);
-                    UpdateFleetCompositions(empire);
-                    empire.Designs.Add(Design.Key, Design);
+                    oldDesign.Obsolete = !oldDesign.Obsolete;
+                    empire.Designs.Add(Design.Key, oldDesign);
                     return null;
 
             }
@@ -217,14 +224,14 @@ namespace Nova.Common.Commands
             XmlElement xmlelCom = xmldoc.CreateElement("Command");
             xmlelCom.SetAttribute("Type", "Design");
             Global.SaveData(xmldoc, xmlelCom, "Mode", Mode.ToString());
-            if (Mode != CommandMode.Delete)
+            if ((Mode != CommandMode.Delete) && (Mode != CommandMode.Edit))
             {
                 // serialise a normal design
                 xmlelCom.AppendChild(Design.ToXml(xmldoc));
             }
             else
             {
-                // For CommandMode.Delete the design only contains a valid Tag
+                // For CommandMode.Delete and edit the design only contains a valid Tag
                 Global.SaveData(xmldoc, xmlelCom, "Key", Design.Key);
             }
             
