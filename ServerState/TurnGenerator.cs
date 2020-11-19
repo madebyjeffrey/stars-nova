@@ -76,7 +76,7 @@ namespace Nova.Server
             // generate a HUGE constructor call... a factory to
             // abstract it perhaps? -Aeglos
             orderReader = new OrderReader(this.serverState);
-            if (serverState.UseRonBattleOption) ronBattleEngine = new RonBattleEngine(this.serverState, new BattleReport());
+            if (serverState.UseRonBattleOption) ronBattleEngine = new RonBattleEngine(this.serverState, new List <BattleReport>());
             else battleEngine = new BattleEngine(this.serverState, new BattleReport());
 
             bombing = new Bombing(this.serverState);
@@ -134,7 +134,7 @@ namespace Nova.Server
 
             foreach (Fleet fleet in serverState.IterateAllFleets())
             {
-                ProcessFleet(fleet); // ToDo: don't scrap fleets here at waypoint 1
+               if (fleet.Name != "Mineral Packet") ProcessFleet(fleet); // ToDo: don't scrap fleets here at waypoint 1
             }
             serverState.CleanupFleets();
 
@@ -164,6 +164,17 @@ namespace Nova.Server
                 Message message = turnStep.Process(serverState);
                 if (message != null) serverState.AllMessages.Add(message);
             }
+
+            foreach (Fleet fleet in serverState.IterateAllFleets())  // Move Mineral Packets after they are created
+            {
+                if (fleet.Name.Contains("Mineral Packet"))
+                {
+                    ProcessFleet(fleet);
+                    serverState.SetFleetOrbit(fleet);
+                    serverState.AllEmpires[fleet.Owner].FleetReports[fleet.Key].Update(fleet, ScanLevel.Owned, serverState.TurnYear);
+                }
+            }
+            serverState.CleanupFleets();
 
 
             foreach (EmpireData empire in serverState.AllEmpires.Values)
@@ -469,7 +480,7 @@ namespace Nova.Server
                 currentPosition = fleet.Waypoints[0];
 
                 double availableTime = 1.0;
-                while ((fleet.Waypoints.Count > 0) && (fleet.Waypoints[0].Task is NoTask) && (currentPosition == fleet.Waypoints[0])) fleet.Waypoints.RemoveAt(0);// Remove any useless waypoints at the start of the waypoint list (should only be one useless one)
+                while ((fleet.Waypoints.Count > 0) && (fleet.Waypoints[0].Task is NoTask) && (currentPosition.Position == fleet.Waypoints[0].Position)) fleet.Waypoints.RemoveAt(0);// Remove any useless waypoints at the start of the waypoint list (should only be one useless one)
                 if ((fleet.Waypoints.Count > 0) && (currentPosition != fleet.Waypoints[0]))  //Don't throw away colonise or scrap tasks or invade
 
                 {
@@ -481,7 +492,7 @@ namespace Nova.Server
                     // -------------------
 
                     // Check for Cheap Engines failing to start
-                    if (waypointZero.WarpFactor > 6 && race.Traits.Contains("CE") && rand.Next(10) == 1)
+                    if (waypointZero.WarpFactor > 6 && race.Traits.Contains("CE") && rand.Next(10) == 1 && !fleet.Name.Contains("Mineral Packet"))
                     {
                         // Engines fail
                         Message message = new Message();
@@ -608,8 +619,8 @@ namespace Nova.Server
                     fleet.Bearing = ((Math.Atan2(dy, dx) * 180) / Math.PI) + 90;
                 }
             }
-            // ??? (priority 4) - why does this always return false. - if warp speed too high the fleet may vanish
-            return false;
+            // ??? (priority 4) - why does this always return false. - if warp speed too high then the fleet may vanish
+            return false; //TODO destroy fleets that exceed warp speed limits 
         }
         
         /// <summary>

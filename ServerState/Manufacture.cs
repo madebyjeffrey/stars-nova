@@ -26,6 +26,9 @@ namespace Nova.Server
     
     using Nova.Common;
     using Nova.Common.Components;
+    using System;
+    using Nova.Common.Commands;
+    using Nova.Common.Waypoints;
 
     /// <summary>
     /// Class to manufacture the items in a star's queue.
@@ -33,7 +36,7 @@ namespace Nova.Server
     public class Manufacture
     {
         private ServerData serverState;
-  
+
         public Manufacture(ServerData serverState)
         {
             this.serverState = serverState;
@@ -110,7 +113,54 @@ namespace Nova.Server
             
             // Add the fleet to the state data so it can be tracked.
             serverState.AllEmpires[fleet.Owner].AddOrUpdateFleet(fleet);
-            
+
+            //"Mineral Packet"
+            if ((design.Type == ItemType.Salvage) && (design.Name == "Mineral Packet"))
+            {
+                Cargo minerals = new Cargo();
+                minerals.Silicoxium = fleet.TotalCargoCapacity;
+                fleet.Cargo.Add(minerals);
+
+                //TODO mineral packet has random destination at the moment
+                Random random = new Random();
+                int dest = random.Next(1, serverState.AllEmpires.Count - 1);
+                Star destination = null;
+                foreach (Star lamb in serverState.AllEmpires[dest].OwnedStars.Values)
+                {
+                    destination = lamb;
+                    break;
+                }
+
+                Waypoint waypoint = new Waypoint();
+                waypoint.Destination = star.ToString();
+                waypoint.WarpFactor = 0;
+                waypoint.Task = new NoTask();
+                waypoint.Position = star.Position;
+                WaypointCommand command = new WaypointCommand(CommandMode.Add, waypoint, fleet.Key, 0);
+
+
+                if (command.IsValid(empire, out message))
+                {
+                    message = command.ApplyToState(empire);
+                    if (message != null) Report.Information(message.Text);
+                }
+                else Report.Information(message.Text);
+
+                waypoint = new Waypoint();
+                waypoint.Destination = destination.ToString();
+                waypoint.WarpFactor = 10;
+                waypoint.Task = new NoTask();
+                waypoint.Position = destination.Position;
+                WaypointCommand command2 = new WaypointCommand(CommandMode.Add, waypoint, fleet.Key, 0);
+
+                if (command2.IsValid(empire, out message))
+                {
+                    message = command2.ApplyToState(empire);
+                    if (message != null) Report.Information(message.Text);
+                }
+                else Report.Information(message.Text);
+            }
+
             if (design.Type == ItemType.Starbase)
             {
                 if (star.Starbase != null)

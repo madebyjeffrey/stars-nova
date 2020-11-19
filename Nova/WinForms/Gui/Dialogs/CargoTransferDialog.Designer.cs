@@ -50,6 +50,9 @@
             this.fuelRight = new Nova.WinForms.Gui.Controls.CargoMeterCounter();
             this.cargoMeterLeft = new Nova.WinForms.Gui.Controls.CargoMeter();
             this.cargoMeterRight = new Nova.WinForms.Gui.Controls.CargoMeter();
+            this.cargoMeterOxoSilium = new Nova.WinForms.Gui.Controls.CargoMeterCounter();
+            this.cargoOxoSiliumRight = new Nova.WinForms.Gui.Controls.CargoMeterCounter();
+            this.labelOxoSilium = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // labelFleet1
@@ -251,7 +254,7 @@
             // cargoMeterLeft
             // 
             this.cargoMeterLeft.Cargo = Nova.WinForms.Gui.Controls.CargoMeter.CargoType.Multi;
-            this.cargoMeterLeft.Location = new System.Drawing.Point(12, 193);
+            this.cargoMeterLeft.Location = new System.Drawing.Point(12, 224);
             this.cargoMeterLeft.Name = "cargoMeterLeft";
             this.cargoMeterLeft.Size = new System.Drawing.Size(166, 14);
             this.cargoMeterLeft.TabIndex = 45;
@@ -260,11 +263,45 @@
             // cargoMeterRight
             // 
             this.cargoMeterRight.Cargo = Nova.WinForms.Gui.Controls.CargoMeter.CargoType.Multi;
-            this.cargoMeterRight.Location = new System.Drawing.Point(352, 193);
+            this.cargoMeterRight.Location = new System.Drawing.Point(352, 224);
             this.cargoMeterRight.Name = "cargoMeterRight";
             this.cargoMeterRight.Size = new System.Drawing.Size(166, 14);
             this.cargoMeterRight.TabIndex = 46;
             this.cargoMeterRight.Text = "cargoMeter2";
+            // 
+            // cargoMeterOxoSilium
+            // 
+            this.cargoMeterOxoSilium.Cargo = Nova.WinForms.Gui.Controls.CargoMeter.CargoType.Fuel;
+            this.cargoMeterOxoSilium.Location = new System.Drawing.Point(8, 188);
+            this.cargoMeterOxoSilium.Maximum = 100;
+            this.cargoMeterOxoSilium.Name = "cargoMeterOxoSilium";
+            this.cargoMeterOxoSilium.Reversed = true;
+            this.cargoMeterOxoSilium.Size = new System.Drawing.Size(223, 20);
+            this.cargoMeterOxoSilium.TabIndex = 48;
+            this.cargoMeterOxoSilium.Value = 0;
+            this.cargoMeterOxoSilium.Visible = false;
+            // 
+            // cargoOxoSiliumRight
+            // 
+            this.cargoOxoSiliumRight.Cargo = Nova.WinForms.Gui.Controls.CargoMeter.CargoType.Fuel;
+            this.cargoOxoSiliumRight.Location = new System.Drawing.Point(292, 188);
+            this.cargoOxoSiliumRight.Maximum = 100;
+            this.cargoOxoSiliumRight.Name = "cargoOxoSiliumRight";
+            this.cargoOxoSiliumRight.Reversed = false;
+            this.cargoOxoSiliumRight.Size = new System.Drawing.Size(230, 20);
+            this.cargoOxoSiliumRight.TabIndex = 49;
+            this.cargoOxoSiliumRight.Value = 0;
+            this.cargoOxoSiliumRight.Visible = false;
+            // 
+            // labelOxoSilium
+            // 
+            this.labelOxoSilium.AutoSize = true;
+            this.labelOxoSilium.Location = new System.Drawing.Point(244, 192);
+            this.labelOxoSilium.Name = "labelOxoSilium";
+            this.labelOxoSilium.Size = new System.Drawing.Size(53, 13);
+            this.labelOxoSilium.TabIndex = 50;
+            this.labelOxoSilium.Text = "OxoSilium";
+            this.labelOxoSilium.Visible = false;
             // 
             // CargoTransferDialog
             // 
@@ -274,6 +311,9 @@
             this.BackColor = System.Drawing.SystemColors.Control;
             this.CancelButton = this.cancelButton;
             this.ClientSize = new System.Drawing.Size(531, 288);
+            this.Controls.Add(this.labelOxoSilium);
+            this.Controls.Add(this.cargoOxoSiliumRight);
+            this.Controls.Add(this.cargoMeterOxoSilium);
             this.Controls.Add(this.cargoMeterRight);
             this.Controls.Add(this.cargoMeterLeft);
             this.Controls.Add(this.fuelLeft);
@@ -330,5 +370,8 @@
         private Nova.WinForms.Gui.Controls.CargoMeterCounter fuelRight;
         private Nova.WinForms.Gui.Controls.CargoMeter cargoMeterLeft;
         private Nova.WinForms.Gui.Controls.CargoMeter cargoMeterRight;
+        private WinForms.Gui.Controls.CargoMeterCounter cargoMeterOxoSilium;
+        private WinForms.Gui.Controls.CargoMeterCounter cargoOxoSiliumRight;
+        private System.Windows.Forms.Label labelOxoSilium;
     }
 }

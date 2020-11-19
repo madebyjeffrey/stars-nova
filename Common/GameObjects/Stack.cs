@@ -22,6 +22,7 @@
 namespace Nova.Common
 {
     using System;
+    using System.Drawing;
     using System.Linq;
     using System.Windows;
     using System.Xml;
@@ -58,7 +59,9 @@ namespace Nova.Common
             get;
             private set;            
         }
-        
+
+        public Bitmap StackIcon = null;
+
         /// <summary>
         /// Returns this Stack's battle speed.
         /// </summary>
@@ -134,8 +137,66 @@ namespace Nova.Common
             BattlePlan = fleet.BattlePlan;
             InOrbit = fleet.InOrbit;
             Token = token;  // note this is a reference to the actual token in the fleet
+
+
+            Bitmap transparent = new Bitmap(fleet.Icon.Image);
+            Color background = transparent.GetPixel(0, 0);
+            transparent = Posturize(transparent); // TODO on large maps doing this multiple times adds extra overhead
+            transparent.MakeTransparent(background);
+
+            int stackDiameter = (int)Math.Ceiling(Math.Sqrt(token.Quantity));
+            StackIcon = new Bitmap(transparent, fleet.Icon.Image.Width * stackDiameter, fleet.Icon.Image.Height * stackDiameter);
+            int shipNumber = 1;
+            int row = 0;
+            int column = 0;
+            while (shipNumber < token.Quantity)
+            {
+                Paste(StackIcon, transparent, row, column);
+                shipNumber++;
+                row = shipNumber % stackDiameter;
+                column = shipNumber / stackDiameter;
+            }
         }
-        
+        Bitmap Posturize(Bitmap input)
+        {
+            Color background = input.GetPixel(0, 0);
+            for (int row = 0; row < input.Height; row++)
+            {
+                for (int column = 0; column < input.Width; column++)
+                    if ((Math.Abs((int)input.GetPixel(row, column).R - (int)background.R) < 8)
+                    && (Math.Abs((int)input.GetPixel(row, column).G - (int)background.G) < 8)
+                    && (Math.Abs((int)input.GetPixel(row, column).B - (int)background.B) < 8)) input.SetPixel(row, column, background);
+            }
+            return input;
+        }
+        Bitmap Clear(Bitmap input)
+        {
+            Color background = input.GetPixel(0, 0);
+            for (int row = 0; row < input.Height; row++)
+            {
+                for (int column = 0; column < input.Width; column++) input.SetPixel(row, column, background);
+            }
+            return input;
+        }
+
+        Bitmap Paste(Bitmap dest, Bitmap source, int tokenRow, int tokenColumn)
+        {
+            int left = source.Width * (tokenColumn );   
+            int top = source.Height * (tokenRow );
+            Bitmap result = new Bitmap(dest);
+            Color background = dest.GetPixel(0, 0);
+            int row = 0;
+            int column = 0;
+            for (row = 0; row < source.Height; row++)
+            {
+                for (column = 0; column < source.Width; column++)
+                {
+                    if (source.GetPixel(column, row) != background) dest.SetPixel(column+left, row+top, source.GetPixel(column, row));
+                }
+            }
+
+            return result;
+        }
         /// <summary>
         /// Copy constructor. This is only used by the battle engine so only the fields
         /// used by it in creating stacks need to be copied. Note that we copy the
@@ -159,6 +220,31 @@ namespace Nova.Common
             InOrbit = copy.InOrbit;
             Token = new ShipToken(copy.Token.Design, copy.Token.Quantity, copy.Token.Armor);
             Token.Shields = copy.Token.Shields;
+            //StackIcon is too large to save in the XML so recreate it here - it contains no unique information
+            Bitmap transparent = new Bitmap(copy.Icon.Image);
+            Color background = transparent.GetPixel(0, 0);
+            transparent = Posturize(transparent); // TODO on large maps doing this multiple times adds extra overhead
+            transparent.MakeTransparent(background);
+            if (copy.Token.Design.IsStarbase)
+            {
+                StackIcon = new Bitmap(transparent, copy.Icon.Image.Width * 6, copy.Icon.Image.Height * 6);
+            }
+            else
+            {
+                int stackDiameter = (int)Math.Ceiling(Math.Sqrt(copy.Token.Quantity));
+                StackIcon = new Bitmap(transparent, copy.Icon.Image.Width * stackDiameter, copy.Icon.Image.Height * stackDiameter);
+                StackIcon = Clear(StackIcon);
+                int shipNumber = 0;
+                int row = 0;
+                int column = 0;
+                while (shipNumber < copy.Token.Quantity)
+                {
+                    Paste(StackIcon, transparent, row, column);
+                    shipNumber++;
+                    row = shipNumber % stackDiameter;
+                    column = shipNumber / stackDiameter;
+                }
+            }
         }
         
         /// <summary>

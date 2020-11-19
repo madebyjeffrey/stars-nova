@@ -387,7 +387,7 @@ namespace Nova.WinForms.Gui
         }
 
 
-    private void DrawRaceIcon(Graphics g,Image icon,  Point position, int influence)
+        private void DrawRaceIcon(Graphics g, Image icon, Point position, int influence)
         {
             if (influence < 250000) influence = 250000;
             if (influence > 500000) influence = 500000;
@@ -397,10 +397,41 @@ namespace Nova.WinForms.Gui
             transparent.MakeTransparent(background);
             g.DrawImage(
                 transparent,
-                position.X + 5 ,
-                position.Y - 5 - (float) (icon.Height * zoomFactor / 4.0 * influence/ 250000.0 )
-                , (float) (icon.Width * zoomFactor / 4.0 * influence / 250000.0)
-                ,(float) (icon.Height * zoomFactor / 4.0 * influence / 250000.0)
+                position.X + 5,
+                position.Y - 5 - (float)(icon.Height * zoomFactor / 4.0 * influence / 250000.0)
+                , (float)(icon.Width * zoomFactor / 4.0 * influence / 250000.0)
+                , (float)(icon.Height * zoomFactor / 4.0 * influence / 250000.0)
+                );
+        }
+        private void DrawIcon(Graphics g, Image icon, Point position)
+        {
+
+            Bitmap transparent = new Bitmap(icon);
+            Color background = transparent.GetPixel(0, 0);
+            transparent = Posturize(transparent); // TODO on large maps doing this multiple times adds extra overhead
+            transparent.MakeTransparent(background);
+            g.DrawImage(
+                transparent,
+                position.X,
+                position.Y - (float)(icon.Height * zoomFactor / 4.0)
+                , (float)(icon.Width * zoomFactor / 4.0)
+                , (float)(icon.Height * zoomFactor / 4.0)
+                );
+        }
+
+        private void DrawIcon(Graphics g, Image icon)
+        {
+
+            Bitmap transparent = new Bitmap(icon);
+            Color background = transparent.GetPixel(0, 0);
+            transparent = Posturize(transparent); // TODO on large maps doing this multiple times adds extra overhead
+            transparent.MakeTransparent(background);
+            g.DrawImage(
+                transparent,
+                0,
+                0 - (float)(icon.Height * zoomFactor / 4.0)
+                , (float)(icon.Width * zoomFactor / 4.0)
+                , (float)(icon.Height * zoomFactor / 4.0)
                 );
         }
 
@@ -488,14 +519,17 @@ namespace Nova.WinForms.Gui
 
                 g.TranslateTransform(position.X, position.Y);
                 g.RotateTransform((float)report.Bearing);
-
-                if (report.Owner == clientState.EmpireState.Id)
+                if (report.Name.Contains("Mineral Packet") )
                 {
-                    g.FillPolygon(Brushes.Blue, triangle);
+                    DrawIcon(g, report.Icon.Image);
+                }
+                else if (report.Owner == clientState.EmpireState.Id)
+                {
+                    DrawIcon(g, report.Icon.Image);
                 }
                 else
                 {
-                    g.FillPolygon(Brushes.Red, triangle);
+                    DrawIcon(g, report.Icon.Image);
                 }
 
                 g.ResetTransform();
@@ -1162,6 +1196,11 @@ namespace Nova.WinForms.Gui
                 if (sortableItem.Type == ItemType.StarIntel)
                 {
                     menuItem.Image = Properties.Resources.planeticon;
+                    needSep = true;
+                }
+                else if (sortableItem.Type == ItemType.Salvage)
+                {
+                    menuItem.Image = Properties.Resources.salvage0000;
                     needSep = true;
                 }
                 else if (sortableItem.Type == ItemType.FleetIntel)

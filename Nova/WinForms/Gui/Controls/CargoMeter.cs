@@ -45,6 +45,7 @@ namespace Nova.WinForms.Gui.Controls
             Boranium,
             Germanium,
             Colonists,
+            Silicoxium,
             Multi
         }
 
@@ -171,6 +172,7 @@ namespace Nova.WinForms.Gui.Controls
             x += FillBar(area, g, x, CargoLevels.Ironium, GetCargoBrush(CargoType.Ironium));
             x += FillBar(area, g, x, CargoLevels.Boranium, GetCargoBrush(CargoType.Boranium));
             x += FillBar(area, g, x, CargoLevels.Germanium, GetCargoBrush(CargoType.Germanium));
+            x += FillBar(area, g, x, CargoLevels.Silicoxium, GetCargoBrush(CargoType.Silicoxium));
             FillBar(area, g, x, CargoLevels.ColonistsInKilotons, GetCargoBrush(CargoType.Colonists));
         }
 
@@ -223,6 +225,8 @@ namespace Nova.WinForms.Gui.Controls
                     return Color.Gold;
                 case CargoType.Colonists:
                     return Color.MediumPurple;
+                case CargoType.Silicoxium:
+                    return Color.Brown;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -242,6 +246,8 @@ namespace Nova.WinForms.Gui.Controls
                     return Brushes.Gold;
                 case CargoType.Colonists:
                     return Brushes.MediumPurple;
+                case CargoType.Silicoxium:
+                    return Brushes.SaddleBrown;
                 default:
                     throw new ArgumentOutOfRangeException();
             }

@@ -270,7 +270,7 @@ namespace Nova.Common.Components
                 }
                 else
                 {
-                    return 0;
+                    if (Name.Contains("Mineral Packet")) return 10; else return 0;
                 }
             }
         }

@@ -154,6 +154,7 @@ namespace Nova.Server.NewGame
             colonyShipEngine = raceComponents.GetBestEngine(colonyShipHull, true);
             scoutHull = components.Fetch("Scout");
             Component engine = raceComponents.GetBestEngine(scoutHull, true);
+            Component mineralPacketEngine = components.GetBestEngine(scoutHull, true);
 
 
 
@@ -233,6 +234,14 @@ namespace Nova.Server.NewGame
             mineralPacketHull = components.Fetch("Mineral Packet");
             ShipDesign mineralPacket = new ShipDesign(empire.GetNextDesignKey());
             mineralPacket.Blueprint = mineralPacketHull;
+            foreach (HullModule module in mineralPacket.Hull.Modules)
+            {
+                if (module.ComponentType == "Engine")
+                {
+                    module.AllocatedComponent = mineralPacketEngine as Component;
+                    module.ComponentCount = module.ComponentMaximum;
+                }
+            }
             debris = Properties.Resources.MineralPacket0000;
             mineralPacket.Icon = new ShipIcon("F:\\Stars!Nova\\Repos\\svn\\Nova\\Resources\\MineralPacket0000.png", (Bitmap)debris);
             mineralPacket.Type = ItemType.Salvage;
@@ -285,6 +294,7 @@ namespace Nova.Server.NewGame
 
             empire.Designs[starbase.Key] = starbase;
             empire.Designs[salvage.Key] = salvage;
+            empire.Designs[mineralPacket.Key] = mineralPacket;
             empire.Designs[cs.Key] = cs;
             empire.Designs[scout.Key] = scout;
             /*

@@ -101,7 +101,7 @@ namespace Nova.WinForms.Gui
             Stack selectedStack = null;
             foreach (Stack stack in myStacks.Values)
             {
-                if (selectedStack == null) selectedStack = stack;  // TODO priority 0 add a way of selecting which stack the UI zooms in on when "Follow selected stack" is selected.
+                if ((selectedStack == null) && (stack.IsArmed) && (!stack.IsStarbase)) selectedStack = stack;  // TODO priority 0 add a way of selecting which stack the UI zooms in on when "Follow selected stack" is selected.
                 if (stack.Position.X > MaxX) MaxX = stack.Position.X;
                 if (stack.Position.Y > MaxY) MaxY = stack.Position.Y;
                 if (stack.Position.X < MinX) MinX = stack.Position.X;
@@ -152,10 +152,10 @@ namespace Nova.WinForms.Gui
                     double scale = graphics.PageScale;
                     // Create parallelogram for drawing image.
                     PointF ulCorner = new PointF(stack.Position.X, stack.Position.Y);
-                    PointF urCorner = new PointF(stack.Position.X + stack.Icon.Image.Width / 4, stack.Position.Y);
-                    PointF llCorner = new PointF(stack.Position.X, stack.Position.Y + stack.Icon.Image.Height / 4);
+                    PointF urCorner = new PointF(stack.Position.X + stack.StackIcon.Width / 4, stack.Position.Y);
+                    PointF llCorner = new PointF(stack.Position.X, stack.Position.Y + stack.StackIcon.Height / 4);
                     PointF[] destPara = { ulCorner, urCorner, llCorner };
-                    graphics.DrawImage(stack.Icon.Image, destPara);
+                    graphics.DrawImage(stack.StackIcon, destPara);
                 }
             }
             if (eventCount > 0)

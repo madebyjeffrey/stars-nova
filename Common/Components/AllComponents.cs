@@ -358,7 +358,30 @@ namespace Nova.Common.Components
             return true;
         }
 
+        public Component GetBestEngine(Component hullType, bool preferWarp = true)
+        {
+            List<Component> suitableEngines = new List<Component>();
+            foreach (Component component in components.Values)
+                if (component.Type == ItemType.Engine)
+                {
+                    if (component.Properties.ContainsKey("Hull Affinity"))
+                    {
+                        HullAffinity hullAffinity = component.Properties["Hull Affinity"] as HullAffinity;
+                        if (hullAffinity.Value == hullType.Name) suitableEngines.Add(component);
+                    }
+                    else suitableEngines.Add(component);
+                }
+            Component best = null;
+            if (suitableEngines.Count > 0) best = suitableEngines[0];
+            foreach (Component engine in suitableEngines)
+            {
+                if (preferWarp && ((engine.Properties["Engine"] as Engine).FreeWarpSpeed > (best.Properties["Engine"] as Engine).FreeWarpSpeed)) best = engine;
+                if (preferWarp && ((engine.Properties["Engine"] as Engine).FreeWarpSpeed == (best.Properties["Engine"] as Engine).FreeWarpSpeed) && ((engine.Properties["Engine"] as Engine).OptimalSpeed > (best.Properties["Engine"] as Engine).OptimalSpeed)) best = engine;
+                if (!preferWarp && ((engine.Properties["Engine"] as Engine).OptimalSpeed > (best.Properties["Engine"] as Engine).OptimalSpeed)) best = engine;
+            }
+            return best;
 
+        }
         /// <summary>
         /// Get the path where the graphics files are stored.
         /// </summary>

@@ -34,7 +34,8 @@ namespace Nova.Common
         Boranium,
         Germanium,
         Energy,
-        ColonistsInKilotons
+        ColonistsInKilotons,
+        Silicoxium
     }
 
     /// <summary>
@@ -49,6 +50,7 @@ namespace Nova.Common
         public int Ironium = 0;
         public int Germanium = 0;
         public int Energy = 0;
+        public int Silicoxium = 0;
 
         /// <summary>
         /// Default Constructor.
@@ -66,6 +68,7 @@ namespace Nova.Common
             Boranium = b;
             Germanium = g;
             Energy = e;
+            Silicoxium = 0;
         }
 
         /// <summary>
@@ -78,6 +81,7 @@ namespace Nova.Common
             this.Boranium = copy.Boranium;
             this.Germanium = copy.Germanium;
             this.Energy = copy.Energy;
+            this.Silicoxium = 0;
         }
 
         /// <summary>
@@ -211,7 +215,7 @@ namespace Nova.Common
             result.Boranium = lhs.Boranium - rhs.Boranium;
             result.Germanium = lhs.Germanium - rhs.Germanium;
             result.Energy = lhs.Energy - rhs.Energy;
-
+            result.Silicoxium = lhs.Silicoxium - rhs.Silicoxium;
             return result;
         }
 
@@ -226,7 +230,7 @@ namespace Nova.Common
             result.Boranium = lhs.Boranium + rhs.Boranium;
             result.Germanium = lhs.Germanium + rhs.Germanium;
             result.Energy = lhs.Energy + rhs.Energy;
-
+            result.Silicoxium = lhs.Silicoxium + rhs.Silicoxium;
             return result;
         }
 
@@ -238,7 +242,7 @@ namespace Nova.Common
             result.Boranium = lhs.Boranium * rhs;
             result.Germanium = lhs.Germanium * rhs;
             result.Energy = lhs.Energy * rhs;
-
+            result.Silicoxium = lhs.Silicoxium * rhs;
             return result;
         }
         public static double operator /(Resources lhs, Resources rhs)
@@ -266,7 +270,7 @@ namespace Nova.Common
             result.Boranium = (int)Math.Ceiling((double)lhs.Boranium * rhs);
             result.Germanium = (int)Math.Ceiling((double)lhs.Germanium * rhs);
             result.Energy = (int)Math.Ceiling((double)lhs.Energy * rhs);
-            
+            result.Silicoxium = (int)Math.Ceiling((double)lhs.Silicoxium * rhs);
             return result;
         }
         
@@ -280,7 +284,7 @@ namespace Nova.Common
         /// </summary>
         public int Mass
         {
-            get { return Ironium + Boranium + Germanium; }
+            get { return Ironium + Boranium + Germanium + Silicoxium; }
         }
 
         /// <summary>
@@ -308,6 +312,9 @@ namespace Nova.Common
                             break;
                         case "energy":
                             Energy = int.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                        case "silicoxium":
+                            Silicoxium = int.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
                             break;
                     }
                 }
@@ -349,7 +356,14 @@ namespace Nova.Common
             XmlText xmltxtEnergy = xmldoc.CreateTextNode(this.Energy.ToString(System.Globalization.CultureInfo.InvariantCulture));
             xmlelEnergy.AppendChild(xmltxtEnergy);
             xmlelResource.AppendChild(xmlelEnergy);
-
+            // Silicoxium
+            if (this.Silicoxium > 0)
+            {
+                XmlElement xmlelSilicoxium = xmldoc.CreateElement("Silicoxium");
+                XmlText xmltxtSilicoxium = xmldoc.CreateTextNode(this.Silicoxium.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                xmlelSilicoxium.AppendChild(xmltxtSilicoxium);
+                xmlelResource.AppendChild(xmlelSilicoxium);
+            }
             return xmlelResource;
         }
     }

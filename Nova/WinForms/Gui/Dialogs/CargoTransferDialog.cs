@@ -57,6 +57,8 @@ namespace Nova.ControlLibrary
             cargoGermaniumRight.ValueChanged += CargoGermaniumRight_ValueChanged;
             cargoColonistsLeft.ValueChanged += CargoColonistsLeft_ValueChanged;
             cargoColonistsRight.ValueChanged += CargoColonistsRight_ValueChanged;
+            cargoOxoSiliumRight.ValueChanged += cargoOxoSiliumRight_ValueChanged;
+            cargoMeterOxoSilium.ValueChanged += cargoMeterOxoSilium_ValueChanged;
             fuelLeft.ValueChanged += FuelLeft_ValueChanged;
             fuelRight.ValueChanged += FuelRight_ValueChanged;
         }
@@ -168,6 +170,22 @@ namespace Nova.ControlLibrary
             UpdateMeters();
         }
 
+        private void cargoOxoSiliumRight_ValueChanged(int newValue)
+        {
+            int newLeftLevel;
+            newValue = ReJigValues(newValue, out newLeftLevel, rightCargo.Silicoxium, leftCargo.Silicoxium, rightCargo.Mass, leftCargo.Mass, cargoMeterRight.Maximum, cargoMeterLeft.Maximum);
+            leftCargo.Silicoxium = newLeftLevel;
+            rightCargo.Silicoxium = newValue;
+            UpdateMeters();
+        }
+        private void cargoMeterOxoSilium_ValueChanged(int newValue)
+        {
+            int newLeftLevel;
+            newValue = ReJigValues(newValue, out newLeftLevel, rightCargo.Silicoxium, leftCargo.Silicoxium, rightCargo.Mass, leftCargo.Mass, cargoMeterRight.Maximum, cargoMeterLeft.Maximum);
+            leftCargo.Silicoxium = newLeftLevel;
+            rightCargo.Silicoxium = newValue;
+            UpdateMeters();
+        }
         private void FuelLeft_ValueChanged(int newValue)
         {
             int newRightValue;
@@ -203,11 +221,12 @@ namespace Nova.ControlLibrary
             cargoBoraniumLeft.Maximum = left.TotalCargoCapacity;
             cargoGermaniumLeft.Maximum = left.TotalCargoCapacity;
             cargoColonistsLeft.Maximum = left.TotalCargoCapacity;
+            cargoMeterOxoSilium.Maximum = left.TotalCargoCapacity;
 
             cargoIronRight.Maximum = right.TotalCargoCapacity;
             cargoBoraniumRight.Maximum = right.TotalCargoCapacity;
             cargoGermaniumRight.Maximum = right.TotalCargoCapacity;
-            cargoColonistsRight.Maximum = right.TotalCargoCapacity;
+            cargoOxoSiliumRight.Maximum = right.TotalCargoCapacity;
 
             fuelLeft.Maximum = left.TotalFuelCapacity;
             fuelRight.Maximum = right.TotalFuelCapacity;
@@ -227,17 +246,25 @@ namespace Nova.ControlLibrary
             cargoBoraniumLeft.Value = leftCargo.Boranium;
             cargoGermaniumLeft.Value = leftCargo.Germanium;
             cargoColonistsLeft.Value = leftCargo.ColonistsInKilotons;
+            cargoMeterOxoSilium.Value = leftCargo.Silicoxium;
 
             cargoIronRight.Value = rightCargo.Ironium;
             cargoBoraniumRight.Value = rightCargo.Boranium;
             cargoGermaniumRight.Value = rightCargo.Germanium;
             cargoColonistsRight.Value = rightCargo.ColonistsInKilotons;
+            cargoOxoSiliumRight.Value = rightCargo.Silicoxium;
 
             fuelLeft.Value = leftFuel;
             fuelRight.Value = rightFuel;
 
             cargoMeterLeft.CargoLevels = leftCargo;
             cargoMeterRight.CargoLevels = rightCargo;
+
+            if ((leftCargo.Silicoxium > 0) || (rightCargo.Silicoxium > 0))
+            {
+                cargoOxoSiliumRight.Visible = true;
+                cargoMeterOxoSilium.Visible = true;
+            }
         }
 
         public Cargo LeftCargo
@@ -352,6 +379,7 @@ namespace Nova.ControlLibrary
             }
 
         }
+
 
     }
 }
