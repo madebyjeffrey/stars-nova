@@ -96,6 +96,7 @@ namespace Nova.Ai
             HandleProduction();
             HandleResearch();
             HandleScouting();
+            HandleArmedScouting();
             HandleColonizing();
             HandlePopulationSurplus();
             HandleFuelImpoverishedFleets();
@@ -161,9 +162,9 @@ namespace Nova.Ai
             List<StarIntel> excludedStars = new List<StarIntel>();
             foreach (StarIntel report in turnData.EmpireState.StarReports.Values)
             {
-                if ((report.Year != Global.Unset) && (report.MinValue(clientState.EmpireState.Race) < 50)
-                    && ((report.Owner == clientState.EmpireState.Id)||(report.Owner == Global.Nobody))
-                    )
+                if ((report.Year != Global.Unset) || ((report.MinValue(clientState.EmpireState.Race) < 50)
+                    && (report.Owner != clientState.EmpireState.Id) && (report.Owner != Global.Nobody)))
+                    
                 {
                     excludedStars.Add(report);
                 }

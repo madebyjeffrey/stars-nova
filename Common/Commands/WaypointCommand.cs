@@ -217,6 +217,8 @@ namespace Nova.Common.Commands
                                     if ((Waypoint.Task as SplitMergeTask).IsValid(empire.OwnedFleets[FleetKey], Target, empire, empire,out message))
                                     {
                                         Waypoint.Task.Perform(empire.OwnedFleets[FleetKey], Target, empire, null, out message);  //PrePerform it so the fleets IDs match the commands that follow
+                                        foreach (Fleet newFleet in empire.TemporaryFleets) empire.AddOrUpdateFleet(newFleet);
+                                        empire.TemporaryFleets.Clear();
                                         return message;
                                     }
                                     else
@@ -263,6 +265,8 @@ namespace Nova.Common.Commands
                                     {
                                         Waypoint.Task.Perform(empire.OwnedFleets[FleetKey], Target, empire, null, out message);
                                     }
+                                    foreach (Fleet newFleet in empire.TemporaryFleets) empire.AddOrUpdateFleet(newFleet);
+                                    empire.TemporaryFleets.Clear();
                                     return message;
                                 }
                             }
