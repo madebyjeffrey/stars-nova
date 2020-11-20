@@ -519,19 +519,32 @@ namespace Nova.WinForms.Gui
 
                 g.TranslateTransform(position.X, position.Y);
                 g.RotateTransform((float)report.Bearing);
-                if (report.Name.Contains("Mineral Packet") )
+                if (radioButtonGrowth.Checked)
                 {
-                    DrawIcon(g, report.Icon.Image);
-                }
-                else if (report.Owner == clientState.EmpireState.Id)
-                {
-                    DrawIcon(g, report.Icon.Image);
+                    if (report.Name.Contains("Mineral Packet"))
+                    {
+                        DrawIcon(g, report.Icon.Image);
+                    }
+                    else if (report.Owner == clientState.EmpireState.Id)
+                    {
+                        DrawIcon(g, report.Icon.Image);
+                    }
+                    else
+                    {
+                        DrawIcon(g, report.Icon.Image);
+                    }
                 }
                 else
                 {
-                    DrawIcon(g, report.Icon.Image);
+                    if (report.Owner == clientState.EmpireState.Id)
+                    {
+                        g.FillPolygon(Brushes.Blue, triangle);
+                    }
+                    else
+                    {
+                        g.FillPolygon(Brushes.Red, triangle);
+                    }
                 }
-
                 g.ResetTransform();
             }
 
