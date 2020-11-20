@@ -44,11 +44,16 @@ namespace Nova.Server.TurnSteps
                                     fleet.Waypoints[index].Task = new NoTask();
                                     invading = true;
                                     IWaypointTask invade = new InvadeTask();
-                                    invade.Perform(fleet, target, serverState.AllEmpires[fleet.Owner],receiver,out message); //Not exactly how Stars! does it but it should make programming the AI easier
+                                    invade.Perform(fleet, target, serverState.AllEmpires[fleet.Owner], receiver, out message); //Not exactly how Stars! does it but it should make programming the AI easier
                                     if (message != null) serverState.AllMessages.Add(message);
                                     message = null;
                                 }
-                                else fleet.Waypoints[index].Task.Perform(fleet, target, serverState.AllEmpires[fleet.Owner], receiver,out message);
+                                else
+                                {
+                                    fleet.Waypoints[index].Task.Perform(fleet, target, serverState.AllEmpires[fleet.Owner], receiver, out message);
+                                    if (message != null) serverState.AllMessages.Add(message);
+                                    break;
+                                }
                                 if (message != null) serverState.AllMessages.Add(message);
                                 message = null;
                                 try

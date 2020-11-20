@@ -85,7 +85,7 @@ namespace Nova.Common
         #endregion Nova Resources
 
         #region Numeric Constants
-        public const bool Debug = false;
+        public const bool Debug = true;
         // Colonists
         public const int ColonistsPerKiloton = 100;
         public const double LowStartingPopulationFactor = 0.7;
