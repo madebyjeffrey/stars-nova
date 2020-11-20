@@ -157,7 +157,7 @@ namespace Nova.WinForms
             GameSettings.Data.StarUniformity = (int)starUniformity.Value;
 
             GameSettings.Data.AcceleratedStart = acceleratedStart.Checked;
-            
+            GameSettings.Data.UseRonBattleEngine = radioButtonBattleSensible.Checked;
             if (CreateGame() == true)
             {                
                 DialogResult = DialogResult.OK;    
@@ -186,7 +186,7 @@ namespace Nova.WinForms
         /// <param name="eventArgs">A <see cref="EventArgs"/> that contains the event data.</param>
         private void TutorialButton_Click(object sender, EventArgs eventArgs)
         {
-            if (Global.Debug) Report.Information("Sorry, there is no tutorial yet.");
+            Report.Information("Sorry, there is no tutorial yet.");
             // TODO (priority 5): Load or create the tutorial client data.
         }
         
@@ -568,6 +568,17 @@ namespace Nova.WinForms
                 gameFolder.Text = gameFolderBrowser.SelectedPath;
             }
         }
+
+        private void radioButtonBattleBroken_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButtonBattleBroken.Checked) radioButtonBattleSensible.Checked = false;
+        }
+
+        private void radioButtonBattleSensible_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButtonBattleSensible.Checked) radioButtonBattleBroken.Checked = false;
+        }
+
 
     }
 

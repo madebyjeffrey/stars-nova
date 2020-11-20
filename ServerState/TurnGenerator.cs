@@ -76,8 +76,8 @@ namespace Nova.Server
             // generate a HUGE constructor call... a factory to
             // abstract it perhaps? -Aeglos
             orderReader = new OrderReader(this.serverState);
-            if (serverState.UseRonBattleOption) ronBattleEngine = new RonBattleEngine(this.serverState, new List <BattleReport>());
-            else battleEngine = new BattleEngine(this.serverState, new BattleReport());
+            if (GameSettings.Data.UseRonBattleEngine) ronBattleEngine = new RonBattleEngine(this.serverState, new List <BattleReport>());
+            else battleEngine = new BattleEngine(this.serverState, new List<BattleReport>());
 
             bombing = new Bombing(this.serverState);
             checkForMinefields = new CheckForMinefields(this.serverState);
@@ -144,7 +144,7 @@ namespace Nova.Server
                 empire.BattleReports.Clear();
             }
                                 
-            if (serverState.UseRonBattleOption ) ronBattleEngine.Run();
+            if (GameSettings.Data.UseRonBattleEngine ) ronBattleEngine.Run();
             else battleEngine.Run();
 
             serverState.CleanupFleets();

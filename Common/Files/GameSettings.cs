@@ -62,6 +62,7 @@ namespace Nova.Common
 
         public bool AcceleratedStart = false;
 
+        public bool UseRonBattleEngine = true;
         #region Singleton
 
         // ============================================================================
@@ -126,7 +127,8 @@ namespace Nova.Common
             {
                 fileName = FileSearcher.GetSettingsFile();
             }
-            if (File.Exists(fileName))
+            if (File.Exists(fileName))  //TODO Priority 8 I am playing a game in C:\Users\John\Documents\Stars! Nova\Feel the Nova\ but the "Continue game" function loads my 
+                                        // gamesettings from C:\Users\John\Documents\Stars!Nova\FeeltheNova\Feel the Nova.settings 
             {
                 bool waitForFile = false;
                 double waitTime = 0.0; // seconds

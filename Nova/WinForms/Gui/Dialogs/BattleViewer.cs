@@ -72,7 +72,7 @@ namespace Nova.WinForms.Gui
 
             battlePanel.BackgroundImage = Nova.Properties.Resources.Plasma;
             battlePanel.BackgroundImageLayout = ImageLayout.Stretch;
-            SetStepNumber(theBattle.Steps[eventCount]);
+            if (eventCount > 0) SetStepNumber(theBattle.Steps[eventCount]);
             ZoomLevel.SelectedIndex = 3;
             trackBarBattle.Minimum = 0;
             trackBarBattle.Maximum = theBattle.Steps.Count - 1;
@@ -188,36 +188,38 @@ namespace Nova.WinForms.Gui
         /// <param name="e">A <see cref="EventArgs"/> that contains the event data.</param>
         private void NextStep_Click(object sender, EventArgs e)
         {
-            object thisStep = theBattle.Steps[eventCount];
-            SetStepNumber((BattleStep) thisStep);
+            if (eventCount > 0)
+            {
+                object thisStep = theBattle.Steps[eventCount];
+                SetStepNumber((BattleStep)thisStep);
 
-            if (thisStep is BattleStepMovement)
-            {
-                DoBattleStepMovement(thisStep as BattleStepMovement);
-            }
-            else if (thisStep is BattleStepTarget)
-            {
-                DoBattleStepTarget(thisStep as BattleStepTarget);
-            }
-            else if (thisStep is BattleStepWeapons)
-            {
-                DoBattleStepFireWeapon(thisStep as BattleStepWeapons);
-            }
-            else if (thisStep is BattleStepDestroy)
-            {
-                UpdateDestroy(thisStep as BattleStepDestroy);
-            }
+                if (thisStep is BattleStepMovement)
+                {
+                    DoBattleStepMovement(thisStep as BattleStepMovement);
+                }
+                else if (thisStep is BattleStepTarget)
+                {
+                    DoBattleStepTarget(thisStep as BattleStepTarget);
+                }
+                else if (thisStep is BattleStepWeapons)
+                {
+                    DoBattleStepFireWeapon(thisStep as BattleStepWeapons);
+                }
+                else if (thisStep is BattleStepDestroy)
+                {
+                    UpdateDestroy(thisStep as BattleStepDestroy);
+                }
 
-            if (eventCount < theBattle.Steps.Count - 1)
-            {
-                eventCount++;
-                trackBarBattle.Value = eventCount;
+                if (eventCount < theBattle.Steps.Count - 1)
+                {
+                    eventCount++;
+                    trackBarBattle.Value = eventCount;
+                }
+                else
+                {
+                    nextStep.Enabled = false;
+                }
             }
-            else
-            {
-                nextStep.Enabled = false;
-            }
-
         }
 
 
