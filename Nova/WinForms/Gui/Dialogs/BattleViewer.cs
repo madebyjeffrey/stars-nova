@@ -134,7 +134,7 @@ namespace Nova.WinForms.Gui
                 graphics.TranslateTransform(-MinArmedX,-MinArmedY); 
                 graphics.ScaleTransform((float)((Double)panelSize.Height / Math.Max(8*Global.MaxWeaponRange,(MaxArmedX - MinArmedX))),(float)((Double)panelSize.Height / Math.Max(8*Global.MaxWeaponRange, (MaxArmedX - MinArmedX))), MatrixOrder.Append);// maintain Aspect Ratio
             }
-            if (ZoomLevel.SelectedIndex == 2)
+            if ((ZoomLevel.SelectedIndex == 2)  && (selectedStack != null))
             {
                 graphics.TranslateTransform(-selectedStack.Position.X, -selectedStack.Position.Y);
                 graphics.ScaleTransform  ((float)((Double)panelSize.Height / ((Double)16 * Global.MaxWeaponRange)), (float)((Double)panelSize.Height / ((Double)16 * Global.MaxWeaponRange)), MatrixOrder.Append);
@@ -483,8 +483,7 @@ namespace Nova.WinForms.Gui
         private void timerNext_Tick(object sender, EventArgs e)
         {
             if (numericUpDownSpeed.Value < 0) eventCount = eventCount - 2;
-            timerNext.Enabled = true;
-            if ((eventCount >= theBattle.Steps.Count - 1) && (numericUpDownSpeed.Value < 0))
+            if ((eventCount >= theBattle.Steps.Count - 1) && (numericUpDownSpeed.Value > 0))
             {
                 eventCount = theBattle.Steps.Count - 1;
                 numericUpDownSpeed.Value = 0;
@@ -492,10 +491,11 @@ namespace Nova.WinForms.Gui
             else if ((eventCount <= 1) && (numericUpDownSpeed.Value < 0))
             {
                 eventCount = 0;
-                numericUpDownSpeed.Value = 1;
+                numericUpDownSpeed.Value = 0;
             }
+            else timerNext.Enabled = true;
 
-            //trackBarBattle.Value = eventCount;
+            trackBarBattle.Value = eventCount;
             NextStep_Click(sender, e);
        }
     }
