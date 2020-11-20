@@ -47,6 +47,7 @@ namespace Nova.WinForms.Gui
         {
             this.queueStar = star;
             this.clientState = clientState;
+            this.rowSelected = 0;
 
             InitializeComponent();
         }
