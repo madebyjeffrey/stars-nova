@@ -522,9 +522,9 @@ namespace Nova.WinForms.Gui
                     clientState.Commands.Push(command);
                     command.ApplyToState(clientState.EmpireState);
                 }
-                else Report.Information(message.Text);
+                else if (Global.Debug) Report.Information(message.Text);
             }
-            
+
             Close();
         }
         

@@ -1929,7 +1929,7 @@ namespace Nova.WinForms.RaceDesigner
                 xmldoc.Save(saveFile);
                 saveFile.Close();
 
-                Report.Information("The " + race.PluralName + " have been saved to " + raceFilePath);
+                if (Global.Debug) Report.Information("The " + race.PluralName + " have been saved to " + raceFilePath);
 
                 using (Config conf = new Config())
                 {

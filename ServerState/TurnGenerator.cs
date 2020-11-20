@@ -252,7 +252,7 @@ namespace Nova.Server
                             if (null != message)
                             {
                                 serverState.AllMessages.Add(message);
-                                Report.Information(message.Text);
+                                if (Global.Debug) Report.Information(message.Text);
                             }
                             message = new Message(empire.Id, "Invalid " + command.GetType().Name + "command for " + empire.Race.Name, "Invalid Command", null);
                             serverState.AllMessages.Add(message);
@@ -597,7 +597,7 @@ namespace Nova.Server
                         }
                         catch
                         {
-                            Report.Information("Bad waypoint for " + fleet.Name + " Empire " + fleet.Owner.ToString());
+                            if (Global.Debug) Report.Information("Bad waypoint for " + fleet.Name + " Empire " + fleet.Owner.ToString());
                         }
 
 

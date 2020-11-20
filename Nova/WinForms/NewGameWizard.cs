@@ -186,7 +186,7 @@ namespace Nova.WinForms
         /// <param name="eventArgs">A <see cref="EventArgs"/> that contains the event data.</param>
         private void TutorialButton_Click(object sender, EventArgs eventArgs)
         {
-            Report.Information("Sorry, there is no tutorial yet.");
+            if (Global.Debug) Report.Information("Sorry, there is no tutorial yet.");
             // TODO (priority 5): Load or create the tutorial client data.
         }
         

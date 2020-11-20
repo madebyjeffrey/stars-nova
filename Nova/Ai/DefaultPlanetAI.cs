@@ -256,7 +256,7 @@ namespace Nova.Ai
                         clientState.Commands.Push(colonizerCommand);
                         productionIndex++;
                     }
-                    else Report.Information(message.Text);
+                    else if (Global.Debug) Report.Information(message.Text);
                 }
             }
             return productionIndex;
@@ -288,7 +288,7 @@ namespace Nova.Ai
                                 clientState.Commands.Push(transportCommand);
                                 productionIndex++;
                             }
-                            else Report.Information(message.Text);
+                            else if (Global.Debug) Report.Information(message.Text);
                         }
                     }
             return productionIndex;
@@ -309,7 +309,7 @@ namespace Nova.Ai
                         clientState.Commands.Push(refuelerCommand);
                         productionIndex++;
                     }
-                    else Report.Information(message.Text);
+                    else if (Global.Debug) Report.Information(message.Text);
                 }
             }
             return productionIndex;
@@ -388,7 +388,7 @@ namespace Nova.Ai
                     clientState.Commands.Push(suitableCommand);
                     productionIndex++;
                 }
-                else Report.Information(message.Text);
+                else if (Global.Debug) Report.Information(message.Text);
             }
             return productionIndex;
         }
@@ -417,7 +417,7 @@ namespace Nova.Ai
                     clientState.Commands.Push(suitableCommand);
                     productionIndex++;
                 }
-                else Report.Information(message.Text);
+                else if (Global.Debug) Report.Information(message.Text);
             }
             return productionIndex;
         }

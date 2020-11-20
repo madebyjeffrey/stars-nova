@@ -175,7 +175,7 @@ namespace Nova.WinForms.Gui
                     // can edit while maintaining links from the WaypointListbox.index to the commandList.index (obviously not
                     // one to one)
                 }
-                else Report.Information(message.Text);
+                else if (Global.Debug) Report.Information(message.Text);
 
                 DisplayLegDetails(index);
             }
@@ -261,7 +261,7 @@ namespace Nova.WinForms.Gui
             }
             if ((topFleet.Waypoints[index].Task is SplitMergeTask) || (topFleet.Waypoints[index].Task is CargoTask))
             {
-                //Report.Information("That is a waypoint zero task, removing it may result in a loss of Fleet split, merge, load and unload actions for this fleet and/or other fleets");
+                if (Global.Debug) Report.Information("That is a waypoint zero task, removing it may result in a loss of Fleet split, merge, load and unload actions for this fleet and/or other fleets");
                 return;
             }
             else
@@ -275,7 +275,7 @@ namespace Nova.WinForms.Gui
                 {
                     command.ApplyToState(empireState);
                 }
-                else Report.Information(message.Text);
+                else if (Global.Debug) Report.Information(message.Text);
             }
             // Refresh the waypoint list on the GUI.
             UpdateWaypointList(this, new EventArgs());
@@ -300,7 +300,7 @@ namespace Nova.WinForms.Gui
 
                     if ((topFleet.Waypoints[index].Task is SplitMergeTask) || (topFleet.Waypoints[index].Task is CargoTask))
                     {
-                        Report.Information("That is a waypoint zero task, removing it may result in a loss of Fleet split, merge, load and unload actions for this fleet and/or other fleets");
+                        if (Global.Debug)  Report.Information("That is a waypoint zero task, removing it may result in a loss of Fleet split, merge, load and unload actions for this fleet and/or other fleets");
                         return;
                     }
                     else
@@ -313,9 +313,9 @@ namespace Nova.WinForms.Gui
                         if (command.IsValid(empireState,out message))
                         {
                             message = command.ApplyToState(empireState);
-                            if (message != null) Report.Information(message.Text);
+                            if ((message != null) && (Global.Debug)) Report.Information(message.Text);
                         }
-                        else Report.Information(message.Text);
+                        else if (Global.Debug) Report.Information(message.Text);
                     }
                     // Refresh the waypoint list on the GUI.
                     UpdateWaypointList(this, new EventArgs());
@@ -350,7 +350,7 @@ namespace Nova.WinForms.Gui
             int index = wayPoints.SelectedIndices[0];
             if ((topFleet.Waypoints[index].Task is SplitMergeTask) || (topFleet.Waypoints[index].Task is CargoTask))
             {
-                Report.Information("That is a waypoint zero task, editing it may result in a loss of Fleet split, merge, load and unload actions for this fleet and/or other fleets");
+                if (Global.Debug) Report.Information("That is a waypoint zero task, editing it may result in a loss of Fleet split, merge, load and unload actions for this fleet and/or other fleets");
                 return;
             }
             else
@@ -393,9 +393,9 @@ namespace Nova.WinForms.Gui
                 if (command.IsValid(empireState, out message))
                 {
                     message = command.ApplyToState(empireState);
-                    if (message != null) Report.Information(message.Text);
+                    if ((message != null) && (Global.Debug)) Report.Information(message.Text);
                 }
-                else Report.Information(message.Text);
+                else if (Global.Debug) Report.Information(message.Text);
             }
         }
 
@@ -822,7 +822,7 @@ namespace Nova.WinForms.Gui
                         if (command.Waypoint.Task.IsValid(topFleet, otherFleet, empireState, empireState, out message))
                         {
                             command.Waypoint.Task.Perform(topFleet, otherFleet, empireState, empireState, out message);
-                            if (message != null) Report.Information(message.Text);
+                            if ((message != null) && (Global.Debug)) Report.Information(message.Text);
                             // topFleet.Waypoints.Remove(waypoint);
                             // Now clean and remove empty fleets and update remaining ones
                             // This is done to update the Client State visuals only, the server
@@ -865,9 +865,9 @@ namespace Nova.WinForms.Gui
                                 }
                             }
                         }
-                        else Report.Information(message.Text);
+                        else if (Global.Debug) Report.Information(message.Text);
                     }
-                    else Report.Information(message.Text);
+                    else if (Global.Debug) Report.Information(message.Text);
                     topFleet = (otherFleet == null) ? topFleet : otherFleet;
 
                 }
@@ -1063,14 +1063,14 @@ namespace Nova.WinForms.Gui
                 if (command.Waypoint.Task.IsValid(fleet, null, empireState, empireState, out message))
                 {
                     command.Waypoint.Task.Perform(fleet, null, empireState, empireState, out message);
-                    if (message != null) Report.Information(message.Text);
+                    if ((message != null) && (Global.Debug)) Report.Information(message.Text);
                     newFleet = empireState.TemporaryFleets[empireState.TemporaryFleets.Count - 1];
                     empireState.AddOrUpdateFleet(newFleet);
 
                 }
-                else Report.Information(message.Text);
+                else if (Global.Debug) Report.Information(message.Text);
             }
-            else Report.Information(message.Text);
+            else if (Global.Debug) Report.Information(message.Text);
             if (allFleetsDest != allFleetsDest) //this creates 2 waypoints for some reason so it is commented out for now 
             {
                 WaypointCommand otherFleet = new WaypointCommand(CommandMode.Add, newFleet.Key, 2);
@@ -1086,7 +1086,7 @@ namespace Nova.WinForms.Gui
                     destCommand.ApplyToState(empireState);
 
                 }
-                else Report.Information(message.Text);
+                else if (Global.Debug) Report.Information(message.Text);
 
             }
             return newFleet;

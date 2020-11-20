@@ -7511,6 +7511,91 @@ This scanner is capable of determining planetary statistics whilst in orbit.</De
   <Component>
     <Item>
       <Key>0</Key>
+      <Name>Orbital Adjuster</Name>
+      <Type>MiningRobot</Type>
+    </Item>
+    <Mass>80</Mass>
+    <Cost>
+      <Boranium>25</Boranium>
+      <Ironium>25</Ironium>
+      <Germanium>25</Germanium>
+      <Energy>50</Energy>
+    </Cost>
+    <Tech>
+      <Biotechnology>6</Biotechnology>
+      <Electronics>0</Electronics>
+      <Energy>0</Energy>
+      <Propulsion>0</Propulsion>
+      <Weapons>0</Weapons>
+      <Construction>0</Construction>
+    </Tech>
+    <Description>This component is capable of terraforming allies planets by 1% per year. Also acts as a 25% cloak.</Description>
+    <Race_Restrictions>
+      <CA>2</CA>
+    </Race_Restrictions>
+    <Image>Mining_Robot/Orbital_Adjuster.png</Image>
+    <Property>
+      <Value>25</Value>
+      <Type>Cloak</Type>
+    </Property>
+    <Property>
+      <Value>1</Value>
+      <Type>Orbital Adjuster</Type>
+    </Property>
+  </Component>
+  <Component>
+    <Item>
+      <Key>0</Key>
+      <Name>Midget Miner</Name>
+      <Type>Hull</Type>
+    </Item>
+    <Mass>10</Mass>
+    <Cost>
+      <Boranium>0</Boranium>
+      <Ironium>10</Ironium>
+      <Germanium>3</Germanium>
+      <Energy>20</Energy>
+    </Cost>
+    <Tech>
+      <Biotechnology>0</Biotechnology>
+      <Electronics>0</Electronics>
+      <Energy>0</Energy>
+      <Propulsion>0</Propulsion>
+      <Weapons>0</Weapons>
+      <Construction>0</Construction>
+    </Tech>
+    <Description>
+    </Description>
+    <Race_Restrictions>
+      <ARM>2</ARM>
+    </Race_Restrictions>
+    <Image>Ship/Midget_Miner0000.png</Image>
+    <Property>
+      <FuelCapacity>210</FuelCapacity>
+      <DockCapacity>0</DockCapacity>
+      <ARMaxPop>0</ARMaxPop>
+      <BaseCargo>0</BaseCargo>
+      <ArmorStrength>100</ArmorStrength>
+      <BattleInitiative>0</BattleInitiative>
+      <HealsOthersPercent>0</HealsOthersPercent>
+      <Module>
+        <CellNumber>11</CellNumber>
+        <ComponentCount>0</ComponentCount>
+        <ComponentMaximum>1</ComponentMaximum>
+        <ComponentType>Engine</ComponentType>
+      </Module>
+      <Module>
+        <CellNumber>12</CellNumber>
+        <ComponentCount>0</ComponentCount>
+        <ComponentMaximum>2</ComponentMaximum>
+        <ComponentType>Robot Miner</ComponentType>
+      </Module>
+      <Type>Hull</Type>
+    </Property>
+  </Component>
+  <Component>
+    <Item>
+      <Key>0</Key>
       <Name>Stealth Bomber</Name>
       <Type>Hull</Type>
     </Item>
@@ -7574,91 +7659,6 @@ This scanner is capable of determining planetary statistics whilst in orbit.</De
         <ComponentType>Bomb</ComponentType>
       </Module>
       <Type>Hull</Type>
-    </Property>
-  </Component>
-  <Component>
-    <Item>
-      <Key>0</Key>
-      <Name>Midget Miner</Name>
-      <Type>Hull</Type>
-    </Item>
-    <Mass>10</Mass>
-    <Cost>
-      <Boranium>0</Boranium>
-      <Ironium>10</Ironium>
-      <Germanium>3</Germanium>
-      <Energy>20</Energy>
-    </Cost>
-    <Tech>
-      <Biotechnology>0</Biotechnology>
-      <Electronics>0</Electronics>
-      <Energy>0</Energy>
-      <Propulsion>0</Propulsion>
-      <Weapons>0</Weapons>
-      <Construction>0</Construction>
-    </Tech>
-    <Description>
-    </Description>
-    <Race_Restrictions>
-      <ARM>2</ARM>
-    </Race_Restrictions>
-    <Image>Ship/Midget_Miner0000.png</Image>
-    <Property>
-      <FuelCapacity>210</FuelCapacity>
-      <DockCapacity>0</DockCapacity>
-      <ARMaxPop>0</ARMaxPop>
-      <BaseCargo>0</BaseCargo>
-      <ArmorStrength>100</ArmorStrength>
-      <BattleInitiative>0</BattleInitiative>
-      <HealsOthersPercent>0</HealsOthersPercent>
-      <Module>
-        <CellNumber>11</CellNumber>
-        <ComponentCount>0</ComponentCount>
-        <ComponentMaximum>1</ComponentMaximum>
-        <ComponentType>Engine</ComponentType>
-      </Module>
-      <Module>
-        <CellNumber>12</CellNumber>
-        <ComponentCount>0</ComponentCount>
-        <ComponentMaximum>2</ComponentMaximum>
-        <ComponentType>Robot Miner</ComponentType>
-      </Module>
-      <Type>Hull</Type>
-    </Property>
-  </Component>
-  <Component>
-    <Item>
-      <Key>0</Key>
-      <Name>Orbital Adjuster</Name>
-      <Type>MiningRobot</Type>
-    </Item>
-    <Mass>80</Mass>
-    <Cost>
-      <Boranium>25</Boranium>
-      <Ironium>25</Ironium>
-      <Germanium>25</Germanium>
-      <Energy>50</Energy>
-    </Cost>
-    <Tech>
-      <Biotechnology>6</Biotechnology>
-      <Electronics>0</Electronics>
-      <Energy>0</Energy>
-      <Propulsion>0</Propulsion>
-      <Weapons>0</Weapons>
-      <Construction>0</Construction>
-    </Tech>
-    <Description>This component is capable of terraforming allies planets by 1% per year. Also acts as a 25% cloak.</Description>
-    <Race_Restrictions>
-      <CA>2</CA>
-    </Race_Restrictions>
-    <Image>Mining_Robot/Orbital_Adjuster.png</Image>
-    <Property>
-      <Value>25</Value>
-      <Type>Cloak</Type>
-    </Property>
-    <Property>
-      <Value>1</Value>
-      <Type>Orbital Adjuster</Type>
     </Property>
   </Component>
   <Component>
@@ -7832,6 +7832,39 @@ This scanner is capable of determining planetary statistics whilst in orbit.</De
   <Component>
     <Item>
       <Key>0</Key>
+      <Name>Enriched Neutron Bomb</Name>
+      <Type>Bomb</Type>
+    </Item>
+    <Mass>64</Mass>
+    <Cost>
+      <Boranium>36</Boranium>
+      <Ironium>1</Ironium>
+      <Germanium>0</Germanium>
+      <Energy>25</Energy>
+    </Cost>
+    <Tech>
+      <Biotechnology>0</Biotechnology>
+      <Electronics>12</Electronics>
+      <Energy>0</Energy>
+      <Propulsion>0</Propulsion>
+      <Weapons>15</Weapons>
+      <Construction>0</Construction>
+    </Tech>
+    <Description>
+    </Description>
+    <Race_Restrictions />
+    <Image>Bomb/Enriched_Neutron_Bomb.png</Image>
+    <Property>
+      <Installations>0</Installations>
+      <PopKill>3.5</PopKill>
+      <MinimumKill>0</MinimumKill>
+      <IsSmart>True</IsSmart>
+      <Type>Bomb</Type>
+    </Property>
+  </Component>
+  <Component>
+    <Item>
+      <Key>0</Key>
       <Name>Colony Ship</Name>
       <Type>Hull</Type>
     </Item>
@@ -7881,39 +7914,6 @@ This scanner is capable of determining planetary statistics whilst in orbit.</De
         <ComponentType>Mechanical</ComponentType>
       </Module>
       <Type>Hull</Type>
-    </Property>
-  </Component>
-  <Component>
-    <Item>
-      <Key>0</Key>
-      <Name>Enriched Neutron Bomb</Name>
-      <Type>Bomb</Type>
-    </Item>
-    <Mass>64</Mass>
-    <Cost>
-      <Boranium>36</Boranium>
-      <Ironium>1</Ironium>
-      <Germanium>0</Germanium>
-      <Energy>25</Energy>
-    </Cost>
-    <Tech>
-      <Biotechnology>0</Biotechnology>
-      <Electronics>12</Electronics>
-      <Energy>0</Energy>
-      <Propulsion>0</Propulsion>
-      <Weapons>15</Weapons>
-      <Construction>0</Construction>
-    </Tech>
-    <Description>
-    </Description>
-    <Race_Restrictions />
-    <Image>Bomb/Enriched_Neutron_Bomb.png</Image>
-    <Property>
-      <Installations>0</Installations>
-      <PopKill>3.5</PopKill>
-      <MinimumKill>0</MinimumKill>
-      <IsSmart>True</IsSmart>
-      <Type>Bomb</Type>
     </Property>
   </Component>
   <Component>
@@ -8081,40 +8081,6 @@ This scanner is capable of determining planetary statistics whilst in orbit.</De
   <Component>
     <Item>
       <Key>0</Key>
-      <Name>Bludgeon</Name>
-      <Type>BeamWeapons</Type>
-    </Item>
-    <Mass>10</Mass>
-    <Cost>
-      <Boranium>22</Boranium>
-      <Ironium>0</Ironium>
-      <Germanium>0</Germanium>
-      <Energy>9</Energy>
-    </Cost>
-    <Tech>
-      <Biotechnology>0</Biotechnology>
-      <Electronics>0</Electronics>
-      <Energy>0</Energy>
-      <Propulsion>0</Propulsion>
-      <Weapons>13</Weapons>
-      <Construction>0</Construction>
-    </Tech>
-    <Description>
-    </Description>
-    <Race_Restrictions />
-    <Image>Beam/Bludgeon.png</Image>
-    <Property>
-      <Initiative>10</Initiative>
-      <Power>231</Power>
-      <Accuracy>100</Accuracy>
-      <Range>0</Range>
-      <Group>standardBeam</Group>
-      <Type>Weapon</Type>
-    </Property>
-  </Component>
-  <Component>
-    <Item>
-      <Key>0</Key>
       <Name>B-17 Bomber</Name>
       <Type>Hull</Type>
     </Item>
@@ -8170,6 +8136,40 @@ This scanner is capable of determining planetary statistics whilst in orbit.</De
         <ComponentType>Scanner Electrical Mechanical</ComponentType>
       </Module>
       <Type>Hull</Type>
+    </Property>
+  </Component>
+  <Component>
+    <Item>
+      <Key>0</Key>
+      <Name>Bludgeon</Name>
+      <Type>BeamWeapons</Type>
+    </Item>
+    <Mass>10</Mass>
+    <Cost>
+      <Boranium>22</Boranium>
+      <Ironium>0</Ironium>
+      <Germanium>0</Germanium>
+      <Energy>9</Energy>
+    </Cost>
+    <Tech>
+      <Biotechnology>0</Biotechnology>
+      <Electronics>0</Electronics>
+      <Energy>0</Energy>
+      <Propulsion>0</Propulsion>
+      <Weapons>13</Weapons>
+      <Construction>0</Construction>
+    </Tech>
+    <Description>
+    </Description>
+    <Race_Restrictions />
+    <Image>Beam/Bludgeon.png</Image>
+    <Property>
+      <Initiative>10</Initiative>
+      <Power>231</Power>
+      <Accuracy>100</Accuracy>
+      <Range>0</Range>
+      <Group>standardBeam</Group>
+      <Type>Weapon</Type>
     </Property>
   </Component>
   <Component>
@@ -8417,35 +8417,6 @@ This scanner is capable of determining planetary statistics whilst in orbit.</De
   <Component>
     <Item>
       <Key>0</Key>
-      <Name>Crobmnium</Name>
-      <Type>Armor</Type>
-    </Item>
-    <Mass>56</Mass>
-    <Cost>
-      <Boranium>0</Boranium>
-      <Ironium>6</Ironium>
-      <Germanium>0</Germanium>
-      <Energy>13</Energy>
-    </Cost>
-    <Tech>
-      <Biotechnology>0</Biotechnology>
-      <Electronics>0</Electronics>
-      <Energy>0</Energy>
-      <Propulsion>0</Propulsion>
-      <Weapons>0</Weapons>
-      <Construction>3</Construction>
-    </Tech>
-    <Description>75 dp armor.</Description>
-    <Race_Restrictions />
-    <Image>Armor/Crobmnium.png</Image>
-    <Property>
-      <Value>75</Value>
-      <Type>Armor</Type>
-    </Property>
-  </Component>
-  <Component>
-    <Item>
-      <Key>0</Key>
       <Name>Super Cargo Pod</Name>
       <Type>Mechanical</Type>
     </Item>
@@ -8471,6 +8442,35 @@ This scanner is capable of determining planetary statistics whilst in orbit.</De
     <Property>
       <Value>100</Value>
       <Type>Cargo</Type>
+    </Property>
+  </Component>
+  <Component>
+    <Item>
+      <Key>0</Key>
+      <Name>Crobmnium</Name>
+      <Type>Armor</Type>
+    </Item>
+    <Mass>56</Mass>
+    <Cost>
+      <Boranium>0</Boranium>
+      <Ironium>6</Ironium>
+      <Germanium>0</Germanium>
+      <Energy>13</Energy>
+    </Cost>
+    <Tech>
+      <Biotechnology>0</Biotechnology>
+      <Electronics>0</Electronics>
+      <Energy>0</Energy>
+      <Propulsion>0</Propulsion>
+      <Weapons>0</Weapons>
+      <Construction>3</Construction>
+    </Tech>
+    <Description>75 dp armor.</Description>
+    <Race_Restrictions />
+    <Image>Armor/Crobmnium.png</Image>
+    <Property>
+      <Value>75</Value>
+      <Type>Armor</Type>
     </Property>
   </Component>
   <Component>
@@ -8652,32 +8652,6 @@ This scanner is capable of determining planetary statistics whilst in orbit.</De
   <Component>
     <Item>
       <Key>0</Key>
-      <Name>Gravity ±3</Name>
-      <Type>Terraforming</Type>
-    </Item>
-    <Mass>0</Mass>
-    <Cost>
-      <Boranium>0</Boranium>
-      <Ironium>0</Ironium>
-      <Germanium>0</Germanium>
-      <Energy>100</Energy>
-    </Cost>
-    <Tech>
-      <Biotechnology>1</Biotechnology>
-      <Electronics>0</Electronics>
-      <Energy>0</Energy>
-      <Propulsion>1</Propulsion>
-      <Weapons>0</Weapons>
-      <Construction>0</Construction>
-    </Tech>
-    <Description>
-    </Description>
-    <Race_Restrictions />
-    <Image>Terraforming/Gravity_3.png</Image>
-  </Component>
-  <Component>
-    <Item>
-      <Key>0</Key>
       <Name>Battle Cruiser</Name>
       <Type>Hull</Type>
     </Item>
@@ -8754,6 +8728,32 @@ This scanner is capable of determining planetary statistics whilst in orbit.</De
       </Module>
       <Type>Hull</Type>
     </Property>
+  </Component>
+  <Component>
+    <Item>
+      <Key>0</Key>
+      <Name>Gravity ±3</Name>
+      <Type>Terraforming</Type>
+    </Item>
+    <Mass>0</Mass>
+    <Cost>
+      <Boranium>0</Boranium>
+      <Ironium>0</Ironium>
+      <Germanium>0</Germanium>
+      <Energy>100</Energy>
+    </Cost>
+    <Tech>
+      <Biotechnology>1</Biotechnology>
+      <Electronics>0</Electronics>
+      <Energy>0</Energy>
+      <Propulsion>1</Propulsion>
+      <Weapons>0</Weapons>
+      <Construction>0</Construction>
+    </Tech>
+    <Description>
+    </Description>
+    <Race_Restrictions />
+    <Image>Terraforming/Gravity_3.png</Image>
   </Component>
   <Component>
     <Item>

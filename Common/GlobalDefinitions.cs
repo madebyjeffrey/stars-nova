@@ -48,7 +48,7 @@ namespace Nova.Common
 
         #region Nova Resources
 
-        // These config file keys are used to loacte files and folders where Nova stores game data.
+        // These config file keys are used to locate files and folders where Nova stores game data.
         #region Files and Folders
         public const string ComponentFileKey = "ComponentFile"; // where components.xml is (possibly re-named), installation relative path is '.'. Should only change for modified game play.
         public const string GraphicsFolderKey = "GraphicsFolder"; // where pictures are stored, installation relative path is './Graphics'. Should only be changed for modding the game interface.
@@ -85,7 +85,7 @@ namespace Nova.Common
         #endregion Nova Resources
 
         #region Numeric Constants
-
+        public const bool Debug = false;
         // Colonists
         public const int ColonistsPerKiloton = 100;
         public const double LowStartingPopulationFactor = 0.7;

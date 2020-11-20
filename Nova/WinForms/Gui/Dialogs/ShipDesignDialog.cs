@@ -178,7 +178,7 @@ namespace Nova.WinForms.Gui
                 clientState.Commands.Push(command);
                 command.ApplyToState(clientState.EmpireState);
             }
-            Report.Information(message.Text);
+            if (Global.Debug) Report.Information(message.Text);
             Close();
         }
 

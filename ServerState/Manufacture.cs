@@ -142,9 +142,9 @@ namespace Nova.Server
                 if (command.IsValid(empire, out message))
                 {
                     message = command.ApplyToState(empire);
-                    if (message != null) Report.Information(message.Text);
+                    if ((message != null) && (Global.Debug)) Report.Information(message.Text);
                 }
-                else Report.Information(message.Text);
+                else if (Global.Debug) Report.Information(message.Text);
 
                 waypoint = new Waypoint();
                 waypoint.Destination = destination.ToString();
@@ -156,9 +156,9 @@ namespace Nova.Server
                 if (command2.IsValid(empire, out message))
                 {
                     message = command2.ApplyToState(empire);
-                    if (message != null) Report.Information(message.Text);
+                    if ((message != null) && (Global.Debug)) Report.Information(message.Text);
                 }
-                else Report.Information(message.Text);
+                else if (Global.Debug) Report.Information(message.Text);
             }
 
             if (design.Type == ItemType.Starbase)

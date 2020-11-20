@@ -58,7 +58,7 @@ namespace Nova.Server.TurnSteps
                                 }
                                 catch
                                 {
-                                    Report.Information("Bad waypoint for " + fleet.Name + " Empire " + fleet.Owner.ToString());
+                                    if (Global.Debug) Report.Information("Bad waypoint for " + fleet.Name + " Empire " + fleet.Owner.ToString());
                                 }
                                 if (!invading)
                                 {

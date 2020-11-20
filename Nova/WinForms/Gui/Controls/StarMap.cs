@@ -1133,7 +1133,7 @@ namespace Nova.WinForms.Gui
             {
                 command.ApplyToState(clientState.EmpireState);
             }
-            else Report.Information(message.Text);
+            else if (Global.Debug) Report.Information(message.Text);
 
             RefreshStarMap(this, EventArgs.Empty);
 

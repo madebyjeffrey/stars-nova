@@ -240,7 +240,7 @@ namespace Nova.WinForms.Gui
                 clientState.Commands.Push(command);
                 command.ApplyToState(clientState.EmpireState);
             }
-            else Report.Information(message.Text);
+            else if (Global.Debug) Report.Information(message.Text);
             // This is done for synchronization. We wait for the event handlers
             // to return something (and thus complete) before closing the Form and invalidating
             // all event handlers and delegates thus crashing everything into the fiery void of despair.

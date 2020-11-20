@@ -190,7 +190,7 @@ Are you sure you want to do this?";
                 clientState.Commands.Push(command);
                 command.ApplyToState(clientState.EmpireState);
             }
-            else Report.Information(message.Text);
+            else if (Global.Debug) Report.Information(message.Text);
             DesignOwner_SelectedIndexChanged(null, null);
 
             // Ensure the Star map is updated in case we've completely removed any
@@ -369,7 +369,7 @@ Are you sure you want to do this?";
                         clientState.Commands.Push(command);
                         command.ApplyToState(clientState.EmpireState);
                     }
-                    else Report.Information(message.Text);
+                    else if (Global.Debug) Report.Information(message.Text);
                 }
             }
         }

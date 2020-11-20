@@ -350,9 +350,9 @@ namespace Nova.ControlLibrary
                                 if (command.Waypoint.Task.IsValid(fleet, star, clientData.EmpireState, null, out message))
                                 {
                                     command.Waypoint.Task.Perform(fleet, star, clientData.EmpireState, null,out message); // Load, Unload
-                                    if (message != null) Report.Information(message.Text);
+                                    if ((message != null) && (Global.Debug)) Report.Information(message.Text);
                                 }
-                                else Report.Information(message.Text);
+                                else if (Global.Debug) Report.Information(message.Text);
                             }
                             //fleet.Waypoints.Remove(waypoint); // immediate commands shouldn't add a visible waypoint to the ship in the client - we have told the server what to do
                         }
@@ -366,15 +366,15 @@ namespace Nova.ControlLibrary
                                 if (command.Waypoint.Task.IsValid(fleet, other, clientData.EmpireState, null,out message))
                                 {
                                     command.Waypoint.Task.Perform(fleet, other, clientData.EmpireState, null, out message); // Load, Unload
-                                    if (message != null) Report.Information(message.Text);
+                                    if ((message != null) && (Global.Debug)) Report.Information(message.Text);
                                 }
-                                else Report.Information(message.Text);
+                                else if (Global.Debug) Report.Information(message.Text);
                             }
-                            else Report.Information(message.Text);
+                            else if (Global.Debug) Report.Information(message.Text);
                             //fleet.Waypoints.Remove(waypoint); // immediate commands shouldn't add a visible waypoint to the ship in the client - we have told the server what to do
                         }
                     }
-                    else Report.Information(message.Text);
+                    else if (Global.Debug) Report.Information(message.Text);
                 }
             }
 

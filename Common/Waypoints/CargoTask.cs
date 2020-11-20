@@ -186,7 +186,7 @@ namespace Nova.Common.Waypoints
                 {
                     if (receiver == null)
                     {
-                        // Report.Information("Cargo Transfer to enemy Stars not implemeneted - try creating an invasion task"); //  ;)
+                        if (Global.Debug) Report.Information("Cargo Transfer to enemy Stars not implemeneted - try creating an invasion task"); //  ;)
                         Message message = new Message(sender.Id, "Cargo Transfer to enemy Stars not implemeneted - try creating an invasion task", "Invalid Command", null);
                         messageOut = message; 
                         return false;  
