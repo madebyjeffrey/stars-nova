@@ -260,11 +260,23 @@ namespace Nova.Server
                 if (result == DialogResult.OK)
                 {
                     StatePathName = fd.FileName;
+                    GameFolder = fd.FileName;
+                    using (Config conf = new Config())
+                    {
+                        conf[Global.SettingsKey] = fd.FileName;
+                        conf.Dispose();  //force save
+                    }
+
                 }
                 else
                 {
                     throw new System.IO.IOException("File dialog cancelled");
                 }
+            }
+            using (Config conf = new Config())
+            {
+                conf[Global.SettingsKey] = GameFolder; // keep server copy ("nova.conf") in sync with client copy ("Feel the Nova.settings")
+                conf.Dispose();  //force save
             }
 
             ToXml();

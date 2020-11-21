@@ -40,7 +40,8 @@ namespace Nova
             
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            
+
+            if (firstArgument != null) firstArgument = (firstArgument.Trim());
             switch (firstArgument)
             {
                 case CommandArguments.Option.ConsoleSwitch:
@@ -64,6 +65,9 @@ namespace Nova
                     break;
                 case CommandArguments.Option.LauncherSwitch:
                 case null:
+                    Application.Run(new Nova.WinForms.Launcher.NovaLauncher());
+                    break;
+                case "":
                     Application.Run(new Nova.WinForms.Launcher.NovaLauncher());
                     break;
                 case CommandArguments.Option.HelpSwitch:

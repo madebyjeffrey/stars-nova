@@ -34,6 +34,14 @@ namespace Nova.WinForms
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NewGameWizard));
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.totalScore = new Nova.ControlLibrary.EnabledCounter();
+            this.exceedSecondPlace = new Nova.ControlLibrary.EnabledCounter();
+            this.highestScore = new Nova.ControlLibrary.EnabledCounter();
+            this.capitalShips = new Nova.ControlLibrary.EnabledCounter();
+            this.productionCapacity = new Nova.ControlLibrary.EnabledCounter();
+            this.numberOfFields = new Nova.ControlLibrary.EnabledCounter();
+            this.techLevels = new Nova.ControlLibrary.EnabledCounter();
+            this.planetsOwned = new Nova.ControlLibrary.EnabledCounter();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.minimumGameTime = new System.Windows.Forms.NumericUpDown();
@@ -91,14 +99,6 @@ namespace Nova.WinForms
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.tabVictoryConditions = new System.Windows.Forms.TabPage();
-            this.totalScore = new Nova.ControlLibrary.EnabledCounter();
-            this.exceedSecondPlace = new Nova.ControlLibrary.EnabledCounter();
-            this.highestScore = new Nova.ControlLibrary.EnabledCounter();
-            this.capitalShips = new Nova.ControlLibrary.EnabledCounter();
-            this.productionCapacity = new Nova.ControlLibrary.EnabledCounter();
-            this.numberOfFields = new Nova.ControlLibrary.EnabledCounter();
-            this.techLevels = new Nova.ControlLibrary.EnabledCounter();
-            this.planetsOwned = new Nova.ControlLibrary.EnabledCounter();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.minimumGameTime)).BeginInit();
@@ -148,6 +148,110 @@ namespace Nova.WinForms
             this.groupBox1.TabIndex = 20;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Victory Conditions";
+            // 
+            // totalScore
+            // 
+            this.totalScore.ControlCounter = 100;
+            this.totalScore.ControlSelected = false;
+            this.totalScore.ControlText = "Exceeds a score of";
+            this.totalScore.Location = new System.Drawing.Point(7, 135);
+            this.totalScore.Maximum = 10000;
+            this.totalScore.Minimum = 0;
+            this.totalScore.Name = "totalScore";
+            this.totalScore.Size = new System.Drawing.Size(338, 23);
+            this.totalScore.TabIndex = 11;
+            this.totalScore.Value = new Nova.Common.EnabledValue(false, 100);
+            // 
+            // exceedSecondPlace
+            // 
+            this.exceedSecondPlace.ControlCounter = 100;
+            this.exceedSecondPlace.ControlSelected = false;
+            this.exceedSecondPlace.ControlText = "Exceed second place score by (%)";
+            this.exceedSecondPlace.Location = new System.Drawing.Point(6, 254);
+            this.exceedSecondPlace.Maximum = 10000;
+            this.exceedSecondPlace.Minimum = 0;
+            this.exceedSecondPlace.Name = "exceedSecondPlace";
+            this.exceedSecondPlace.Size = new System.Drawing.Size(339, 23);
+            this.exceedSecondPlace.TabIndex = 10;
+            this.exceedSecondPlace.Value = new Nova.Common.EnabledValue(false, 100);
+            // 
+            // highestScore
+            // 
+            this.highestScore.ControlCounter = 100;
+            this.highestScore.ControlSelected = false;
+            this.highestScore.ControlText = "Has the highest score after (years)";
+            this.highestScore.Location = new System.Drawing.Point(6, 224);
+            this.highestScore.Maximum = 10000;
+            this.highestScore.Minimum = 0;
+            this.highestScore.Name = "highestScore";
+            this.highestScore.Size = new System.Drawing.Size(339, 23);
+            this.highestScore.TabIndex = 9;
+            this.highestScore.Value = new Nova.Common.EnabledValue(false, 100);
+            // 
+            // capitalShips
+            // 
+            this.capitalShips.ControlCounter = 100;
+            this.capitalShips.ControlSelected = false;
+            this.capitalShips.ControlText = "Number of capital ships";
+            this.capitalShips.Location = new System.Drawing.Point(6, 194);
+            this.capitalShips.Maximum = 10000;
+            this.capitalShips.Minimum = 0;
+            this.capitalShips.Name = "capitalShips";
+            this.capitalShips.Size = new System.Drawing.Size(339, 23);
+            this.capitalShips.TabIndex = 8;
+            this.capitalShips.Value = new Nova.Common.EnabledValue(false, 100);
+            // 
+            // productionCapacity
+            // 
+            this.productionCapacity.ControlCounter = 100;
+            this.productionCapacity.ControlSelected = false;
+            this.productionCapacity.ControlText = "Has  production capacity of (in K resources)";
+            this.productionCapacity.Location = new System.Drawing.Point(6, 164);
+            this.productionCapacity.Maximum = 10000;
+            this.productionCapacity.Minimum = 0;
+            this.productionCapacity.Name = "productionCapacity";
+            this.productionCapacity.Size = new System.Drawing.Size(339, 23);
+            this.productionCapacity.TabIndex = 7;
+            this.productionCapacity.Value = new Nova.Common.EnabledValue(false, 100);
+            // 
+            // numberOfFields
+            // 
+            this.numberOfFields.ControlCounter = 4;
+            this.numberOfFields.ControlSelected = false;
+            this.numberOfFields.ControlText = "In the following number of fields";
+            this.numberOfFields.Location = new System.Drawing.Point(7, 105);
+            this.numberOfFields.Maximum = 6;
+            this.numberOfFields.Minimum = 0;
+            this.numberOfFields.Name = "numberOfFields";
+            this.numberOfFields.Size = new System.Drawing.Size(339, 23);
+            this.numberOfFields.TabIndex = 6;
+            this.numberOfFields.Value = new Nova.Common.EnabledValue(false, 4);
+            // 
+            // techLevels
+            // 
+            this.techLevels.ControlCounter = 22;
+            this.techLevels.ControlSelected = false;
+            this.techLevels.ControlText = "Attains the following tech-level";
+            this.techLevels.Location = new System.Drawing.Point(6, 73);
+            this.techLevels.Maximum = 10000;
+            this.techLevels.Minimum = 0;
+            this.techLevels.Name = "techLevels";
+            this.techLevels.Size = new System.Drawing.Size(339, 23);
+            this.techLevels.TabIndex = 5;
+            this.techLevels.Value = new Nova.Common.EnabledValue(false, 22);
+            // 
+            // planetsOwned
+            // 
+            this.planetsOwned.ControlCounter = 60;
+            this.planetsOwned.ControlSelected = false;
+            this.planetsOwned.ControlText = "Owns the following number of planets (%)";
+            this.planetsOwned.Location = new System.Drawing.Point(7, 45);
+            this.planetsOwned.Maximum = 10000;
+            this.planetsOwned.Minimum = 0;
+            this.planetsOwned.Name = "planetsOwned";
+            this.planetsOwned.Size = new System.Drawing.Size(339, 23);
+            this.planetsOwned.TabIndex = 4;
+            this.planetsOwned.Value = new Nova.Common.EnabledValue(false, 60);
             // 
             // label1
             // 
@@ -347,10 +451,10 @@ namespace Nova.WinForms
             this.radioButtonBattleSensible.Checked = true;
             this.radioButtonBattleSensible.Location = new System.Drawing.Point(6, 59);
             this.radioButtonBattleSensible.Name = "radioButtonBattleSensible";
-            this.radioButtonBattleSensible.Size = new System.Drawing.Size(278, 17);
+            this.radioButtonBattleSensible.Size = new System.Drawing.Size(177, 17);
             this.radioButtonBattleSensible.TabIndex = 3;
             this.radioButtonBattleSensible.TabStop = true;
-            this.radioButtonBattleSensible.Text = "Battles favour  Player 1 by a small margin (Ron option)";
+            this.radioButtonBattleSensible.Text = "Stars!Nova Battles  (Ron option)";
             this.radioButtonBattleSensible.UseVisualStyleBackColor = true;
             this.radioButtonBattleSensible.CheckedChanged += new System.EventHandler(this.radioButtonBattleSensible_CheckedChanged);
             // 
@@ -359,10 +463,10 @@ namespace Nova.WinForms
             this.radioButtonBattleBroken.AutoSize = true;
             this.radioButtonBattleBroken.Location = new System.Drawing.Point(6, 42);
             this.radioButtonBattleBroken.Name = "radioButtonBattleBroken";
-            this.radioButtonBattleBroken.Size = new System.Drawing.Size(228, 17);
+            this.radioButtonBattleBroken.Size = new System.Drawing.Size(170, 17);
             this.radioButtonBattleBroken.TabIndex = 2;
             this.radioButtonBattleBroken.TabStop = true;
-            this.radioButtonBattleBroken.Text = "Battle Favour Player1 by a massive amount";
+            this.radioButtonBattleBroken.Text = "Stars! Battles - Favour Player1 ";
             this.radioButtonBattleBroken.UseVisualStyleBackColor = true;
             this.radioButtonBattleBroken.CheckedChanged += new System.EventHandler(this.radioButtonBattleBroken_CheckedChanged);
             // 
@@ -844,102 +948,6 @@ namespace Nova.WinForms
             this.tabVictoryConditions.TabIndex = 2;
             this.tabVictoryConditions.Text = "Victory Conditions";
             this.tabVictoryConditions.UseVisualStyleBackColor = true;
-            // 
-            // totalScore
-            // 
-            this.totalScore.ControlCounter = 100;
-            this.totalScore.ControlSelected = false;
-            this.totalScore.ControlText = "Exceeds a score of";
-            this.totalScore.Location = new System.Drawing.Point(7, 135);
-            this.totalScore.Maximum = 10000;
-            this.totalScore.Minimum = 0;
-            this.totalScore.Name = "totalScore";
-            this.totalScore.Size = new System.Drawing.Size(338, 23);
-            this.totalScore.TabIndex = 11;
-            // 
-            // exceedSecondPlace
-            // 
-            this.exceedSecondPlace.ControlCounter = 100;
-            this.exceedSecondPlace.ControlSelected = false;
-            this.exceedSecondPlace.ControlText = "Exceed second place score by (%)";
-            this.exceedSecondPlace.Location = new System.Drawing.Point(6, 254);
-            this.exceedSecondPlace.Maximum = 10000;
-            this.exceedSecondPlace.Minimum = 0;
-            this.exceedSecondPlace.Name = "exceedSecondPlace";
-            this.exceedSecondPlace.Size = new System.Drawing.Size(339, 23);
-            this.exceedSecondPlace.TabIndex = 10;
-            // 
-            // highestScore
-            // 
-            this.highestScore.ControlCounter = 100;
-            this.highestScore.ControlSelected = false;
-            this.highestScore.ControlText = "Has the highest score after (years)";
-            this.highestScore.Location = new System.Drawing.Point(6, 224);
-            this.highestScore.Maximum = 10000;
-            this.highestScore.Minimum = 0;
-            this.highestScore.Name = "highestScore";
-            this.highestScore.Size = new System.Drawing.Size(339, 23);
-            this.highestScore.TabIndex = 9;
-            // 
-            // capitalShips
-            // 
-            this.capitalShips.ControlCounter = 100;
-            this.capitalShips.ControlSelected = false;
-            this.capitalShips.ControlText = "Number of capital ships";
-            this.capitalShips.Location = new System.Drawing.Point(6, 194);
-            this.capitalShips.Maximum = 10000;
-            this.capitalShips.Minimum = 0;
-            this.capitalShips.Name = "capitalShips";
-            this.capitalShips.Size = new System.Drawing.Size(339, 23);
-            this.capitalShips.TabIndex = 8;
-            // 
-            // productionCapacity
-            // 
-            this.productionCapacity.ControlCounter = 100;
-            this.productionCapacity.ControlSelected = false;
-            this.productionCapacity.ControlText = "Has  production capacity of (in K resources)";
-            this.productionCapacity.Location = new System.Drawing.Point(6, 164);
-            this.productionCapacity.Maximum = 10000;
-            this.productionCapacity.Minimum = 0;
-            this.productionCapacity.Name = "productionCapacity";
-            this.productionCapacity.Size = new System.Drawing.Size(339, 23);
-            this.productionCapacity.TabIndex = 7;
-            // 
-            // numberOfFields
-            // 
-            this.numberOfFields.ControlCounter = 4;
-            this.numberOfFields.ControlSelected = false;
-            this.numberOfFields.ControlText = "In the following number of fields";
-            this.numberOfFields.Location = new System.Drawing.Point(7, 105);
-            this.numberOfFields.Maximum = 6;
-            this.numberOfFields.Minimum = 0;
-            this.numberOfFields.Name = "numberOfFields";
-            this.numberOfFields.Size = new System.Drawing.Size(339, 23);
-            this.numberOfFields.TabIndex = 6;
-            // 
-            // techLevels
-            // 
-            this.techLevels.ControlCounter = 22;
-            this.techLevels.ControlSelected = false;
-            this.techLevels.ControlText = "Attains the following tech-level";
-            this.techLevels.Location = new System.Drawing.Point(6, 73);
-            this.techLevels.Maximum = 10000;
-            this.techLevels.Minimum = 0;
-            this.techLevels.Name = "techLevels";
-            this.techLevels.Size = new System.Drawing.Size(339, 23);
-            this.techLevels.TabIndex = 5;
-            // 
-            // planetsOwned
-            // 
-            this.planetsOwned.ControlCounter = 60;
-            this.planetsOwned.ControlSelected = false;
-            this.planetsOwned.ControlText = "Owns the following number of planets (%)";
-            this.planetsOwned.Location = new System.Drawing.Point(7, 45);
-            this.planetsOwned.Maximum = 10000;
-            this.planetsOwned.Minimum = 0;
-            this.planetsOwned.Name = "planetsOwned";
-            this.planetsOwned.Size = new System.Drawing.Size(339, 23);
-            this.planetsOwned.TabIndex = 4;
             // 
             // NewGameWizard
             // 

@@ -226,7 +226,7 @@ namespace Nova.Common
             foreach (Argument argument in argumentList)
             {
                 commandLine.Add(argument.Option);
-                commandLine.Add(argument.Value);
+                commandLine.Add(argument.Value.Trim());
             }
             return commandLine.ToArray();
         }

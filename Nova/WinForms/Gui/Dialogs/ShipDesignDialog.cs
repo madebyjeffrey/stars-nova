@@ -147,39 +147,48 @@ namespace Nova.WinForms.Gui
         /// <param name="e">A <see cref="EventArgs"/> that contains the event data.</param>
         private void OK_Click(object sender, System.EventArgs e)
         {
-            ShipDesign newDesign = new ShipDesign(clientState.EmpireState.GetNextDesignKey());
-            Hull hullProperties = selectedHull.Properties["Hull"] as Hull;
-
-            hullProperties.Modules = HullGrid.ActiveModules;
-            newDesign.Name = DesignName.Text;
-            newDesign.Owner = clientState.EmpireState.Id;
-            newDesign.Blueprint = selectedHull;
-            newDesign.Icon = shipIcon;
-            newDesign.Update();
-
-            if (hullProperties.IsStarbase)
+            bool nameOK = true;
+            foreach (ShipDesign design in clientState.EmpireState.Designs.Values)
             {
-                newDesign.Type = ItemType.Starbase;
+                if (design.Name == DesignName.Text) Report.Information("That design name has already been used - choose a new name");
+                nameOK = false;
             }
-            else
-            {
-                newDesign.Type = ItemType.Ship;
-                if (newDesign.Engine == null)
+            if (nameOK)
                 {
-                    Report.Error("A ship design must have an engine");
-                    return;
-                }
-            }
-            DesignCommand command = new DesignCommand(CommandMode.Add, newDesign);
+                    ShipDesign newDesign = new ShipDesign(clientState.EmpireState.GetNextDesignKey());
+                    Hull hullProperties = selectedHull.Properties["Hull"] as Hull;
 
-            Nova.Common.Message message;
-            if (command.IsValid(clientState.EmpireState,out message))
-            {
-                clientState.Commands.Push(command);
-                command.ApplyToState(clientState.EmpireState);
-            }
-            if (Global.Debug) Report.Information(message.Text);
-            Close();
+                    hullProperties.Modules = HullGrid.ActiveModules;
+                    newDesign.Name = DesignName.Text;
+                    newDesign.Owner = clientState.EmpireState.Id;
+                    newDesign.Blueprint = selectedHull;
+                    newDesign.Icon = shipIcon;
+                    newDesign.Update();
+
+                    if (hullProperties.IsStarbase)
+                    {
+                        newDesign.Type = ItemType.Starbase;
+                    }
+                    else
+                    {
+                        newDesign.Type = ItemType.Ship;
+                        if (newDesign.Engine == null)
+                        {
+                            Report.Error("A ship design must have an engine");
+                            return;
+                        }
+                    }
+                    DesignCommand command = new DesignCommand(CommandMode.Add, newDesign);
+
+                    Nova.Common.Message message;
+                    if (command.IsValid(clientState.EmpireState, out message))
+                    {
+                        clientState.Commands.Push(command);
+                        command.ApplyToState(clientState.EmpireState);
+                    }
+                    if (Global.Debug) Report.Information(message.Text);
+                    Close();
+                }
         }
 
         /// <Summary>

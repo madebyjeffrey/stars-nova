@@ -164,7 +164,7 @@ namespace Nova.Common
         {
             string config;
 
-            // File should be NovaRoot\nova.config
+            // File should be NovaRoot\nova.conf
             config = Path.Combine(GetNovaRoot(), Global.ConfigFileName);
             return config;
         }
