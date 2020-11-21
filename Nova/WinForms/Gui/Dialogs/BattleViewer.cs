@@ -72,7 +72,7 @@ namespace Nova.WinForms.Gui
 
             battlePanel.BackgroundImage = Nova.Properties.Resources.Plasma;
             battlePanel.BackgroundImageLayout = ImageLayout.Stretch;
-            if (eventCount > 0) SetStepNumber(theBattle.Steps[eventCount]);
+            if (theBattle.Steps.Count > 0) SetStepNumber(theBattle.Steps[eventCount]);
             ZoomLevel.SelectedIndex = 3;
             trackBarBattle.Minimum = 0;
             trackBarBattle.Maximum = theBattle.Steps.Count - 1;
@@ -188,7 +188,7 @@ namespace Nova.WinForms.Gui
         /// <param name="e">A <see cref="EventArgs"/> that contains the event data.</param>
         private void NextStep_Click(object sender, EventArgs e)
         {
-            if (eventCount > 0)
+            if (theBattle.Steps.Count > 0)
             {
                 object thisStep = theBattle.Steps[eventCount];
                 SetStepNumber((BattleStep)thisStep);

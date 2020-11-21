@@ -527,6 +527,15 @@ namespace Nova.Server
                 // TODO (priority 5) - Move in order of ship mass, juggle by 15%
                 foreach (Stack stack in battlingStacks)
                 {
+                    // report the position at the start so there is something in the battle report
+                    stack.Position = PointUtilities.BattleMoveTo(stack.Position, stack.Position);
+
+                    // Update the battle report with these movements.
+                    BattleStepMovement report1 = new BattleStepMovement();
+                    report1.StackKey = stack.Key;
+                    report1.Position = stack.Position;
+                    battle.Steps.Add(report1);
+
                     if (stack.Target != null & !stack.IsStarbase)
                     {
                         NovaPoint from = stack.Position;

@@ -88,7 +88,7 @@ namespace Nova.Tests.UnitTests
         /// </Summary>
         public BattleEngineTest()
         {
-            battleEngine = new BattleEngine(serverState, new BattleReport());
+            battleEngine = new BattleEngine(serverState, new List <BattleReport>());
             Resources cost = new Resources(10, 20, 30, 40);
 
             // Initialize empires 
@@ -208,7 +208,8 @@ namespace Nova.Tests.UnitTests
         [Test]
         public void Test5PositionStacks()
         {
-            battleEngine.PositionStacks(zoneStacks);
+            BattleReport battle = new BattleReport();
+            battleEngine.PositionStacks(zoneStacks,battle);
 
             double distance = 0;
 
@@ -235,7 +236,8 @@ namespace Nova.Tests.UnitTests
 
             distanceS = PointUtilities.Distance(stackA.Position, stackB.Position);
 
-            battleEngine.DoBattle(zoneStacks);
+            BattleReport report = new BattleReport();
+            battleEngine.DoBattle(zoneStacks, report);
 
             distanceE = PointUtilities.Distance(stackA.Position, stackB.Position);
 
