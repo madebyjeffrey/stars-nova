@@ -357,16 +357,21 @@ namespace Nova.WinForms.Gui
                 if (numToRemove >= productionOrder.Quantity)
                 {
                     queueList.RemoveProductionOrder(s);
-                    // TODO (priority 3) - select the next item in the list so you can keep pressing remove to remove all items.
+
+                    // If this was not the last row, no need to change rowSelected. Otherwise, go up one.
+                    if (rowSelected >= queueList.Items.Count)
+                    {
+                        rowSelected--;
+                    }
                 }
                 else
                 {
                     productionOrder.Quantity -= numToRemove;
                     queueList.EditProductionOrder(productionOrder, s);
+                    // no need to change the rowSelected index
                 }
 
                 UpdateProductionCost();
-                rowSelected = rowSelected-1;
             }
         }
 
@@ -474,7 +479,7 @@ namespace Nova.WinForms.Gui
                 {
                     queueList.Items[selectedRow].Selected = false;
                     newItem = queueList.InsertProductionOrder(productionOrder, queueList.Items.Count);
-                    rowSelected = queueList.Items.Count -1;
+                    rowSelected = selectedRow = queueList.Items.Count -1;
                 }
             }
            
