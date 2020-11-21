@@ -42,6 +42,8 @@ namespace Nova.WinForms.Gui
         private readonly Dictionary<long, Stack> myStacks = new Dictionary<long, Stack>();
         private int eventCount;
         private int initialSize = 0;
+        private int notRon = 16; //Reduce icons by this factor when not using the ron battle option
+        private bool ron = true;
         /// <Summary>
         /// Initializes a new instance of the BattleViewer class.
         /// </Summary>
@@ -118,30 +120,60 @@ namespace Nova.WinForms.Gui
             Size panelSize = battlePanel.Size;
             if (initialSize == 0) initialSize  =  MaxX;
 
+            if (MaxX > 10)
+            {
+                notRon = 1; //don't reduce icon size when using RonBattleReport
+                ron = true;
+            }
+            else
+            {
+                ron = false;
+            }
 
             //if (ZoomLevel.SelectedIndex == 3) graphics.PageScale = (float)((Double)panelSize.Height / (Double)initialSize);
             //if (ZoomLevel.SelectedIndex == 0) graphics.PageScale = (float)((Double)panelSize.Height / (Double)MaxX - MinX);
             //if (ZoomLevel.SelectedIndex == 1) graphics.PageScale = (float)((Double)panelSize.Height / (Double)MaxArmedX - MinArmedX);
             //if (ZoomLevel.SelectedIndex == 2) graphics.PageScale = (float)((Double)panelSize.Height / (Double)2 * Global.MaxWeaponRange);
-            if (ZoomLevel.SelectedIndex == 3) graphics.PageScale = (float)((Double)panelSize.Height / Math.Max(8*Global.MaxWeaponRange, initialSize));
+            if (ZoomLevel.SelectedIndex == 3)
+            {
+                if (ron) graphics.PageScale = (float)((Double)panelSize.Height / Math.Max(8 * Global.MaxWeaponRange, initialSize));
+                else graphics.PageScale = (float)((Double)panelSize.Height / 12.0);
+            }
             if (ZoomLevel.SelectedIndex == 0)
             {
-                graphics.TranslateTransform(-MinX,-MinY); 
-                graphics.ScaleTransform ((float)((Double)panelSize.Height / Math.Max(8*Global.MaxWeaponRange, (MaxX - MinX))), (float)((Double)panelSize.Height / Math.Max(8*Global.MaxWeaponRange, (MaxX - MinX))), MatrixOrder.Append);// maintain Aspect Ratio
+                if (ron)
+                {
+                    graphics.TranslateTransform(-MinX, -MinY);
+                    graphics.ScaleTransform((float)((Double)panelSize.Height / Math.Max(8 * Global.MaxWeaponRange, (MaxX - MinX))), (float)((Double)panelSize.Height / Math.Max(8 * Global.MaxWeaponRange, (MaxX - MinX))), MatrixOrder.Append);// maintain Aspect Ratio
+                }
+                else
+                {
+                    graphics.ScaleTransform((float)(panelSize.Height /12.0), (float)(panelSize.Height / 12.0));
+                }
+
             }
             if (ZoomLevel.SelectedIndex == 1)
-            {
-                graphics.TranslateTransform(-MinArmedX,-MinArmedY); 
-                graphics.ScaleTransform((float)((Double)panelSize.Height / Math.Max(8*Global.MaxWeaponRange,(MaxArmedX - MinArmedX))),(float)((Double)panelSize.Height / Math.Max(8*Global.MaxWeaponRange, (MaxArmedX - MinArmedX))), MatrixOrder.Append);// maintain Aspect Ratio
-            }
-            if ((ZoomLevel.SelectedIndex == 2)  && (selectedStack != null))
-            {
-                graphics.TranslateTransform(-selectedStack.Position.X, -selectedStack.Position.Y);
-                graphics.ScaleTransform  ((float)((Double)panelSize.Height / ((Double)16 * Global.MaxWeaponRange)), (float)((Double)panelSize.Height / ((Double)16 * Global.MaxWeaponRange)), MatrixOrder.Append);
-                graphics.TranslateTransform((float)((Double)panelSize.Height / ((Double)32 * Global.MaxWeaponRange)), (float)((Double)panelSize.Height / ((Double)32 * Global.MaxWeaponRange)));
+                if (ron)
+                {
+                    graphics.TranslateTransform(-MinArmedX, -MinArmedY);
+                    graphics.ScaleTransform((float)((Double)panelSize.Height / Math.Max(8 * Global.MaxWeaponRange, (MaxArmedX - MinArmedX))), (float)((Double)panelSize.Height / Math.Max(8 * Global.MaxWeaponRange, (MaxArmedX - MinArmedX))), MatrixOrder.Append);// maintain Aspect Ratio
+                }
+                else
+                {
+                    graphics.ScaleTransform((float)(panelSize.Height / 12.0), (float)(panelSize.Height / 12.0));
+                }
+            if ((ZoomLevel.SelectedIndex == 2) && (selectedStack != null))
+                if (ron)
+                {
+                    graphics.TranslateTransform(-selectedStack.Position.X, -selectedStack.Position.Y);
+                    graphics.ScaleTransform((float)((Double)panelSize.Height / ((Double)16 * Global.MaxWeaponRange)), (float)((Double)panelSize.Height / ((Double)16 * Global.MaxWeaponRange)), MatrixOrder.Append);
+                    graphics.TranslateTransform((float)((Double)panelSize.Height / ((Double)32 * Global.MaxWeaponRange)), (float)((Double)panelSize.Height / ((Double)32 * Global.MaxWeaponRange)));
+                }
+                else
+                {
+                    graphics.ScaleTransform((float)(panelSize.Height / 12.0), (float)(panelSize.Height / 12.0));
 
-                // graphics.TranslateTransform(Global.MaxWeaponRange, Global.MaxWeaponRange,System.Drawing.Drawing2D.MatrixOrder.Append);
-            }
+                }
             graphics.ScaleTransform(0.85F, 0.85F, MatrixOrder.Append); //put about 5% free space around the selected squares
             graphics.TranslateTransform(0.05F, 0.05F, MatrixOrder.Append);
 
@@ -152,8 +184,8 @@ namespace Nova.WinForms.Gui
                     double scale = graphics.PageScale;
                     // Create parallelogram for drawing image.
                     PointF ulCorner = new PointF(stack.Position.X, stack.Position.Y);
-                    PointF urCorner = new PointF(stack.Position.X + stack.StackIcon.Width / 4, stack.Position.Y);
-                    PointF llCorner = new PointF(stack.Position.X, stack.Position.Y + stack.StackIcon.Height / 4);
+                    PointF urCorner = new PointF(stack.Position.X + stack.StackIcon.Width / 4 / notRon, stack.Position.Y);
+                    PointF llCorner = new PointF(stack.Position.X, stack.Position.Y + stack.StackIcon.Height / 4 / notRon);
                     PointF[] destPara = { ulCorner, urCorner, llCorner };
                     graphics.DrawImage(stack.StackIcon, destPara);
                 }

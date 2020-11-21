@@ -288,11 +288,14 @@ namespace Nova.Server
 
             foreach (Fleet fleet in coLocatedFleets)
             {
-                List<Stack> fleetStacks = BuildFleetStacks(fleet);
-
-                foreach (Stack stack in fleetStacks)
+                if (fleet.Composition.Count > 0)
                 {
-                    battlingStacks.Add(stack);
+                    List<Stack> fleetStacks = BuildFleetStacks(fleet);
+
+                    foreach (Stack stack in fleetStacks)
+                    {
+                        battlingStacks.Add(stack);
+                    }
                 }
             }
 
@@ -410,31 +413,37 @@ namespace Nova.Server
             
             foreach (Stack wolf in battlingStacks)
             {
-                wolf.Target = null;
-
-                if (wolf.IsArmed == false)
+                if (wolf.Composition.Count > 0) // if wolf is not destroyed
                 {
-                    continue;
-                }
+                    wolf.Target = null;
 
-                double maxAttractiveness = 0;
-
-                foreach (Stack lamb in battlingStacks)
-                {
-                    if (AreEnemies(wolf, lamb))
+                    if (wolf.IsArmed == false)
                     {
-                        double attractiveness = GetAttractiveness(lamb);
-                        if (attractiveness > maxAttractiveness)
+                        continue;
+                    }
+
+                    double maxAttractiveness = 0;
+
+                    foreach (Stack lamb in battlingStacks)
+                    {
+                        if (lamb.Composition.Count > 0) //if lamb not destroyed
                         {
-                            wolf.Target = lamb;
-                            maxAttractiveness = attractiveness;
+                            if (AreEnemies(wolf, lamb))
+                            {
+                                double attractiveness = GetAttractiveness(lamb);
+                                if (attractiveness > maxAttractiveness)
+                                {
+                                    wolf.Target = lamb;
+                                    maxAttractiveness = attractiveness;
+                                }
+                            }
                         }
                     }
-                }
-                
-                if (wolf.Target != null)
-                {
-                    numberOfTargets++;
+
+                    if (wolf.Target != null)
+                    {
+                        numberOfTargets++;
+                    }
                 }
             }
 

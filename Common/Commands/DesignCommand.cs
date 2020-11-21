@@ -134,7 +134,7 @@ namespace Nova.Common.Commands
                 break;
                 case CommandMode.Edit:
                     {
-                        message = new Message(empire.Id,  Design.Name + " obsolete status set to ", (!Design.Obsolete).ToString(),null);
+                        if (Global.Debug) message = new Message(empire.Id,  Design.Name + " obsolete status set to " + (!Design.Obsolete).ToString(), (!Design.Obsolete).ToString(),null);
                         return true;
                     }
             }

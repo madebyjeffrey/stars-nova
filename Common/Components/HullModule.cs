@@ -53,7 +53,7 @@ namespace Nova.Common.Components
                 }
                 else if (componentCount == 0 && AllocatedComponent != null)
                 {
-                    return 1;
+                    return 0;
                 }
                 else
                 {

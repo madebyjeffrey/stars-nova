@@ -276,7 +276,7 @@ namespace Nova.Server
 
             foreach (Fleet fleet in coLocatedFleets)
             {
-                if (battleLocation.distanceToSquared(fleet.Position) <= 2)
+                if ((battleLocation.distanceToSquared(fleet.Position) <= 2) && (fleet.Composition.Count > 0))
                 {
                     List<Stack> fleetStacks = BuildFleetStacks(fleet);
 
@@ -417,38 +417,44 @@ namespace Nova.Server
 
             foreach (Stack wolf in battlingStacks)
             {
-                wolf.Target = null;
-
-                //if (wolf.IsArmed == false)  // Unarmed ships need to look for nearby enemy armed ships and run away from them so the need to target them
-                //{
-                //    continue;
-                //}
-                bool haveIcremented = false;
-                foreach (Stack lamb in battlingStacks)
+                if (wolf.Composition.Count > 0) // if not destroyed
                 {
-                    if ((AreEnemies(wolf, lamb)) && (lamb.Token.Armor > 0))
-                    { 
-                        double attractiveness;
-                        int priority = GetPriority(lamb, wolf);
-                        if (wolf.IsArmed) attractiveness = GetAttractiveness(lamb);
-                        else attractiveness = Math.Abs( 1000.0 / (wolf.Position.distanceToSquared(lamb.Position)+1)); // move away from closest armed
-                        selectedTargets.Add(new TargetRow(lamb, priority, attractiveness));
-                        if (!haveIcremented)
+                    wolf.Target = null;
+
+                    //if (wolf.IsArmed == false)  // Unarmed ships need to look for nearby enemy armed ships and run away from them so the need to target them
+                    //{
+                    //    continue;
+                    //}
+                    bool haveIcremented = false;
+                    foreach (Stack lamb in battlingStacks)
+                    {
+                        if (lamb.Composition.Count > 0) //if lamb not destroyed
                         {
-                            haveIcremented = true;
-                            numberOfTargets++;
+                            if ((AreEnemies(wolf, lamb)) && (lamb.Token.Armor > 0))
+                            {
+                                double attractiveness;
+                                int priority = GetPriority(lamb, wolf);
+                                if (wolf.IsArmed) attractiveness = GetAttractiveness(lamb);
+                                else attractiveness = Math.Abs(1000.0 / (wolf.Position.distanceToSquared(lamb.Position) + 1)); // move away from closest armed
+                                selectedTargets.Add(new TargetRow(lamb, priority, attractiveness));
+                                if (!haveIcremented)
+                                {
+                                    haveIcremented = true;
+                                    numberOfTargets++;
+                                }
+                            }
                         }
                     }
-                }
-                wolf.Target = null;
-                wolf.TargetList = new List<Stack>();
-                if (selectedTargets.Count > 0)
-                {
-                    System.Collections.Generic.IComparer<TargetRow> targetComparer = new TargetComparer();
-                    selectedTargets.Sort(targetComparer);
-                    wolf.Target = selectedTargets[selectedTargets.Count - 1].Fleet; // Why is the last one the best target - seems awkward
-                    foreach (TargetRow row in selectedTargets) wolf.TargetList.Add(row.Fleet);
-                    selectedTargets.Clear();
+                    wolf.Target = null;
+                    wolf.TargetList = new List<Stack>();
+                    if (selectedTargets.Count > 0)
+                    {
+                        System.Collections.Generic.IComparer<TargetRow> targetComparer = new TargetComparer();
+                        selectedTargets.Sort(targetComparer);
+                        wolf.Target = selectedTargets[selectedTargets.Count - 1].Fleet; // Why is the last one the best target - seems awkward
+                        foreach (TargetRow row in selectedTargets) wolf.TargetList.Add(row.Fleet);
+                        selectedTargets.Clear();
+                    }
                 }
             }
             return numberOfTargets;

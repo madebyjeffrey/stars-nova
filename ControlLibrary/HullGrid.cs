@@ -260,7 +260,12 @@ namespace Nova.ControlLibrary
 
             if ((ModifierKeys & Keys.Shift) != 0)
             {
-                dragData.ComponentCount = Math.Min(10, cell.ComponentCount);
+                dragData.ComponentCount = Math.Min(4, cell.ComponentCount);
+            }
+
+            if ((ModifierKeys & Keys.Control) != 0)
+            {
+                dragData.ComponentCount = Math.Min(16, cell.ComponentCount);
             }
 
             DragDropEffects result = DoDragDrop(dragData, DragDropEffects.Move);
@@ -423,7 +428,7 @@ namespace Nova.ControlLibrary
             // background and annotate it with its component type and how many of
             // that type it will hold.
 
-            if ((panel.Tag as HullModule).ComponentCount == 0)
+            if (((panel.Tag as HullModule).ComponentCount == 0) || (panel.Tag as HullModule).AllocatedComponent == null)
             {
                 DrawEmptyCell(panel, e.Graphics);
                 return;

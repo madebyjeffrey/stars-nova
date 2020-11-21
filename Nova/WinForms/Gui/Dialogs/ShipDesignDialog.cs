@@ -150,8 +150,11 @@ namespace Nova.WinForms.Gui
             bool nameOK = true;
             foreach (ShipDesign design in clientState.EmpireState.Designs.Values)
             {
-                if (design.Name == DesignName.Text) Report.Information("That design name has already been used - choose a new name");
-                nameOK = false;
+                if (design.Name == DesignName.Text)
+                {
+                    Report.Information("That design name has already been used - choose a new name");
+                    nameOK = false;
+                }
             }
             if (nameOK)
                 {
@@ -284,7 +287,12 @@ namespace Nova.WinForms.Gui
 
             if ((Control.ModifierKeys & Keys.Shift) != 0)
             {
-                dragData.ComponentCount = 10;
+                dragData.ComponentCount = 4;
+            }
+
+            if ((Control.ModifierKeys & Keys.Control) != 0)
+            {
+                dragData.ComponentCount = 16;
             }
 
             DragDropEffects result = DoDragDrop(dragData, DragDropEffects.Copy);

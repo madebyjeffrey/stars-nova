@@ -237,6 +237,7 @@ namespace Nova.Server
                                     if ((command as WaypointCommand).Waypoint.Task is CargoTask) (command as WaypointCommand).PreApplyToState(empire, ((command as WaypointCommand).Waypoint.Task as CargoTask).Target);
                                     else if ((command as WaypointCommand).Waypoint.Task is SplitMergeTask) (command as WaypointCommand).PreApplyToState(empire, null);
                                     else command.ApplyToState(empire);
+                                    serverState.CleanupFleets();  
                                 }
                                 else (command as WaypointCommand).ApplyToState(empire); // might be a waypoint delete or edit so keep the indexes alligned between server and the clients indexes
                             }

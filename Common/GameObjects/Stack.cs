@@ -227,7 +227,7 @@ namespace Nova.Common
             transparent.MakeTransparent(background);
             if (copy.Token.Design.IsStarbase)
             {
-                StackIcon = new Bitmap(transparent, copy.Icon.Image.Width * 6, copy.Icon.Image.Height * 6);
+                StackIcon = new Bitmap(transparent, copy.Icon.Image.Width * 4, copy.Icon.Image.Height * 4);
             }
             else
             {
