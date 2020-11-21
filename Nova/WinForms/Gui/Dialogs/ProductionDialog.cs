@@ -339,7 +339,7 @@ namespace Nova.WinForms.Gui
             if (rowSelected > -1) s= rowSelected; else s = queueList.SelectedIndices[0];
             ProductionOrder productionOrder = (queueList.Items[s].Tag as ProductionOrder);
 
-            if (queueList.SelectedItems.Count > 0)
+            if (queueList.Items.Count >= rowSelected)
             {
                 // Ctrl -Remove 100 items
                 // Shift -Remove 10 items
