@@ -199,13 +199,13 @@ namespace Nova.WinForms.Gui
                     Stack lamb, wolf;
                     myStacks.TryGetValue(fire.WeaponTarget.TargetKey, out lamb);
                     myStacks.TryGetValue(fire.WeaponTarget.StackKey, out wolf);
-                    graphics.DrawLine(Pens.BlueViolet, wolf.Position.X + wolf.Icon.Image.Width / 8, wolf.Position.Y + wolf.Icon.Image.Height / 8, lamb.Position.X + lamb.Icon.Image.Width / 8, lamb.Position.Y + lamb.Icon.Image.Height / 8);
+                    graphics.DrawLine(new Pen(Color.BlueViolet,(float)( 1.5 / notRon)), wolf.Position.X + wolf.Icon.Image.Width / 4 / notRon, wolf.Position.Y + wolf.Icon.Image.Height / 4 / notRon, lamb.Position.X + lamb.Icon.Image.Width / 8 / notRon, lamb.Position.Y + lamb.Icon.Image.Height / 8 / notRon);
                     double scale = graphics.PageScale;
                     // Create parallelogram for drawing image.
 
                     PointF ulCorner = new PointF(lamb.Position.X, lamb.Position.Y);
-                    PointF urCorner = new PointF(lamb.Position.X + imageListDamage.Images[0].Width / 4, lamb.Position.Y);
-                    PointF llCorner = new PointF(lamb.Position.X, lamb.Position.Y + imageListDamage.Images[0].Height / 4);
+                    PointF urCorner = new PointF(lamb.Position.X + imageListDamage.Images[0].Width / 4 / notRon, lamb.Position.Y);
+                    PointF llCorner = new PointF(lamb.Position.X, lamb.Position.Y + imageListDamage.Images[0].Height / 4 / notRon);
                     PointF[] destPara = { ulCorner, urCorner, llCorner };
                     graphics.DrawImage(imageListDamage.Images[0], destPara);
                 }
