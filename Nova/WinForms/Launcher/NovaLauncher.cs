@@ -27,7 +27,9 @@ namespace Nova.WinForms.Launcher
     using System.IO;
     using System.Reflection;
     using System.Windows.Forms;
-    
+    using System.IO.Compression;
+
+
     using Nova.Common;
     
     /// <Summary>
@@ -42,10 +44,39 @@ namespace Nova.WinForms.Launcher
         /// The splash screen and launcher application for starting Nova. Nova should
         /// normally be started by running the NovaLauncher.
         /// </Summary>
+        private static void CheckInstallationFinished()
+        {
+            if (!Directory.Exists("Graphics"))
+            {
+                UnZip(".\\DefaultRaces.zip", ".\\");
+                UnZip(".\\Graphics.zip", ".\\");
+                File.Delete(".\\DefaultRaces.zip");
+                File.Delete(".\\Graphics.zip");
+                if (!File.Exists("Components.xml"))
+                {
+                    UnZip(".\\components.zip", ".\\");
+                    File.Delete(".\\components.zip");
+                }
+            }
+        }
+
+        public static void UnZip(string zipFile, string folderPath)
+        {
+            if (!File.Exists(zipFile))
+            {
+                Directory.CreateDirectory("ERROR file not found ");
+                throw new FileNotFoundException();
+            }
+
+            if (!Directory.Exists(folderPath))
+                Directory.CreateDirectory(folderPath);
+            ZipFile.ExtractToDirectory(zipFile, folderPath);
+
+        }
         public NovaLauncher()
         {
             InitializeComponent();
-
+            CheckInstallationFinished();
             // Show the Nova version
             string version = Application.ProductVersion;
             string[] versionParts = version.Split('.');

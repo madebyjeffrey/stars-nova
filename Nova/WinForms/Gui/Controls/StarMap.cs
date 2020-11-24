@@ -376,12 +376,25 @@ namespace Nova.WinForms.Gui
         Bitmap Posturize(Bitmap input)
         {
             Color background = input.GetPixel(0, 0);
-            for (int row = 0;row < input.Height;row++)
+            for (int row = 0; row < input.Height; row++)
             {
                 for (int column = 0; column < input.Width; column++)
                     if ((Math.Abs((int)input.GetPixel(row, column).R - (int)background.R) < 8)
                     && (Math.Abs((int)input.GetPixel(row, column).G - (int)background.G) < 8)
-                    && (Math.Abs((int)input.GetPixel(row, column).B - (int)background.B) < 8)) input.SetPixel(row,column,background);
+                    && (Math.Abs((int)input.GetPixel(row, column).B - (int)background.B) < 8)) input.SetPixel(row, column, background);
+            }
+            return input;
+        }
+
+        Bitmap PosturizeRed(Bitmap input)
+        {
+            Color background = input.GetPixel(0, 0);
+            for (int row = 0; row < input.Height; row++)
+            {
+                for (int column = 0; column < input.Width; column++)
+                    if ((Math.Abs((int)input.GetPixel(row, column).R - (int)background.R) < 8)
+                    && (Math.Abs((int)input.GetPixel(row, column).G - (int)background.G) < 8)
+                    && (Math.Abs((int)input.GetPixel(row, column).B - (int)background.B) < 8)) input.SetPixel(row, column, Color.Red);
             }
             return input;
         }
@@ -403,9 +416,24 @@ namespace Nova.WinForms.Gui
                 , (float)(icon.Height * zoomFactor / 4.0 * influence / 250000.0)
                 );
         }
+
+        private void DrawFleetRaceIcon(Graphics g, Image icon)  //the identifier for enemy fleets
+        {
+            Bitmap transparent = new Bitmap(icon);
+            Color background = transparent.GetPixel(0, 0);
+            transparent = PosturizeRed(transparent); // TODO on large maps doing this multiple times adds extra overhead
+            //transparent.MakeTransparent(background);
+            g.DrawImage(
+                transparent,
+                (float)(icon.Height * zoomFactor / 8.0),
+                 0 - (float)(icon.Height * zoomFactor / 16.0)
+                , (float)(icon.Width * zoomFactor / 8.0 )
+                , (float)(icon.Height * zoomFactor / 8.0 )
+                );
+        }
+
         private void DrawIcon(Graphics g, Image icon, Point position)
         {
-
             Bitmap transparent = new Bitmap(icon);
             Color background = transparent.GetPixel(0, 0);
             transparent = Posturize(transparent); // TODO on large maps doing this multiple times adds extra overhead
@@ -430,6 +458,60 @@ namespace Nova.WinForms.Gui
                 transparent,
                 0,
                 0 - (float)(icon.Height * zoomFactor / 4.0)
+                , (float)(icon.Width * zoomFactor / 4.0)
+                , (float)(icon.Height * zoomFactor / 4.0)
+                );
+        }
+
+        private void DrawIconRed(Graphics g, Image icon)
+        {
+
+            Bitmap transparent = new Bitmap(icon);
+            Color background = transparent.GetPixel(0, 0);
+            transparent = PosturizeRed(transparent); // TODO on large maps doing this multiple times adds extra overhead
+            //transparent.MakeTransparent(background);
+            g.DrawImage(
+                transparent,
+                0,
+                0 - (float)(icon.Height * zoomFactor / 4.0)
+                , (float)(icon.Width * zoomFactor / 4.0)
+                , (float)(icon.Height * zoomFactor / 4.0)
+                );
+        }
+
+        private void DrawEnemyIcon(Graphics g, Image icon)
+        {
+
+            Bitmap transparent = new Bitmap(icon);
+            Color background = transparent.GetPixel(0, 0);
+            transparent = Posturize(transparent); // TODO on large maps doing this multiple times adds extra overhead
+            transparent.MakeTransparent(background);
+            int size = (int)(icon.Width * zoomFactor / 3.0);
+            g.DrawEllipse(
+                new Pen(Color.Yellow,(float)(8 * zoomFactor / 3.0))
+                , -(float)(icon.Width * zoomFactor / 6.0)
+                , -(float)(icon.Width * zoomFactor / 6.0)
+                , size
+                , size);
+            size = size - 16;
+            g.DrawEllipse(
+                new Pen(Color.Indigo, (float)(8 * zoomFactor / 3.0))
+                , 8 - (float)(icon.Width * zoomFactor / 6.0)
+                , 8 - (float)(icon.Width * zoomFactor / 6.0)
+                , size
+                , size);
+            size = size - 16;
+            g.DrawEllipse(
+                new Pen(Color.Gold, (float)(8 * zoomFactor / 3.0))
+                , 16 - (float)(icon.Width * zoomFactor / 6.0)
+                , 16 - (float)(icon.Width * zoomFactor / 6.0)
+                , size
+                , size);
+
+            g.DrawImage(
+                transparent
+                , -(float)(icon.Width * zoomFactor / 8.0)
+                , -(float)(icon.Width * zoomFactor / 8.0)
                 , (float)(icon.Width * zoomFactor / 4.0)
                 , (float)(icon.Height * zoomFactor / 4.0)
                 );
@@ -517,10 +599,9 @@ namespace Nova.WinForms.Gui
             {
                 NovaPoint position = LogicalToDevice(report.Position);
 
-                g.TranslateTransform(position.X, position.Y);
-                g.RotateTransform((float)report.Bearing);
                 if (radioButtonGrowth.Checked)
                 {
+                    g.TranslateTransform(position.X, position.Y);
                     if (report.Name.Contains("Mineral Packet"))
                     {
                         DrawIcon(g, report.Icon.Image);
@@ -531,11 +612,13 @@ namespace Nova.WinForms.Gui
                     }
                     else
                     {
-                        DrawIcon(g, report.Icon.Image);
+                        DrawEnemyIcon(g, report.Icon.Image);
                     }
                 }
                 else
                 {
+                    g.TranslateTransform(position.X, position.Y);
+                    g.RotateTransform((float)report.Bearing);
                     if (report.Owner == clientState.EmpireState.Id)
                     {
                         g.FillPolygon(Brushes.Blue, triangle);
@@ -546,6 +629,17 @@ namespace Nova.WinForms.Gui
                     }
                 }
                 g.ResetTransform();
+                if (radioButtonGrowth.Checked)
+                {
+                     if (report.Owner != clientState.EmpireState.Id)
+                    {
+                        g.TranslateTransform(position.X, position.Y);
+                        DrawFleetRaceIcon(g, clientState.EmpireState.EmpireReports[report.Owner].Icon.Image);
+                        g.ResetTransform();
+                    }
+
+                }
+
             }
 
             if (report.Owner == clientState.EmpireState.Id)

@@ -191,8 +191,12 @@ namespace Nova.Common.Commands
                     empire.OwnedFleets[FleetKey].Waypoints.RemoveAt(Index);
                     return null;
                 case CommandMode.Edit:
-                    empire.OwnedFleets[FleetKey].Waypoints.RemoveAt(Index);
-                    if (empire.OwnedFleets[FleetKey].Waypoints.Count > Index) empire.OwnedFleets[FleetKey].Waypoints.Insert(Index, Waypoint);
+                    if (empire.OwnedFleets[FleetKey].Waypoints.Count > Index) empire.OwnedFleets[FleetKey].Waypoints.RemoveAt(Index);
+                    else empire.OwnedFleets[FleetKey].Waypoints.RemoveAt(Index-1);  // TODO (priority 8) the code that sent this Waypoint.Edit command sent a bad index and must be fixed 
+                    if (empire.OwnedFleets[FleetKey].Waypoints.Count > Index)
+                    {
+                        empire.OwnedFleets[FleetKey].Waypoints.Insert(Index, Waypoint);
+                    }
                     else empire.OwnedFleets[FleetKey].Waypoints.Add(Waypoint); //Waypoint.Insert[Insert] past the end of the list is an Add
                     return null;
             }

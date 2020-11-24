@@ -22,9 +22,9 @@
 namespace Nova
 {
     using System;
+    using System.IO;
     using System.Linq;
     using System.Windows.Forms;
-    
     using Nova.Common;
 
     public static class Program
@@ -40,7 +40,6 @@ namespace Nova
             
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
             if (firstArgument != null) firstArgument = (firstArgument.Trim());
             switch (firstArgument)
             {
@@ -88,6 +87,7 @@ namespace Nova
 
             ShowHelpDialog(message, true);
         }
+
 
         private static void ShowHelpDialog(string message, bool error)
         {
