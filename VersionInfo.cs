@@ -1,6 +1,6 @@
 ﻿#region Copyright Notice
 // ============================================================================
-// Copyright (C) 2009, 2010, 2011 The Stars-Nova Project
+// Copyright (C) 2009-2020 The Stars-Nova Project
 //
 // This file is part of Stars! Nova.
 // See <http://sourceforge.net/projects/stars-nova/>.
@@ -44,7 +44,7 @@ using System.Security.Permissions;
 
 [assembly: AssemblyProduct("Stars! Nova")]
 [assembly: AssemblyCompany("The Stars-Nova Project")]
-[assembly: AssemblyCopyright("Copyright (C) 2017 The Stars-Nova Project")]
+[assembly: AssemblyCopyright("Copyright (C) 2009-2020 The Stars-Nova Project")]
 [assembly: AssemblyCulture("")]
 
 // Version information for an assembly consists of the following four values:
@@ -56,9 +56,9 @@ using System.Security.Permissions;
 //
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("0.4.2.889")]
+[assembly: AssemblyVersion("0.5.0.975")]
 #if !PocketPC && !Smartphone
-[assembly: AssemblyFileVersion("0.4.2.889")]
+[assembly: AssemblyFileVersion("0.5.0.975")]
 #endif
 
 // Set the assembly to CLS compliant.
