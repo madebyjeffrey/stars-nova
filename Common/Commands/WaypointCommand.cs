@@ -275,7 +275,7 @@ namespace Nova.Common.Commands
                                 }
                             }
                             else
-                            {// the next waypoint command to be processed might a Split command for this Fleet
+                            {// the next waypoint command to be processed might be a Split command for this Fleet
                              // so we need to Load the Cargo here or the "Other" fleet may end up empty and this fleet may be asked 
                              // to carry it's full payload of cargo PLUS the payload belonging to the "Other" fleet   :(
                                 if (Waypoint.Task is CargoTask)
@@ -298,14 +298,34 @@ namespace Nova.Common.Commands
                         }
                     }
                 case CommandMode.Delete:
-                    empire.OwnedFleets[FleetKey].Waypoints.Add(Waypoint);  // Add the Waypoint 
-                    // we prevent Deletes in the Waypoint zero list so no need to pre-process it
+                    if (empire.OwnedFleets[FleetKey].Waypoints.Count <= Index) 
+                    {
+                        message = new Message();
+                        message.Audience = Global.Everyone;
+                        message.Type = "Invalid command";
+                        message.FleetID = empire.OwnedFleets[FleetKey].Id;
+                        message.Text = "Empire " + empire.Id.ToString() + ", Fleet " + empire.OwnedFleets[FleetKey].Name + " Waypoint.delete.index=" + Index.ToString() + " with Waypoint.count = " + empire.OwnedFleets[FleetKey].Waypoints.Count.ToString() + " please sack the programmers";
+                        return message;
+                    }
+                    empire.OwnedFleets[FleetKey].Waypoints.RemoveAt(Index);
                     return null;
                 case CommandMode.Edit:
-                    empire.OwnedFleets[FleetKey].Waypoints.Add(Waypoint);  // Add the Waypoint 
-                    //We prevent edits of Waypoint Zeros so no need to pre-process it
-                    //you can edit a waypoint zero action by adding another action that undoes the first action
-                    return null;
+                     message = new Message();
+                    if (empire.OwnedFleets[FleetKey].Waypoints.Count > Index) empire.OwnedFleets[FleetKey].Waypoints.RemoveAt(Index);
+                    else
+                    {
+                        message.Audience = Global.Everyone;
+                        message.Type = "Invalid command";
+                        message.FleetID = empire.OwnedFleets[FleetKey].Id;
+                        message.Text = "Empire "+empire.Id.ToString()+", Fleet "+ empire.OwnedFleets[FleetKey].Name+" Waypoint.edit.index="+Index.ToString()+" with Waypoint.count = "+ empire.OwnedFleets[FleetKey].Waypoints.Count.ToString()+" please sack the programmers";
+                        empire.OwnedFleets[FleetKey].Waypoints.RemoveAt(Index - 1);  // TODO (priority 8) the code that sent this Waypoint.Edit command sent a bad index and must be fixed 
+                    }
+                    if (empire.OwnedFleets[FleetKey].Waypoints.Count > Index)
+                    {
+                        empire.OwnedFleets[FleetKey].Waypoints.Insert(Index, Waypoint);
+                    }
+                    else empire.OwnedFleets[FleetKey].Waypoints.Add(Waypoint); //Waypoint.Insert[Index] past the end of the list is an Add
+                    return message;
             }
             return null;
         }

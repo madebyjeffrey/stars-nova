@@ -161,6 +161,7 @@ namespace Nova.Common
                     case "Fuel":
                     case "Star":
                     case "Invalid Command":
+                    case "Load/Unload":
                         // No object reference required to be saved.
                         break;
 

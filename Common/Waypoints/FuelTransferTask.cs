@@ -158,6 +158,7 @@ namespace Nova.Common.Waypoints
 
                         Message message = new Message();
                         message.Audience = fleet.Owner;
+                        message.FleetID = fleet.Id;
                         message.Text = "Fleet " + fleet.Name + " attempted to load/unload fuel when too far from target: " + target.Name;
                         Messages.Add(message);
                         messageOut = message;
@@ -195,7 +196,8 @@ namespace Nova.Common.Waypoints
 
                         Message message = new Message();
                         message.Audience = fleet.Owner;
-                        message.Text = "Fleet " + fleet.Name + " attempted to load/unload cargo when too far from target: " + target.Name;
+                        message.FleetID = fleet.Id;
+                        message.Text = "Fleet " + fleet.Name + " attempted to load/unload fuel when too far from target: " + target.Name;
                         Messages.Add(message);
                         messageOut = message;
                         return false;
@@ -227,6 +229,8 @@ namespace Nova.Common.Waypoints
                 else
                 {
                     Message message = new Message();
+                    message.Audience = fleet.Owner;
+                    message.FleetID = fleet.Id;
                     message.Text = "Fleet " + fleet.Name + " tried to load fuel to/from " + target.Name + ".";
                     Messages.Add(message);
                     messageOut = null;

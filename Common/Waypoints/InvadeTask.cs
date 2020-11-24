@@ -69,6 +69,7 @@ namespace Nova.Common.Waypoints
             Messages.Add(message);
             
             message.Audience = fleet.Owner;
+            message.FleetID = fleet.Id;
             message.Text = "Fleet " + fleet.Name + " has waypoint orders to invade ";
             
             // First check that we are actuallly in orbit around a planet.

@@ -733,6 +733,7 @@ namespace Nova.Common
             {
                 Message message = new Message();
                 message.Audience = Owner;
+                message.FleetID = Id;
                 message.Text = "Fleet " + Name + " has generated " + fuelUsed.ToString() +"mg of fuel.";
                 message.Type = "WarpToChange";
                 message.Event = this;
@@ -748,6 +749,7 @@ namespace Nova.Common
                 if (target.WarpFactor == 0) target.WarpFactor = 1; // in Stars every fleet can travel at warp 1 and generate 1mg of fuel per turn
                 Message message = new Message();
                 message.Audience = Owner;
+                message.FleetID = Id;
                 message.Text = "Fleet " + Name + " has run out of fuel. Its speed has been reduced to Warp " + this.FreeWarpSpeed.ToString() + ".";
                 message.Type = "WarpToChange";
                 message.FleetID = this.Id;

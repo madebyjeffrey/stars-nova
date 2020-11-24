@@ -32,37 +32,37 @@ namespace Nova.Common.Waypoints
     {
         Load = 0,
         Unload
-    }   
-    
+    }
+
     /// <summary>
     /// Performs Star Colonization.
     /// </summary>
     public class CargoTask : IWaypointTask
-    {        
+    {
         private List<Message> messages = new List<Message>();
-        
+
         /// <inheritdoc />
         public List<Message> Messages
         {
             get { return messages; }
         }
-        
+
         /// <inheritdoc />
         public string Name
         {
             get
             {
-                if (Mode == CargoMode.Load) 
-                { 
-                    return "Load Cargo"; 
+                if (Mode == CargoMode.Load)
+                {
+                    return "Load Cargo";
                 }
-                else 
-                { 
-                    return "Unload Cargo"; 
+                else
+                {
+                    return "Unload Cargo";
                 }
             }
         }
-        
+
         /// <summary>
         /// Cargo object representing the amount to Load or Unload.
         /// </summary>
@@ -85,8 +85,8 @@ namespace Nova.Common.Waypoints
             Mode = CargoMode.Unload;
             Target = new Mappable();
         }
-        
-        
+
+
         /// <summary>
         /// Copy Constructor.
         /// </summary>
@@ -97,8 +97,8 @@ namespace Nova.Common.Waypoints
             Mode = copy.Mode;
             Target = copy.Target;
         }
-        
-        
+
+
         /// <summary>
         /// Load: Read an object of this class from and XmlNode representation.
         /// </summary>
@@ -109,7 +109,7 @@ namespace Nova.Common.Waypoints
             {
                 return;
             }
-            
+
             XmlNode mainNode = node.FirstChild;
             while (mainNode != null)
             {
@@ -125,7 +125,7 @@ namespace Nova.Common.Waypoints
                             break;
                         case "mode":
                             Mode = (CargoMode)Enum.Parse(typeof(CargoMode), mainNode.FirstChild.Value);
-                            break;                             
+                            break;
                     }
                 }
                 catch (Exception e)
@@ -135,8 +135,8 @@ namespace Nova.Common.Waypoints
                 mainNode = mainNode.NextSibling;
             }
         }
-        
-        
+
+
         /// <inheritdoc />
         public XmlElement ToXml(XmlDocument xmldoc)
         {
@@ -150,13 +150,15 @@ namespace Nova.Common.Waypoints
 
 
         /// <inheritdoc />
-        public bool IsValid(Fleet fleet, Item target, EmpireData sender, EmpireData receiver , out Message messageOut)
+        public bool IsValid(Fleet fleet, Item target, EmpireData sender, EmpireData receiver, out Message messageOut)
         {
             if (target == null)
             {
 
                 Message message = new Message();
                 message.Audience = fleet.Owner;
+                message.FleetID = fleet.Id;
+                message.Type = "Load/Unload";
                 message.Text = "Fleet " + fleet.Name + " attempted to load/unload cargo to empty space: ";
                 Messages.Add(message);
                 messageOut = message;
@@ -173,6 +175,8 @@ namespace Nova.Common.Waypoints
 
                         Message message = new Message();
                         message.Audience = fleet.Owner;
+                        message.FleetID = fleet.Id;
+                        message.Type = "Load/Unload";
                         message.Text = "Fleet " + fleet.Name + " attempted to load/unload cargo when too far from target: " + target.Name;
                         Messages.Add(message);
                         messageOut = message;
@@ -188,8 +192,8 @@ namespace Nova.Common.Waypoints
                     {
                         if (Global.Debug) Report.Information("Cargo Transfer to enemy Stars not implemeneted - try creating an invasion task"); //  ;)
                         Message message = new Message(sender.Id, "Cargo Transfer to enemy Stars not implemeneted - try creating an invasion task", "Invalid Command", null);
-                        messageOut = message; 
-                        return false;  
+                        messageOut = message;
+                        return false;
                     }
                     else
                     {
@@ -197,9 +201,9 @@ namespace Nova.Common.Waypoints
 
                         InvadeTask invade = new InvadeTask();
                         Message message = null;
-                        if (invade.IsValid(fleet, target, sender, receiver,out message))
+                        if (invade.IsValid(fleet, target, sender, receiver, out message))
                         {
-                            toReturn = invade.Perform(fleet, target, sender, receiver,out message);
+                            toReturn = invade.Perform(fleet, target, sender, receiver, out message);
                         }
 
                         Messages.AddRange(invade.Messages);
@@ -221,6 +225,8 @@ namespace Nova.Common.Waypoints
 
                         Message message = new Message();
                         message.Audience = fleet.Owner;
+                        message.FleetID = fleet.Id;
+                        message.Type = "Load/Unload";
                         message.Text = "Fleet " + fleet.Name + " attempted to load/unload cargo when too far from target: " + target.Name;
                         Messages.Add(message);
                         messageOut = message;
@@ -235,28 +241,28 @@ namespace Nova.Common.Waypoints
 
 
         /// <inheritdoc />
-        public bool Perform(Fleet fleet, Item target, EmpireData sender, EmpireData receiver ,out  Message message)
-        {            
+        public bool Perform(Fleet fleet, Item target, EmpireData sender, EmpireData receiver, out Message message)
+        {
             switch (Mode)
             {
                 case CargoMode.Load:
                     message = null;
-                    return Load(fleet, target, sender, receiver);
-                    
+                    return Load(fleet, target, sender, receiver, out message);
+
                 case CargoMode.Unload:
                     message = null;
-                    return Unload(fleet, target, sender, receiver);
+                    return Unload(fleet, target, sender, receiver, out message);
             }
 
             message = null;
             return false;
         }
 
-        
+
         /// <summary>
         /// Performs concrete unloading.
         /// </summary>
-        private bool Unload(Fleet fleet, Item target, EmpireData sender, EmpireData receiver)
+        private bool Unload(Fleet fleet, Item target, EmpireData sender, EmpireData receiver, out Message message)
         {
             if ((target.Type == ItemType.Star) || (target.Type == ItemType.StarIntel))
             {
@@ -264,17 +270,26 @@ namespace Nova.Common.Waypoints
                 {
                     Star star = sender.OwnedStars[target.Name];
                     {
-                        Message message = new Message();
+                        message = new Message();
+                        message.Audience = fleet.Owner;
+                        message.Type = "Load/Unload";
+                        message.FleetID = fleet.Id;
                         message.Text = "Fleet " + fleet.Name + " has unloaded its cargo at " + star.Name + ".";
                         Messages.Add(message);
-
                         star.Add(Amount);
                         fleet.Cargo.Remove(Amount);
-
                         return true;
                     }
                 }
-                else return false;
+                else
+                {
+                    message = new Message();
+                    message.Audience = fleet.Owner;
+                    message.FleetID = fleet.Id;
+                    message.Type = "Load/Unload";
+                    message.Text = "Fleet " + fleet.Name + " couldn't find " + target + " to unload cargo to.";
+                    return false;
+                }
             }
             else
             {
@@ -283,7 +298,10 @@ namespace Nova.Common.Waypoints
                     if (sender.OwnedFleets.ContainsKey(target.Key))
                     {
                         Fleet other = sender.OwnedFleets[target.Key];
-                        Message message = new Message();
+                        message = new Message();
+                        message.FleetID = fleet.Id;
+                        message.Audience = fleet.Owner;
+                        message.Type = "Load/Unload";
                         message.Text = "Fleet " + fleet.Name + " has transferred cargo to " + other.Name + ".";
                         Messages.Add(message);
 
@@ -293,55 +311,83 @@ namespace Nova.Common.Waypoints
                         return true;
                     }
                 }
-                else return false;
+                {
+                    message = new Message();
+                    message.Audience = fleet.Owner;
+                    message.FleetID = fleet.Id;
+                    message.Type = "Load/Unload";
+                    message.Text = "Fleet " + fleet.Name + " couldn't find " + target + " to unload cargo to.";
+                    return false;
+                }
             }
-            return false;
         }
-        
-        
+
+
         /// <summary>
         /// Performs concrete loading.
         /// </summary>
-        private bool Load(Fleet fleet, Item target, EmpireData sender, EmpireData receiver)
+        private bool Load(Fleet fleet, Item target, EmpireData sender, EmpireData receiver, out Message message)
         {
-            if ((target.Type == ItemType.Star)|| (target.Type == ItemType.StarIntel))
+            if ((target.Type == ItemType.Star) || (target.Type == ItemType.StarIntel))
             {
                 if (sender.OwnedStars.ContainsKey(target.Name))
                 {
                     Star star = sender.OwnedStars[target.Name];
                     {
-                        Message message = new Message();
+                        message = new Message();
+                        message.Audience = fleet.Owner;
+                        message.FleetID = fleet.Id;
+                        message.Type = "Load/Unload";
                         message.Text = "Fleet " + fleet.Name + " has loaded cargo from " + star.Name + ".";
                         Messages.Add(message);
-
                         fleet.Cargo.Add(Amount);
                         star.Remove(Amount);
-
                         return true;
                     }
                 }
-                else return false;
+                else
+                {
+                    message = new Message();
+                    message.Audience = fleet.Owner;
+                    message.FleetID = fleet.Id;
+                    message.Type = "Load/Unload";
+                    message.Text = "Fleet " + fleet.Name + " couldn't find " + target + " to load cargo to.";
+                    return false;
+                }
             }
             else if (target.Type == ItemType.Fleet)
-                        {
+            {
                 if (sender.OwnedFleets.ContainsKey(target.Key))
                 {
                     Fleet other = sender.OwnedFleets[target.Key];
-
-
-                    Message message = new Message();
                     message = new Message();
+                    message.Audience = fleet.Owner;
+                    message.FleetID = fleet.Id;
+                    message.Type = "Load/Unload";
                     message.Text = "Fleet " + fleet.Name + " has transferred cargo from " + other.Name + ".";
                     Messages.Add(message);
-
                     fleet.Cargo.Add(Amount);
                     other.Cargo.Remove(Amount);
-
                     return true;
                 }
+                else
+                {
+                    message = new Message();
+                    message.Audience = fleet.Owner;
+                    message.FleetID = fleet.Id;
+                    message.Type = "Load/Unload";
+                    message.Text = "Fleet " + fleet.Name + " couldn't find " + target + " to load cargo to.";
+                    return false;
+                }
+            }
+            {
+                message = new Message();
+                message.Audience = fleet.Owner;
+                message.FleetID = fleet.Id;
+                message.Type = "Load/Unload";
+                message.Text = "Fleet " + fleet.Name + " couldn't find " + target + " to load cargo to.";
                 return false;
             }
-            return false;
         }
     }
 }

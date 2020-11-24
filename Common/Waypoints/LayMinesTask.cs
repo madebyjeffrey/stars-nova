@@ -68,8 +68,8 @@ namespace Nova.Common.Waypoints
             Message message = new Message();
             Messages.Add(message);            
             message.Audience = fleet.Owner;
-            
-            
+            message.FleetID = fleet.Id;
+
             if (fleet.NumberOfMines == 0)
             {
                 message.Text = fleet.Name + " attempted to lay mines. The order has been canceled because no ship in the fleet has a mine laying pod.";
