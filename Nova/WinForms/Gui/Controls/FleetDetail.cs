@@ -363,8 +363,11 @@ namespace Nova.WinForms.Gui
                 editedWaypoint.Destination = topFleet.Waypoints[index].Destination;
                 editedWaypoint.Position = topFleet.Waypoints[index].Position;
                 editedWaypoint.WarpFactor = topFleet.Waypoints[index].WarpFactor;
+                Mappable target = null;
+                foreach (Star star in empireState.OwnedStars.Values) if (star.Name == topFleet.Waypoints[index].Destination) target = star;
+                if (target == null) foreach (Fleet fleet in empireState.OwnedFleets.Values) if (fleet.Name == topFleet.Waypoints[index].Destination) target = fleet;
+                editedWaypoint.LoadTask(WaypointTasks.Text, null, target);
 
-                editedWaypoint.LoadTask(WaypointTasks.Text, null);
 
                 WaypointCommand command = new WaypointCommand(CommandMode.Edit, editedWaypoint, topFleet.Key, index);
 

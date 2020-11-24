@@ -276,6 +276,7 @@ namespace Nova.Common.Waypoints
                         message.FleetID = fleet.Id;
                         message.Text = "Fleet " + fleet.Name + " has unloaded its cargo at " + star.Name + ".";
                         Messages.Add(message);
+                        Amount = Amount.Min(Amount, fleet.Cargo);
                         star.Add(Amount);
                         fleet.Cargo.Remove(Amount);
                         return true;

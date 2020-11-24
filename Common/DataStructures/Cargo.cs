@@ -257,7 +257,18 @@ namespace Nova.Common
                 subnode = subnode.NextSibling;
             }
         }
-        
+
+        public Cargo Min (Cargo left, Cargo right)
+        {
+            Cargo result = new Cargo();
+            result.Ironium = ((left.Ironium > right.Ironium) ? right.Ironium : left.Ironium);
+            result.Boranium = ((left.Boranium > right.Boranium) ? right.Boranium : left.Boranium);
+            result.Germanium = ((left.Germanium > right.Germanium) ? right.Germanium : left.Germanium);
+            result.Silicoxium = ((left.Silicoxium > right.Silicoxium) ? right.Silicoxium : left.Silicoxium);
+            result.ColonistsInKilotons = ((left.ColonistsInKilotons > right.ColonistsInKilotons) ? right.ColonistsInKilotons : left.ColonistsInKilotons);
+            return result;
+
+        }
         public void Add(Cargo rightCargo)
         {
             Ironium += rightCargo.Ironium;

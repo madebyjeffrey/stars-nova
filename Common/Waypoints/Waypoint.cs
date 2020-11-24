@@ -160,9 +160,9 @@ namespace Nova.Common.Waypoints
             {
                 taskName += "Task";
             }
-            
+
             taskName.Replace(" ", "");
-            
+
             switch (taskName.ToLower())
             {
                 case "cargotask":
@@ -187,10 +187,64 @@ namespace Nova.Common.Waypoints
                     Task = new NoTask();
                     break;
             }
-            
+
             return Task;
         }
-        
+        public IWaypointTask LoadTask(string taskName, XmlNode node, Mappable target)
+        {
+            if (!taskName.Contains("Task"))
+            {
+                taskName += "Task";
+            }
+
+            taskName.Replace(" ", "");
+
+            switch (taskName.ToLower())
+            {
+                case "unload cargotask":
+                    if (node == null)
+                    {
+                        CargoTask wpTask = new CargoTask();
+                        wpTask.Mode = CargoMode.Unload;
+                        wpTask.Amount.ColonistsInKilotons = int.MaxValue;
+                        wpTask.Amount.Germanium = int.MaxValue;
+                        wpTask.Amount.Ironium = int.MaxValue;
+                        wpTask.Amount.Germanium = int.MaxValue;
+                        wpTask.Target = target;
+                        Task = wpTask;
+                    }
+                    else Task = new CargoTask(node);
+                    break;
+                case "cargotask":
+                    Task = new CargoTask(node);
+                    break;
+                case "colonisetask":
+                    Task = new ColoniseTask(node);
+                    break;
+                case "invadetask":
+                    if (node == null)
+                    {
+                        InvadeTask wpTask = new InvadeTask();
+                    }
+                    else new InvadeTask(node);
+                    break;
+                case "layminestask":
+                    Task = new LayMinesTask(node);
+                    break;
+                case "scraptask":
+                    Task = new ScrapTask(node);
+                    break;
+                case "splitmergetask":
+                    Task = new SplitMergeTask(node);
+                    break;
+                default:
+                    Task = new NoTask();
+                    break;
+            }
+
+            return Task;
+        }
+
 
         /// <summary>
         /// Save: Serialize this Waypoint to an <see cref="XmlElement"/>.
