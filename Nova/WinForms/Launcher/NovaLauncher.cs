@@ -70,7 +70,18 @@ namespace Nova.WinForms.Launcher
 
             if (!Directory.Exists(folderPath))
                 Directory.CreateDirectory(folderPath);
-            ZipFile.ExtractToDirectory(zipFile, folderPath);
+            try
+            {
+                ZipFile.ExtractToDirectory(zipFile, folderPath); // Throws exception if the file already exists.
+            }
+            catch (IOException e)
+            {
+                // TODO (priority 6) - Ignore if the file already exists, do something with other IO errors.
+                
+                string s = "There was an issue extracting the archive, does it already exit?: " + e.GetType().Name;
+                Report.Debug(s);
+                
+            }
 
         }
         public NovaLauncher()
