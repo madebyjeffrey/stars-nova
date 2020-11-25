@@ -734,7 +734,7 @@ namespace Nova.Common
                 Message message = new Message();
                 message.Audience = Owner;
                 message.FleetID = Id;
-                message.Text = "Fleet " + Name + " has generated " + fuelUsed.ToString() +"mg of fuel.";
+                message.Text = "Fleet " + Name + " has generated " + (-1.0*fuelUsed).ToString() +"mg of fuel.";
                 message.Type = "WarpToChange";
                 message.Event = this;
                 messages.Add(message);

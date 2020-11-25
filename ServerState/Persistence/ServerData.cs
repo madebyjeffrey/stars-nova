@@ -540,6 +540,9 @@ namespace Nova.Server
                 foreach (EmpireData empire in AllEmpires.Values)
                 {
                     empire.RemoveFleet(key);
+                    FleetIntel fleet = null;
+                    if (empire.FleetReports.TryGetValue(key,out fleet)) empire.FleetReports[key].Year = empire.TurnYear;       //Fleets with a TurnYear should decay out of the Reports in N years
+                                                                                                                     //they may be scrap or fleets that were destroyed but still appear in battlereports
                 }
             }
 

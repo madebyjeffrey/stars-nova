@@ -359,18 +359,16 @@ Are you sure you want to do this?";
             {
                 ShipDesign design = designList.SelectedItems[0].Tag as ShipDesign;
                 design.Update();
-                if (!design.Obsolete)
-                    {
-                    DesignCommand command = new DesignCommand(CommandMode.Edit, design.Key);
 
-                    Nova.Common.Message message;
-                    if (command.IsValid(clientState.EmpireState, out message))
-                    {
-                        clientState.Commands.Push(command);
-                        command.ApplyToState(clientState.EmpireState);
-                    }
-                    else if (Global.Debug) Report.Information(message.Text);
+                DesignCommand command = new DesignCommand(CommandMode.Edit, design.Key);
+
+                Nova.Common.Message message;
+                if (command.IsValid(clientState.EmpireState, out message))
+                {
+                    clientState.Commands.Push(command);
+                    command.ApplyToState(clientState.EmpireState);
                 }
+
             }
         }
     }

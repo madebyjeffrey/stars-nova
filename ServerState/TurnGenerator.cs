@@ -239,7 +239,7 @@ namespace Nova.Server
                                     else command.ApplyToState(empire);
                                     serverState.CleanupFleets();  
                                 }
-                                else (command as WaypointCommand).ApplyToState(empire); // might be a waypoint delete or edit so keep the indexes alligned between server and the clients indexes
+                                else (command as WaypointCommand).ApplyToState(empire); // might be a waypoint delete or edit so keep the Waypoint indexes alligned between server and the clients Waypoint Lists
                             }
                             else
                             {
@@ -262,7 +262,8 @@ namespace Nova.Server
 
                     }
                 }
-                
+                serverState.CleanupFleets();
+
                 foreach (Star star in empire.OwnedStars.Values)
                 {
                     serverState.AllStars[star.Key] = star;
@@ -517,7 +518,9 @@ namespace Nova.Server
                                 targetVelocityVector = target.Waypoints[0].Position - target.Position;
                                 continue;
                             }
+                        ///////////////////////////////////////////////////////////////////////////////////////////////////////////
                         fleetMoveResult = fleet.Move(ref availableTime, race, ref serverState.AllMessages, targetVelocity, targetVelocityVector);
+                        //////////////////////////////////////////////////////////////////////////////////////////////////////////
                     }
 
                     bool destroyed = checkForMinefields.Check(fleet);

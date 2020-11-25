@@ -865,7 +865,12 @@ namespace Nova.Server
             }
 
             // remove the token from the Stack (do this last so target.Token remains valid above)
+            long fleetKey = target.ParentKey;
             target.Composition.Remove(target.Key);
+            if (serverState.AllEmpires[target.Owner].OwnedFleets.ContainsKey(fleetKey))  serverState.AllEmpires[target.Owner].OwnedFleets.Remove(fleetKey);
+            if (serverState.AllEmpires[target.Owner].FleetReports.ContainsKey(fleetKey)) serverState.AllEmpires[target.Owner].FleetReports.Remove(fleetKey);
+            if (serverState.AllEmpires[attacker.Owner].FleetReports.ContainsKey(fleetKey)) serverState.AllEmpires[attacker.Owner].FleetReports.Remove(target.ParentKey);  // added in Rev# 872
+
         }
 
         private void CreateSalvage(NovaPoint position, Resources salvage,Cargo cargo, int empireID)

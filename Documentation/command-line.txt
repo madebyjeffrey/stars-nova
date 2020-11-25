@@ -26,3 +26,6 @@ Nova --console
 To run the Nova AI on Dan's computer:
 Nova --ai -r humanoid -t 2114 -i "C:\Users\daniel\Desktop\AITest\Humanoid.intel"
 
+on John's:
+--ai -r AIs -t 2114 -i "C:\Users\John\Documents\Stars! Nova\Feel the Nova\AIs.intel"
+
