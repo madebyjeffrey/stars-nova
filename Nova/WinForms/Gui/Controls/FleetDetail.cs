@@ -259,7 +259,7 @@ namespace Nova.WinForms.Gui
             {
                 return;
             }
-            if ((topFleet.Waypoints[index].Task is SplitMergeTask) || (topFleet.Waypoints[index].Task is CargoTask))
+            if (((topFleet.Waypoints[index].Task is SplitMergeTask) || (topFleet.Waypoints[index].Task is CargoTask)) && (topFleet.Waypoints[index].Destination == topFleet.Waypoints[0].Destination))
             {
                 if (Global.Debug) Report.Information("That is a waypoint zero task, removing it may result in a loss of Fleet split, merge, load and unload actions for this fleet and/or other fleets");
                 return;
@@ -298,7 +298,7 @@ namespace Nova.WinForms.Gui
                 if (index > 0)
                 {
 
-                    if ((topFleet.Waypoints[index].Task is SplitMergeTask) || (topFleet.Waypoints[index].Task is CargoTask))
+                    if (((topFleet.Waypoints[index].Task is SplitMergeTask) || (topFleet.Waypoints[index].Task is CargoTask)) && (topFleet.Waypoints[index].Destination == topFleet.Waypoints[0].Destination))
                     {
                         if (Global.Debug)  Report.Information("That is a waypoint zero task, removing it may result in a loss of Fleet split, merge, load and unload actions for this fleet and/or other fleets");
                         return;
@@ -348,7 +348,7 @@ namespace Nova.WinForms.Gui
             }
 
             int index = wayPoints.SelectedIndices[0];
-            if ((topFleet.Waypoints[index].Task is SplitMergeTask) || (topFleet.Waypoints[index].Task is CargoTask))
+            if (((topFleet.Waypoints[index].Task is SplitMergeTask) || (topFleet.Waypoints[index].Task is CargoTask))  && (topFleet.Waypoints[index].Destination == topFleet.Waypoints[0].Destination))
             {
                 if (Global.Debug) Report.Information("That is a waypoint zero task, editing it may result in a loss of Fleet split, merge, load and unload actions for this fleet and/or other fleets");
                 return;
