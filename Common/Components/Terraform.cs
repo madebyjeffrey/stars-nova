@@ -113,6 +113,51 @@ namespace Nova.Common.Components
             return op1.Clone() as Terraform;
         }
 
+
+        public Star terraformOnePoint (Star star,Race race)
+        {
+            int RadAbove = star.Radiation - race.RadiationTolerance.MaximumValue;
+            int RadBelow = race.RadiationTolerance.MinimumValue - star.Radiation;
+            int RadiationHostility = Math.Max(RadAbove, RadBelow);
+            int TempAbove = star.Temperature - race.TemperatureTolerance.MaximumValue;
+            int TempBelow = race.TemperatureTolerance.MinimumValue - star.Temperature;
+            int TemperatureHostility = Math.Max(TempAbove, TempBelow);
+            int GravAbove = star.Gravity - race.GravityTolerance.MaximumValue;
+            int GravBelow = race.GravityTolerance.MinimumValue - star.Radiation;
+            int GravityHostility = Math.Max(GravAbove, GravBelow);
+            if ((RadiationHostility >= TemperatureHostility) && (RadiationHostility >= GravityHostility)) star =  fixRadiation( star,  race);
+            else if ((TemperatureHostility >= RadiationHostility) && (TemperatureHostility >= GravityHostility)) star = fixTemperature( star,  race);
+            else if ((GravityHostility >= RadiationHostility) && (GravityHostility >= TemperatureHostility )) star = fixGravity( star,  race);
+            return star;
+        }
+
+        public Star fixRadiation(Star star, Race race)
+        {
+            int RadAbove = star.Radiation - race.RadiationTolerance.MaximumValue;
+            int RadBelow = race.RadiationTolerance.MinimumValue - star.Radiation;
+            if (RadAbove > RadBelow) star.Radiation -= Math.Sign(RadAbove);
+            else star.Radiation -= Math.Sign(RadBelow);
+            return star;
+        }
+
+        public Star fixTemperature(Star star, Race race)
+        {
+            int Above = star.Temperature - race.TemperatureTolerance.MaximumValue;
+            int Below = race.TemperatureTolerance.MinimumValue - star.Temperature;
+            if (Above > Below) star.Temperature -= Math.Sign(Above);
+            else star.Temperature -= Math.Sign(Below);
+            return star;
+        }
+
+        public Star fixGravity(Star star, Race race)
+        {
+            int Above = star.Gravity - race.GravityTolerance.MaximumValue;
+            int Below = race.GravityTolerance.MinimumValue - star.Gravity;
+            if (Above > Below) star.Gravity -= Math.Sign(Above);
+            else star.Gravity -= Math.Sign(Below);
+            return star;
+        }
+
         /// <summary>
         /// Load from XML: initializing constructor from an XML node.
         /// </summary>
