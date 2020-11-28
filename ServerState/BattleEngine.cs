@@ -192,6 +192,7 @@ namespace Nova.Server
             
             foreach (Fleet fleetA in serverState.IterateAllFleets())
             {
+                if (fleetA.Name == "S A L V A G E") fleetDone[fleetA.Key] = true;
                 if (fleetDone.ContainsKey(fleetA.Key))
                 {
                     continue;
@@ -201,6 +202,7 @@ namespace Nova.Server
 
                 foreach (Fleet fleetB in serverState.IterateAllFleets())
                 {
+                    if (fleetB.Name == "S A L V A G E") continue;
                     if (fleetB.Position != fleetA.Position)
                     {
                         continue;
