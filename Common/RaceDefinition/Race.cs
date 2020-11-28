@@ -127,9 +127,9 @@ namespace Nova.Common
                 //r = NormalizeHabitabilityDistance(RadiationTolerance, star.baseRadiation, radiationModCapability);// should use unterraformed stats but not implemented yet
                 // g = NormalizeHabitabilityDistance(GravityTolerance, star.baseGravity, gravityModCapability);
                 //t = NormalizeHabitabilityDistance(TemperatureTolerance, star.baseTemperature, temperatureModCapability);
-                r = NormalizeHabitabilityDistance(RadiationTolerance, star.Radiation, radiationModCapability);
-                g = NormalizeHabitabilityDistance(GravityTolerance, star.Gravity, gravityModCapability);
-                t = NormalizeHabitabilityDistance(TemperatureTolerance, star.Temperature, temperatureModCapability);
+                r = NormalizeHabitabilityDistance(RadiationTolerance, star.OriginalRadiation , radiationModCapability);
+                g = NormalizeHabitabilityDistance(GravityTolerance, star.OriginalGravity, gravityModCapability);
+                t = NormalizeHabitabilityDistance(TemperatureTolerance, star.OriginalTemperature, temperatureModCapability);
             }
             else
             {
@@ -251,6 +251,18 @@ namespace Nova.Common
         /// </summary>
         /// <param name="report">The star report for which the Habitability is being determined.</param>
         /// <returns>The normalized habitability of the star (-1 to +1).</returns>
+        public double HabitalValue(StarIntel report, bool maxTerraformed = false, int gravityModCapability = 0, int temperatureModCapability = 0, int radiationModCapability = 0)
+        {
+            if (report.Year == Global.Unset) return -1;
+            Star star = new Star();
+            star.Gravity = report.Gravity;
+            star.Radiation = report.Radiation;
+            star.Temperature = report.Temperature;
+            star.OriginalTemperature = report.baseTemperature;
+            star.OriginalRadiation = report.baseRadiation;
+            star.OriginalGravity = report.baseGravity;
+            return HabValue(star,true, gravityModCapability, temperatureModCapability, radiationModCapability);
+        }
         public double HabitalValue(StarIntel report)
         {
             if (report.Year == Global.Unset) return -1;
@@ -258,7 +270,7 @@ namespace Nova.Common
             star.Gravity = report.Gravity;
             star.Radiation = report.Radiation;
             star.Temperature = report.Temperature;
-            
+
             return HabValue(star);
         }
 

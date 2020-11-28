@@ -176,17 +176,6 @@ namespace Nova.WinForms.Gui
         #endregion
 
         private System.Windows.Forms.DataGridView scoreGridView;
-        private System.Windows.Forms.DataGridViewImageColumn raceicon;
-        private System.Windows.Forms.DataGridViewTextBoxColumn race;
-        private System.Windows.Forms.DataGridViewTextBoxColumn rank;
-        private System.Windows.Forms.DataGridViewTextBoxColumn score;
-        private System.Windows.Forms.DataGridViewTextBoxColumn planets;
-        private System.Windows.Forms.DataGridViewTextBoxColumn starbases;
-        private System.Windows.Forms.DataGridViewTextBoxColumn unarmedShips;
-        private System.Windows.Forms.DataGridViewTextBoxColumn escortShips;
-        private System.Windows.Forms.DataGridViewTextBoxColumn capitalShips;
-        private System.Windows.Forms.DataGridViewTextBoxColumn techLevels;
-        private System.Windows.Forms.DataGridViewTextBoxColumn totalResources;
         private System.Windows.Forms.DataGridViewImageColumn RaceIcon;
         private System.Windows.Forms.DataGridViewTextBoxColumn Race;
         private System.Windows.Forms.DataGridViewTextBoxColumn Rank;

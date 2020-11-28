@@ -113,21 +113,92 @@ namespace Nova.Common.Components
             return op1.Clone() as Terraform;
         }
 
+        public bool isRadiationMaxed(Star star, Race race, int gravityModCapability)
+        {
+            bool result = true;
+            result = (Math.Abs(star.OriginalRadiation - star.Radiation) >= gravityModCapability);  //we have terraformed this attribute to the Max
+            int RadAbove = star.Radiation - race.RadiationTolerance.MaximumValue;
+            int RadBelow = race.RadiationTolerance.MinimumValue - star.Radiation;
+            if (Math.Abs(Math.Abs(RadAbove) - Math.Abs(RadBelow)) <= 1) result = false; // we could terraform by 1/2 point but if we terraform 1 point we will have gone too far
+            return result;
+        }
 
-        public Star terraformOnePoint (Star star,Race race)
+        public bool isTemperatureMaxed(Star star, Race race, int TemperatureModCapability)
+        {
+            bool result = true;
+            result = (Math.Abs(star.OriginalTemperature - star.Temperature) >= TemperatureModCapability); //we have terraformed this attribute to the Max
+            int TempAbove = star.Temperature - race.TemperatureTolerance.MaximumValue;
+            int TempBelow = race.TemperatureTolerance.MinimumValue - star.Temperature;
+            if (Math.Abs(Math.Abs(TempAbove) - Math.Abs(TempBelow)) <= 1) result = false; // we could terraform by 1/2 point but if we terraform 1 point we will have gone too far
+            return result;
+        }
+
+        public bool isGravityMaxed(Star star, Race race, int gravityModCapability)
+        {
+            bool result = true;
+            result = (Math.Abs(star.OriginalGravity - star.Gravity) >= gravityModCapability);  //we have terraformed this attribute to the Max
+            int GravAbove = star.Gravity - race.GravityTolerance.MaximumValue;
+            int GravBelow = race.GravityTolerance.MinimumValue - star.Radiation;
+            if (Math.Abs(Math.Abs(GravAbove) - Math.Abs(GravBelow)) <= 1) result = false; // we could terraform by 1/2 point but if we terraform 1 point we will have gone too far
+            return result;
+        }
+
+
+        public bool isEnvironmentIdeal(Star star, Race race)
+        {
+            //if star is already 100% don't terraform it
+            return (1.0 == race.HabValue(star,false,0,0,0));
+        }
+
+        /// <summary>
+        /// Returns true if the tech level is high enough for this race to perform one level of terraforming
+        /// </summary>
+        /// <param name="star"></param>
+        /// <param name="race"></param>
+        /// <param name="gravityModCapability"></param>
+        /// <param name="radiationModCapability"></param>
+        /// <param name="temperatureModCapability"></param>
+        /// <returns></returns>
+        public bool canTerraformOnePoint(Star star,  Race race, int gravityModCapability, int radiationModCapability, int temperatureModCapability)
+        {
+
+           return !((isEnvironmentIdeal(star, race)) ||
+            ((isRadiationMaxed(star, race, gravityModCapability)) &&
+            (isTemperatureMaxed(star, race, temperatureModCapability)) &&
+            (isGravityMaxed(star, race, gravityModCapability))) 
+            );
+
+        }
+
+
+        /// <summary>
+        /// MUST call canTerraformOnePoint(Star star,  Race race, int gravityModCapability, int radiationModCapability, int temperatureModCapability)
+        /// to test if it is OK to call this code
+        /// </summary>
+        /// <param name="star"></param>
+        /// <param name="race"></param>
+        /// <param name="gravityModCapability"></param>
+        /// <param name="radiationModCapability"></param>
+        /// <param name="temperatureModCapability"></param>
+        /// <returns></returns>
+        public Star terraformOnePoint(Star star, Race race, int gravityModCapability, int radiationModCapability, int temperatureModCapability)
         {
             int RadAbove = star.Radiation - race.RadiationTolerance.MaximumValue;
             int RadBelow = race.RadiationTolerance.MinimumValue - star.Radiation;
             int RadiationHostility = Math.Max(RadAbove, RadBelow);
+            if (isRadiationMaxed(star, race, gravityModCapability)) RadiationHostility = int.MinValue;  // we can't choose this one
             int TempAbove = star.Temperature - race.TemperatureTolerance.MaximumValue;
             int TempBelow = race.TemperatureTolerance.MinimumValue - star.Temperature;
             int TemperatureHostility = Math.Max(TempAbove, TempBelow);
+            if (isTemperatureMaxed(star, race, temperatureModCapability)) TemperatureHostility = int.MinValue;  // we can't choose this one
             int GravAbove = star.Gravity - race.GravityTolerance.MaximumValue;
             int GravBelow = race.GravityTolerance.MinimumValue - star.Radiation;
             int GravityHostility = Math.Max(GravAbove, GravBelow);
-            if ((RadiationHostility >= TemperatureHostility) && (RadiationHostility >= GravityHostility)) star =  fixRadiation( star,  race);
-            else if ((TemperatureHostility >= RadiationHostility) && (TemperatureHostility >= GravityHostility)) star = fixTemperature( star,  race);
-            else if ((GravityHostility >= RadiationHostility) && (GravityHostility >= TemperatureHostility )) star = fixGravity( star,  race);
+            if (isGravityMaxed(star, race, gravityModCapability)) GravityHostility = int.MinValue;  // we can't choose this one
+
+                if ((RadiationHostility >= TemperatureHostility) && (RadiationHostility >= GravityHostility)) star = fixRadiation(star, race);
+                else if ((TemperatureHostility >= RadiationHostility) && (TemperatureHostility >= GravityHostility)) star = fixTemperature(star, race);
+                else if ((GravityHostility >= RadiationHostility) && (GravityHostility >= TemperatureHostility)) star = fixGravity(star, race);
             return star;
         }
 
@@ -135,8 +206,8 @@ namespace Nova.Common.Components
         {
             int RadAbove = star.Radiation - race.RadiationTolerance.MaximumValue;
             int RadBelow = race.RadiationTolerance.MinimumValue - star.Radiation;
-            if (RadAbove > RadBelow) star.Radiation -= Math.Sign(RadAbove);
-            else star.Radiation -= Math.Sign(RadBelow);
+            if (RadAbove > RadBelow) star.Radiation -= 1;
+            else star.Radiation += 1;
             return star;
         }
 
@@ -144,8 +215,8 @@ namespace Nova.Common.Components
         {
             int Above = star.Temperature - race.TemperatureTolerance.MaximumValue;
             int Below = race.TemperatureTolerance.MinimumValue - star.Temperature;
-            if (Above > Below) star.Temperature -= Math.Sign(Above);
-            else star.Temperature -= Math.Sign(Below);
+            if (Above > Below) star.Temperature -= 1;
+            else star.Temperature += 1;
             return star;
         }
 
@@ -153,8 +224,8 @@ namespace Nova.Common.Components
         {
             int Above = star.Gravity - race.GravityTolerance.MaximumValue;
             int Below = race.GravityTolerance.MinimumValue - star.Gravity;
-            if (Above > Below) star.Gravity -= Math.Sign(Above);
-            else star.Gravity -= Math.Sign(Below);
+            if (Above > Below) star.Gravity -= 1;
+            else star.Gravity += 1;
             return star;
         }
 

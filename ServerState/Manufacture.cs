@@ -50,13 +50,13 @@ namespace Nova.Server
         /// Don't preserve resource count as resource depletion is needed to
         /// contribute with leftover resources for research.
         /// </remarks>
-        public void Items(Star star)
+        public void Items(Star star, Race race, int gravityModCapability, int radiationModCapability, int temperatureModCapability)
         {
             List<ProductionOrder> completed = new List<ProductionOrder>();
             
             foreach (ProductionOrder productionOrder in star.ManufacturingQueue.Queue)
             {
-                if (productionOrder.IsBlocking(star))
+                if (productionOrder.IsBlocking(star, race, gravityModCapability,  radiationModCapability,  temperatureModCapability))
                 {
                     // Items block the queue when they can't be processed (i.e. not enough resources)
                     // AND they are not autobuild orders (autobuild never blocks the Queue).
@@ -64,7 +64,7 @@ namespace Nova.Server
                 }
                 
                 // Deal with the production Order.
-                int done = productionOrder.Process(star);
+                int done = productionOrder.Process(star, race, gravityModCapability, radiationModCapability, temperatureModCapability);
                 
                 if (done > 0 && productionOrder.Unit is ShipProductionUnit)
                 {

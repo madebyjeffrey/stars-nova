@@ -23,7 +23,7 @@ namespace Nova.Common
 {
     using System;
     using System.Xml;
-
+    using Nova.Common.Components;
     /// <summary>
     /// This class is used for "constructing" terraform 1%.
     /// </summary>
@@ -51,21 +51,31 @@ namespace Nova.Common
         /// initializing constructor.
         /// </summary>
         /// <param name="star">The star that is producing this item.</param>
-        public TerraformProductionUnit()
+        public TerraformProductionUnit(Race race)
         {
+            if (race.HasTrait("CA")) cost = new Resources(0, 0, 0, 0);
+            else cost = new Resources(0, 0, 0, 70);
+            remainingCost = cost;
         }
 
         /// <summary>
         /// Returns true if this production item is to be skipped this year.
         /// </summary>
-        public bool IsSkipped(Star star)
+        public bool IsSkipped(Star star, Race race = null, int gravityModCapability = 0, int radiationModCapability = 0, int temperatureModCapability = 0)
         {
-            throw new NotImplementedException();
+            Terraform terraform = new Terraform();
+            return !terraform.canTerraformOnePoint(star, race, gravityModCapability, radiationModCapability, temperatureModCapability);
         }
 
         /// <summary>
         /// Construct a 1% terraform.
         /// </summary>
+        public bool  Construct(Star star,Race race,int gravityModCapability, int radiationModCapability, int temperatureModCapability)
+        {
+            Terraform terraform = new Terraform();
+            star = terraform.terraformOnePoint(star, race, gravityModCapability, radiationModCapability, temperatureModCapability);
+            return true;
+        }
         public bool Construct(Star star)
         {
             throw new NotImplementedException();
@@ -78,11 +88,39 @@ namespace Nova.Common
         {
             throw new NotImplementedException();
         }
-        
-                
+
+
+        public TerraformProductionUnit(XmlNode node)
+        {
+            XmlNode mainNode = node.FirstChild;
+            while (mainNode != null)
+            {
+                switch (mainNode.Name.ToLower())
+                {
+                    case "cost":
+                        cost = new Resources(mainNode);
+                        break;
+
+                    case "remainingcost":
+                        remainingCost = new Resources(mainNode);
+                        break;
+                }
+
+                mainNode = mainNode.NextSibling;
+            }
+        }
+
+
+
         public XmlElement ToXml(XmlDocument xmldoc)
         {
-            throw new NotImplementedException();
+            XmlElement xmlelUnit = xmldoc.CreateElement("TerraformUnit");
+
+            xmlelUnit.AppendChild(cost.ToXml(xmldoc, "Cost"));
+
+            xmlelUnit.AppendChild(remainingCost.ToXml(xmldoc, "RemainingCost"));
+
+            return xmlelUnit;
         }
     }
 }

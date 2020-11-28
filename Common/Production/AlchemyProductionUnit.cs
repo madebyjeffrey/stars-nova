@@ -49,16 +49,16 @@ namespace Nova.Common
         {
         }
 
-        public bool IsSkipped(Star star)
+        public bool IsSkipped(Star star, Race race = null, int gravityModCapability = 0, int radiationModCapability = 0, int temperatureModCapability = 0)
         {
             throw new NotImplementedException();
         }
 
-        public bool Construct(Star star)
+        public bool Construct(Star star, Race race = null, int gravityModCapability = 0, int radiationModCapability = 0, int temperatureModCapability = 0)
         {
             throw new NotImplementedException();
         }
-        
+
         public XmlElement ToXml(XmlDocument xmldoc)
         {
             throw new NotImplementedException();

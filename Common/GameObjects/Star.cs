@@ -396,7 +396,7 @@ namespace Nova.Common
 
 
 
-            double minValue = growthRate / 100.0 * habitalValue;
+            double minValue = growthRate * 100.0 * habitalValue;
             return (int) minValue;
         } 
 

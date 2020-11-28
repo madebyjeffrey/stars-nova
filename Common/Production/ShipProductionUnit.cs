@@ -133,7 +133,7 @@ namespace Nova.Common
         /// <summary>
         /// Return true if production of this item will be skipped.
         /// </summary>
-        public bool IsSkipped(Star star)
+        public bool IsSkipped(Star star, Race race = null, int gravityModCapability = 0, int radiationModCapability = 0, int temperatureModCapability = 0)
         {
             // Skip if unit needs a resource and there is no amount of that resource available
             // Note that a zero resource cost unit does not exist in Stars!, but check just incase a mod adds one.
@@ -154,7 +154,7 @@ namespace Nova.Common
         /// <summary>
         /// Construct the ship.
         /// </summary>
-        public bool Construct(Star star)
+        public bool Construct(Star star, Race race = null, int gravityModCapability = 0, int radiationModCapability = 0, int temperatureModCapability = 0)
         {
             // Partial Build
             if (!(star.ResourcesOnHand >= remainingCost))

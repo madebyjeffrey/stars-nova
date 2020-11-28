@@ -61,14 +61,14 @@ namespace Nova.Common
         /// factory number limit is reached).
         /// </summary>
         /// <returns>Returns true in case unit can be constructed, false otherwise.</returns>
-        bool IsSkipped(Star star);
+        bool IsSkipped(Star star, Race race = null, int gravityModCapability = 0, int radiationModCapability = 0, int temperatureModCapability = 0);
 
         /// <summary>
         /// Method which performs actual construction.
         /// </summary>
         /// <returns>Returns true if the unit is done constructing, false otherwise</returns>
-        bool Construct(Star star);
-        
+        bool Construct(Star star, Race race = null, int gravityModCapability = 0, int radiationModCapability = 0, int temperatureModCapability = 0);
+
         /// <summary>
         /// Save: Generate an XmlElement representation of the ProductionUnit for saving.
         /// </summary>

@@ -321,8 +321,9 @@ namespace Nova.Server
                 xmlelAllRaces.AppendChild(child);
             }
             xmlelServerState.AppendChild(xmlelAllRaces);
-            
+
             // Store the Empire's Data
+            CleanupFleets();
             XmlElement xmlelAllEmpires = xmldoc.CreateElement("AllEmpires");
             foreach (KeyValuePair<int, EmpireData> empireData in AllEmpires)
             {
@@ -541,8 +542,8 @@ namespace Nova.Server
                 {
                     empire.RemoveFleet(key);
                     FleetIntel fleet = null;
-                    if (empire.FleetReports.TryGetValue(key,out fleet)) empire.FleetReports[key].Year = empire.TurnYear;       //Fleets with a TurnYear should decay out of the Reports in N years
-                                                                                                                     //they may be scrap or fleets that were destroyed but still appear in battlereports
+                    if (empire.FleetReports.TryGetValue(key, out fleet)) empire.FleetReports.Remove(key);      
+                                                                                                                     
                 }
             }
 

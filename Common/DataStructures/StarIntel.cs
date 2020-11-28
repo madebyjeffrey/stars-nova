@@ -257,15 +257,15 @@ namespace Nova.Common
                 Temperature = star.Temperature;
                 Starbase = star.Starbase;
                 ResourcesOnHand = star.ResourcesOnHand;
-
                 if ((Year < 0) && (scanner != null) && (this.MinValue(race) > 0)) //skip this step if empire is self-scanning owned stars
                 {
+                    Year = year; 
                     discovered = new Message();
                     discovered.Audience = scanner.Owner;
                     discovered.Type = "StarIntel";
                     discovered.Event = star.Position;
-                    discovered.Text = "You have discovered a new habitable planet (" + star.Name + ")  with a current Value of " + this.MinValue(race).ToString() +
-                        " and a Maximum value of " + this.MaxValue(race, gravityModCapability, temperatureModCapability, radiationModCapability).ToString();
+                    discovered.Text = "You have discovered a new habitable planet (" + star.Name + ")  with a current Value of " +  (int)Math.Ceiling(race.HabitalValue(this) * 100)
+                    + "% and a Maximum value of " + (int)Math.Ceiling(race.HabitalValue(this, true, gravityModCapability, temperatureModCapability, radiationModCapability) * 100) + "%";
                 }
                 else discovered = null;
                 Year = year;

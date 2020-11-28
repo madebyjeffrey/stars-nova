@@ -78,7 +78,7 @@ namespace Nova.Server.TurnSteps
                     serverState.AllMessages.Add(message);
                 }
                 
-                manufacture.Items(star);
+                manufacture.Items(star, serverState.AllEmpires[star.Owner].Race, serverState.AllEmpires[star.Owner].gravityModCapability, serverState.AllEmpires[star.Owner].radiationModCapability, serverState.AllEmpires[star.Owner].temperatureModCapability);
                 
                 ContributeLeftoverResearch(star);
                 

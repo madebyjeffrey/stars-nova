@@ -84,7 +84,7 @@ namespace Nova.Common
         /// <summary>
         /// Return true if this production item is to be skipped.
         /// </summary>
-        public bool IsSkipped(Star star)
+        public bool IsSkipped(Star star, Race race = null, int gravityModCapability = 0, int radiationModCapability = 0, int temperatureModCapability = 0)
         {
             if (star.Defenses >= Global.MaxDefenses)
             {
@@ -104,7 +104,7 @@ namespace Nova.Common
         /// </summary>
         /// <param name="star">The star building the defense unit.</param>
         /// <returns>Returns true if the unit is completed, otherwise false.</returns>
-        public bool Construct(Star star)
+        public bool Construct(Star star, Race race = null, int gravityModCapability = 0, int radiationModCapability = 0, int temperatureModCapability = 0)
         {
             // Partial build.
             if (!(star.ResourcesOnHand >= RemainingCost))

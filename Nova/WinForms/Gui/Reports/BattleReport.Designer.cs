@@ -136,12 +136,6 @@ namespace Nova.WinForms.Gui
       #endregion
 
       private System.Windows.Forms.DataGridView battleGridView;
-      private System.Windows.Forms.DataGridViewTextBoxColumn column1;
-       private System.Windows.Forms.DataGridViewTextBoxColumn column2;
-       private System.Windows.Forms.DataGridViewTextBoxColumn column3;
-       private System.Windows.Forms.DataGridViewTextBoxColumn column4;
-       private System.Windows.Forms.DataGridViewTextBoxColumn column5;
-       private System.Windows.Forms.DataGridViewTextBoxColumn column6;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column3;

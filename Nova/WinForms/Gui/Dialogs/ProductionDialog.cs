@@ -91,6 +91,11 @@ namespace Nova.WinForms.Gui
             item.Tag = new DefenseProductionUnit();
             designList.Items.Add(item);
 
+            item = new ListViewItem();
+            item.Text = "Terraform <Autobuild>";
+            item.Tag = new TerraformProductionUnit(clientState.EmpireState.Race);
+            designList.Items.Add(item);
+
             Fleet starbase = queueStar.Starbase;
             int dockCapacity = 0;
 
@@ -310,7 +315,7 @@ namespace Nova.WinForms.Gui
                 quantity = 10;
             }
 
-            ProductionOrder productionOrder = new ProductionOrder(quantity, productionUnit, false);
+            ProductionOrder productionOrder = new ProductionOrder(quantity, productionUnit, (productionUnit is TerraformProductionUnit));
             
             AddProduction(productionOrder);
 

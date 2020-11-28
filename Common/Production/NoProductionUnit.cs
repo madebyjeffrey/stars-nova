@@ -53,12 +53,12 @@ namespace Nova.Common
             RemainingCost = Cost;
         }
 
-        public bool IsSkipped(Star star)
+        public bool IsSkipped(Star star, Race race = null, int gravityModCapability = 0, int radiationModCapability = 0, int temperatureModCapability = 0)
         {
             return true;
         }
 
-        public bool Construct(Star star)
+        public bool Construct(Star star, Race race = null, int gravityModCapability = 0, int radiationModCapability = 0, int temperatureModCapability = 0)
         {
             return false;
         }

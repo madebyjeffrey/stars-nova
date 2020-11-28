@@ -87,7 +87,7 @@ namespace Nova.Common
         /// <summary>
         /// Returns true if this production item will be skipped.
         /// </summary>
-        public bool IsSkipped(Star star)
+        public bool IsSkipped(Star star, Race race = null, int gravityModCapability = 0, int radiationModCapability = 0, int temperatureModCapability = 0)
         {
             if (star.Factories >= star.GetOperableFactories())
             {
@@ -105,7 +105,7 @@ namespace Nova.Common
         /// <summary>
         /// Construct one factory.
         /// </summary>
-        public bool Construct(Star star)
+        public bool Construct(Star star, Race race = null, int gravityModCapability = 0, int radiationModCapability = 0, int temperatureModCapability = 0)
         {
             // Partial build.
             if (!(star.ResourcesOnHand >= remainingCost))

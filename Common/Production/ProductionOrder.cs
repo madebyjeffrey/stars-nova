@@ -93,9 +93,9 @@ namespace Nova.Common
         }
         
         
-        public bool IsBlocking(Star star)
+        public bool IsBlocking(Star star, Race race, int gravityModCapability, int radiationModCapability, int temperatureModCapability)
         {
-            return (Unit.IsSkipped(star) && !IsAutoBuild);
+            return (Unit.IsSkipped(star, race, gravityModCapability, radiationModCapability, temperatureModCapability) && !IsAutoBuild);
         }
         
         
@@ -104,19 +104,20 @@ namespace Nova.Common
         /// </summary>
         /// <param name="star">The star where this unit is processed</param>
         /// <returns>The number of units completed</returns>
-        public int Process(Star star)
+        public int Process(Star star, Race race, int gravityModCapability, int radiationModCapability, int temperatureModCapability)
         {
             int done = 0;
             
             while (Quantity > 0)
             {
-                if (Unit.IsSkipped(star))
+                if (Unit.IsSkipped(star, race, gravityModCapability, radiationModCapability, temperatureModCapability))
                 {
                     break;
                 }
    
-                if (Unit.Construct(star))
+                if (Unit.Construct(star, race, gravityModCapability, radiationModCapability, temperatureModCapability))
                 {
+                    if (!IsAutoBuild) ;
                     Quantity--;
                     done++;
                 }                
@@ -145,10 +146,14 @@ namespace Nova.Common
                         case "isautobuild":
                             IsAutoBuild = bool.Parse(subnode.FirstChild.Value);
                         break;
-                        
+
                         case "factoryunit":
                             Unit = new FactoryProductionUnit(subnode);
-                        break;
+                            break;
+
+                        case "terraformunit":
+                            Unit = new TerraformProductionUnit(subnode);
+                            break;
 
                         case "mineunit":
                         Unit = new MineProductionUnit(subnode);
