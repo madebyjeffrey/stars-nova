@@ -23,42 +23,74 @@ namespace Nova.Server.TurnSteps
 {
     using System;
     using System.Collections.Generic;
-    
+
     using Nova.Common;
     using Nova.Common.Components;
-    
+    using Nova.Common.Waypoints;
+
     /// <summary>
     /// Manages any pre-turn generation data setup.
     /// </summary>
     public class FirstStep : ITurnStep
     {
         private ServerData serverState;
-        
+
         public FirstStep()
         {
         }
-        
-        public Message Process(ServerData serverState)
+
+        public List<Message> Process(ServerData serverState)
         {
+            List<Message> messages = new List<Message>();
             this.serverState = serverState;
-            
-            // Generate StarMaps for each player.
-            foreach (EmpireData empire in serverState.AllEmpires.Values)
-            {               
-                foreach (Star star in serverState.AllStars.Values)
+
+            foreach (Fleet fleet in serverState.IterateAllFleets())
+                if (fleet.Waypoints.Count > 0)
+                    if (fleet.Waypoints[0].Task is LayMinesTask)
+                    {
+                        Waypoint waypointZero = fleet.Waypoints[0];
+                        Message message;
+                        if (waypointZero.Task.IsValid(fleet, null, serverState.AllEmpires[fleet.Owner], null, out message))
+                        {
+                            if (null != message) serverState.AllMessages.Add(message);
+
+                            long key = ((fleet.Position.X / Global.MineFieldSnapToGridSize) * 4294967296 + (fleet.Position.Y / Global.MineFieldSnapToGridSize)) + fleet.Owner * 1152921504606846976;
+                                Minefield minefield;
+                            serverState.AllMinefields.TryGetValue(key, out minefield);
+                            if (minefield != null)
+                            {
+                                minefield.NumberOfMines += fleet.NumberOfMines;
+                                messages.Add(new Message(fleet.Owner, fleet.Name + " has increased a minefield", "Increase Minefield", null, fleet.Id));
+                            }
+                            else
+                            {                                       // No Minefield found. Start a new one.
+                                Minefield newField = new Minefield();
+
+                                newField.Position = fleet.Position;
+                                newField.Owner = fleet.Owner;
+                                newField.NumberOfMines = fleet.NumberOfMines;
+
+                                serverState.AllMinefields[key] = newField;
+                                messages.Add(new Message(fleet.Owner, fleet.Name + " has created a minefield", "New Minefield", null, fleet.Id));
+
+                            }
+                        }
+                        if (message != null) messages.Add(message);
+                    }
+            List<long> deleted = new List<long>(); 
+            foreach (long minefieldKey in serverState.AllMinefields.Keys)
+            {
+                Minefield minefield = serverState.AllMinefields[minefieldKey];
+                // Minefields decay 1% each year. Fields of less than 10 mines are
+                // just not worth bothering about.
+                minefield.NumberOfMines -= minefield.NumberOfMines / 100;
+                if (minefield.NumberOfMines <= 10)
                 {
-                    if (star.Owner == empire.Id)
-                    {
-                        empire.OwnedStars.Add(star);
-                        empire.StarReports.Add(star.Key, star.GenerateReport(ScanLevel.Owned, serverState.TurnYear));
-                    }
-                    else
-                    {
-                        empire.StarReports.Add(star.Key, star.GenerateReport(ScanLevel.None, serverState.TurnYear));    
-                    }
+                    deleted.Add(minefieldKey);
                 }
             }
-            return null;
+            foreach (long key in deleted)  serverState.AllMinefields.Remove(key);
+            return messages;
         }
     }
 }

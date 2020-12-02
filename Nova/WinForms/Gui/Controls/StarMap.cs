@@ -71,7 +71,7 @@ namespace Nova.WinForms.Gui
             new Point(5, -12)
         };
 
-        private readonly Dictionary<long, Minefield> visibleMinefields = new Dictionary<long, Minefield>();
+        //private readonly Dictionary<long, Minefield> visibleMinefields = new Dictionary<long, Minefield>();
         private readonly Font nameFont;
 
         private Intel turnData;
@@ -148,8 +148,6 @@ namespace Nova.WinForms.Gui
             horizontalScrollBar.Enabled = true;
             verticalScrollBar.Enabled = true;
 
-            DetermineVisibleMinefields();
-
             zoomFactor = 1.0;
             Zoom();
         }
@@ -159,9 +157,8 @@ namespace Nova.WinForms.Gui
 
             //GameSettings.Restore();
 
-
             turnData = this.clientState.InputTurn;
-            DetermineVisibleMinefields();
+
 
         }
 
@@ -265,7 +262,7 @@ namespace Nova.WinForms.Gui
 
             // (3) Minefields
 
-            foreach (Minefield minefield in this.visibleMinefields.Values)
+            foreach (Minefield minefield in clientState.EmpireState.VisibleMinefields.Values)
             {
                 Color cb;
                 Color cf;
@@ -763,6 +760,19 @@ namespace Nova.WinForms.Gui
             }
         }
 
+
+        public void DrawMineField(Graphics g, int circleUpperLeftX, int circleUpperLeftY, int Radius)
+        {
+            Bitmap SourceImage = new Bitmap(System.Drawing.Image.FromFile(".\\Graphics\\Mine_Layer\\MediumMineGoldSmall.jpg"));
+
+            Rectangle CropRect = new Rectangle(SourceImage.Width/2 - Radius, SourceImage.Height/2 - Radius,2 * Radius, 2 * Radius);
+            Bitmap CroppedImage = SourceImage.Clone(CropRect, SourceImage.PixelFormat);
+            TextureBrush TB = new TextureBrush(CroppedImage);
+            Bitmap FinalImage = new Bitmap( 2 * Radius,  2 * Radius);
+            g.FillEllipse(TB, circleUpperLeftX, circleUpperLeftY, 2 * Radius, 2 * Radius);
+        }
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -771,6 +781,15 @@ namespace Nova.WinForms.Gui
         private void DrawStarNormal(Graphics g, StarIntel report)
         {
             NovaPoint position = LogicalToDevice(report.Position);
+
+            for (int index = 0 ;index < clientState.EmpireState.VisibleMinefields.Count-1;index ++)
+            {
+                Minefield minefield = clientState.EmpireState.VisibleMinefields[index];
+                DrawMineField(g, minefield.Position.X - minefield.Radius, minefield.Position.Y - minefield.Radius, minefield.Radius);
+            }
+
+
+
             int size = 2;
             Brush starBrush = Brushes.White;
 
@@ -881,89 +900,6 @@ namespace Nova.WinForms.Gui
                     position.Y - (size / 2),
                     size,
                     size);
-            }
-        }
-
-        /// <Summary>
-        /// Build a list of all Minefields that are visible to the player.
-        /// </Summary>
-        /// <remarks>
-        /// This consists
-        /// of:
-        ///
-        /// (1) Minefields owned by the player
-        /// (2) Minefiels within the range of scanners on ships owned by the player
-        /// (3) Minefields within the range of scanners on planets owned by the player
-        /// </remarks>
-        private void DetermineVisibleMinefields()
-        {
-            List<Fleet> playersFleets = new List<Fleet>();
-
-            foreach (Fleet fleet in clientState.EmpireState.OwnedFleets.Values)
-            {
-                if (fleet.Owner == clientState.EmpireState.Id)
-                {
-                    playersFleets.Add(fleet);
-                }
-            }
-
-            // -------------------------------------------------------------------
-            // (1) First the easy one. Minefields owned by the player.
-            // -------------------------------------------------------------------
-
-            foreach (Minefield minefield in this.turnData.AllMinefields.Values)
-            {
-                if (minefield.Owner == clientState.EmpireState.Id)
-                {
-                    this.visibleMinefields[minefield.Key] = minefield;
-                }
-            }
-
-            // -------------------------------------------------------------------
-            // (2) Not so easy. Minefields within the scanning range of the
-            // player's ships.
-            // -------------------------------------------------------------------
-
-            foreach (Fleet fleet in playersFleets)
-            {
-                foreach (Minefield minefield in this.turnData.AllMinefields.Values)
-                {
-                    bool isIn = PointUtilities.CirclesOverlap(
-                        fleet.Position,
-                        minefield.Position,
-                        fleet.ScanRange,
-                        minefield.Radius);
-
-                    if (isIn == true)
-                    {
-                        this.visibleMinefields[minefield.Key] = minefield;
-                    }
-                }
-            }
-
-            // -------------------------------------------------------------------
-            // (3) Now that we know how to deal with ship scanners planet scanners
-            // are just the same.
-            // -------------------------------------------------------------------
-
-            foreach (Minefield minefield in turnData.AllMinefields.Values)
-            {
-                foreach (Star report in clientState.EmpireState.OwnedStars.Values)
-                {
-                    if (report.Owner == clientState.EmpireState.Id)
-                    {
-                        bool isIn = PointUtilities.CirclesOverlap(
-                            report.Position,
-                            minefield.Position,
-                            report.ScanRange,
-                            minefield.Radius);
-
-                        if (isIn == true)
-                        {
-                            this.visibleMinefields[minefield.Key] = minefield;
-                        }
-                    }
-                }
             }
         }
 

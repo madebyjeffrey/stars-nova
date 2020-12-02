@@ -162,6 +162,14 @@ namespace Nova.Common
                     case "Star":
                     case "Invalid Command":
                     case "Load/Unload":
+                    case "Ship":
+                    case "Factory":
+                    case "Mine":
+                    case "New Defense":
+                    case "Terraform":
+                    case "New Minefield":
+                    case "Increase Minefield":
+                    case "Fleet":
                         // No object reference required to be saved.
                         break;
 

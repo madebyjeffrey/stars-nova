@@ -93,7 +93,9 @@ namespace Nova.Common
         public Dictionary<string, BattlePlan>   BattlePlans     = new Dictionary<string, BattlePlan>();
         
         public List<BattleReport> BattleReports = new List<BattleReport>();
-        
+
+        public Dictionary<long, Minefield> VisibleMinefields = new Dictionary<long, Minefield>();
+
         // See associated properties.
         private long        fleetCounter                = 0;
         private long        designCounter               = 0;
@@ -341,7 +343,16 @@ namespace Nova.Common
                             subNode = subNode.NextSibling;
                         }
                         break;
-                        
+
+                    case "allminefields":
+                        subNode = mainNode.FirstChild;
+                        while (subNode != null)
+                        {
+                            VisibleMinefields.Add(long.Parse(subNode.Attributes["Key"].Value, System.Globalization.NumberStyles.HexNumber), new Minefield(subNode));
+                            subNode = subNode.NextSibling;
+                        }
+                        break;
+
                     case "battlereport":
                         if (AvailableComponents == null) Initialize(true, race.Name);
                         BattleReport battle = new BattleReport(mainNode);
@@ -504,7 +515,19 @@ namespace Nova.Common
                     xmlelEmpireData.AppendChild(battle.ToXml(xmldoc));
                 }
             }
-            
+
+            // Store the Minefields
+            XmlElement xmlelAllMinefields = xmldoc.CreateElement("AllMinefields");
+            foreach (KeyValuePair<long, Minefield> minefield in VisibleMinefields)
+            {
+                XmlElement child;
+                child = minefield.Value.ToXml(xmldoc);
+                child.SetAttribute("Key", minefield.Key.ToString("X"));
+                xmlelAllMinefields.AppendChild(child);
+            }
+            xmlelEmpireData.AppendChild(xmlelAllMinefields);
+
+
             return xmlelEmpireData;
         }
         

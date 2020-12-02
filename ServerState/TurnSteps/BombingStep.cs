@@ -10,7 +10,7 @@ namespace Nova.Server.TurnSteps
 
     class BombingStep : ITurnStep
     {
-        public Message Process(ServerData serverState)
+        public List<Message> Process(ServerData serverState)
         {
             Bombing bombing = new Bombing(serverState);
 

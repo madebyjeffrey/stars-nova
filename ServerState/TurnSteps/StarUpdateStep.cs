@@ -40,8 +40,9 @@ namespace Nova.Server.TurnSteps
            
         }
         
-        public Message Process(ServerData serverState)
+        public List<Message> Process(ServerData serverState)
         {
+            List<Message> messageList = new List<Message>();
             this.serverState = serverState;
             manufacture = new Manufacture(serverState);
             
@@ -78,8 +79,8 @@ namespace Nova.Server.TurnSteps
                     serverState.AllMessages.Add(message);
                 }
                 
-                manufacture.Items(star, serverState.AllEmpires[star.Owner].Race, serverState.AllEmpires[star.Owner].gravityModCapability, serverState.AllEmpires[star.Owner].radiationModCapability, serverState.AllEmpires[star.Owner].temperatureModCapability);
-                
+                manufacture.Items(star,out List<Message> messages, serverState.AllEmpires[star.Owner].Race, serverState.AllEmpires[star.Owner].gravityModCapability, serverState.AllEmpires[star.Owner].radiationModCapability, serverState.AllEmpires[star.Owner].temperatureModCapability);
+                messageList = messages;
                 ContributeLeftoverResearch(star);
                 
                 star.UpdateResearch(serverState.AllEmpires[star.Owner].ResearchBudget);

@@ -127,14 +127,25 @@ namespace Nova.Server
             //but their waypoints have not been removed yet so do that now:
             new SplitFleetStep().Process(serverState);
 
+            new FirstStep().Process(serverState);
             // ToDo: Step 1 --> Scrap Fleet if waypoint 0 order; here, and only here.
             // ToDo: ScrapFleetStep / foreach ITurnStep for waypoint 0. Own TurnStep-List for Waypoint 0?
 
             new ScrapFleetStep().Process(serverState);
-
+            List<Fleet> destroyed = new List<Fleet>();
             foreach (Fleet fleet in serverState.IterateAllFleets())
             {
-               if (fleet.Name != "Mineral Packet") ProcessFleet(fleet); // ToDo: don't scrap fleets here at waypoint 1
+                if ((fleet.Name != "Mineral Packet") && (!fleet.IsStarbase)) if (ProcessFleet(fleet)) destroyed.Add(fleet); // ToDo: don't scrap fleets here at waypoint 1
+            }
+
+            List<long> AllFleetIds = new List<long>();
+            foreach (long fleetId in serverState.IterateAllFleetKeys()) AllFleetIds.Add(fleetId);
+            foreach (long fleetId in AllFleetIds)
+            {
+                int empire = (int) ((long)fleetId >> 32);
+                Fleet fleet = serverState.AllEmpires[empire].OwnedFleets[fleetId];
+                if ((fleet.Name != "Mineral Packet")
+                    && (!fleet.IsStarbase))  checkForMinefields.Check(fleet); 
             }
             serverState.CleanupFleets();
 
@@ -161,8 +172,8 @@ namespace Nova.Server
                        
             foreach (ITurnStep turnStep in turnSteps.Values)
             {
-                Message message = turnStep.Process(serverState);
-                if (message != null) serverState.AllMessages.Add(message);
+                List<Message> messages = turnStep.Process(serverState);
+                if (messages != null) foreach (Message message in messages) serverState.AllMessages.Add(message);
             }
 
             foreach (Fleet fleet in serverState.IterateAllFleets())  // Move Mineral Packets after they are created
@@ -191,6 +202,71 @@ namespace Nova.Server
                     }
             }
 
+
+
+            foreach (EmpireData empire in serverState.AllEmpires.Values)
+            {
+
+
+                // -------------------------------------------------------------------
+                // (1) First the easy one. Minefields owned by the player.
+                // -------------------------------------------------------------------
+
+                foreach (Minefield minefield in serverState.AllMinefields.Values)
+                {
+                    if (minefield.Owner == empire.Id)
+                    {
+                        empire.VisibleMinefields[minefield.Key] = minefield;
+                    }
+                }
+
+                // -------------------------------------------------------------------
+                // (2) Not so easy. Minefields within the scanning range of the
+                // player's ships.
+                // -------------------------------------------------------------------
+
+                foreach (Fleet fleet in empire.OwnedFleets.Values)
+                {
+                    foreach (Minefield minefield in serverState.AllMinefields.Values)
+                    {
+                        bool isIn = PointUtilities.CirclesOverlap(
+                            fleet.Position,
+                            minefield.Position,
+                            fleet.ScanRange,
+                            minefield.Radius);
+
+                        if (isIn == true)
+                        {
+                            empire.VisibleMinefields[minefield.Key] = minefield;
+                        }
+                    }
+                }
+
+                // -------------------------------------------------------------------
+                // (3) Now that we know how to deal with ship scanners planet scanners
+                // are just the same.
+                // -------------------------------------------------------------------
+
+                foreach (Minefield minefield in serverState.AllMinefields.Values)
+                {
+                    foreach (Star report in empire.OwnedStars.Values)
+                    {
+                        if (report.Owner == empire.Id)
+                        {
+                            bool isIn = PointUtilities.CirclesOverlap(
+                                report.Position,
+                                minefield.Position,
+                                report.ScanRange,
+                                minefield.Radius);
+
+                            if (isIn == true)
+                            {
+                                empire.VisibleMinefields[minefield.Key] = minefield;
+                            }
+                        }
+                    }
+                }
+            }
 
 
 
@@ -334,9 +410,10 @@ namespace Nova.Server
             {
                 return true;
             }
-            
+                            /////////////////////
             bool destroyed = UpdateFleet(fleet);
-            
+                            /////////////////////
+                            
             if (destroyed == true)
             {
                 return true;
@@ -523,12 +600,6 @@ namespace Nova.Server
                         //////////////////////////////////////////////////////////////////////////////////////////////////////////
                     }
 
-                    bool destroyed = checkForMinefields.Check(fleet);
-
-                    if (destroyed == true)
-                    {
-                        return true;
-                    }
 
                     if (fleetMoveResult == Fleet.TravelStatus.InTransit)
                     {
@@ -587,7 +658,9 @@ namespace Nova.Server
                             {
                                 if (null != message) serverState.AllMessages.Add(message);
                                 currentPosition = fleet.Waypoints[0];
+                                ///////////////////////////////////////////////////////////////////////
                                 waypointZero.Task.Perform(fleet, target, sender, reciever, out message);
+                                ///////////////////////////////////////////////////////////////////////
                                 if (null != message) serverState.AllMessages.Add(message); 
                                 currentPosition.Task = new NoTask();
                                 currentPosition.Position = fleet.Position;
@@ -634,7 +707,7 @@ namespace Nova.Server
         {
             // Generates initial reports.
             ITurnStep firstStep = new FirstStep();
-            firstStep.Process(serverState);
+            serverState.AllMessages.AddRange( firstStep.Process(serverState));
             ITurnStep scanStep = new ScanStep();
             scanStep.Process(serverState);
         }

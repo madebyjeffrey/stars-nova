@@ -15,8 +15,9 @@ namespace Nova.Server.TurnSteps
     /// </summary>
     class PostBombingStep : ITurnStep
     {
-        public Message Process(ServerData serverState)
+        public List <Message> Process(ServerData serverState)
         {
+            List <Message> messages = new List<Message>();
             Message message = null;
             foreach (Fleet fleet in serverState.IterateAllFleets())
             {
@@ -36,8 +37,12 @@ namespace Nova.Server.TurnSteps
                             if ((target is Star) && (target.Owner != 0)) receiver = serverState.AllEmpires[target.Owner];
                             if ((fleet.Waypoints[index].Task.IsValid(fleet, target, serverState.AllEmpires[fleet.Owner], receiver,out message)) && ((fleet.Waypoints[index].Task is ColoniseTask) || (fleet.Waypoints[index].Task is InvadeTask)))
                             {
-                                if (message != null) serverState.AllMessages.Add(message);
-                                message = null;
+                                if (message != null)
+                                {
+                                    serverState.AllMessages.Add(message);
+                                    messages.Add(message);
+                                    message = null;
+                                }
                                 bool invading = false;
                                 if ((receiver != null) && (receiver != serverState.AllEmpires[fleet.Owner]))
                                 {
@@ -45,21 +50,39 @@ namespace Nova.Server.TurnSteps
                                     invading = true;
                                     IWaypointTask invade = new InvadeTask();
                                     invade.Perform(fleet, target, serverState.AllEmpires[fleet.Owner], receiver, out message); //Not exactly how Stars! does it but it should make programming the AI easier
-                                    if (message != null) serverState.AllMessages.Add(message);
-                                    message = null;
+                                    if (message != null)
+                                    {
+                                        serverState.AllMessages.Add(message);
+                                        messages.Add(message);
+                                        message = null;
+                                    }
                                 }
                                 else
                                 {
                                     fleet.Waypoints[index].Task.Perform(fleet, target, serverState.AllEmpires[fleet.Owner], receiver, out message);
-                                    if (message != null) serverState.AllMessages.Add(message);
+                                    if (message != null)
+                                    {
+                                        serverState.AllMessages.Add(message);
+                                        messages.Add(message);
+                                        message = null;
+                                    }
                                     break;
                                 }
-                                if (message != null) serverState.AllMessages.Add(message);
-                                message = null;
+                                if (message != null)
+                                {
+                                    serverState.AllMessages.Add(message);
+                                    messages.Add(message);
+                                    message = null;
+                                }
                                 try
                                 {
                                     if (index < fleet.Waypoints.Count)
-                                    serverState.AllMessages.AddRange(fleet.Waypoints[index].Task.Messages);
+                                    {
+                                        serverState.AllMessages.AddRange(fleet.Waypoints[index].Task.Messages);
+                                        serverState.AllMessages.Add(message);
+                                        messages.AddRange(fleet.Waypoints[index].Task.Messages);
+                                        message = null;
+                                    }
                                 }
                                 catch
                                 {
@@ -74,7 +97,12 @@ namespace Nova.Server.TurnSteps
                             }
                             else
                             {
-                                if (message != null) serverState.AllMessages.Add(message);
+                                if (message != null)
+                                {
+                                    serverState.AllMessages.Add(message);
+                                    messages.Add(message);
+                                    message = null;
+                                }
                             }
 
                         }
@@ -83,7 +111,7 @@ namespace Nova.Server.TurnSteps
                 }
             }
             serverState.CleanupFleets();
-            return message;
+            return messages;
         }
     }
 }

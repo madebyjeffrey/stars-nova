@@ -40,7 +40,7 @@ namespace Nova.Server.TurnSteps
         }
         
         
-        public Message Process(ServerData serverState)
+        public List <Message> Process(ServerData serverState)
         {
             this.serverState = serverState;
             

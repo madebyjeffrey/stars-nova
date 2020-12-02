@@ -54,7 +54,7 @@ namespace Nova.Common
             throw new NotImplementedException();
         }
 
-        public bool Construct(Star star, Race race = null, int gravityModCapability = 0, int radiationModCapability = 0, int temperatureModCapability = 0)
+        public bool Construct(Star star, out Message message, Race race = null, int gravityModCapability = 0, int radiationModCapability = 0, int temperatureModCapability = 0)
         {
             throw new NotImplementedException();
         }

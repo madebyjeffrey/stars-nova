@@ -32,7 +32,7 @@ namespace Nova.Server.TurnSteps
 
     public class ScrapFleetStep : ITurnStep
     {
-        public Message Process(ServerData serverState)
+        public List<Message> Process(ServerData serverState)
         {
             Message message = null; ;
             foreach (Fleet fleet in serverState.IterateAllFleets())
@@ -57,7 +57,9 @@ namespace Nova.Server.TurnSteps
             }
 
             serverState.CleanupFleets();
-            return message;
+            List<Message> messages = new List<Message>();
+            if (message != null) messages.Add(message);
+            return messages;
         }
     }
 }

@@ -181,7 +181,7 @@ namespace Nova.Common.Components
         /// <param name="radiationModCapability"></param>
         /// <param name="temperatureModCapability"></param>
         /// <returns></returns>
-        public Star terraformOnePoint(Star star, Race race, int gravityModCapability, int radiationModCapability, int temperatureModCapability)
+        public Star terraformOnePoint(Star star, Race race, out Message message, int gravityModCapability, int radiationModCapability, int temperatureModCapability)
         {
             int RadAbove = star.Radiation - race.RadiationTolerance.MaximumValue;
             int RadBelow = race.RadiationTolerance.MinimumValue - star.Radiation;
@@ -196,36 +196,79 @@ namespace Nova.Common.Components
             int GravityHostility = Math.Max(GravAbove, GravBelow);
             if (isGravityMaxed(star, race, gravityModCapability)) GravityHostility = int.MinValue;  // we can't choose this one
 
-                if ((RadiationHostility >= TemperatureHostility) && (RadiationHostility >= GravityHostility)) star = fixRadiation(star, race);
-                else if ((TemperatureHostility >= RadiationHostility) && (TemperatureHostility >= GravityHostility)) star = fixTemperature(star, race);
-                else if ((GravityHostility >= RadiationHostility) && (GravityHostility >= TemperatureHostility)) star = fixGravity(star, race);
+            if ((RadiationHostility >= TemperatureHostility) && (RadiationHostility >= GravityHostility)) star = fixRadiation(star, race, out message);
+            else if ((TemperatureHostility >= RadiationHostility) && (TemperatureHostility >= GravityHostility)) star = fixTemperature(star, race, out message);
+            else if ((GravityHostility >= RadiationHostility) && (GravityHostility >= TemperatureHostility)) star = fixGravity(star, race, out message);
+            else message = null;
             return star;
         }
 
-        public Star fixRadiation(Star star, Race race)
+        public Star fixRadiation(Star star, Race race, out Message message)
         {
-            int RadAbove = star.Radiation - race.RadiationTolerance.MaximumValue;
-            int RadBelow = race.RadiationTolerance.MinimumValue - star.Radiation;
-            if (RadAbove > RadBelow) star.Radiation -= 1;
-            else star.Radiation += 1;
+            int Above = star.Radiation - race.RadiationTolerance.MaximumValue;
+            int Below = race.RadiationTolerance.MinimumValue - star.Radiation;
+            if (Above > Below)
+            {
+                star.Radiation -= 1;
+                message = new Message();
+                message.Audience = star.Owner;
+                message.Type = "Terraform";
+                message.Text = star.Name.ToString() + " has decreased its Radiation to " + star.Gravity.ToString() + "mR\r\n it's value is now " + Math.Ceiling(race.HabValue(star) * 100) + "%";
+            }
+            else
+            {
+                star.Radiation += 1;
+                message = new Message();
+                message.Audience = star.Owner;
+                message.Type = "Terraform";
+                message.Text = star.Name.ToString() + " has increased its Radiation to " + star.Gravity.ToString() + "mR\r\n it's value is now " + Math.Ceiling(race.HabValue(star) * 100) + "%";
+            }
             return star;
         }
 
-        public Star fixTemperature(Star star, Race race)
+        public Star fixTemperature(Star star, Race race, out Message message)
         {
             int Above = star.Temperature - race.TemperatureTolerance.MaximumValue;
             int Below = race.TemperatureTolerance.MinimumValue - star.Temperature;
-            if (Above > Below) star.Temperature -= 1;
-            else star.Temperature += 1;
+            if (Above > Below)
+            {
+                star.Temperature -= 1;
+                message = new Message();
+                message.Audience = star.Owner;
+                message.Type = "Terraform";
+                message.Text = star.Name.ToString() + " has decreased its Temperature to " + star.Gravity.ToString() + "°C\r\n it's value is now " + Math.Ceiling(race.HabValue(star) * 100) + "%";
+            }
+            else
+            {
+                star.Temperature += 1;
+                message = new Message();
+                message.Audience = star.Owner;
+                message.Type = "Terraform";
+                message.Text = star.Name.ToString() + " has increased its Temperature to " + star.Gravity.ToString() + "°C\r\n it's value is now " + Math.Ceiling(race.HabValue(star) * 100) + "%";
+            }
             return star;
         }
 
-        public Star fixGravity(Star star, Race race)
+        public Star fixGravity(Star star, Race race, out Message message)
         {
             int Above = star.Gravity - race.GravityTolerance.MaximumValue;
             int Below = race.GravityTolerance.MinimumValue - star.Gravity;
-            if (Above > Below) star.Gravity -= 1;
-            else star.Gravity += 1;
+            if (Above > Below)
+            {
+                star.Gravity -= 1;
+                message = new Message();
+                message.Audience = star.Owner;
+                message.Type = "Terraform";
+                message.Text = star.Name.ToString() + " has decreased its Gravity to " + star.Gravity.ToString() + "g\r\n it's value is now " + Math.Ceiling(race.HabValue(star) * 100) + "%";
+            }
+            else
+            {
+                star.Gravity += 1;
+                message = new Message();
+                message.Audience = star.Owner;
+                message.Type = "Terraform";
+                message.Text = star.Name.ToString() + " has increased its Gravity to " + star.Gravity.ToString() + "g\r\n it's value is now " + Math.Ceiling(race.HabValue(star) * 100) + "%";
+            }
             return star;
         }
 

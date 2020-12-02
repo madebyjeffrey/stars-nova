@@ -35,7 +35,7 @@ namespace Nova.Common.Waypoints
     }
 
     /// <summary>
-    /// Performs Star Colonization.
+    /// Performs Cargo transfer tasks.
     /// </summary>
     public class CargoTask : IWaypointTask
     {

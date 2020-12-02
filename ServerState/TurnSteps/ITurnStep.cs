@@ -22,6 +22,7 @@
 namespace Nova.Server.TurnSteps
 {
     using System;
+    using System.Collections.Generic;
     using Nova.Common;
 
     /// <summary>
@@ -32,7 +33,7 @@ namespace Nova.Server.TurnSteps
         /// <summary>
         /// Executes this turnstep.
         /// </summary>
-        Message Process(ServerData serverState);
+        List<Message> Process(ServerData serverState);
     }
 }
 

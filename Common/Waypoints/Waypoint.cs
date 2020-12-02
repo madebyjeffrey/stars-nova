@@ -228,7 +228,7 @@ namespace Nova.Common.Waypoints
                     }
                     else new InvadeTask(node);
                     break;
-                case "layminestask":
+                case "lay minestask":
                     Task = new LayMinesTask(node);
                     break;
                 case "scraptask":

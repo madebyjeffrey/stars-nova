@@ -162,7 +162,7 @@ namespace Nova.Server
                             textNode = xmlnode.FirstChild;
                             while (textNode != null)
                             {
-                                AllMinefields.Add(int.Parse(textNode.Attributes["Key"].Value, System.Globalization.NumberStyles.HexNumber), new Minefield(textNode));
+                                AllMinefields.Add(long.Parse(textNode.Attributes["Key"].Value, System.Globalization.NumberStyles.HexNumber), new Minefield(textNode));
                                 textNode = textNode.NextSibling;
                             }
                             break;
@@ -493,6 +493,10 @@ namespace Nova.Server
         public IEnumerable<Fleet> IterateAllFleets()
         {
             return AllEmpires.Values.SelectMany(empire => empire.OwnedFleets.Values);
+        }
+        public IEnumerable<long> IterateAllFleetKeys()
+        {
+            return AllEmpires.Values.SelectMany(empire => empire.OwnedFleets.Keys);
         }
 
 

@@ -85,7 +85,8 @@ namespace Nova.Common
         #endregion Nova Resources
 
         #region Numeric Constants
-        public const bool Debug = false;
+        public const int MineFieldSnapToGridSize = 5; //Any minefields in a 5x5 grid are considered to be in the same position 
+        public const bool Debug = true;
         // Colonists
         public const int ColonistsPerKiloton = 100;
         public const double LowStartingPopulationFactor = 0.7;

@@ -105,7 +105,7 @@ namespace Nova.Common
         /// <summary>
         /// Construct one factory.
         /// </summary>
-        public bool Construct(Star star, Race race = null, int gravityModCapability = 0, int radiationModCapability = 0, int temperatureModCapability = 0)
+        public bool Construct(Star star,out Message message, Race race = null, int gravityModCapability = 0, int radiationModCapability = 0, int temperatureModCapability = 0)
         {
             // Partial build.
             if (!(star.ResourcesOnHand >= remainingCost))
@@ -134,7 +134,7 @@ namespace Nova.Common
                 if (star.ResourcesOnHand.Germanium < 0) star.ResourcesOnHand.Germanium = 0;
                 if (star.ResourcesOnHand.Energy < 0) star.ResourcesOnHand.Energy = 0;
                 remainingCost -= remainingCost * percentBuildable;
-                
+                message = null;
                 return false;                
             }
             else // Fully build this unit.
@@ -145,6 +145,10 @@ namespace Nova.Common
                 if (star.ResourcesOnHand.Germanium < 0) star.ResourcesOnHand.Germanium = 0;
                 if (star.ResourcesOnHand.Energy < 0) star.ResourcesOnHand.Energy = 0;
                 star.Factories++;
+                message = new Message();
+                message.Audience = star.Owner;
+                message.Type = "Factory";
+                message.Text = star.Name.ToString() + " has built a Factory";
                 return true;
             }  
         }

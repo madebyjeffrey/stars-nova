@@ -22,6 +22,7 @@
 namespace Nova.Common
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.Globalization;
     using System.Xml;
@@ -104,8 +105,10 @@ namespace Nova.Common
         /// </summary>
         /// <param name="star">The star where this unit is processed</param>
         /// <returns>The number of units completed</returns>
-        public int Process(Star star, Race race, int gravityModCapability, int radiationModCapability, int temperatureModCapability)
+        public int Process(Star star,out List <Message> messageOut, Race race, int gravityModCapability, int radiationModCapability, int temperatureModCapability)
         {
+            Message message = null;
+            List<Message> messages = new List<Message>();
             int done = 0;
             
             while (Quantity > 0)
@@ -115,14 +118,18 @@ namespace Nova.Common
                     break;
                 }
    
-                if (Unit.Construct(star, race, gravityModCapability, radiationModCapability, temperatureModCapability))
+                if (Unit.Construct(star,out message, race, gravityModCapability, radiationModCapability, temperatureModCapability))
                 {
-                    if (!IsAutoBuild) ;
+                    if (message != null)
+                    {
+                        messages.Add(message);
+                        message = null;
+                    }
                     Quantity--;
                     done++;
                 }                
             }
-            
+            messageOut = messages;
             return done;
         }
         

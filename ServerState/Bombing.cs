@@ -45,7 +45,7 @@ namespace Nova.Server
         /// </summary>
         /// <param name="fleet">Potential bombing fleet.</param>
         /// <param name="star">Potential bombing target.</param>
-        public void Bomb(Fleet fleet, Star star)
+        public Message Bomb(Fleet fleet, Star star)
         {
             // The fleet is in orbit around a planet. If it has no colonists or
             // has a starbase then to do nothing here (we'll leave anything else
@@ -53,21 +53,21 @@ namespace Nova.Server
 
             if (star.Colonists == 0 || star.Starbase != null)
             {
-                return;
+                return null;
             }
 
             // See if this is an enemy planet. If not, leave it alone.
 
             if (!serverState.AllEmpires[fleet.Owner].IsEnemy(star.Owner))
             {
-                return;
+                return null;
             }
 
             // If we don't have bombers then there is nothing more to do here
 
             if (fleet.HasBombers == false)
             {
-                return;
+                return null;
             }
 
             // Get the summary information
@@ -153,6 +153,7 @@ namespace Nova.Server
             wolf.Text = messageText;
             wolf.Audience = fleet.Owner;
             serverState.AllMessages.Add(wolf);
+            return wolf;
         }
     }
 }

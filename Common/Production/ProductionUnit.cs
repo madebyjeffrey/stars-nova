@@ -67,7 +67,7 @@ namespace Nova.Common
         /// Method which performs actual construction.
         /// </summary>
         /// <returns>Returns true if the unit is done constructing, false otherwise</returns>
-        bool Construct(Star star, Race race = null, int gravityModCapability = 0, int radiationModCapability = 0, int temperatureModCapability = 0);
+        bool Construct(Star star, out Message message, Race race = null, int gravityModCapability = 0, int radiationModCapability = 0, int temperatureModCapability = 0);
 
         /// <summary>
         /// Save: Generate an XmlElement representation of the ProductionUnit for saving.

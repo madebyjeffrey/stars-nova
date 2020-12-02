@@ -30,7 +30,7 @@ namespace Nova.Common.Waypoints
     using Nova.Common;
     
     /// <summary>
-    /// Performs Star Colonisation.
+    /// Performs Space Mine Laying.
     /// </summary>
     public class LayMinesTask : IWaypointTask
     {
@@ -85,7 +85,7 @@ namespace Nova.Common.Waypoints
         public bool Perform(Fleet fleet, Item target, EmpireData sender, EmpireData receiver,out Message message)
         {
             // See if a Minefield is already here (owned by us). We allow a
-            // certaintolerance in distance because it is unlikely that the
+            // certain tolerance in distance because it is unlikely that the
             // waypoint has been set exactly right.
 
             //TODO: Implement per empire minefields.

@@ -50,8 +50,9 @@ namespace Nova.Server
         /// Don't preserve resource count as resource depletion is needed to
         /// contribute with leftover resources for research.
         /// </remarks>
-        public void Items(Star star, Race race, int gravityModCapability, int radiationModCapability, int temperatureModCapability)
+        public void Items(Star star,out List <Message> messages, Race race, int gravityModCapability, int radiationModCapability, int temperatureModCapability)
         {
+            messages = new List<Message>();
             List<ProductionOrder> completed = new List<ProductionOrder>();
             
             foreach (ProductionOrder productionOrder in star.ManufacturingQueue.Queue)
@@ -62,10 +63,15 @@ namespace Nova.Server
                     // AND they are not autobuild orders (autobuild never blocks the Queue).
                     break;
                 }
-                
+
                 // Deal with the production Order.
-                int done = productionOrder.Process(star, race, gravityModCapability, radiationModCapability, temperatureModCapability);
-                
+                Message message = null;
+                int done = productionOrder.Process(star,out messages, race, gravityModCapability, radiationModCapability, temperatureModCapability);
+                if (message != null)
+                {
+                    messages.Add(message);
+                    message = null;
+                }
                 if (done > 0 && productionOrder.Unit is ShipProductionUnit)
                 {
                     long designKey = (productionOrder.Unit as ShipProductionUnit).DesignKey;

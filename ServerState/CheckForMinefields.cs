@@ -43,7 +43,7 @@ namespace Nova.Server
         }
 
         /// <summary>
-        /// Do a check for minefileds.
+        /// Do a check for minefields.
         /// </summary>
         /// <param name="fleet">A moving fleet.</param>
         /// <returns>Returns false.</returns>
@@ -53,25 +53,17 @@ namespace Nova.Server
             {
                 if (IsInField(fleet, minefield))
                 {
-                    bool hit = CheckForHit(fleet, minefield);
-                    if (hit)
+                    DestroyMines(fleet, minefield);    // if you can destroy mines fast enough you are safe
+                    if (IsInField(fleet, minefield))
                     {
-                        InflictDamage(fleet, minefield);
+                        bool hit = CheckForHit(fleet, minefield);
+                        if (hit)
+                        {
+                            InflictDamage(fleet, minefield);
+                        }
                     }
                 }
-
-                // Minefields dedcay 1% each year. Fields of less than 10 mines are
-                // just not worth bothering about.
-                // FIXME (priority 5) - Minefiled decay has nothing to do with moving fleets and should be processed seperately.
-                // FIXME (priority 5) - Minefield decay rates depend on what is in the field (stars).
-                minefield.NumberOfMines -= minefield.NumberOfMines / 100;
-                if (minefield.NumberOfMines <= 10)
-                {
-                    serverState.AllMinefields.Remove(minefield.Key);
-                }
             }
-
-            // FIXME (priority 6) - always returns false.
             return false;
         }
 
@@ -90,6 +82,8 @@ namespace Nova.Server
                 return false;
             }
 
+            if (fleet.Owner == minefield.Owner) return false;
+
             double distance = PointUtilities.Distance(fleet.Position, minefield.Position);
 
             if (distance < minefield.Radius)
@@ -101,7 +95,7 @@ namespace Nova.Server
         }
 
         /// <summary>
-        /// Check if the fleet hits the minefiled.
+        /// Check if the fleet hits the minefield.
         /// </summary>
         /// <remarks>
         /// The probability of hitting a mine is 0.3% per light year traveled for each
@@ -154,12 +148,14 @@ namespace Nova.Server
         /// </summary>
         /// <param name="fleet">The fleet that hit the minefield.</param>
         /// <param name="minefield">The minefield being impacted.</param>
-        private void InflictDamage(Fleet fleet, Minefield minefield)
+        private bool InflictDamage(Fleet fleet, Minefield minefield)
         {
+            bool destroyed = false;
             int shipDamage = 100 / 2;
             int shipsLost = 0;
             fleet.Speed = 0;
-
+            Resources resourcesDestroyed = new Resources();
+            Cargo cargoLost = new Cargo();
             List<ShipToken> tokensToRemove = new List<ShipToken>();
 
             foreach (ShipToken token in fleet.Composition.Values)
@@ -175,12 +171,18 @@ namespace Nova.Server
 
             foreach (ShipToken removeToken in tokensToRemove)
             {
+                resourcesDestroyed += removeToken.Design.Cost * removeToken.Quantity;
+                Cargo cargoBefore = fleet.Cargo;
                 fleet.Composition.Remove(removeToken.Key);
+                Cargo cargoAfter = fleet.Cargo;
+                cargoLost.Add(cargoBefore);
+                cargoLost.Remove(cargoAfter);
             }
-
+//            serverState.AllMessages.Add(new Message(minefield.Owner, "Enemy fleet " + fleet.Name + " has hit your minefield at " + fleet.Position.ToString(), "Minefield", null, 0));
             Message message = new Message();
             message.Audience = fleet.Owner;
-            message.Event = "Minefield";
+            message.Type = "Fleet";
+            message.Event = fleet.Id;
             message.Text = "Fleet " + fleet.Name
                + " has hit a Minefield." + "\n\n";
 
@@ -198,11 +200,63 @@ namespace Nova.Server
             {
                 message.Text += "All of your ships were destroyed.\n";
                 message.Text += "You lost this fleet.";
-                serverState.AllEmpires[fleet.Owner].OwnedFleets.Remove(fleet.Key);
-                serverState.AllEmpires[fleet.Owner].FleetReports.Remove(fleet.Key);
+                //serverState.AllEmpires[fleet.Owner].OwnedFleets.Remove(fleet.Key);  //we are in a Foreach (long fleet.id in serverState.IterateAllFleetKeys) so don't destroy fleets 
+                //serverState.AllEmpires[fleet.Owner].FleetReports.Remove(fleet.Key); //inside the loop
+                destroyed = true;
+                CreateSalvage(fleet.Position, resourcesDestroyed, cargoLost, fleet.Owner);
             }
 
             serverState.AllMessages.Add(message);
+            return destroyed;
         }
+
+        private void CreateSalvage(NovaPoint position, Resources salvage, Cargo cargo, int empireID)
+        {
+            EmpireData empire = serverState.AllEmpires[empireID];
+            Common.Components.ShipDesign salvageDesign = null;
+            foreach (Common.Components.ShipDesign design in empire.Designs.Values) if (design.Name.Contains("S A L V A G E")) salvageDesign = design;
+            ShipToken token = new ShipToken(salvageDesign, 1);
+            Fleet fleet = new Fleet(token, position, empire.GetNextFleetKey());
+            fleet.Position = position;
+            fleet.Name = "S A L V A G E";
+
+
+            // Add the fleet to the state data so it can be tracked.
+            serverState.AllEmpires[fleet.Owner].AddOrUpdateFleet(fleet);
+            fleet.Cargo = cargo.Scale(0.75); //TODO priority 1 check if we want to allow survivors to be rescued or do we have to murder them all?
+            fleet.Cargo.Ironium += (int)(salvage.Ironium * 0.75);
+            fleet.Cargo.Boranium += (int)(salvage.Boranium * 0.75);
+            fleet.Cargo.Germanium += (int)(salvage.Germanium * 0.75); //TODO priority 1 check salvage conversion ratios
+
+        }
+
+        private void DestroyMines(Fleet fleet, Minefield minefield)
+        {
+
+            int minesToDestroy = 0;
+
+            foreach (ShipToken token in fleet.Composition.Values)
+            {
+                foreach (Common.Components.Weapon weapon in token.Design.Weapons)
+                {
+                    if (weapon.IsBeam) minesToDestroy += token.Quantity * weapon.Power * weapon.Power;
+                    //TODO (priority 4) find correct formula for quantity of mines to destroy for gatling and beam weapons
+                }
+            }
+
+            if (minefield.NumberOfMines < 10 + minesToDestroy) minefield.NumberOfMines = 10;
+            else minefield.NumberOfMines -= minesToDestroy;
+            if (minesToDestroy > 10)   
+            {
+                Message message = new Message();
+                message.Type = "Fleet";
+                message.Audience = fleet.Owner;
+                message.Event = fleet.Id;
+                message.Text = "Fleet " + fleet.Name
+                   + " has destroyed " + minesToDestroy.ToString() + " mines" + "\n\n";
+                serverState.AllMessages.Add(message);
+            }
+        }
+
     }
 }

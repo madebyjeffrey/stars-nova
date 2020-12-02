@@ -56,7 +56,7 @@ namespace Nova.Server.TurnSteps
             public Fleet Fleet { get; }
             public Waypoint Waypoint { get; }
         }
-        public Message Process(ServerData serverState)
+        public List <Message> Process(ServerData serverState)
         {
             string WaypointZeroDestination = "";
             int Index = 0;
