@@ -48,11 +48,7 @@ namespace Nova.Common.Waypoints
             set;
         }
 
-        public DateTime guiTimestamp
-        {
-            get;
-            set;
-        }
+
 
         public IWaypointTask Task
         {
@@ -74,7 +70,7 @@ namespace Nova.Common.Waypoints
         {
             WarpFactor = 6;
             Task = new NoTask();
-            guiTimestamp = DateTime.UtcNow;
+            //guiTimestamp = DateTime.UtcNow;
         }
 
         /// <summary>
@@ -87,7 +83,7 @@ namespace Nova.Common.Waypoints
             Position = other.Position;
             WarpFactor = other.WarpFactor;
             Destination = other.Destination;
-            guiTimestamp = DateTime.UtcNow;
+            //guiTimestamp = DateTime.UtcNow;
         }
         public NovaPoint destinationCurrentPosition(EmpireData empire)
 
@@ -133,7 +129,7 @@ namespace Nova.Common.Waypoints
                             break;
 
                         case "guitimestamp":
-                            guiTimestamp =  DateTime.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            DateTime.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
                             break;
 
                         case "position":
@@ -263,7 +259,7 @@ namespace Nova.Common.Waypoints
             }
 
             Global.SaveData(xmldoc, xmlelWaypoint, "WarpFactor", WarpFactor.ToString(System.Globalization.CultureInfo.InvariantCulture));
-            Global.SaveData(xmldoc, xmlelWaypoint, "guiTimestamp", guiTimestamp.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            //Global.SaveData(xmldoc, xmlelWaypoint, "guiTimestamp", guiTimestamp.ToString(System.Globalization.CultureInfo.InvariantCulture));
             xmlelWaypoint.AppendChild(Task.ToXml(xmldoc));
 
             return xmlelWaypoint;

@@ -103,6 +103,8 @@ namespace Nova.Server
         {
             design.Update();
             EmpireData empire = serverState.AllEmpires[star.Owner];
+
+            if ((design.IsStarbase) && (star.Starbase != null)) empire.RemoveFleet(star.Starbase);
             ShipToken token = new ShipToken(design, countToBuild);
             
             Fleet fleet = new Fleet(token, star, empire.GetNextFleetKey());
