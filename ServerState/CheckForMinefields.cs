@@ -219,7 +219,7 @@ namespace Nova.Server
             Fleet fleet = new Fleet(token, position, empire.GetNextFleetKey());
             fleet.Position = position;
             fleet.Name = "S A L V A G E";
-
+            fleet.TurnYear = empire.TurnYear;
 
             // Add the fleet to the state data so it can be tracked.
             serverState.AllEmpires[fleet.Owner].AddOrUpdateFleet(fleet);

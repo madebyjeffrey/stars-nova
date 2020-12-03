@@ -88,7 +88,9 @@ namespace Nova.WinForms
             UpdatePlayerListButtons();
 
             // Default the game folder.
-            gameFolder.Text = Environment.GetFolderPath(Environment.SpecialFolder.Personal) + Path.DirectorySeparatorChar + "Stars! Nova" + Path.DirectorySeparatorChar + gameName.Text;
+            int folder = 0;
+            while (Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.Personal) + Path.DirectorySeparatorChar + "Stars! Nova" + Path.DirectorySeparatorChar + gameName.Text + " " + folder.ToString())) folder++;
+            gameFolder.Text = Environment.GetFolderPath(Environment.SpecialFolder.Personal) + Path.DirectorySeparatorChar + "Stars! Nova" + Path.DirectorySeparatorChar + gameName.Text + " " + folder.ToString();
         }
 
         
