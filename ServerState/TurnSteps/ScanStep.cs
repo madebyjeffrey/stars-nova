@@ -42,6 +42,7 @@ namespace Nova.Server.TurnSteps
         
         public List <Message> Process(ServerData serverState)
         {
+            List<Message> messages = new List<Message>();
             this.serverState = serverState;
             
             foreach (EmpireData empire in serverState.AllEmpires.Values)
@@ -49,7 +50,7 @@ namespace Nova.Server.TurnSteps
                 AddStars(empire);
                 Scan(empire);
             }
-            return null;
+            return messages;
         }
         
         

@@ -224,8 +224,7 @@ namespace Nova.Server.NewGame
             salvageHull = components.Fetch("S A L V A G E");
             ShipDesign salvage = new ShipDesign(empire.GetNextDesignKey());
             salvage.Blueprint = salvageHull;
-            Image debris = Properties.Resources.salvage0000;
-            salvage.Icon = new ShipIcon("F:\\Stars!Nova\\Repos\\svn\\Nova\\Resources\\Salvage0000.png", (Bitmap)debris);
+            salvage.Icon = new ShipIcon(salvageHull.ImageFile, (Bitmap)salvageHull.ComponentImage);
             salvage.Type = ItemType.Salvage;
             salvage.Name = "S A L V A G E";
 
@@ -242,8 +241,7 @@ namespace Nova.Server.NewGame
                     module.ComponentCount = module.ComponentMaximum;
                 }
             }
-            debris = Properties.Resources.MineralPacket0000;
-            mineralPacket.Icon = new ShipIcon("F:\\Stars!Nova\\Repos\\svn\\Nova\\Resources\\MineralPacket0000.png", (Bitmap)debris);
+            mineralPacket.Icon = new ShipIcon(mineralPacketHull.ImageFile, (Bitmap)mineralPacketHull.ComponentImage);
             mineralPacket.Type = ItemType.Salvage;
             mineralPacket.Name = "Mineral Packet";
 

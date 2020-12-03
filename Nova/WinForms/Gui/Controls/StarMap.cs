@@ -267,7 +267,7 @@ namespace Nova.WinForms.Gui
                 Color cb;
                 Color cf;
 
-                if (minefield.Owner == clientState.EmpireState.Id)
+                if (minefield.Empire == clientState.EmpireState.Id)
                 {
                     cb = Color.FromArgb(0, 0, 0, 0);
                     cf = Color.FromArgb(128, 0, 128, 0);
@@ -603,7 +603,7 @@ namespace Nova.WinForms.Gui
                     {
                         DrawIcon(g, report.Icon.Image);
                     }
-                    else if (report.Owner == clientState.EmpireState.Id)
+                    else if ((report.Owner == clientState.EmpireState.Id) || (report.Name == "S A L V A G E"))
                     {
                         DrawIcon(g, report.Icon.Image);
                     }
@@ -616,7 +616,8 @@ namespace Nova.WinForms.Gui
                 {
                     g.TranslateTransform(position.X, position.Y);
                     g.RotateTransform((float)report.Bearing);
-                    if (report.Owner == clientState.EmpireState.Id)
+                    if (report.Name == "S A L V A G E") DrawIcon(g, report.Icon.Image);
+                    else if (report.Owner == clientState.EmpireState.Id)
                     {
                         g.FillPolygon(Brushes.Blue, triangle);
                     }
@@ -782,10 +783,9 @@ namespace Nova.WinForms.Gui
         {
             NovaPoint position = LogicalToDevice(report.Position);
 
-            for (int index = 0 ;index < clientState.EmpireState.VisibleMinefields.Count-1;index ++)
+            foreach (Minefield minefield in  clientState.EmpireState.VisibleMinefields.Values)
             {
-                Minefield minefield = clientState.EmpireState.VisibleMinefields[index];
-                DrawMineField(g, minefield.Position.X - minefield.Radius, minefield.Position.Y - minefield.Radius, minefield.Radius);
+                //DrawMineField(g, minefield.Position.X - minefield.Radius, minefield.Position.Y - minefield.Radius, minefield.Radius);
             }
 
 
@@ -1302,7 +1302,7 @@ namespace Nova.WinForms.Gui
 
             foreach (FleetIntel report in clientState.EmpireState.FleetReports.Values)
             {
-                if (!report.IsStarbase)
+                if ((report.Name == "S A L V A G E") || (!report.IsStarbase))
                 {
                     if (PointUtilities.IsNear(report.Position, position))
                     {

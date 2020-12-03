@@ -314,7 +314,7 @@ namespace Nova.Common
 
                 foreach (ShipToken token in tokens.Values)
                 {
-                    mineCount += token.Design.MineCount * token.Quantity;
+                    mineCount += token.Design.MineCount;
                 }
 
                 return mineCount;

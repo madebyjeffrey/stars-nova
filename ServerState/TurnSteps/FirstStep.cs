@@ -60,7 +60,7 @@ namespace Nova.Server.TurnSteps
                             if (minefield != null)
                             {
                                 minefield.NumberOfMines += fleet.NumberOfMines;
-                                messages.Add(new Message(fleet.Owner, fleet.Name + " has increased a minefield", "Increase Minefield", null, fleet.Id));
+                                messages.Add(new Message(fleet.Owner, fleet.Name + " has increased a minefield by "+ fleet.NumberOfMines.ToString()+" mines.", "Increase Minefield", null, fleet.Id));
                             }
                             else
                             {                                       // No Minefield found. Start a new one.
@@ -69,9 +69,10 @@ namespace Nova.Server.TurnSteps
                                 newField.Position = fleet.Position;
                                 newField.Owner = fleet.Owner;
                                 newField.NumberOfMines = fleet.NumberOfMines;
+                                newField.Key = key;
 
                                 serverState.AllMinefields[key] = newField;
-                                messages.Add(new Message(fleet.Owner, fleet.Name + " has created a minefield", "New Minefield", null, fleet.Id));
+                                messages.Add(new Message(fleet.Owner, fleet.Name + " has created a minefield with " + fleet.NumberOfMines.ToString() + " mines.", "New Minefield", null, fleet.Id));
 
                             }
                         }

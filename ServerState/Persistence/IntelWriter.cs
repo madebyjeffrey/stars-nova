@@ -70,9 +70,12 @@ namespace Nova.Server
                 // Copy any messages
                 foreach (Message message in serverState.AllMessages)
                 {
-                    if (message.Audience == Global.Everyone || message.Audience == empire.Id)
+                    if (message != null)
                     {
-                        turnData.Messages.Add(message);
+                        if (message.Audience == Global.Everyone || message.Audience == empire.Id)
+                        {
+                            turnData.Messages.Add(message);
+                        }
                     }
                 }
 

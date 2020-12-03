@@ -34,13 +34,14 @@ namespace Nova.Server.TurnSteps
     {
         public List<Message> Process(ServerData serverState)
         {
+            List<Message> messages = new List<Message>();
             Message message = null; ;
             foreach (Fleet fleet in serverState.IterateAllFleets())
             {
                 if (fleet.Waypoints.Count > 0)
                 {
                     Waypoint waypointZero = fleet.Waypoints[0];
-                    if (waypointZero.Task is ScrapTask && waypointZero.Task.IsValid(fleet, null, null,null , out message))
+                    if (waypointZero.Task is ScrapTask && waypointZero.Task.IsValid(fleet, null, null, null, out message))
                     {
                         Star targetStar = null;
                         serverState.AllStars.TryGetValue(waypointZero.Destination, out targetStar);
@@ -51,14 +52,13 @@ namespace Nova.Server.TurnSteps
 
                         EmpireData sender = serverState.AllEmpires[fleet.Owner];
 
-                        waypointZero.Task.Perform(fleet, targetStar, sender,null , out message);
+                        waypointZero.Task.Perform(fleet, targetStar, sender, null, out message);
+                        if (message != null) messages.Add(message);
                     }
                 }
             }
 
             serverState.CleanupFleets();
-            List<Message> messages = new List<Message>();
-            if (message != null) messages.Add(message);
             return messages;
         }
     }

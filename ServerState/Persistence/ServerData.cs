@@ -358,6 +358,7 @@ namespace Nova.Server
             XmlElement xmlelAllMinefields = xmldoc.CreateElement("AllMinefields");
             foreach (KeyValuePair<long, Minefield> minefield in AllMinefields)
             {
+                minefield.Value.Key = minefield.Key;
                 child = minefield.Value.ToXml(xmldoc);
                 child.SetAttribute("Key", minefield.Key.ToString("X"));                
                 xmlelAllMinefields.AppendChild(child);

@@ -125,13 +125,14 @@ namespace Nova.Server
             //Stars! Split functionality splits the fleets at the current position before moving!!
             //the Waypoint Zero commands were applied to the EmpireState during the ParseCommands()
             //but their waypoints have not been removed yet so do that now:
-            new SplitFleetStep().Process(serverState);
+            
+            serverState.AllMessages.AddRange(new SplitFleetStep().Process(serverState));
 
-            new FirstStep().Process(serverState);
+            serverState.AllMessages.AddRange( new FirstStep().Process(serverState));
             // ToDo: Step 1 --> Scrap Fleet if waypoint 0 order; here, and only here.
             // ToDo: ScrapFleetStep / foreach ITurnStep for waypoint 0. Own TurnStep-List for Waypoint 0?
 
-            new ScrapFleetStep().Process(serverState);
+            serverState.AllMessages.AddRange(new ScrapFleetStep().Process(serverState));
             List<Fleet> destroyed = new List<Fleet>();
             foreach (Fleet fleet in serverState.IterateAllFleets())
             {
@@ -144,8 +145,7 @@ namespace Nova.Server
             {
                 int empire = (int) ((long)fleetId >> 32);
                 Fleet fleet = serverState.AllEmpires[empire].OwnedFleets[fleetId];
-                if ((fleet.Name != "Mineral Packet")
-                    && (!fleet.IsStarbase))  checkForMinefields.Check(fleet); 
+                if (fleet.Name != "Mineral Packet")   checkForMinefields.Check(fleet); 
             }
             serverState.CleanupFleets();
 
@@ -214,7 +214,7 @@ namespace Nova.Server
 
                 foreach (Minefield minefield in serverState.AllMinefields.Values)
                 {
-                    if (minefield.Owner == empire.Id)
+                    if (minefield.Empire == empire.Id)
                     {
                         empire.VisibleMinefields[minefield.Key] = minefield;
                     }
@@ -709,7 +709,7 @@ namespace Nova.Server
             ITurnStep firstStep = new FirstStep();
             serverState.AllMessages.AddRange( firstStep.Process(serverState));
             ITurnStep scanStep = new ScanStep();
-            scanStep.Process(serverState);
+            serverState.AllMessages.AddRange(scanStep.Process(serverState));
         }
     }
 }

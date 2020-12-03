@@ -59,7 +59,13 @@ namespace Nova.Common
                 return (int)Math.Sqrt(NumberOfMines);
             }
         }
-
+        public int Empire
+        {
+            get
+            {
+                return (int) (Key / 1152921504606846976);
+            }
+        }
         /// <summary>
         /// Generate an XmlElement representation of the Minefield for saving to file.
         /// </summary>

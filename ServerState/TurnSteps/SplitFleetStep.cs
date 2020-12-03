@@ -58,6 +58,7 @@ namespace Nova.Server.TurnSteps
         }
         public List <Message> Process(ServerData serverState)
         {
+            List<Message> result = new List<Message>();
             string WaypointZeroDestination = "";
             int Index = 0;
             foreach (Fleet fleet in serverState.IterateAllFleets())
@@ -77,7 +78,7 @@ namespace Nova.Server.TurnSteps
                 }
             }
             serverState.CleanupFleets();
-            return null;
+            return result;
         }
     }
 }

@@ -82,7 +82,7 @@ namespace Nova.Server
                 return false;
             }
 
-            if (fleet.Owner == minefield.Owner) return false;
+            if (fleet.Owner == minefield.Empire) return false;
 
             double distance = PointUtilities.Distance(fleet.Position, minefield.Position);
 
@@ -254,6 +254,12 @@ namespace Nova.Server
                 message.Event = fleet.Id;
                 message.Text = "Fleet " + fleet.Name
                    + " has destroyed " + minesToDestroy.ToString() + " mines" + "\n\n";
+                serverState.AllMessages.Add(message);
+                Message message2 = new Message();
+                message2.Type = "Fleet";
+                message2.Audience = minefield.Empire;
+                message2.Event = fleet.Id;
+                message2.Text = "Someone has destroyed " + minesToDestroy.ToString() + " mines" + "\n\n";
                 serverState.AllMessages.Add(message);
             }
         }

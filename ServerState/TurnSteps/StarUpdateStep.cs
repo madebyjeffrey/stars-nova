@@ -86,7 +86,7 @@ namespace Nova.Server.TurnSteps
                 star.UpdateResearch(serverState.AllEmpires[star.Owner].ResearchBudget);
                 star.UpdateResources();
             }
-            return null;
+            return messageList;
         }
         
         /// <summary>
