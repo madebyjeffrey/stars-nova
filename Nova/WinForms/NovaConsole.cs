@@ -107,6 +107,8 @@ namespace Nova.WinForms.Console
                 newGameMenuItem.Enabled = true;
                 turnYearLabel.Text = "Create a new game.";
             }
+            runAiCheckBox.Checked = true;
+            autoGenerateCheckBox.Checked = true;
         }
 
         /// <Summary>
