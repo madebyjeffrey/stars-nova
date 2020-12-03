@@ -317,11 +317,11 @@ namespace Nova.Common
         {
             XmlElement xmlelCargo = xmldoc.CreateElement("Cargo");
 
-            Global.SaveData(xmldoc, xmlelCargo, "Ironium", Ironium.ToString(System.Globalization.CultureInfo.InvariantCulture));
-            Global.SaveData(xmldoc, xmlelCargo, "Boranium", Boranium.ToString(System.Globalization.CultureInfo.InvariantCulture));
-            Global.SaveData(xmldoc, xmlelCargo, "Germanium", Germanium.ToString(System.Globalization.CultureInfo.InvariantCulture));
-            Global.SaveData(xmldoc, xmlelCargo, "ColonistsInKilotons", ColonistsInKilotons.ToString(System.Globalization.CultureInfo.InvariantCulture));
-            Global.SaveData(xmldoc, xmlelCargo, "Silicoxium", Silicoxium.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            if (Ironium != 0) Global.SaveData(xmldoc, xmlelCargo, "Ironium", Ironium.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            if (Boranium != 0) Global.SaveData(xmldoc, xmlelCargo, "Boranium", Boranium.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            if (Germanium != 0) Global.SaveData(xmldoc, xmlelCargo, "Germanium", Germanium.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            if (ColonistsInKilotons != 0) Global.SaveData(xmldoc, xmlelCargo, "ColonistsInKilotons", ColonistsInKilotons.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            if (Silicoxium != 0) Global.SaveData(xmldoc, xmlelCargo, "Silicoxium", Silicoxium.ToString(System.Globalization.CultureInfo.InvariantCulture));
 
             return xmlelCargo;
         }

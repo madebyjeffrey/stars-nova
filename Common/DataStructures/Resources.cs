@@ -337,25 +337,37 @@ namespace Nova.Common
             XmlElement xmlelResource = xmldoc.CreateElement(nodeName);
 
             // Boranium
-            XmlElement xmlelBoranium = xmldoc.CreateElement("Boranium");
-            XmlText xmltxtBoranium = xmldoc.CreateTextNode(this.Boranium.ToString(System.Globalization.CultureInfo.InvariantCulture));
-            xmlelBoranium.AppendChild(xmltxtBoranium);
-            xmlelResource.AppendChild(xmlelBoranium);
+            if (this.Boranium > 0)
+            {
+                XmlElement xmlelBoranium = xmldoc.CreateElement("Boranium");
+                XmlText xmltxtBoranium = xmldoc.CreateTextNode(this.Boranium.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                xmlelBoranium.AppendChild(xmltxtBoranium);
+                xmlelResource.AppendChild(xmlelBoranium);
+            }
             // Ironium
-            XmlElement xmlelIronium = xmldoc.CreateElement("Ironium");
-            XmlText xmltxtIronium = xmldoc.CreateTextNode(this.Ironium.ToString(System.Globalization.CultureInfo.InvariantCulture));
-            xmlelIronium.AppendChild(xmltxtIronium);
-            xmlelResource.AppendChild(xmlelIronium);
+            if (this.Ironium > 0)
+            {
+                XmlElement xmlelIronium = xmldoc.CreateElement("Ironium");
+                XmlText xmltxtIronium = xmldoc.CreateTextNode(this.Ironium.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                xmlelIronium.AppendChild(xmltxtIronium);
+                xmlelResource.AppendChild(xmlelIronium);
+            }
             // Germanium
-            XmlElement xmlelGermanium = xmldoc.CreateElement("Germanium");
-            XmlText xmltxtGermanium = xmldoc.CreateTextNode(this.Germanium.ToString(System.Globalization.CultureInfo.InvariantCulture));
-            xmlelGermanium.AppendChild(xmltxtGermanium);
-            xmlelResource.AppendChild(xmlelGermanium);
+            if (this.Germanium > 0)
+            {
+                XmlElement xmlelGermanium = xmldoc.CreateElement("Germanium");
+                XmlText xmltxtGermanium = xmldoc.CreateTextNode(this.Germanium.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                xmlelGermanium.AppendChild(xmltxtGermanium);
+                xmlelResource.AppendChild(xmlelGermanium);
+            }
             // Energy
-            XmlElement xmlelEnergy = xmldoc.CreateElement("Energy");
-            XmlText xmltxtEnergy = xmldoc.CreateTextNode(this.Energy.ToString(System.Globalization.CultureInfo.InvariantCulture));
-            xmlelEnergy.AppendChild(xmltxtEnergy);
-            xmlelResource.AppendChild(xmlelEnergy);
+            if (this.Energy > 0)
+            {
+                XmlElement xmlelEnergy = xmldoc.CreateElement("Energy");
+                XmlText xmltxtEnergy = xmldoc.CreateTextNode(this.Energy.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                xmlelEnergy.AppendChild(xmltxtEnergy);
+                xmlelResource.AppendChild(xmlelEnergy);
+            }
             // Silicoxium
             if (this.Silicoxium > 0)
             {
