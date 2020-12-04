@@ -37,7 +37,7 @@ namespace Nova.Common
         Neutral,
         Friend
     }
- 
+
     /// <summary>
     /// Race specific data that may change from year-to-year that must be passed to
     /// the Nova console/server. 
@@ -45,63 +45,64 @@ namespace Nova.Common
     [Serializable]
     public class EmpireData
     {
-        private ushort      empireId;
-        
+        private ushort empireId;
+
         /// <summary>
         /// The year that corresponds to this data. Normally the current game year.
         /// </summary>
-        public int          TurnYear                = Global.StartingYear;  
+        public int TurnYear = Global.StartingYear;
 
         /// <summary>
         /// Set to true when submit turn is selected in the client. Indicates when orders are ready for processing by the server.
         /// </summary>
-        public bool         TurnSubmitted           = false;
+        public bool TurnSubmitted = false;
 
         /// <summary>
         /// The last game year for which a turn was submitted. Should be the previous game year until the current year is submitted. May be several years previous if turns were skipped. 
         /// </summary>
-        public int          LastTurnSubmitted       = 0;             
+        public int LastTurnSubmitted = 0;
 
-        private Race        race                    = new Race(); // This empire's race.
-        
-        public int          ResearchBudget          = 10; // % of resources allocated to research
+        private Race race = new Race(); // This empire's race.
+
+        public int ResearchBudget = 10; // % of resources allocated to research
 
         /// <summary>
         /// Current levels of technology.
         /// </summary>
-        public TechLevel    ResearchLevels          = new TechLevel(); 
-        public TechLevel    ResearchResources       = new TechLevel(); // current cumulative resources on technologies
-        public TechLevel    ResearchTopics          = new TechLevel(); // order of researching
-        
-        public RaceComponents   AvailableComponents;
-        public Dictionary<long, ShipDesign> Designs     = new Dictionary<long, ShipDesign>(); 
-        
+        public TechLevel ResearchLevels = new TechLevel();
+        public TechLevel ResearchResources = new TechLevel(); // current cumulative resources on technologies
+        public TechLevel ResearchTopics = new TechLevel(); // order of researching
+
+        public RaceComponents AvailableComponents;
+        public Dictionary<long, ShipDesign> Designs = new Dictionary<long, ShipDesign>();
+
         public StarList OwnedStars = new StarList();
-        public Dictionary<string, StarIntel> StarReports  = new Dictionary<string, StarIntel>();
-        
+        public Dictionary<string, StarIntel> StarReports = new Dictionary<string, StarIntel>();
+
         public FleetList OwnedFleets = new FleetList();
-        public Dictionary<long, FleetIntel> FleetReports  = new Dictionary<long, FleetIntel>();
-        
+        public Dictionary<long, FleetIntel> FleetReports = new Dictionary<long, FleetIntel>();
+
         // This is Fleet Limbo~
         // ??? What is this for?
         // My guess would be for storing of waypoints for fleets that don't exist at this instant in time
         // either they will exist later this turn or they existed earlier this turn
+        // also fleets that have been split/merged seem to come through Temporary Fleets
         public List<Fleet> TemporaryFleets = new List<Fleet>();
-        
-        public Dictionary<ushort, EmpireIntel>  EmpireReports   = new Dictionary<ushort, EmpireIntel>();
-        
-        public Dictionary<string, BattlePlan>   BattlePlans     = new Dictionary<string, BattlePlan>();
-        
+
+        public Dictionary<ushort, EmpireIntel> EmpireReports = new Dictionary<ushort, EmpireIntel>();
+
+        public Dictionary<string, BattlePlan> BattlePlans = new Dictionary<string, BattlePlan>();
+
         public List<BattleReport> BattleReports = new List<BattleReport>();
 
         public Dictionary<long, Minefield> VisibleMinefields = new Dictionary<long, Minefield>();
 
         // See associated properties.
-        private long        fleetCounter                = 0;
-        private long        designCounter               = 0;
-        public  int         gravityModCapability        = 0;
-        public  int         radiationModCapability      = 0;
-        public  int         temperatureModCapability    = 0;
+        private long fleetCounter = 0;
+        private long designCounter = 0;
+        public int gravityModCapability = 0;
+        public int radiationModCapability = 0;
+        public int temperatureModCapability = 0;
 
         public Race Race
         {
@@ -109,7 +110,7 @@ namespace Nova.Common
             {
                 return this.race;
             }
-            
+
             set
             {
                 if (value != null)
@@ -118,7 +119,7 @@ namespace Nova.Common
                 }
             }
         }
-        
+
         /// <summary>
         /// Sets or gets this empires unique integer Id.
         /// </summary>
@@ -128,14 +129,14 @@ namespace Nova.Common
             {
                 return empireId;
             }
-            
+
             set
             {
                 // Empire Id should only be set on game creation, from a simple 0-127 int.
-                if (value > 127)    
-                { 
-                    throw new ArgumentException("EmpireId out of range"); 
-                }  
+                if (value > 127)
+                {
+                    throw new ArgumentException("EmpireId out of range");
+                }
                 empireId = value;
             }
         }
@@ -154,7 +155,7 @@ namespace Nova.Common
         /// </summary>
         public long PeekNextFleetKey()
         {
-            
+
             return fleetCounter + 1 | ((long)empireId << 32); ;
         }
 
@@ -183,16 +184,16 @@ namespace Nova.Common
         /// <summary>
         /// Default constructor.
         /// </summary>
-        public EmpireData(bool loadComponents = true,String RaceHint = "") 
+        public EmpireData(bool loadComponents = true, String RaceHint = "")
         {
-            Initialize(loadComponents,RaceHint);
+            Initialize(loadComponents, RaceHint);
             BattlePlans.Add("Default", new BattlePlan());
         }
 
-        protected virtual void Initialize(bool loadComponents = true,String RaceHint = "")
+        protected virtual void Initialize(bool loadComponents = true, String RaceHint = "")
         {
-            
-           if (loadComponents) AvailableComponents = new RaceComponents(RaceHint);
+
+            if (loadComponents) AvailableComponents = new RaceComponents(RaceHint);
         }
 
         /// <summary>
@@ -205,7 +206,7 @@ namespace Nova.Common
             return EmpireReports[lamb].Relation == PlayerRelation.Enemy;
         }
 
-        private void CalcTotalTerraform (int totalTeraformLevel)
+        private void CalcTotalTerraform(int totalTeraformLevel)
         {
             temperatureModCapability = Math.Max(temperatureModCapability, totalTeraformLevel);
             radiationModCapability = Math.Max(radiationModCapability, totalTeraformLevel);
@@ -215,7 +216,7 @@ namespace Nova.Common
         /// Load: constructor to load EmpireData from an XmlNode representation.
         /// </summary>
         /// <param name="node">An XmlNode containing a EmpireData representation (from a save file).</param>
-        public EmpireData(XmlNode node,String RaceName)
+        public EmpireData(XmlNode node, String RaceName)
         {
             XmlNode mainNode = node.FirstChild;
             XmlNode subNode;
@@ -226,32 +227,32 @@ namespace Nova.Common
                     case "id":
                         empireId = ushort.Parse(mainNode.FirstChild.Value, System.Globalization.NumberStyles.HexNumber);
                         break;
-                        
+
                     case "fleetcounter":
                         fleetCounter = long.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
                         break;
-                        
+
                     case "designcounter":
                         designCounter = long.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
                         break;
-                        
+
                     case "turnyear":
                         TurnYear = int.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
                         break;
-                        
+
                     case "turnsubmitted":
                         TurnSubmitted = bool.Parse(mainNode.FirstChild.Value);
                         break;
-                        
+
                     case "lastturnsubmitted":
                         LastTurnSubmitted = int.Parse(mainNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
                         break;
-                        
+
                     case "race":
                         race = new Race();
                         Race.LoadRaceFromXml(mainNode);
                         break;
-                        
+
                     case "research":
                         subNode = mainNode.SelectSingleNode("Budget");
                         ResearchBudget = int.Parse(subNode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
@@ -262,7 +263,7 @@ namespace Nova.Common
                         subNode = mainNode.SelectSingleNode("Topics");
                         ResearchTopics = new TechLevel(subNode);
                         break;
-                        
+
                     case "starreports":
                         subNode = mainNode.FirstChild;
                         while (subNode != null)
@@ -272,7 +273,7 @@ namespace Nova.Common
                             subNode = subNode.NextSibling;
                         }
                         break;
-                        
+
                     case "ownedstars":
                         subNode = mainNode.FirstChild;
                         while (subNode != null)
@@ -282,9 +283,9 @@ namespace Nova.Common
                             subNode = subNode.NextSibling;
                         }
                         break;
-                        
+
                     case "fleetreports":
-                        if (AvailableComponents == null) Initialize(true,race.Name);
+                        if (AvailableComponents == null) Initialize(true, race.Name);
                         subNode = mainNode.FirstChild;
                         while (subNode != null)
                         {
@@ -293,9 +294,9 @@ namespace Nova.Common
                             subNode = subNode.NextSibling;
                         }
                         break;
-                        
+
                     case "ownedfleets":
-                        if (AvailableComponents == null) Initialize(true,race.Name);
+                        if (AvailableComponents == null) Initialize(true, race.Name);
                         subNode = mainNode.FirstChild;
                         while (subNode != null)
                         {
@@ -305,7 +306,7 @@ namespace Nova.Common
                         }
 
                         break;
-                        
+
                     case "otherempires":
                         subNode = mainNode.FirstChild;
                         while (subNode != null)
@@ -315,22 +316,22 @@ namespace Nova.Common
                             subNode = subNode.NextSibling;
                         }
                         break;
-                        
+
                     case "battleplan":
                         BattlePlan plan = new BattlePlan(mainNode);
                         BattlePlans[plan.Name] = plan;
-                        break; 
-                        
+                        break;
+
                     case "availablecomponents":
-                        if (AvailableComponents == null) Initialize(true,race.Name);
+                        if (AvailableComponents == null) Initialize(true, race.Name);
                         subNode = mainNode.FirstChild;
                         while (subNode != null)
-                        { 
+                        {
                             AvailableComponents.Add(new Component(subNode));
                             subNode = subNode.NextSibling;
                         }
                         break;
-                        
+
                     case "designs":
                         if (AvailableComponents == null) Initialize(true, race.Name);
                         subNode = mainNode.FirstChild;
@@ -339,7 +340,7 @@ namespace Nova.Common
                             ShipDesign design = new ShipDesign(subNode);
                             design.Update();
                             Designs.Add(design.Key, design);
-                            
+
                             subNode = subNode.NextSibling;
                         }
                         break;
@@ -394,8 +395,8 @@ namespace Nova.Common
                     && (this.ResearchLevels[TechLevel.ResearchField.Energy] >= 10)) temperatureModCapability = 11;
                 if ((this.ResearchLevels[TechLevel.ResearchField.Biotechnology] >= 4)
                     && (this.ResearchLevels[TechLevel.ResearchField.Energy] >= 15)) temperatureModCapability = 15;
-                 //if (this.Race.Traits.Contains("TT"))
-                 if (race.HasTrait("Total Terraforming"))
+                //if (this.Race.Traits.Contains("TT"))
+                if (race.HasTrait("Total Terraforming"))
                 {
                     if (this.ResearchLevels[TechLevel.ResearchField.Biotechnology] >= 1) CalcTotalTerraform(3);
                     if (this.ResearchLevels[TechLevel.ResearchField.Biotechnology] >= 3) CalcTotalTerraform(5);
@@ -408,7 +409,7 @@ namespace Nova.Common
                 }
 
             }
-            
+
             LinkReferences();
         }
 
@@ -420,25 +421,25 @@ namespace Nova.Common
         public XmlElement ToXml(XmlDocument xmldoc)
         {
             XmlElement xmlelEmpireData = xmldoc.CreateElement("EmpireData");
-            
+
             Global.SaveData(xmldoc, xmlelEmpireData, "Id", empireId.ToString("X"));
-                        
+
             Global.SaveData(xmldoc, xmlelEmpireData, "FleetCounter", fleetCounter.ToString(System.Globalization.CultureInfo.InvariantCulture));
             Global.SaveData(xmldoc, xmlelEmpireData, "DesignCounter", designCounter.ToString(System.Globalization.CultureInfo.InvariantCulture));
-            
+
             Global.SaveData(xmldoc, xmlelEmpireData, "TurnYear", TurnYear.ToString(System.Globalization.CultureInfo.InvariantCulture));
             Global.SaveData(xmldoc, xmlelEmpireData, "TurnSubmitted", TurnSubmitted.ToString(System.Globalization.CultureInfo.InvariantCulture));
             Global.SaveData(xmldoc, xmlelEmpireData, "LastTurnSubmitted", LastTurnSubmitted.ToString(System.Globalization.CultureInfo.InvariantCulture));
-            
+
             xmlelEmpireData.AppendChild(race.ToXml(xmldoc));
-            
+
             XmlElement xmlelResearch = xmldoc.CreateElement("Research");
-            Global.SaveData(xmldoc, xmlelResearch, "Budget", ResearchBudget.ToString(System.Globalization.CultureInfo.InvariantCulture));            
+            Global.SaveData(xmldoc, xmlelResearch, "Budget", ResearchBudget.ToString(System.Globalization.CultureInfo.InvariantCulture));
             xmlelResearch.AppendChild(ResearchLevels.ToXml(xmldoc, "AttainedLevels"));
             xmlelResearch.AppendChild(ResearchResources.ToXml(xmldoc, "SpentResources"));
-            xmlelResearch.AppendChild(ResearchTopics.ToXml(xmldoc, "Topics"));            
+            xmlelResearch.AppendChild(ResearchTopics.ToXml(xmldoc, "Topics"));
             xmlelEmpireData.AppendChild(xmlelResearch);
-            
+
             // Available Components
             XmlElement xmlelAvaiableComponents = xmldoc.CreateElement("AvailableComponents");
             foreach (Component component in AvailableComponents.Values)
@@ -446,31 +447,31 @@ namespace Nova.Common
                 xmlelAvaiableComponents.AppendChild(component.ToXml(xmldoc));
             }
             xmlelEmpireData.AppendChild(xmlelAvaiableComponents);
-            
+
             // Own Designs
             XmlElement xmlelDesigns = xmldoc.CreateElement("Designs");
             foreach (ShipDesign design in Designs.Values)
             {
                 design.Update();
-                xmlelDesigns.AppendChild(design.ToXml(xmldoc));                                             
-            }            
+                xmlelDesigns.AppendChild(design.ToXml(xmldoc));
+            }
             xmlelEmpireData.AppendChild(xmlelDesigns);
-            
-            XmlElement xmlelStarReports = xmldoc.CreateElement("StarReports");            
+
+            XmlElement xmlelStarReports = xmldoc.CreateElement("StarReports");
             foreach (StarIntel report in StarReports.Values)
             {
-                xmlelStarReports.AppendChild(report.ToXml(xmldoc));    
+                xmlelStarReports.AppendChild(report.ToXml(xmldoc));
             }
             xmlelEmpireData.AppendChild(xmlelStarReports);
-            
-            XmlElement xmlelOwnedStars = xmldoc.CreateElement("OwnedStars");            
+
+            XmlElement xmlelOwnedStars = xmldoc.CreateElement("OwnedStars");
             foreach (Star star in OwnedStars.Values)
             {
-                xmlelOwnedStars.AppendChild(star.ToXml(xmldoc));    
+                xmlelOwnedStars.AppendChild(star.ToXml(xmldoc));
             }
             xmlelEmpireData.AppendChild(xmlelOwnedStars);
-            
-            XmlElement xmlelFleetReports = xmldoc.CreateElement("FleetReports");            
+
+            XmlElement xmlelFleetReports = xmldoc.CreateElement("FleetReports");
             foreach (FleetIntel report in FleetReports.Values)
             {
                 if (report.Composition.Count > 0)
@@ -487,26 +488,26 @@ namespace Nova.Common
                 }
             }
             xmlelEmpireData.AppendChild(xmlelFleetReports);
-            
-            XmlElement xmlelOnedFleets = xmldoc.CreateElement("OwnedFleets");            
+
+            XmlElement xmlelOnedFleets = xmldoc.CreateElement("OwnedFleets");
             foreach (Fleet fleet in OwnedFleets.Values)
             {
-                xmlelOnedFleets.AppendChild(fleet.ToXml(xmldoc));    
+                xmlelOnedFleets.AppendChild(fleet.ToXml(xmldoc));
             }
             xmlelEmpireData.AppendChild(xmlelOnedFleets);
-            
-            XmlElement xmlelEnemyIntel = xmldoc.CreateElement("OtherEmpires");            
+
+            XmlElement xmlelEnemyIntel = xmldoc.CreateElement("OtherEmpires");
             foreach (EmpireIntel report in EmpireReports.Values)
             {
-                xmlelEnemyIntel.AppendChild(report.ToXml(xmldoc));    
+                xmlelEnemyIntel.AppendChild(report.ToXml(xmldoc));
             }
             xmlelEmpireData.AppendChild(xmlelEnemyIntel);
-            
+
             foreach (string key in BattlePlans.Keys)
             {
                 xmlelEmpireData.AppendChild(BattlePlans[key].ToXml(xmldoc));
             }
-            
+
             // Battles 
             if (BattleReports.Count > 0)
             {
@@ -530,33 +531,33 @@ namespace Nova.Common
 
             return xmlelEmpireData;
         }
-        
+
         public void Clear()
         {
             TurnYear = Global.StartingYear;
-        
+
             Race = new Race();
-            
+
             ResearchBudget = 10;
-            ResearchLevels          = new TechLevel();
-            ResearchResources       = new TechLevel();
-            ResearchTopics          = new TechLevel();
-            
- ///           AvailableComponents     = new RaceComponents();
-            Designs                 = new Dictionary<long, ShipDesign>();
-            
+            ResearchLevels = new TechLevel();
+            ResearchResources = new TechLevel();
+            ResearchTopics = new TechLevel();
+
+            ///           AvailableComponents     = new RaceComponents();
+            Designs = new Dictionary<long, ShipDesign>();
+
             OwnedStars.Clear();
             StarReports.Clear();
             OwnedFleets.Clear();
             FleetReports.Clear();
-            
+
             EmpireReports.Clear();
-            
+
             BattlePlans.Clear();
             BattleReports.Clear();
         }
-        
-        
+
+
         /// <summary>
         /// Adds a new fleet to this empire. Generates an appropriate report.
         /// </summary>
@@ -569,9 +570,9 @@ namespace Nova.Common
                 FleetReports[fleet.Key].Update(fleet, ScanLevel.Owned, TurnYear);
                 return false;
             }
-            
+
             OwnedFleets.Add(fleet);
-            
+
             if (FleetReports.ContainsKey(fleet.Key))
             {
                 FleetReports[fleet.Key].Update(fleet, ScanLevel.Owned, TurnYear);
@@ -580,11 +581,11 @@ namespace Nova.Common
             {
                 FleetReports.Add(fleet.Key, fleet.GenerateReport(ScanLevel.Owned, TurnYear));
             }
-            
+
             return true;
         }
-        
-        
+
+
         /// <summary>
         /// Creates a brand new Fleet at the position of
         /// an already existing one.
@@ -615,8 +616,8 @@ namespace Nova.Common
 
             return newFleet;
         }
-        
-        
+
+
         /// <summary>
         /// Removes an existing fleet from this empire. Deletes appropriate report.
         /// </summary>
@@ -624,10 +625,10 @@ namespace Nova.Common
         /// <returns>False if empire does not own the fleet.</returns>
         public bool RemoveFleet(Fleet fleet)
         {
-            return RemoveFleet(fleet.Key);                    
+            return RemoveFleet(fleet.Key);
         }
-        
-        
+
+
         /// <summary>
         /// Removes an existing fleet from this empire. Deletes appropriate report.
         /// </summary>
@@ -640,13 +641,13 @@ namespace Nova.Common
                 return false;
             }
 
-            OwnedFleets.Remove(fleetKey);            
+            OwnedFleets.Remove(fleetKey);
             FleetReports.Remove(fleetKey);
-            
+
             return true;
         }
-        
-        
+
+
         /// <summary>
         /// Iterates through all Mappables in this Empire, in order.
         /// </summary>
@@ -655,18 +656,33 @@ namespace Nova.Common
         {
             return OwnedFleets.Values.Select(fleet => fleet as Mappable).Concat(OwnedStars.Values.Select(star => star as Mappable));
         }
-        
-        
-        /// <summary>
-        /// When state is loaded from file, objects may contain references to other objects.
-        /// As these may be loaded in any order (or be cross linked) it is necessary to tidy
-        /// up these references once the state is fully loaded and all objects exist.
-        /// In most cases a placeholder object has been created with the Key set from the file,
-        /// and we need to find the actual reference using this Key.
-        /// Objects can't do this themselves as they don't have access to the state data, 
-        /// so we do it here.
-        /// </summary>
-        private void LinkReferences()
+
+
+        public void removeAllForeignFleets()
+        {
+            List<long> foreignFleets = new List<long>();
+            foreach (long fleetKey in FleetReports.Keys)
+            {
+                foreignFleets.Add(fleetKey);
+            }
+            foreach (long fleetKey in foreignFleets)
+            {
+                long OwnerMask = 0x000000FF00000000;
+                if ((ushort)((fleetKey & OwnerMask) >> 32) != empireId) FleetReports.Remove(fleetKey);
+            }
+        }
+
+
+    /// <summary>
+    /// When state is loaded from file, objects may contain references to other objects.
+    /// As these may be loaded in any order (or be cross linked) it is necessary to tidy
+    /// up these references once the state is fully loaded and all objects exist.
+    /// In most cases a placeholder object has been created with the Key set from the file,
+    /// and we need to find the actual reference using this Key.
+    /// Objects can't do this themselves as they don't have access to the state data, 
+    /// so we do it here.
+    /// </summary>
+    private void LinkReferences()
         {
             AllComponents allComponents = new AllComponents(true,race.Name);
             

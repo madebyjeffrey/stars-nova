@@ -98,9 +98,15 @@ namespace Nova.Server.TurnSteps
         {
             foreach (Mappable scanner in empire.IterateAllMappables())
             {
+                empire.removeAllForeignFleets();
                 int scanRange = 0;
                 int penScanRange = 0;
-                
+                if (scanner is Fleet) if (!(scanner as Fleet).CanScan(empire.Race))
+                    {
+                        empire.FleetReports[scanner.Key].Update(scanner as Fleet, ScanLevel.Owned, empire.TurnYear);
+                        continue;
+                    }
+                if (scanner is Star) if ((scanner as Star).ScannerType == "None") continue;
                 //Do some self scanning (Update reports) and set ranges..
                 if (scanner is Star)
                 {
@@ -111,15 +117,15 @@ namespace Nova.Server.TurnSteps
                 }
                 else
                 {
-                    scanRange = (scanner as Fleet).ScanRange;
-                    penScanRange = (scanner as Fleet).PenScanRange;
+                    scanRange = (scanner as Fleet).ScanRange(empire.Race,empire);
+                    penScanRange = (scanner as Fleet).PenScanRange(empire.Race, empire);
                     empire.FleetReports[scanner.Key].Update(scanner as Fleet, ScanLevel.Owned, empire.TurnYear);    
                 }
                 
                 // Scan everything
                 foreach (Mappable scanned in serverState.IterateAllMappables())
                 {
-                    // ...That isn't ours!
+                    // ...That doesn't belong to this empire
                     if (scanned.Owner == empire.Id)
                     {
                         continue;
@@ -139,7 +145,7 @@ namespace Nova.Server.TurnSteps
                         // Non penetrating distance scans won't tell anything about it.
                         if((scanner is Fleet) && range == 0)
                         {
-                            scanLevel = (scanner as Fleet).CanScan ? ScanLevel.InDeepScan : ScanLevel.InPlace;     
+                            scanLevel = (scanner as Fleet).CanScan(empire.Race) ? ScanLevel.InDeepScan : ScanLevel.InPlace;     
                         }
                         else // scanner is Star or non orbiting Fleet
                         {
@@ -188,11 +194,11 @@ namespace Nova.Server.TurnSteps
                         
                         if (!empire.FleetReports.ContainsKey(scanned.Key))
                         {
-                            empire.FleetReports.Add(scanned.Key, (scanned as Fleet).GenerateReport(ScanLevel.InScan, serverState.TurnYear));
+                            empire.FleetReports.Add(scanned.Key, (scanned as Fleet).GenerateReport(ScanLevel.InScan, serverState.TurnYear+1));
                         }
                         else
                         {                        
-                            empire.FleetReports[scanned.Key].Update((scanned as Fleet), ScanLevel.InScan, serverState.TurnYear);
+                            empire.FleetReports[scanned.Key].Update((scanned as Fleet), ScanLevel.InScan, serverState.TurnYear+1);
                         }
                     }
                 }

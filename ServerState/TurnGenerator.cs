@@ -232,7 +232,7 @@ namespace Nova.Server
                         bool isIn = PointUtilities.CirclesOverlap(
                             fleet.Position,
                             minefield.Position,
-                            fleet.ScanRange,
+                            fleet.ScanRange(empire.Race,empire),
                             minefield.Radius);
 
                         if (isIn == true)

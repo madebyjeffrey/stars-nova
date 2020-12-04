@@ -246,7 +246,7 @@ namespace Nova.WinForms.Gui
             {
                 if (fleet.Owner == clientState.EmpireState.Id)
                 {
-                    DrawCircle(g, lrScanBrush, (Point)fleet.Position, fleet.ScanRange);
+                    DrawCircle(g, lrScanBrush, (Point)fleet.Position, fleet.ScanRange(clientState.EmpireState.Race, clientState.EmpireState));
                 }
             }
 
@@ -256,7 +256,7 @@ namespace Nova.WinForms.Gui
             {
                 if (fleet.Owner == clientState.EmpireState.Id)
                 {
-                    DrawCircle(g, srScanBrush, (Point)fleet.Position, fleet.PenScanRange);
+                    DrawCircle(g, srScanBrush, (Point)fleet.Position, fleet.PenScanRange(clientState.EmpireState.Race, clientState.EmpireState));
                 }
             }
 

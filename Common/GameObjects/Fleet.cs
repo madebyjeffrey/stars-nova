@@ -129,19 +129,18 @@ namespace Nova.Common
         /// <summary>
         /// This property is true if the fleet has at least one ship with a scanner.
         /// </summary>
-        public bool CanScan
+        public bool CanScan(Race race)
         {
-            get
+
+            foreach (ShipToken token in tokens.Values)
             {
-                foreach (ShipToken token in tokens.Values)
+                if ((token.Design.CanScan) || ((race.HasTrait("JOAT")) && ((this.Name.Contains("Scout")) || (Name.Contains("Frigate")) || (Name.Contains("Destroyer")))))
                 {
-                    if (token.Design.CanScan)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
-                return false;
             }
+            return false;
+
         }
 
         /// <summary>
@@ -320,16 +319,17 @@ namespace Nova.Common
                 return mineCount;
             }
         }
-        
+
         /// <summary>
         /// Return the penetrating range scan capability of the fleet.
         /// FIXME (priority 4) - scanning capability can be additive (but the formula is non-linear).
         /// </summary>
-        public int PenScanRange
+        public int PenScanRange(Race race, EmpireData empire)
         {
-            get
-            {
+
                 int penRange = 0;
+                if ((race.HasTrait("JOAT")) && ((this.Name.Contains("Scout")) || (Name.Contains("Frigate")) || (Name.Contains("Destroyer")))) penRange = 10 * empire.ResearchLevels[TechLevel.ResearchField.Electronics];
+
                 
                 foreach (ShipToken token in tokens.Values)
                 {
@@ -339,20 +339,20 @@ namespace Nova.Common
                     }
                 }
                 return penRange;
-            }
+           
         }
         
         /// <summary>
         /// Return the non penetrating range scan capability of the fleet.
         /// FIXME (priority 4) - scanning capability can be additive (but the formula is non-linear).
         /// </summary>
-        public int ScanRange
+        public int ScanRange(Race race, EmpireData empire)
         {
-            get
-            {
-                int scanRange = 0;
-                
-                foreach (ShipToken token in tokens.Values)
+
+            int scanRange = 0;
+            if ((race.HasTrait("JOAT")) && ((this.Name.Contains("Scout")) || (Name.Contains( "Frigate")) || (Name.Contains("Destroyer")))) scanRange = 20 * empire.ResearchLevels[TechLevel.ResearchField.Electronics];
+
+            foreach (ShipToken token in tokens.Values)
                 {
                     if (token.Design.ScanRangeNormal > scanRange)
                     {
@@ -360,7 +360,7 @@ namespace Nova.Common
                     }
                 }
                 return scanRange;
-            }
+
         }
 
         /// <summary>
