@@ -110,7 +110,7 @@ namespace Nova.Common
             Message message = null;
             List<Message> messages = new List<Message>();
             int done = 0;
-            
+            int oldQuantity = Quantity;
             while (Quantity > 0)
             {
                 if (Unit.IsSkipped(star, race, gravityModCapability, radiationModCapability, temperatureModCapability))
@@ -122,12 +122,21 @@ namespace Nova.Common
                 {
                     if (message != null)
                     {
-                        messages.Add(message);
+                        //messages.Add(message);
                         message = null;
                     }
                     Quantity--;
                     done++;
                 }                
+            }
+            if (oldQuantity != Quantity)
+            {
+                message = new Message();
+                message.Audience = star.Owner;
+                message.Type = Unit.ToString();
+                if (oldQuantity - Quantity == 1) message.Text = star.Name.ToString() + " has built a " + Unit.Name.ToString();
+                else message.Text = star.Name.ToString() + " has built " + (oldQuantity - Quantity).ToString() + Unit.Name.ToString();
+                messages.Add(message);
             }
             messageOut = messages;
             return done;
