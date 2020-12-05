@@ -37,7 +37,7 @@ namespace Nova.Common.Components
         public static double StandardHitChance = 0.3;
 
         // Standar Mine Stats
-        public int LayerRate = 50;
+        public int LayerRate = 0;
         public int SafeSpeed = 4;
         public double HitChance = 0.3;
         public int DamagePerEngine = 100;
