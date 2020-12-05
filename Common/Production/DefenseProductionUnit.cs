@@ -154,10 +154,7 @@ namespace Nova.Common
                 if (star.ResourcesOnHand.Germanium < 0) star.ResourcesOnHand.Germanium = 0;
                 if (star.ResourcesOnHand.Energy < 0) star.ResourcesOnHand.Energy = 0;
                 star.Defenses++;
-                message = new Message();
-                message.Audience = star.Owner;
-                message.Type = "New Defense";
-                message.Text = star.Name.ToString() + " has built a Defense installation";
+                message = null;
 
                 return true;
             }  

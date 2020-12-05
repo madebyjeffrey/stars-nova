@@ -48,6 +48,7 @@ namespace Nova.Server.TurnSteps
             foreach (EmpireData empire in serverState.AllEmpires.Values)
             {                            
                 AddStars(empire);
+                empire.removeAllForeignFleets();
                 Scan(empire);
             }
             return messages;
@@ -98,7 +99,6 @@ namespace Nova.Server.TurnSteps
         {
             foreach (Mappable scanner in empire.IterateAllMappables())
             {
-                empire.removeAllForeignFleets();
                 int scanRange = 0;
                 int penScanRange = 0;
                 if (scanner is Fleet) if (!(scanner as Fleet).CanScan(empire.Race))

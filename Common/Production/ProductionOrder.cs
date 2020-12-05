@@ -122,7 +122,7 @@ namespace Nova.Common
                 {
                     if (message != null)
                     {
-                        //messages.Add(message);
+                        messages.Add(message);
                         message = null;
                     }
                     Quantity--;
@@ -135,8 +135,9 @@ namespace Nova.Common
                 message.Audience = star.Owner;
                 message.Type = Unit.ToString();
                 if (oldQuantity - Quantity == 1) message.Text = star.Name.ToString() + " has built a " + Unit.Name.ToString();
-                else message.Text = star.Name.ToString() + " has built " + (oldQuantity - Quantity).ToString() + Unit.Name.ToString();
+                else message.Text = star.Name.ToString() + " has built " + (oldQuantity - Quantity).ToString() + " " + Unit.Name.ToString();
                 messages.Add(message);
+                message = null;
             }
             messageOut = messages;
             return done;

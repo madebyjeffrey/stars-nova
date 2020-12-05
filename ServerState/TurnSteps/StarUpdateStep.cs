@@ -76,11 +76,13 @@ namespace Nova.Server.TurnSteps
                     message.Text = died.ToString(System.Globalization.CultureInfo.InvariantCulture)
                        + " of your colonists have been killed"
                        + " by the environment on " + star.Name;
-                    serverState.AllMessages.Add(message);
+                    messageList.Add(message);
+                    //serverState.AllMessages.Add(message);
                 }
-                
                 manufacture.Items(star,out List<Message> messages, serverState.AllEmpires[star.Owner].Race, serverState.AllEmpires[star.Owner].gravityModCapability, serverState.AllEmpires[star.Owner].radiationModCapability, serverState.AllEmpires[star.Owner].temperatureModCapability);
-                messageList = messages;
+                messageList.AddRange( messages);
+                messages.Clear();
+                //serverState.AllMessages.AddRange(messageList);
                 ContributeLeftoverResearch(star);
                 
                 star.UpdateResearch(serverState.AllEmpires[star.Owner].ResearchBudget);

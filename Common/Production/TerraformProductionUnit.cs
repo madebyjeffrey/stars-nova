@@ -70,10 +70,12 @@ namespace Nova.Common
         /// <summary>
         /// Construct a 1% terraform.
         /// </summary>
-        public bool  Construct(Star star,out Message message,Race race, int gravityModCapability, int radiationModCapability, int temperatureModCapability)
+        public bool  Construct(Star star,out Message messageOut,Race race, int gravityModCapability, int radiationModCapability, int temperatureModCapability)
         {
+            Message message = null;
             Terraform terraform = new Terraform();
             star = terraform.terraformOnePoint(star, race,out message, gravityModCapability, radiationModCapability, temperatureModCapability);
+            messageOut = message;
             return true;
         }
         public bool Construct(Star star)

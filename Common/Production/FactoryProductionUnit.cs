@@ -145,12 +145,9 @@ namespace Nova.Common
                 if (star.ResourcesOnHand.Germanium < 0) star.ResourcesOnHand.Germanium = 0;
                 if (star.ResourcesOnHand.Energy < 0) star.ResourcesOnHand.Energy = 0;
                 star.Factories++;
-                message = new Message();
-                message.Audience = star.Owner;
-                message.Type = "Factory";
-                message.Text = star.Name.ToString() + " has built a Factory";
+                message = null;
                 return true;
-            }  
+            }
         }
         
                 

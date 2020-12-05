@@ -640,8 +640,9 @@ namespace Nova.Common
         /// <param name="availableTime">The portion of a year left for travel.</param>
         /// <param name="race">The race this fleet belongs to.</param>
         /// <returns>A TravelStatus indicating arrival or in-transit.</returns>
-        public TravelStatus Move(ref double availableTime, Race race, ref List<Message> messages,int targetVelocity,NovaPoint targetVelocityVector)
+        public TravelStatus Move(ref double availableTime, Race race, ref List<Message> messageOut,int targetVelocity,NovaPoint targetVelocityVector)
         {
+            List<Message> messages = new List<Message>();
             if (GetTravelStatus() == TravelStatus.Arrived)
             {
                 return TravelStatus.Arrived;
@@ -698,7 +699,7 @@ namespace Nova.Common
             TravelStatus arrived = TravelStatus.Arrived;
 
             if (targetTimeStars270j > availableTime)  // Corporate HQ will not pay an extra days wages for 2.5% of a days travel so orders are to nudge the speed a bit and fire the retro rockets a little bit closer to the star and as hard as the passengers can handle :)
-            {                                           // in Stars! 2.70j a 36.88 LY journey to a star will be completed in 1 turn at warp 6 - i assume it will also travel 36.99 LY, it does not travel 37.0 LY
+            {                                           // in Stars! 2.70j a 36.88 LY journey to a star will be completed in 1 turn at warp 6 - i does also travel 36.99 LY, it does not travel 37.0 LY
                 travelTime = availableTime;             // this rule only applies if the journey is less than 37LY - on longer journeys 36LY is subtracted per year but the last year of a long journey could be 36.99LY travelled in one year
                 arrived = TravelStatus.InTransit;       // the  A.I. (or player) could exploit this by splitting the journey into a lot of small 36.9999999 LY journeys but that is what Stars! does.
             }
@@ -757,6 +758,7 @@ namespace Nova.Common
                 messages.Add(message);
 
             }
+            messageOut = messages;
             return arrived;
         }
 
