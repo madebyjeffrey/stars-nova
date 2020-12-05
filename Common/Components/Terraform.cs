@@ -163,7 +163,7 @@ namespace Nova.Common.Components
         {
 
            return !((isEnvironmentIdeal(star, race)) ||
-            ((isRadiationMaxed(star, race, gravityModCapability)) &&
+            ((isRadiationMaxed(star, race, radiationModCapability)) &&
             (isTemperatureMaxed(star, race, temperatureModCapability)) &&
             (isGravityMaxed(star, race, gravityModCapability))) 
             );
@@ -181,25 +181,30 @@ namespace Nova.Common.Components
         /// <param name="radiationModCapability"></param>
         /// <param name="temperatureModCapability"></param>
         /// <returns></returns>
-        public Star terraformOnePoint(Star star, Race race, out Message message, int gravityModCapability, int radiationModCapability, int temperatureModCapability)
+        public Star terraformOnePoint(Star star, Race race, out Message messageOut, int gravityModCapability, int radiationModCapability, int temperatureModCapability)
         {
+            Message message = null;
             int RadAbove = star.Radiation - race.RadiationTolerance.MaximumValue;
             int RadBelow = race.RadiationTolerance.MinimumValue - star.Radiation;
             int RadiationHostility = Math.Max(RadAbove, RadBelow);
+            if (Math.Abs(Math.Abs(RadAbove) + Math.Abs(RadBelow)) <= 1) RadiationHostility = int.MinValue; // within 1 point so no benefit to change it
             if (isRadiationMaxed(star, race, gravityModCapability)) RadiationHostility = int.MinValue;  // we can't choose this one
             int TempAbove = star.Temperature - race.TemperatureTolerance.MaximumValue;
             int TempBelow = race.TemperatureTolerance.MinimumValue - star.Temperature;
             int TemperatureHostility = Math.Max(TempAbove, TempBelow);
+            if (Math.Abs(Math.Abs(TempAbove) + Math.Abs(TempBelow)) <= 1) TemperatureHostility = int.MinValue; // within 1 point so no benefit to change it
             if (isTemperatureMaxed(star, race, temperatureModCapability)) TemperatureHostility = int.MinValue;  // we can't choose this one
             int GravAbove = star.Gravity - race.GravityTolerance.MaximumValue;
             int GravBelow = race.GravityTolerance.MinimumValue - star.Radiation;
             int GravityHostility = Math.Max(GravAbove, GravBelow);
+            if (Math.Abs(Math.Abs(GravAbove) + Math.Abs(GravBelow)) <= 1) GravityHostility = int.MinValue; // within 1 point so no benefit to change it
             if (isGravityMaxed(star, race, gravityModCapability)) GravityHostility = int.MinValue;  // we can't choose this one
 
             if ((RadiationHostility >= TemperatureHostility) && (RadiationHostility >= GravityHostility)) star = fixRadiation(star, race, out message);
             else if ((TemperatureHostility >= RadiationHostility) && (TemperatureHostility >= GravityHostility)) star = fixTemperature(star, race, out message);
             else if ((GravityHostility >= RadiationHostility) && (GravityHostility >= TemperatureHostility)) star = fixGravity(star, race, out message);
             else message = null;
+            messageOut = message;
             return star;
         }
 
@@ -207,6 +212,7 @@ namespace Nova.Common.Components
         {
             int Above = star.Radiation - race.RadiationTolerance.MaximumValue;
             int Below = race.RadiationTolerance.MinimumValue - star.Radiation;
+
             if (Above > Below)
             {
                 star.Radiation -= 1;
@@ -215,7 +221,7 @@ namespace Nova.Common.Components
                 message.Type = "Terraform";
                 message.Text = star.Name.ToString() + " has decreased its Radiation to " + star.Gravity.ToString() + "mR\r\n it's value is now " + Math.Ceiling(race.HabValue(star) * 100) + "%";
             }
-            else
+            else if (Below > Above)
             {
                 star.Radiation += 1;
                 message = new Message();
@@ -223,6 +229,7 @@ namespace Nova.Common.Components
                 message.Type = "Terraform";
                 message.Text = star.Name.ToString() + " has increased its Radiation to " + star.Gravity.ToString() + "mR\r\n it's value is now " + Math.Ceiling(race.HabValue(star) * 100) + "%";
             }
+            else message = null;
             return star;
         }
 
@@ -238,7 +245,7 @@ namespace Nova.Common.Components
                 message.Type = "Terraform";
                 message.Text = star.Name.ToString() + " has decreased its Temperature to " + star.Gravity.ToString() + "°C\r\n it's value is now " + Math.Ceiling(race.HabValue(star) * 100) + "%";
             }
-            else
+            else if (Above < Below)
             {
                 star.Temperature += 1;
                 message = new Message();
@@ -246,6 +253,7 @@ namespace Nova.Common.Components
                 message.Type = "Terraform";
                 message.Text = star.Name.ToString() + " has increased its Temperature to " + star.Gravity.ToString() + "°C\r\n it's value is now " + Math.Ceiling(race.HabValue(star) * 100) + "%";
             }
+            else message = null;
             return star;
         }
 
@@ -261,7 +269,8 @@ namespace Nova.Common.Components
                 message.Type = "Terraform";
                 message.Text = star.Name.ToString() + " has decreased its Gravity to " + star.Gravity.ToString() + "g\r\n it's value is now " + Math.Ceiling(race.HabValue(star) * 100) + "%";
             }
-            else
+            else if (Above < Below)
+
             {
                 star.Gravity += 1;
                 message = new Message();
@@ -269,6 +278,7 @@ namespace Nova.Common.Components
                 message.Type = "Terraform";
                 message.Text = star.Name.ToString() + " has increased its Gravity to " + star.Gravity.ToString() + "g\r\n it's value is now " + Math.Ceiling(race.HabValue(star) * 100) + "%";
             }
+            else message = null;
             return star;
         }
 
