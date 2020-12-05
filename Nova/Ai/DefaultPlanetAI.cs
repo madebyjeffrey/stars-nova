@@ -243,9 +243,9 @@ namespace Nova.Ai
         /// </remarks>
         private int BuildColonizer(int productionIndex)
         {
-            if (this.planet.GetResourceRate() > DefaultAIPlanner.LowProduction && this.aiPlan.ColonizerCount < (this.aiPlan.PlanetsToColonize - this.aiPlan.ColonizerCount + 1))
+            if (this.planet.GetResourceRate() > DefaultAIPlanner.LowProduction && this.aiPlan.ColonizerCount < (this.aiPlan.PlanetsToColonize))
             {
-                if (this.aiPlan.ColonizerDesign != null)
+                if ((clientState.EmpireState.TurnYear % 5 ) == 0 && (this.aiPlan.ColonizerDesign != null)) for (int fleet = 1;fleet <10;fleet++) // build colonisers in batches with 5 years between batches so we send only one to each destination and wait 5 years for it to arrive before sending a second one
                 {
                     ProductionOrder colonizerOrder = new ProductionOrder(1, new ShipProductionUnit(this.aiPlan.ColonizerDesign,planet.Name,clientState.EmpireState), false);
                     ProductionCommand colonizerCommand = new ProductionCommand(CommandMode.Add, colonizerOrder, this.planet.Key, productionIndex);

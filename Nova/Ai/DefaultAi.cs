@@ -226,17 +226,15 @@ namespace Nova.Ai
                 {
                     if (report.Year != Global.Unset && clientState.EmpireState.Race.HabitalValue(report) > 0 && report.Owner == Global.Nobody)
                     {
-                        if (colonyShipsFleets.Count > 0)
+                        foreach (Fleet fleet in colonyShipsFleets) if (fleet.canReach(report, clientState.EmpireState.Race) && (fleet.Waypoints.Count < 2))
                         {
-                            Fleet colonyFleet = colonyShipsFleets[0];
                             // send fleet to colonise
-                            fleetAIs[colonyFleet.Id].Colonise(report);
-                            colonyShipsFleets.RemoveAt(0);
+                            fleetAIs[fleet.Id].Colonise(report);
+                           // colonyShipsFleets.RemoveAt(0);
                             if (colonyShipsFleets.Count == 0)
                             {
                                 break;
                             }
-                            colonyFleet = colonyShipsFleets[0];
                         }
                     }
                 }

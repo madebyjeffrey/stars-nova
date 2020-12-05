@@ -1040,7 +1040,7 @@ namespace Nova.Common
         {
             double distancePerYear = (this.SlowestEngine * this.SlowestEngine);
             double fuelPerYear = FuelConsumptionWhenFull(SlowestEngine, race);
-            return (FuelAvailable * fuelPerYear * distancePerYear);
+            return (FuelAvailable / fuelPerYear * distancePerYear);
         }
 
     }

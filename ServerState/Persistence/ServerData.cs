@@ -566,23 +566,26 @@ namespace Nova.Server
                 AllStars[key].Starbase = null;
             }
 
-            // Get fleets out of limbo.
             foreach (EmpireData empire in AllEmpires.Values)
             {
-                if (empire.TemporaryFleets.Count > 0)
+                List<long> deletedFleets = new List<long>();
+                foreach (Fleet newFleet in empire.OwnedFleets.Values)
                 {
-                    foreach (Fleet newFleet in empire.TemporaryFleets)
-                    {
-                        empire.AddOrUpdateFleet(newFleet);
-                        if ((newFleet.TurnYear > 0) && (newFleet.Name == "S A L V A G E"))
-                        {// TODO find what Stars! equations are for this
-                            newFleet.Cargo.Ironium = newFleet.Cargo.Ironium * 7 / 10;
-                            newFleet.Cargo.Boranium = newFleet.Cargo.Boranium * 7 / 10;
-                            newFleet.Cargo.Germanium = newFleet.Cargo.Germanium * 7 / 10;
-                            if (TurnYear - newFleet.TurnYear > 3) empire.TemporaryFleets.Remove(newFleet);
+                    empire.AddOrUpdateFleet(newFleet);
+                    if ((newFleet.TurnYear > 0) && (newFleet.Name == "S A L V A G E"))
+                    {// TODO find what Stars! equations are for this
+                        newFleet.Cargo.Ironium = newFleet.Cargo.Ironium * 7 / 10;
+                        newFleet.Cargo.Boranium = newFleet.Cargo.Boranium * 7 / 10;
+                        newFleet.Cargo.Germanium = newFleet.Cargo.Germanium * 7 / 10;
+                        if (TurnYear - newFleet.TurnYear > 3)
+                        {
+                            deletedFleets.Add(newFleet.Key);
                         }
                     }
-                    //empire.TemporaryFleets.Clear();   ///just a guess but do we want these to hang around forever?
+                }
+                foreach (long key in deletedFleets)
+                {
+                    empire.RemoveFleet(empire.OwnedFleets[key]);
                 }
             }
         }
