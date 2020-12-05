@@ -643,7 +643,9 @@ namespace Nova.Common.Components
             }
             Weapons.Clear();
             Summary.Properties.Clear(); // StarMapInitialiser.prepareDesign cs.Update enters here with Summary.Properties.engine containing a hullAfinity so clear the whole thing every time  
-                                        // May be just an initialisation problem with Summary.Properties?
+            StandardMines = new MineLayer();                            // May be just an initialisation problem with Summary.Properties?
+            HeavyMines = new MineLayer();
+            SpeedBumbMines = new MineLayer();
             // Start by copying the basic properties of the hull
             Summary = new Component(Blueprint);
 
