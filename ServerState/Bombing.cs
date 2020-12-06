@@ -27,47 +27,38 @@ namespace Nova.Server
     using Nova.Common;
     using Nova.Common.Components;
     using Nova.Server;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Deal with bombing.
     /// </summary>
     public class Bombing
     {
-        private ServerData serverState;
-        
-        public Bombing(ServerData serverState)
-        {
-            this.serverState = serverState;
-        }
+
 
         /// <summary>
         /// See if we can bomb the planet.
         /// </summary>
         /// <param name="fleet">Potential bombing fleet.</param>
         /// <param name="star">Potential bombing target.</param>
-        public Message Bomb(Fleet fleet, Star star)
+         public List <Message> Bomb(Fleet fleet, Star star)
         {
+            List<Message> messageOut = new List<Message>();
+            int previousOwer = star.Owner;
             // The fleet is in orbit around a planet. If it has no colonists or
             // has a starbase then to do nothing here (we'll leave anything else
             // to the battle engine.
 
             if (star.Colonists == 0 || star.Starbase != null)
             {
-                return null;
-            }
-
-            // See if this is an enemy planet. If not, leave it alone.
-
-            if (!serverState.AllEmpires[fleet.Owner].IsEnemy(star.Owner))
-            {
-                return null;
+                return messageOut;
             }
 
             // If we don't have bombers then there is nothing more to do here
 
             if (fleet.HasBombers == false)
             {
-                return null;
+                return messageOut;
             }
 
             // Get the summary information
@@ -147,14 +138,14 @@ namespace Nova.Server
 
             Message lamb = new Message();
             lamb.Text = messageText;
-            lamb.Audience = star.Owner;
-            serverState.AllMessages.Add(lamb);
+            lamb.Audience = previousOwer;
+            messageOut.Add(lamb);
 
             Message wolf = new Message();
             wolf.Text = messageText;
             wolf.Audience = fleet.Owner;
-            serverState.AllMessages.Add(wolf);
-            return wolf;
+            messageOut.Add(wolf);
+            return messageOut;
         }
     }
 }

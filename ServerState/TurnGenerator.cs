@@ -79,7 +79,7 @@ namespace Nova.Server
             if (GameSettings.Data.UseRonBattleEngine) ronBattleEngine = new RonBattleEngine(this.serverState, new List <BattleReport>());
             else battleEngine = new BattleEngine(this.serverState, new List<BattleReport>());
 
-            bombing = new Bombing(this.serverState);
+//            bombing = new Bombing(ref this.serverState);
             checkForMinefields = new CheckForMinefields(this.serverState);
             manufacture = new Manufacture(this.serverState);
             scores = new Scores(this.serverState);

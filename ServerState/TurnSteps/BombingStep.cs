@@ -13,14 +13,19 @@ namespace Nova.Server.TurnSteps
         public List<Message> Process(ServerData serverState)
         {
             List<Message> messages = new List<Message>();
-            Bombing bombing = new Bombing(serverState);
 
             foreach (Fleet fleet in serverState.IterateAllFleets())
             {
                 if (fleet.InOrbit != null && fleet.HasBombers)
-                {
-                    messages.Add( bombing.Bomb(fleet, serverState.AllStars[fleet.InOrbit.Name]));
-                }
+                    if (fleet.InOrbit != null)
+                    {
+                        Star star = serverState.AllStars[fleet.InOrbit.Name];
+                        if (serverState.AllEmpires[fleet.Owner].IsEnemy(star.Owner))
+                        {
+                            Bombing bombing = new Bombing();
+                            messages.AddRange(bombing.Bomb(fleet, star));
+                        }
+                    }
             }
          return messages;
        }
