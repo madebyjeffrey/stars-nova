@@ -254,6 +254,7 @@ namespace Nova.Common.Waypoints
                 star.Mines = 0;
                 star.Factories = 0;
                 star.Owner = Global.Nobody;
+                star.ThisRace = null;
             }
             if (Messages.Count > 0) messageOut = Messages[0];
             else messageOut = null;

@@ -142,6 +142,7 @@ namespace Nova.Server
                 star.Mines = 0;
                 star.Factories = 0;
                 star.Owner = Global.Nobody;
+                star.ThisRace = null; 
             }
 
             Message lamb = new Message();

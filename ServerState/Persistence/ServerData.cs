@@ -395,7 +395,11 @@ namespace Nova.Server
                 if (star.ThisRace != null)
                 {
                     // Redundant, but works to check if race is valid...
-                    if (star.Owner == AllEmpires[star.Owner].Id)
+                    if (star.Owner == Global.Nobody)
+                    {
+                        star.ThisRace = null;
+                    }
+                    else if (star.Owner == AllEmpires[star.Owner].Id)
                     {
                         star.ThisRace = AllRaces[star.ThisRace.Name];
                     }
