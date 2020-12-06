@@ -20,7 +20,7 @@ namespace Nova.Server.TurnSteps
                     if (fleet.InOrbit != null)
                     {
                         Star star = serverState.AllStars[fleet.InOrbit.Name];
-                        if (serverState.AllEmpires[fleet.Owner].IsEnemy(star.Owner))
+                        if ((star.Owner != Global.Nobody)&&(serverState.AllEmpires[fleet.Owner].IsEnemy(star.Owner)))
                         {
                             Bombing bombing = new Bombing();
                             messages.AddRange(bombing.Bomb(fleet, star));
