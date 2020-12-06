@@ -56,7 +56,6 @@ namespace Nova.Server
         private IntelWriter intelWriter;
         private BattleEngine battleEngine;
         private RonBattleEngine ronBattleEngine;
-        private Bombing bombing;
         private CheckForMinefields checkForMinefields;
         private Manufacture manufacture;
         private Scores scores;

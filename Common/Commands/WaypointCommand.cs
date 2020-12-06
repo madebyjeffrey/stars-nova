@@ -192,12 +192,21 @@ namespace Nova.Common.Commands
                     return null;
                 case CommandMode.Edit:
                     if (empire.OwnedFleets[FleetKey].Waypoints.Count > Index) empire.OwnedFleets[FleetKey].Waypoints.RemoveAt(Index);
-                    else empire.OwnedFleets[FleetKey].Waypoints.RemoveAt(Index-1);  // TODO (priority 8) the code that sent this Waypoint.Edit command sent a bad index and must be fixed 
+                    else
+                    {
+                        if (Global.Debug) Report.Information("the code that sent this Waypoint.Edit command sent a bad index and must be fixed , task = " + Waypoint.Task.ToString());
+                        empire.OwnedFleets[FleetKey].Waypoints.RemoveAt(Index - 1);  // TODO (priority 8) the code that sent this Waypoint.Edit command sent a bad index and must be fixed 
+                    }
                     if (empire.OwnedFleets[FleetKey].Waypoints.Count > Index)
                     {
                         empire.OwnedFleets[FleetKey].Waypoints.Insert(Index, Waypoint);
                     }
-                    else empire.OwnedFleets[FleetKey].Waypoints.Add(Waypoint); //Waypoint.Insert[Insert] past the end of the list is an Add
+                    else
+                    {
+                        empire.OwnedFleets[FleetKey].Waypoints.Add(Waypoint); //Waypoint.Insert[Insert] past the end of the list is an Add
+                        if (Global.Debug) Report.Information("Waypoint.Insert[Insert] past the end of the list is an Add  task = " + Waypoint.Task.ToString());
+
+                    }
                     return null;
             }
             return null;
@@ -338,7 +347,7 @@ namespace Nova.Common.Commands
             bool found = false;
             while ((!found) && (index <= theIndex))
             {
-                found = (fleet.Waypoints[index].Destination != destination);
+                found = ( !(fleet.Waypoints[index].Task is SplitMergeTask) && !(fleet.Waypoints[index].Task is CargoTask));
                 index++;
             }
             return !found;

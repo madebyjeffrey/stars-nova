@@ -195,7 +195,7 @@ namespace Nova.ControlLibrary
                     bool found = false;
                     while ((!found) && (index < fleet.Waypoints.Count))
                     {
-                        found = (fleet.Waypoints[index].Destination != destination);
+                        found = ( !(fleet.Waypoints[index].Task is SplitMergeTask) && !(fleet.Waypoints[index].Task is CargoTask));
                         index++;
                     }
 

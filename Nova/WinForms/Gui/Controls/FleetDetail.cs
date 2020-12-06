@@ -33,6 +33,7 @@ namespace Nova.WinForms.Gui
     using Nova.ControlLibrary;
     using Nova.WinForms.Gui.Dialogs;
     using Common.DataStructures;
+    using Nova.Common.Components;
 
     /// <Summary>
     /// Ship Detail display panel.
@@ -108,9 +109,19 @@ namespace Nova.WinForms.Gui
             // Determine the color of the brush to draw each item based 
             // on the index of the item to draw.
             bool isWaypoint0 = true;
-            for (int i = 0; i <= e.Index; i++) if ((wayPoints.Items[0] as Waypoint).Destination != (wayPoints.Items[e.Index] as Waypoint).Destination) isWaypoint0 = false;
-            if (e.Index == 0) wpBrush = System.Drawing.Brushes.BlueViolet;
-            else if (isWaypoint0) wpBrush = System.Drawing.Brushes.LightGray;
+            for (int i = 0; i <= e.Index; i++)
+            {
+                bool nextIsWaypointZero = false;
+                if (wayPoints.Items.Count > i + 1)
+                {
+                    nextIsWaypointZero = ((wayPoints.Items[0] as Waypoint).Destination != (wayPoints.Items[i + 1] as Waypoint).Destination);
+                }
+                bool IsNotNoTaskAtWaypoint0 = (((wayPoints.Items[0] as Waypoint).Destination == (wayPoints.Items[i] as Waypoint).Destination)
+                    && !(topFleet.Waypoints[i].Task is NoTask));
+                bool IsWaypoint0AndNextWaypoint0 = (((wayPoints.Items[0] as Waypoint).Destination == (wayPoints.Items[i] as Waypoint).Destination) && nextIsWaypointZero);
+                isWaypoint0 = IsNotNoTaskAtWaypoint0 || IsWaypoint0AndNextWaypoint0;
+            }
+            if (isWaypoint0) wpBrush = System.Drawing.Brushes.LightGray;
             else wpBrush = System.Drawing.Brushes.Black;
 
 
@@ -193,7 +204,7 @@ namespace Nova.WinForms.Gui
             {
                 return;
             }
-
+            WaypointTasks.Enabled = !((topFleet.Waypoints[wayPoints.SelectedIndex].Task is SplitMergeTask) || (topFleet.Waypoints[wayPoints.SelectedIndex].Task is CargoTask))  ;
             int index = wayPoints.SelectedIndices[0];
             DisplayLegDetails(index);
             Mappable destination = new Mappable((wayPoints.Items[wayPoints.SelectedIndices[0]] as Waypoint).Position);
@@ -471,6 +482,7 @@ namespace Nova.WinForms.Gui
                 Waypoint thisWaypoint = topFleet.Waypoints[index];
 
                 WaypointTasks.Text = thisWaypoint.Task.Name;
+                if (Global.Debug) groupBox3.Text = thisWaypoint.Task.Name; 
 
                 if (topFleet.Waypoints.Count == 1)
                 {
@@ -596,6 +608,18 @@ namespace Nova.WinForms.Gui
                 {
                     fleets.Add(new ComboBoxItem<Fleet>(other.Name, other));
                     fleetsAtLocation[other.Key] = other;
+                }
+            }
+            foreach (FleetIntel other in empireState.FleetReports.Values)
+            {
+                if (topFleet.Position == other.Position && !other.IsStarbase && topFleet.Key != other.Key && other.Name == "S A L V A G E")
+                {
+                    ShipDesign salvage = null;
+                    foreach (ShipDesign design in empireState.Designs.Values) if (design.Name == "S A L V A G E") salvage = design;
+                    ShipToken token = new ShipToken(empireState.Designs[salvage.Key], 1, 1.0);
+                    Fleet salvageFleet = new Fleet(token, other.Position, other.Key);
+                    fleets.Add(new ComboBoxItem<Fleet>(other.Name, salvageFleet));
+                    fleetsAtLocation[other.Key] = salvageFleet;
                 }
             }
 
@@ -799,7 +823,7 @@ namespace Nova.WinForms.Gui
                     bool found = false;
                     while ((!found) && (index < topFleet.Waypoints.Count))
                     {
-                        found = (topFleet.Waypoints[index].Destination != destination);
+                        found = ( !(topFleet.Waypoints[index].Task is SplitMergeTask) && !(topFleet.Waypoints[index].Task is CargoTask));
                         index++;
                     }
                     if (found) index--;
@@ -1036,7 +1060,7 @@ namespace Nova.WinForms.Gui
             bool found = false;
             while ((!found) && (wpindex < fleet.Waypoints.Count))
             {
-                found = (fleet.Waypoints[wpindex].Destination != here);
+                found = ( !(fleet.Waypoints[wpindex].Task is SplitMergeTask) && !(fleet.Waypoints[wpindex].Task is CargoTask));
                 wpindex++;
             }
             if (found) wpindex--;

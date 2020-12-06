@@ -216,13 +216,13 @@ namespace Nova.Common.Waypoints
 
             if (target.Type == ItemType.Fleet)
             {
-                if (sender.OwnedFleets.ContainsKey(target.Key))
+                if ((sender.OwnedFleets.ContainsKey(target.Key)) || (target.Name == "S A L V A G E"))
                 {
-                    Fleet other = sender.OwnedFleets[target.Key];
-
+                    Fleet other = null;
+                    if ((sender.OwnedFleets.ContainsKey(target.Key)))   other = sender.OwnedFleets[target.Key];
+                    else other = receiver.OwnedFleets[target.Key];
                     if ((Math.Abs(other.Position.X - fleet.Position.X) > 1) || (Math.Abs(other.Position.Y - fleet.Position.Y) > 1))
                     {
-
                         Message message = new Message();
                         message.Audience = fleet.Owner;
                         message.FleetID = fleet.Id;
@@ -233,7 +233,6 @@ namespace Nova.Common.Waypoints
                         return false;
                     }
                 }
-
             }
             messageOut = null;
             return true;
@@ -358,9 +357,11 @@ namespace Nova.Common.Waypoints
             }
             else if (target.Type == ItemType.Fleet)
             {
-                if (sender.OwnedFleets.ContainsKey(target.Key))
+                if ((sender.OwnedFleets.ContainsKey(target.Key)) || (target.Name == "S A L V A G E"))
                 {
-                    Fleet other = sender.OwnedFleets[target.Key];
+                    Fleet other = null;
+                    if (sender.OwnedFleets.ContainsKey(target.Key)) other = sender.OwnedFleets[target.Key];
+                    else other = receiver.OwnedFleets[target.Key];
                     message = new Message();
                     message.Audience = fleet.Owner;
                     message.FleetID = fleet.Id;
