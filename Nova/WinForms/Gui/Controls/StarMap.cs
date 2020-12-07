@@ -34,7 +34,7 @@ namespace Nova.WinForms.Gui
     using Nova.Common.Commands;
     using Nova.Common.DataStructures; 
     using Nova.Common.Waypoints;
-
+    using System.Collections.Generic;
     /// <Summary>
     /// StarMap is the control which holds the actual playing map. 
     /// </Summary>
@@ -97,6 +97,9 @@ namespace Nova.WinForms.Gui
         private const double MinZoom = 0.2;
         private const double MaxZoom = 5;
 
+
+        private Dictionary<int, Bitmap> transparentRaceIcons = new Dictionary<int, Bitmap>();
+        private Dictionary<int, Bitmap> redRaceIcons = new Dictionary<int, Bitmap>();
         /// <Summary>
         /// Initializes a new instance of the StarMap class.
         /// </Summary>
@@ -150,6 +153,20 @@ namespace Nova.WinForms.Gui
 
             zoomFactor = 1.0;
             Zoom();
+            Bitmap trans = new Bitmap (Posturize(clientState.EmpireState.Race.Icon.Image));
+            trans.MakeTransparent();
+            transparentRaceIcons.Add(clientState.EmpireState.Id, trans);
+            Bitmap red = new Bitmap (PosturizeRed(clientState.EmpireState.Race.Icon.Image));
+            redRaceIcons.Add(clientState.EmpireState.Id, red);
+            foreach (EmpireIntel empire in clientState.EmpireState.EmpireReports.Values)
+            {
+                trans = new Bitmap(Posturize(empire.Icon.Image));
+                trans.MakeTransparent();
+                transparentRaceIcons.Add(empire.Id, trans);
+                red = new Bitmap(PosturizeRed(empire.Icon.Image));
+                redRaceIcons.Add(empire.Id, red);
+            }
+
         }
         public void reinitialize(ClientData clientState)
         {
@@ -401,12 +418,8 @@ namespace Nova.WinForms.Gui
         {
             if (influence < 250000) influence = 250000;
             if (influence > 500000) influence = 500000;
-            Bitmap transparent = new Bitmap(icon);
-            Color background = transparent.GetPixel(0, 0);
-            transparent = Posturize(transparent); // TODO on large maps doing this multiple times adds extra overhead
-            transparent.MakeTransparent(background);
             g.DrawImage(
-                transparent,
+                icon,
                 position.X + 5,
                 position.Y - 5 - (float)(icon.Height * zoomFactor / 4.0 * influence / 250000.0)
                 , (float)(icon.Width * zoomFactor / 4.0 * influence / 250000.0)
@@ -416,12 +429,8 @@ namespace Nova.WinForms.Gui
 
         private void DrawFleetRaceIcon(Graphics g, Image icon)  //the identifier for enemy fleets
         {
-            Bitmap transparent = new Bitmap(icon);
-            Color background = transparent.GetPixel(0, 0);
-            transparent = PosturizeRed(transparent); // TODO on large maps doing this multiple times adds extra overhead
-            //transparent.MakeTransparent(background);
             g.DrawImage(
-                transparent,
+                icon,
                 (float)(icon.Height * zoomFactor / 8.0),
                  0 - (float)(icon.Height * zoomFactor / 16.0)
                 , (float)(icon.Width * zoomFactor / 8.0 )
@@ -463,12 +472,8 @@ namespace Nova.WinForms.Gui
         private void DrawIconRed(Graphics g, Image icon)
         {
 
-            Bitmap transparent = new Bitmap(icon);
-            Color background = transparent.GetPixel(0, 0);
-            transparent = PosturizeRed(transparent); // TODO on large maps doing this multiple times adds extra overhead
-            //transparent.MakeTransparent(background);
             g.DrawImage(
-                transparent,
+                icon,
                 0,
                 0 - (float)(icon.Height * zoomFactor / 4.0)
                 , (float)(icon.Width * zoomFactor / 4.0)
@@ -479,10 +484,6 @@ namespace Nova.WinForms.Gui
         private void DrawEnemyIcon(Graphics g, Image icon)
         {
 
-            Bitmap transparent = new Bitmap(icon);
-            Color background = transparent.GetPixel(0, 0);
-            transparent = Posturize(transparent); // TODO on large maps doing this multiple times adds extra overhead
-            transparent.MakeTransparent(background);
             int size = (int)(icon.Width * zoomFactor / 3.0);
             g.DrawEllipse(
                 new Pen(Color.Yellow,(float)(8 * zoomFactor / 3.0))
@@ -506,7 +507,7 @@ namespace Nova.WinForms.Gui
                 , size);
 
             g.DrawImage(
-                transparent
+                icon
                 , -(float)(icon.Width * zoomFactor / 8.0)
                 , -(float)(icon.Width * zoomFactor / 8.0)
                 , (float)(icon.Width * zoomFactor / 4.0)
@@ -632,7 +633,7 @@ namespace Nova.WinForms.Gui
                      if (report.Owner != clientState.EmpireState.Id)
                     {
                         g.TranslateTransform(position.X, position.Y);
-                        DrawFleetRaceIcon(g, clientState.EmpireState.EmpireReports[report.Owner].Icon.Image);
+                        DrawFleetRaceIcon(g, redRaceIcons[report.Owner]);
                         g.ResetTransform();
                     }
 
@@ -692,8 +693,7 @@ namespace Nova.WinForms.Gui
                 FillCircleMinMax(g, starBrushMin, starBrushMax ,(Point)position, Math.Abs( minValue), Math.Abs(maxValue));
                 if (report.Owner != Global.Nobody)
                 {
-                    if (report.Owner == clientState.EmpireState.Id) DrawRaceIcon(g, race.Icon.Image, (Point)position, report.Colonists);
-                    else DrawRaceIcon(g, clientState.EmpireState.EmpireReports[report.Owner].Icon.Image, (Point)position, report.Colonists);
+                    DrawRaceIcon(g, transparentRaceIcons[report.Owner], (Point)position, report.Colonists);
                 }
             }
 
