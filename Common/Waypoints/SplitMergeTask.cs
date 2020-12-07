@@ -205,13 +205,24 @@ namespace Nova.Common.Waypoints
         }
         
         
-        /// <inheritdoc />
+        /// <summary>
+        /// Performs three functions 
+        /// 1/ Move one or more tokens from Fleet A to Fleet B
+        /// 2/ Merge two fleets together
+        /// 3/ split one fleet into two
+        /// </summary>
+        /// <param name="fleet"></param> When splitting a fleet this is the composition of this Fleet after the split 
+        /// <param name="target"></param> When splitting this is ignored 
+        /// <param name="sender"></param> Sender empire
+        /// <param name="receiver"></param> receiver empire (to allow expansion where fleet exchange with another empire is allowed)
+        /// <param name="message"></param> 
+        /// <returns></returns>
         public bool Perform(Fleet fleet, Item target, EmpireData sender, EmpireData receiver,out Message message)
         { 
             Fleet secondFleet = null;
             
             // Look for an appropiate fleet for a merge.
-            if (OtherFleetKey != 0)
+            if ((OtherFleetKey != 0) && (OtherFleetKey != Global.Unset))
             {
                 // This allows to merge with other empires if desired at some point.
                 if (receiver != null && receiver.OwnedFleets.ContainsKey(OtherFleetKey))
@@ -225,20 +236,19 @@ namespace Nova.Common.Waypoints
                 }
             }
             
-            // Found fleet => Merge            
-            if (secondFleet != null)
+                   
+            if ((secondFleet == null) && (OtherFleetKey != Global.Unset))  //Simple merge where all fleets end up in the same Fleet
             {
                 MergeFleets(fleet, secondFleet);
             }
-            else
+            else if (OtherFleetKey != Global.Unset)          // It's a complex swap where tokens come from 2 fleets and we end up with 2 Fleets
             {
-                // Else it's a split. Need a new fleet so clone original
-                // and change stuff.
+                ReassignShips(fleet, secondFleet, sender.PeekFleetKey());
+            }
+            else           // Else it's a split. Need a new fleet so clone original and change stuff.
+            {
                 secondFleet = sender.MakeNewFleet(fleet);
-            
                 ReassignShips(fleet, secondFleet,sender.PeekFleetKey());
-
- 
                 // Now send new Fleets to limbo pending inclusion.
                 sender.TemporaryFleets.Add(secondFleet);                
             }

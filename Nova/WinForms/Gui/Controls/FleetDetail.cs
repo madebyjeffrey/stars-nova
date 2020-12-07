@@ -139,6 +139,7 @@ namespace Nova.WinForms.Gui
         /// <param name="e">A <see cref="EventArgs"/> that contains the event data.</param>
         private void WaypointSpeedChanged(object sender, System.EventArgs e)
         {
+            //TODO (priority 8) The last edit of this waypoint could be dozens of commands ago so we can't POP it and we may need an insert instead of an edit? 
             warpText.Text = "Warp " + warpFactor.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
             if (wayPoints.SelectedItems.Count > 0)
@@ -1072,7 +1073,7 @@ namespace Nova.WinForms.Gui
             waypoint.Task = new SplitMergeTask(
                 LeftComposition,
                 RightComposition,
-                0);
+                Global.Unset);
             WaypointCommand command = new WaypointCommand(CommandMode.Insert, fleet.Key, wpindex);
 
 
