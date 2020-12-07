@@ -221,9 +221,10 @@ namespace Nova.Ai
                     // fill up space left after G
                     int colonistsToLoadKt = this.fleet.TotalCargoCapacity - germaniumToLoad;
                     // but do not take the Star below 250,000 (max % growth)
-                    colonistsToLoadKt = System.Math.Min(colonistsToLoadKt, (ourStar.Colonists - 250000) / Nova.Common.Global.ColonistsPerKiloton);
+                    colonistsToLoadKt = System.Math.Min(colonistsToLoadKt, (ourStar.Colonists - 500000) / Nova.Common.Global.ColonistsPerKiloton);
+                    colonistsToLoadKt = System.Math.Max(colonistsToLoadKt, (ourStar.Colonists - 250000) / 2 / Nova.Common.Global.ColonistsPerKiloton);
                     // ensure we load at least 1 kT of colonists
-                    colonistsToLoadKt = System.Math.Max(colonistsToLoadKt, 10);
+                    colonistsToLoadKt = System.Math.Max(colonistsToLoadKt, 1000);
 
                     // load up
                     CargoTask wpTask = new CargoTask();

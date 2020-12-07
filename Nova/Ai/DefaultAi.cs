@@ -147,6 +147,10 @@ namespace Nova.Ai
             }
         }
 
+        /// <summary>
+        /// Similar to early scouting but send fleets to prime stars to verify that they are still OK and scout any stars that our early scouts 
+        /// failed to reach (scouts may have been killed by other races)
+        /// </summary>
         private void HandleArmedScouting()
         {
             List<Fleet> armedScoutFleets = new List<Fleet>();
@@ -182,28 +186,49 @@ namespace Nova.Ai
                 }
             }
         }
+
+        /// <summary>
+        /// Look for good targets to send colonisers to and look for any colonisers that could reach that target.
+        /// If we still have colonisers left send them to mediocre targets.
+        /// </summary>
         private void HandleColonizing()
         {
             List<Fleet> colonyShipsFleets = new List<Fleet>();
-            foreach (Fleet fleet in clientState.EmpireState.OwnedFleets.Values)
+            foreach (Fleet fleet in clientState.EmpireState.OwnedFleets.Values)  //find idle colonisers
             {
-                if (fleet.CanColonize == true && ((fleet.Waypoints.Count == 0) || ((fleet.Waypoints.Count == 1) && fleet.Waypoints[0].Task is NoTask && ((fleet.InOrbit != null) && (fleet.InOrbit.Name == fleet.Waypoints[0].Destination)))))
+                if (fleet.CanColonize  && ((fleet.Waypoints.Count == 0) || ((fleet.Waypoints.Count == 1) && fleet.Waypoints[0].Task is NoTask && ((fleet.InOrbit != null) && (fleet.InOrbit.Name == fleet.Waypoints[0].Destination)))))
                 {
                     colonyShipsFleets.Add(fleet);
+                }
+            }
+            List<string> beingColonised = new List<string>();
+            foreach (Fleet fleet in turnData.EmpireState.OwnedFleets.Values)  // ignore Stars that have a coloniser going to them
+            {
+                String destination = "";
+                if (fleet.CanColonize )
+                {
+                    foreach (Waypoint dest in fleet.Waypoints)
+                        if (dest.Task is ColoniseTask) destination = dest.Destination;
+                }
+                if (destination != "")
+                {
+                    clientState.EmpireState.StarReports.TryGetValue(destination, out StarIntel star);
+                    if (star != null) beingColonised.Add(star.Name);
                 }
             }
 
             if (colonyShipsFleets.Count > 0)
             {
-                // check if there is any good star to colonize
+                // check if there is any good stars to colonize
                 foreach (StarIntel report in turnData.EmpireState.StarReports.Values) //Let's cherry pick nice stars first!
                 {
-                    if (report.Year != Global.Unset && clientState.EmpireState.Race.HabitalValue(report) > 0.5 && report.Owner == Global.Nobody && report.mineralRich())
+                    if ((report.Year != Global.Unset && clientState.EmpireState.Race.HabitalValue(report) > 0.5 && report.Owner == Global.Nobody && report.mineralRich())
+                        && (!beingColonised.Contains(report.Name)))
                     {
                         Fleet found = null;
                         foreach (Fleet fleet in colonyShipsFleets)
                         {
-                            if (fleet.canReach(report,clientState.EmpireState.Race))
+                            if (fleet.canReach(report, clientState.EmpireState.Race))
                             {
                                 found = fleet;
                                 break;
@@ -212,7 +237,7 @@ namespace Nova.Ai
                         if (found != null)
                         {
                             // send fleet to colonise
-                            fleetAIs[ (colonyShipsFleets[colonyShipsFleets.IndexOf(found)]).Id].Colonise(report);
+                            fleetAIs[(colonyShipsFleets[colonyShipsFleets.IndexOf(found)]).Id].Colonise(report);
                             colonyShipsFleets.RemoveAt(colonyShipsFleets.IndexOf(found));
                         }
                         if (colonyShipsFleets.Count == 0)
@@ -227,17 +252,44 @@ namespace Nova.Ai
                     if (report.Year != Global.Unset && clientState.EmpireState.Race.HabitalValue(report) > 0 && report.Owner == Global.Nobody)
                     {
                         foreach (Fleet fleet in colonyShipsFleets) if (fleet.canReach(report, clientState.EmpireState.Race) && (fleet.Waypoints.Count < 2))
-                        {
-                            // send fleet to colonise
-                            fleetAIs[fleet.Id].Colonise(report);
-                           // colonyShipsFleets.RemoveAt(0);
-                            if (colonyShipsFleets.Count == 0)
                             {
+                                // send fleet to colonise
+                                fleetAIs[fleet.Id].Colonise(report);
                                 break;
                             }
-                        }
                     }
                 }
+            }
+            if (colonyShipsFleets.Count > 0)
+            {                                             //the colonizers apparently can't reach the destination so merge a fueler with the colony ships.
+                List<Fleet> idleRefuelFleets = new List<Fleet>();
+                foreach (Fleet fleet in clientState.EmpireState.OwnedFleets.Values)
+                    if (fleet.Name.Contains(Global.AiRefueler))
+                    {
+                        if (fleet.CanRefuel == false && ((fleet.Waypoints.Count == 0) || ((fleet.Waypoints.Count == 1) && fleet.Waypoints[0].Task is NoTask && ((fleet.InOrbit != null) && (fleet.InOrbit.Name == fleet.Waypoints[0].Destination)))))
+                        {
+                            idleRefuelFleets.Add(fleet);
+                        }
+                    }
+                if (idleRefuelFleets.Count > 0)
+                    foreach (Fleet coloniser in colonyShipsFleets)
+                    {
+                        int index = 0;
+                        while ((idleRefuelFleets.Count > 0) && (coloniser.Position != idleRefuelFleets[index].Position) && (index < idleRefuelFleets.Count -1))
+                        {
+                            index++;
+                        }
+                        if (coloniser.Position == idleRefuelFleets[index].Position)
+                        {
+                            Fleet refueler = idleRefuelFleets[index];
+                            idleRefuelFleets.Remove(refueler);
+                            if (idleRefuelFleets.Count == 0) break;
+                            WaypointCommand command = refueler.merge(coloniser);
+                            clientState.Commands.Push(command);
+                        }
+
+
+                    }
             }
         }
 
@@ -350,7 +402,7 @@ namespace Nova.Ai
                 foreach (Fleet fleet in clientState.EmpireState.OwnedFleets.Values)
                     if (fleet.Name.Contains (Global.AiRefueler))
                 {
-                    if (fleet.CanRefuel == false && ((fleet.Waypoints.Count == 0) || ((fleet.Waypoints.Count == 1) && fleet.Waypoints[0].Task is NoTask && ((fleet.InOrbit != null) && (fleet.InOrbit.Name == fleet.Waypoints[0].Destination)))) )
+                    if (fleet.CanRefuel == false && ((fleet.Waypoints.Count == 0) || ((fleet.Waypoints.Count == 1) && fleet.Waypoints[0].Task is NoTask && ((fleet.InOrbit != null) && (fleet.InOrbit.Name == fleet.Waypoints[0].Destination)))) && (!fleet.CanColonize))
                     {
                         idleRefuelFleets.Add(fleet);
                     }

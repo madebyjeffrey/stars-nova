@@ -41,19 +41,19 @@ namespace Nova.Common
     /// </summary>
     [Serializable]
     public class Fleet : Mappable
-    {   
+    {
         /// <summary>
         /// Holds the ship tokens in the format "ShipDesign, Quantity, Damage%".
         /// </summary>
-        private Dictionary<long, ShipToken> tokens  = new Dictionary<long, ShipToken>();
-        public List<Waypoint> Waypoints   = new List<Waypoint>();
+        private Dictionary<long, ShipToken> tokens = new Dictionary<long, ShipToken>();
+        public List<Waypoint> Waypoints = new List<Waypoint>();
 
         /// <summary>
         /// The cargo carried by the entire fleet. 
         /// To avoid issues with duplication cargo is tracked at the fleet level only.
         /// </summary>
-        public Cargo Cargo = new Cargo(); 
-        
+        public Cargo Cargo = new Cargo();
+
         public Mappable InOrbit = null;
         public double Bearing = 0;
         public double Cloaked = 0;
@@ -62,9 +62,9 @@ namespace Nova.Common
         public string BattlePlan = "Default";
         public int maxPopulation = 1000000; //TODO when Race.HasTrait = "AR" starbases have different max populations
         public int TurnYear = -1;  // If Fleet.Name = "Salvage" then decrease the cargo every year for three years then destroy it
-        public enum TravelStatus 
-        { 
-            Arrived, InTransit 
+        public enum TravelStatus
+        {
+            Arrived, InTransit
         }
 
         /// <summary>
@@ -282,7 +282,7 @@ namespace Nova.Common
                 return false;
             }
         }
-        
+
         /// <summary>
         /// Return the mass of a fleet.
         /// </summary>
@@ -327,21 +327,21 @@ namespace Nova.Common
         public int PenScanRange(Race race, EmpireData empire)
         {
 
-                int penRange = 0;
-                if ((race.HasTrait("JOAT")) && ((this.Name.Contains("Scout")) || (Name.Contains("Frigate")) || (Name.Contains("Destroyer")))) penRange = 10 * empire.ResearchLevels[TechLevel.ResearchField.Electronics];
+            int penRange = 0;
+            if ((race.HasTrait("JOAT")) && ((this.Name.Contains("Scout")) || (Name.Contains("Frigate")) || (Name.Contains("Destroyer")))) penRange = 10 * empire.ResearchLevels[TechLevel.ResearchField.Electronics];
 
-                
-                foreach (ShipToken token in tokens.Values)
+
+            foreach (ShipToken token in tokens.Values)
+            {
+                if (token.Design.ScanRangePenetrating > penRange)
                 {
-                    if (token.Design.ScanRangePenetrating > penRange)
-                    {
-                        penRange = token.Design.ScanRangePenetrating;
-                    }
+                    penRange = token.Design.ScanRangePenetrating;
                 }
-                return penRange;
-           
+            }
+            return penRange;
+
         }
-        
+
         /// <summary>
         /// Return the non penetrating range scan capability of the fleet.
         /// FIXME (priority 4) - scanning capability can be additive (but the formula is non-linear).
@@ -350,16 +350,16 @@ namespace Nova.Common
         {
 
             int scanRange = 0;
-            if ((race.HasTrait("JOAT")) && ((this.Name.Contains("Scout")) || (Name.Contains( "Frigate")) || (Name.Contains("Destroyer")))) scanRange = 20 * empire.ResearchLevels[TechLevel.ResearchField.Electronics];
+            if ((race.HasTrait("JOAT")) && ((this.Name.Contains("Scout")) || (Name.Contains("Frigate")) || (Name.Contains("Destroyer")))) scanRange = 20 * empire.ResearchLevels[TechLevel.ResearchField.Electronics];
 
             foreach (ShipToken token in tokens.Values)
+            {
+                if (token.Design.ScanRangeNormal > scanRange)
                 {
-                    if (token.Design.ScanRangeNormal > scanRange)
-                    {
-                        scanRange = token.Design.ScanRangeNormal;
-                    }
+                    scanRange = token.Design.ScanRangeNormal;
                 }
-                return scanRange;
+            }
+            return scanRange;
 
         }
 
@@ -459,16 +459,16 @@ namespace Nova.Common
             }
         }
 
-        
+
         /// <summary>
         /// Placeholder constructor - Fleet should be replaced by a reference to the fleet with the same Key.
         /// </summary>
-        public Fleet(long newKey) 
-        { 
-            Key = newKey; 
+        public Fleet(long newKey)
+        {
+            Key = newKey;
         }
 
-        
+
         /// <summary>
         /// Fleet construction for unit testing and stack creation during a battle.
         /// </summary>
@@ -482,7 +482,7 @@ namespace Nova.Common
             Id = id;
             Position = position;
         }
-        
+
         public Fleet(Fleet copy)
             : base(copy)
         {
@@ -522,23 +522,23 @@ namespace Nova.Common
             tokens.Add(token.Key, token);
 
             FuelAvailable = TotalFuelCapacity;
-            Type          = ItemType.Fleet;
+            Type = ItemType.Fleet;
 
             // Have one waypoint to reflect the fleet's current position and the
             // planet it is in orbit around.
-         
-            Waypoint w    = new Waypoint();      
-            w.Position    = position;
+
+            Waypoint w = new Waypoint();
+            w.Position = position;
             w.Destination = position.ToString();
-            w.WarpFactor  = 0;
+            w.WarpFactor = 0;
 
             Waypoints.Add(w);
 
             // Inititialise the fleet elements that come from the star.
 
-            Position     = position;       
-            InOrbit      = null;                
-            Key          = newKey;    
+            Position = position;
+            InOrbit = null;
+            Key = newKey;
         }
 
 
@@ -567,36 +567,36 @@ namespace Nova.Common
             }
         }
 
-       ///
-/// Calculates the point of interception for one object starting at point
-/// <code>a</code> with speed vector <code>v</code> and another object
-///  starting at point <code>b</code> with a speed of <code>s</code>.
-/// 
-/// @see <a
-///      href="http://jaran.de/goodbits/2011/07/17/calculating-an-intercept-course-to-a-target-with-constant-direction-and-velocity-in-a-2-dimensional-plane/">Calculating
-///      an intercept course to a target with constant direction and velocity
-///      (in a 2-dimensional plane)</a>
-/// 
-/// @param a
-//            start vector of the object to be intercepted
-/// @param v
-///            speed vector of the object to be intercepted
-/// @param b
-///            start vector of the intercepting object
-/// @param s
-///            speed of the intercepting object
-/// @return vector of interception or <code>null</code> if object cannot be
-///         intercepted or calculation fails
-/// 
-/// @author Jens Seiler
-///
-        public NovaPoint calculateInterceptionPoint(NovaPoint a, NovaPoint v,  NovaPoint b,  double s)
+        ///
+        /// Calculates the point of interception for one object starting at point
+        /// <code>a</code> with speed vector <code>v</code> and another object
+        ///  starting at point <code>b</code> with a speed of <code>s</code>.
+        /// 
+        /// @see <a
+        ///      href="http://jaran.de/goodbits/2011/07/17/calculating-an-intercept-course-to-a-target-with-constant-direction-and-velocity-in-a-2-dimensional-plane/">Calculating
+        ///      an intercept course to a target with constant direction and velocity
+        ///      (in a 2-dimensional plane)</a>
+        /// 
+        /// @param a
+        //            start vector of the object to be intercepted
+        /// @param v
+        ///            speed vector of the object to be intercepted
+        /// @param b
+        ///            start vector of the intercepting object
+        /// @param s
+        ///            speed of the intercepting object
+        /// @return vector of interception or <code>null</code> if object cannot be
+        ///         intercepted or calculation fails
+        /// 
+        /// @author Jens Seiler
+        ///
+        public NovaPoint calculateInterceptionPoint(NovaPoint a, NovaPoint v, NovaPoint b, double s)
         {
-             double ox = a.X - b.X;
-             double oy = a.Y - b.Y;
+            double ox = a.X - b.X;
+            double oy = a.Y - b.Y;
 
-             double h1 = v.X * v.X + v.Y * v.Y - s * s;
-             double h2 = ox * v.X + oy * v.Y;
+            double h1 = v.X * v.X + v.Y * v.Y - s * s;
+            double h2 = ox * v.X + oy * v.Y;
             double t;
             if (h1 == 0)
             { // problem collapses into a simple linear equation 
@@ -606,19 +606,19 @@ namespace Nova.Common
             { // solve the quadratic equation
                 double minusPHalf = -h2 / h1;
 
-                 double discriminant = minusPHalf * minusPHalf - (ox * ox + oy * oy) / h1; // term in brackets is h3
+                double discriminant = minusPHalf * minusPHalf - (ox * ox + oy * oy) / h1; // term in brackets is h3
                 if (discriminant < 0)
                 { // no (real) solution then...
                     return null;
                 }
 
-                 double root = Math.Sqrt(discriminant);
+                double root = Math.Sqrt(discriminant);
 
-                 double t1 = minusPHalf + root;
-                 double t2 = minusPHalf - root;
+                double t1 = minusPHalf + root;
+                double t2 = minusPHalf - root;
 
-                 double tMin = Math.Min(t1, t2);
-                 double tMax = Math.Max(t1, t2);
+                double tMin = Math.Min(t1, t2);
+                double tMax = Math.Max(t1, t2);
 
                 t = tMin > 0 ? tMin : tMax; // get the smaller of the two times, unless it's negative
                 if (t < 0)
@@ -628,7 +628,7 @@ namespace Nova.Common
             }
 
             // calculate the point of interception using the found intercept time and return it
-            return new NovaPoint((int)(a.X + t * v.X),(int) (a.Y + t * v.Y));
+            return new NovaPoint((int)(a.X + t * v.X), (int)(a.Y + t * v.Y));
         }
 
         /// <summary>
@@ -640,7 +640,7 @@ namespace Nova.Common
         /// <param name="availableTime">The portion of a year left for travel.</param>
         /// <param name="race">The race this fleet belongs to.</param>
         /// <returns>A TravelStatus indicating arrival or in-transit.</returns>
-        public TravelStatus Move(ref double availableTime, Race race, ref List<Message> messageOut,int targetVelocity,NovaPoint targetVelocityVector)
+        public TravelStatus Move(ref double availableTime, Race race, ref List<Message> messageOut, int targetVelocity, NovaPoint targetVelocityVector)
         {
             List<Message> messages = new List<Message>();
             if (GetTravelStatus() == TravelStatus.Arrived)
@@ -673,22 +673,22 @@ namespace Nova.Common
             // TODO priority 5 stop the Lamb at the intercept point and do the battle there 
             // for now just go to where the lamb will be at the end of it's move and wait for it to arrive  
             NovaPoint targetPosition = new NovaPoint(target.Position);
-            if (targetVelocity != 0 ) // if the target is moving
+            if (targetVelocity != 0) // if the target is moving
             {
                 NovaPoint oneYearsTargetTravel = targetVelocityVector.BattleSpeedVector(targetVelocity); // just normalises the direction vector then multiplies it by the speed to get a speed vector
                 targetPosition += oneYearsTargetTravel;
             }
-            double legDistance = PointUtilities.Distance(Position, targetPosition); 
+            double legDistance = PointUtilities.Distance(Position, targetPosition);
 
             int warpFactor = target.WarpFactor;
             int speed = warpFactor * warpFactor;
-            double speedStars270j = warpFactor * warpFactor + 1 -1.0/(Double)int.MaxValue;
+            double speedStars270j = warpFactor * warpFactor + 1 - 1.0 / (Double)int.MaxValue;
             double targetTime = legDistance / speed;
             double targetTimeStars270j = legDistance / speedStars270j;
             double fuelConsumptionRate = FuelConsumption(warpFactor, race);
             if (warpFactor == 1) fuelConsumptionRate = -1; // From observation of millions of Fleets in Stars! 2.70j
             double fuelTime = targetTime; // Let's say we have enough fuel until we prove that we don't
-            if (fuelConsumptionRate > 0)  fuelTime = FuelAvailable / fuelConsumptionRate;
+            if (fuelConsumptionRate > 0) fuelTime = FuelAvailable / fuelConsumptionRate;
             double travelTime = targetTime;
             if (fuelTime < 0) fuelTime = targetTime; //we're not in Kansas anymore or we are making more fuel than we are using
             // Determine just how long we have available to travel towards the
@@ -709,7 +709,7 @@ namespace Nova.Common
                 travelTime = fuelTime;
                 arrived = TravelStatus.InTransit;
             }
-            
+
             // If we have arrived then the new fleet position is the waypoint
             // target. Otherwise the position is determined by how far we got
             // in the time or fuel available.
@@ -730,12 +730,12 @@ namespace Nova.Common
 
             availableTime -= travelTime;
             int fuelUsed = (int)(fuelConsumptionRate * travelTime);
-            if ((TotalFuelCapacity/FuelAvailable > 2) && (fuelUsed < 0))
+            if ((TotalFuelCapacity / FuelAvailable > 2) && (fuelUsed < 0))
             {
                 Message message = new Message();
                 message.Audience = Owner;
                 message.FleetID = Id;
-                message.Text = "Fleet " + Name + " has generated " + (-1.0*fuelUsed).ToString() +"mg of fuel.";
+                message.Text = "Fleet " + Name + " has generated " + (-1.0 * fuelUsed).ToString() + "mg of fuel.";
                 message.Type = "WarpToChange";
                 message.Event = this;
                 messages.Add(message);
@@ -852,14 +852,14 @@ namespace Nova.Common
         /// loads the requested population into the fleet and send it to the target
         /// 
         /// </summary>
-        public WaypointCommand LoadWaypoint(Star source, int PopulationKT )
+        public WaypointCommand LoadWaypoint(Star source, int PopulationKT)
         {
             // load up
             CargoTask wpTask = new CargoTask();
             wpTask.Mode = CargoMode.Load;
             wpTask.Target = this.InOrbit;
-            wpTask.Amount.ColonistsInKilotons = PopulationKT*3/4;
-            wpTask.Amount.Germanium = PopulationKT/4;
+            wpTask.Amount.ColonistsInKilotons = PopulationKT * 3 / 4;
+            wpTask.Amount.Germanium = PopulationKT / 4;
 
             Waypoint wp = new Waypoint();
             wp.Task = wpTask;
@@ -985,19 +985,19 @@ namespace Nova.Common
             XmlElement xmlelFleet = xmldoc.CreateElement(nodeName);
 
             xmlelFleet.AppendChild(base.ToXml(xmldoc));
-            
+
             if (InOrbit != null)
             {
                 Global.SaveData(xmldoc, xmlelFleet, "InOrbit", InOrbit.Name);
             }
 
             Global.SaveData(xmldoc, xmlelFleet, "Bearing", this.Bearing.ToString(System.Globalization.CultureInfo.InvariantCulture));
-            
+
             if (Cloaked != 0)
             {
                 Global.SaveData(xmldoc, xmlelFleet, "Cloaked", this.Cloaked.ToString(System.Globalization.CultureInfo.InvariantCulture));
             }
-            
+
             Global.SaveData(xmldoc, xmlelFleet, "FuelAvailable", this.FuelAvailable.ToString(System.Globalization.CultureInfo.InvariantCulture));
             Global.SaveData(xmldoc, xmlelFleet, "FuelCapacity", this.TotalFuelCapacity.ToString(System.Globalization.CultureInfo.InvariantCulture));
             Global.SaveData(xmldoc, xmlelFleet, "TargetDistance", this.TargetDistance.ToString(System.Globalization.CultureInfo.InvariantCulture));
@@ -1010,7 +1010,7 @@ namespace Nova.Common
             {
                 Global.SaveData(xmldoc, xmlelFleet, "CargoCapacity", this.TotalCargoCapacity.ToString(System.Globalization.CultureInfo.InvariantCulture));
             }
-            
+
             Global.SaveData(xmldoc, xmlelFleet, "BattlePlan", this.BattlePlan);
 
             xmlelFleet.AppendChild(Cargo.ToXml(xmldoc));
@@ -1024,16 +1024,16 @@ namespace Nova.Common
             foreach (ShipToken token in tokens.Values)
             {
                 xmlelTokens.AppendChild(token.ToXml(xmldoc));
-            }            
+            }
             xmlelFleet.AppendChild(xmlelTokens);
 
             return xmlelFleet;
         }
-        
+
         public FleetIntel GenerateReport(ScanLevel scan, int year)
         {
             FleetIntel report = new FleetIntel(this, scan, year);
-            
+
             return report;
         }
         public double maxDistance(Race race)
@@ -1043,5 +1043,17 @@ namespace Nova.Common
             return (FuelAvailable / fuelPerYear * distancePerYear);
         }
 
+
+        public WaypointCommand merge(Fleet other)
+        {
+            Waypoint waypoint = new Waypoint(this.Waypoints[0]);
+            waypoint.Task = new SplitMergeTask(this.tokens,other.tokens, 0);
+            waypoint.Position = other.Position;
+            waypoint.Destination = this.Waypoints[0].Destination;
+            waypoint.WarpFactor = 0;
+            WaypointCommand command = new WaypointCommand(CommandMode.Add, waypoint, 0);
+            command.FleetKey = Key;
+            return command;
+        }
     }
 }
