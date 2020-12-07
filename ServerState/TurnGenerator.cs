@@ -193,7 +193,7 @@ namespace Nova.Server
                
                 foreach (Fleet fleet in empire.OwnedFleets.Values)
 
-                    if (fleet.InOrbit != null)
+                    if ((fleet.InOrbit != null) && (!fleet.IsStarbase))
                     {
                         this.serverState.AllEmpires[empire.Id].StarReports[fleet.InOrbit.Name].HasFleetsInOrbit = true;
                         if (fleet.Name.Contains(Global.AiRefueler)) this.serverState.AllEmpires[empire.Id].StarReports[fleet.InOrbit.Name].HasRefuelerInOrbit = true;

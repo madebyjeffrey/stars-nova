@@ -320,6 +320,7 @@ namespace Nova.WinForms.Gui
                 }
                 if (radioButtonNovaValue.Checked) DrawStarValue(g, report, clientState.EmpireState.Race, clientState.EmpireState.gravityModCapability, clientState.EmpireState.temperatureModCapability, clientState.EmpireState.radiationModCapability);
                 if (radioButtonNormal.Checked) DrawStarNormal(g, report);
+                if (radioButtonPopulation.Checked) DrawStarPopulation(g, report);
                 if (radioButtonSurfaceMinerals.Checked)
                 {
                     DrawStarNormal(g, report);
@@ -725,7 +726,7 @@ namespace Nova.WinForms.Gui
             // Bigger symbol for explored stars.
 
             if (report.Year == Global.Unset) FillCircle(g, starBrush, (Point)position, size);
-        
+
 
             else
             {
@@ -746,8 +747,39 @@ namespace Nova.WinForms.Gui
                 {
                     starBrushMooshedTogether = Brushes.Yellow;
                 }
-                FillCircleMinMax(g, starBrushMooshedTogether, starBrushMooshedTogether,(Point)position, Math.Abs(maxValue), Math.Abs(maxValue));
+                FillCircleMinMax(g, starBrushMooshedTogether, starBrushMooshedTogether, (Point)position, Math.Abs(maxValue), Math.Abs(maxValue));
 
+            }
+
+
+            // If the Star name display is turned on then add the name
+
+            if (this.displayStarNames && zoomFactor > 0.5)
+            {
+                StringFormat format = new StringFormat();
+                format.Alignment = StringAlignment.Center;
+                g.DrawString(report.Name, this.nameFont, Brushes.White, position.X, position.Y + 5, format);
+            }
+        }
+        private void DrawStarPopulation(Graphics g, StarIntel report)
+        {
+            NovaPoint position = LogicalToDevice(report.Position);
+            int minValue = 2;
+            int maxValue = 2;
+            Brush starBrushPopulation = Brushes.White;
+
+            int size = 2;
+            Brush starBrush = Brushes.White;
+
+            // Bigger symbol for explored stars.
+
+            if (report.Owner == (ushort)Global.Nobody) FillCircle(g, starBrush, (Point)position, size);
+
+            else
+            {
+                if (report.Owner != clientState.EmpireState.Id) starBrushPopulation = Brushes.Red;
+                else starBrushPopulation = Brushes.Green;
+                FillCircle(g, starBrushPopulation, (Point)position, (int)Math.Sqrt(report.Colonists) / 25);
             }
 
 
@@ -1440,6 +1472,7 @@ namespace Nova.WinForms.Gui
                 radioButtonMineralConcentration.Checked = false;
                 radioButtonSurfaceMinerals.Checked = false;
                 radioButtonNovaValue.Checked = false;
+                radioButtonPopulation.Checked = false;
                 RefreshStarMap(this, EventArgs.Empty);
 
             }
@@ -1453,6 +1486,7 @@ namespace Nova.WinForms.Gui
                 radioButtonMineralConcentration.Checked = false;
                 radioButtonSurfaceMinerals.Checked = false;
                 radioButtonNovaValue.Checked = false;
+                radioButtonPopulation.Checked = false;
                 RefreshStarMap(this, EventArgs.Empty);
 
             }
@@ -1467,6 +1501,7 @@ namespace Nova.WinForms.Gui
                 radioButtonNormal.Checked = false;
                 radioButtonSurfaceMinerals.Checked = false;
                 radioButtonNovaValue.Checked = false;
+                radioButtonPopulation.Checked = false;
                 RefreshStarMap(this, EventArgs.Empty);
 
             }
@@ -1481,6 +1516,7 @@ namespace Nova.WinForms.Gui
                 radioButtonMineralConcentration.Checked = false;
                 radioButtonNormal.Checked = false;
                 radioButtonNovaValue.Checked = false;
+                radioButtonPopulation.Checked = false;
                 RefreshStarMap(this, EventArgs.Empty);
 
             }
@@ -1495,6 +1531,21 @@ namespace Nova.WinForms.Gui
                 radioButtonMineralConcentration.Checked = false;
                 radioButtonNormal.Checked = false;
                 radioButtonSurfaceMinerals.Checked = false;
+                radioButtonPopulation.Checked = false;
+                RefreshStarMap(this, EventArgs.Empty);
+
+            }
+
+        }
+        private void radioButtonPopulation_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButtonPopulation.Checked)
+            {
+                radioButtonGrowth.Checked = false;
+                radioButtonMineralConcentration.Checked = false;
+                radioButtonNormal.Checked = false;
+                radioButtonSurfaceMinerals.Checked = false;
+                radioButtonNovaValue.Checked = false;
                 RefreshStarMap(this, EventArgs.Empty);
 
             }
