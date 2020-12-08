@@ -204,8 +204,6 @@ namespace Nova.Common.Commands
                     else
                     {
                         empire.OwnedFleets[FleetKey].Waypoints.Add(Waypoint); //Waypoint.Insert[Insert] past the end of the list is an Add
-                        if (Global.Debug) Report.Information("Waypoint.Insert[Add] past the end of the list is an Add  task = " + Waypoint.Task.ToString());
-
                     }
                     return null;
             }
