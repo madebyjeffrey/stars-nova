@@ -395,7 +395,9 @@ namespace Nova.WinForms.Gui
                     {
                         if ((lastCommand as WaypointCommand).Waypoint.Destination == editedWaypoint.Destination &&
                             (lastCommand as WaypointCommand).Waypoint.Position == editedWaypoint.Position &&
-                            (lastCommand as WaypointCommand).Mode != CommandMode.Add)
+                            (lastCommand as WaypointCommand).Mode != CommandMode.Add &&
+                            (lastCommand as WaypointCommand).Mode != CommandMode.Insert &&
+                            (lastCommand as WaypointCommand).Index == index)
                         {
                             // Discard it.
                             commands.Pop();

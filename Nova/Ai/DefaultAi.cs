@@ -38,7 +38,7 @@ namespace Nova.Ai
         private Intel turnData;
         private FleetList fuelStations = null;
         private DefaultAIPlanner aiPlan = null;
-        
+
         // Sub AIs to manage planets, fleets and stuff
         private Dictionary<string, DefaultPlanetAI> planetAIs = new Dictionary<string, DefaultPlanetAI>();
         private Dictionary<long, DefaultFleetAI> fleetAIs = new Dictionary<long, DefaultFleetAI>();
@@ -63,7 +63,7 @@ namespace Nova.Ai
             {
                 if (star.Owner == clientState.EmpireState.Id)
                 {
-                    clientState.EmpireState.StarReports[star.Name].Update(star, ScanLevel.Owned, clientState.EmpireState.TurnYear,true);
+                    clientState.EmpireState.StarReports[star.Name].Update(star, ScanLevel.Owned, clientState.EmpireState.TurnYear, true);
                     DefaultPlanetAI planetAI = new DefaultPlanetAI(star, clientState, this.aiPlan);
                     planetAIs.Add(star.Key, planetAI);
                 }
@@ -118,8 +118,8 @@ namespace Nova.Ai
             List<Fleet> scoutFleets = new List<Fleet>();
             foreach (Fleet fleet in clientState.EmpireState.OwnedFleets.Values)
             {
-                if ((fleet.Name.Contains("Scout") || (fleet.Name.Contains("Long Range Scout") || (fleet.Name.Contains(Global.AiScout)))) )
-                    {
+                if ((fleet.Name.Contains("Scout") || (fleet.Name.Contains("Long Range Scout") || (fleet.Name.Contains(Global.AiScout)))))
+                {
                     scoutFleets.Add(fleet);
                 }
             }
@@ -168,7 +168,7 @@ namespace Nova.Ai
             {
                 if ((report.Year != Global.Unset) || ((report.MinValue(clientState.EmpireState.Race) < 50)
                     && (report.Owner != clientState.EmpireState.Id) && (report.Owner != Global.Nobody)))
-                    
+
                 {
                     excludedStars.Add(report);
                 }
@@ -196,7 +196,7 @@ namespace Nova.Ai
             List<Fleet> colonyShipsFleets = new List<Fleet>();
             foreach (Fleet fleet in clientState.EmpireState.OwnedFleets.Values)  //find idle colonisers
             {
-                if (fleet.CanColonize  && ((fleet.Waypoints.Count == 0) || ((fleet.Waypoints.Count == 1) && fleet.Waypoints[0].Task is NoTask && ((fleet.InOrbit != null) && (fleet.InOrbit.Name == fleet.Waypoints[0].Destination)))))
+                if (fleet.CanColonize && ((fleet.Waypoints.Count == 0) || ((fleet.Waypoints.Count == 1) && fleet.Waypoints[0].Task is NoTask && ((fleet.InOrbit != null) && (fleet.InOrbit.Name == fleet.Waypoints[0].Destination)))))
                 {
                     colonyShipsFleets.Add(fleet);
                 }
@@ -205,7 +205,7 @@ namespace Nova.Ai
             foreach (Fleet fleet in turnData.EmpireState.OwnedFleets.Values)  // ignore Stars that have a coloniser going to them
             {
                 String destination = "";
-                if (fleet.CanColonize )
+                if (fleet.CanColonize)
                 {
                     foreach (Waypoint dest in fleet.Waypoints)
                         if (dest.Task is ColoniseTask) destination = dest.Destination;
@@ -275,7 +275,7 @@ namespace Nova.Ai
                     foreach (Fleet coloniser in colonyShipsFleets)
                     {
                         int index = 0;
-                        while ((idleRefuelFleets.Count > 0) && (coloniser.Position != idleRefuelFleets[index].Position) && (index < idleRefuelFleets.Count -1))
+                        while ((idleRefuelFleets.Count > 0) && (coloniser.Position != idleRefuelFleets[index].Position) && (index < idleRefuelFleets.Count - 1))
                         {
                             index++;
                         }
@@ -303,8 +303,8 @@ namespace Nova.Ai
             List<Fleet> idleTransportFleets = new List<Fleet>();
             foreach (Fleet fleet in clientState.EmpireState.OwnedFleets.Values)
             {
-                if (fleet.CanColonize == false && 
-                    ((fleet.Waypoints.Count == 0) || ((fleet.Waypoints.Count == 1) && fleet.Waypoints[0].Task is NoTask && ((fleet.InOrbit != null) &&(fleet.InOrbit.Name == fleet.Waypoints[0].Destination)) && fleet.Cargo.Mass == 0 && fleet.TotalCargoCapacity != 0)))
+                if (fleet.CanColonize == false &&
+                    ((fleet.Waypoints.Count == 0) || ((fleet.Waypoints.Count == 1) && fleet.Waypoints[0].Task is NoTask && ((fleet.InOrbit != null) && (fleet.InOrbit.Name == fleet.Waypoints[0].Destination)) && fleet.Cargo.Mass == 0 && fleet.TotalCargoCapacity != 0)))
                 {
                     idleTransportFleets.Add(fleet);
                     if (fleet.TotalCargoCapacity > maxTransportCapacity) maxTransportCapacity = fleet.TotalCargoCapacity;
@@ -318,33 +318,27 @@ namespace Nova.Ai
             }
             foreach (StarIntel star in clientState.EmpireState.StarReports.Values)
             {
-                if ((star.Owner != 0) && (star.Owner != clientState.EmpireState.Id) && (star.Colonists < (maxTransportCapacity/2)) && (star.MinValue(clientState.EmpireState.Race) > 50))    
+                if ((star.Owner != 0) && (star.Owner != clientState.EmpireState.Id) && (star.Colonists < (maxTransportCapacity / 2)) && (star.MinValue(clientState.EmpireState.Race) > 50))
                     underPopulated.Add(star.Name);  //throw in some invade tasks 
             }
-            if (underPopulated.Count >0)
+            if (underPopulated.Count > 0)
             {
                 foreach (Star source in clientState.EmpireState.OwnedStars.Values)
                 {
                     if (source.Capacity(clientState.EmpireState.Race) > 45)   //if more than 50% growth is reduced
                     {
-                        int surplusPopulationKT = (int)((source.Colonists - source.MaxPopulation(clientState.EmpireState.Race) *0.45) / Global.ColonistsPerKiloton); // maintain population at 50% - best growth rate
-                        while (surplusPopulationKT > 0)
-                        {
-                            bool found = false;
-                            List<Fleet> occupiedFleets = new List<Fleet>();
-                            Fleet nextTransport = null;
-                            foreach (Fleet transport in idleTransportFleets)
-                                if (transport.Position == source.Position)
-                                {
-                                    found = true;
-                                    nextTransport = transport;
-                                    break;
-                                }
+                        int surplusPopulationKT = (int)((source.Colonists - source.MaxPopulation(clientState.EmpireState.Race) * 0.45) / Global.ColonistsPerKiloton); // maintain population at 50% - best growth rate
 
-                            if (found) //there is a fleet in orbit so use it
+                        bool found = false;
+                        List<Fleet> occupiedFleets = new List<Fleet>();
+                        Fleet nextTransport = null;
+                        foreach (Fleet transport in idleTransportFleets) if ((transport.Position == source.Position) && (surplusPopulationKT > 0))
                             {
+                                found = true;
+                                nextTransport = transport;
+
                                 foreach (string target in underPopulated)
-                                    if (nextTransport.canCurrentlyReach(clientState.EmpireState.StarReports[target], clientState.EmpireState.Race))
+                                    if (nextTransport.canReach(clientState.EmpireState.StarReports[target], clientState.EmpireState.Race))
                                     {
                                         WaypointCommand loadCargo = null;
                                         if (surplusPopulationKT > nextTransport.TotalCargoCapacity)
@@ -364,36 +358,38 @@ namespace Nova.Ai
                                         if (surplusPopulationKT <= 0) break;
                                         underPopulated.RemoveAt(underPopulated.IndexOf(target)); //send next transport to another planet
                                         break; // nextTransport sent so leave this loop 
+                                        if (underPopulated.Count == 0) surplusPopulationKT = 0;  // no more targets
                                     }
-                                    if (underPopulated.Count == 0) surplusPopulationKT = 0;  // no more targets
                             }
-                            else // there are no fleets in orbit so send one there
-                            {
-                                foreach (Fleet transport in idleTransportFleets)
-                                    if (transport.canCurrentlyReach(clientState.EmpireState.StarReports[source.Name], clientState.EmpireState.Race))
-                                    {
-                                        found = true;
-                                        nextTransport = transport;
-                                        break;
-                                    }
-                                if (found)
+
+
+                        if (surplusPopulationKT > 0) // there are not enough fleets in orbit so send one there
+                        {
+                            foreach (Fleet transport in idleTransportFleets)
+                                if (transport.canCurrentlyReach(clientState.EmpireState.StarReports[source.Name], clientState.EmpireState.Race))
                                 {
-                                    SendFleet(clientState.EmpireState.StarReports[source.Name], nextTransport, new CargoTask());
-                                    surplusPopulationKT = surplusPopulationKT - nextTransport.Cargo.Mass;
-                                    occupiedFleets.Add(nextTransport);
-                                    if (surplusPopulationKT <= 0) break;
+                                    found = true;
+                                    nextTransport = transport;
+                                    break;
                                 }
-                                else
-                                {                   //if not found wait until a better fleet appears
-                                    surplusPopulationKT = 0;
-                                }
+                            if (found)
+                            {
+                                SendFleet(clientState.EmpireState.StarReports[source.Name], nextTransport, new CargoTask());
+                                surplusPopulationKT = surplusPopulationKT - nextTransport.Cargo.Mass;
+                                occupiedFleets.Add(nextTransport);
+                                if (surplusPopulationKT <= 0) break;
                             }
-                            foreach (Fleet occupied in occupiedFleets) idleTransportFleets.Remove(occupied);
+                            else
+                            {                   //if not found wait until a better fleet appears
+                                surplusPopulationKT = 0;
+                            }
                         }
+                        foreach (Fleet occupied in occupiedFleets) idleTransportFleets.Remove(occupied);
                     }
                 }
             }
         }
+    
         private void HandleFuelImpoverishedFleets()
         {
             foreach (Message msg in clientState.Messages)

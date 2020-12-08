@@ -1046,10 +1046,11 @@ namespace Nova.Common
 
         public WaypointCommand merge(Fleet other)
         {
-            Waypoint waypoint = new Waypoint(this.Waypoints[0]);
+            Waypoint waypoint = new Waypoint();
             waypoint.Task = new SplitMergeTask(this.tokens,other.tokens, 0);
             waypoint.Position = other.Position;
-            waypoint.Destination = this.Waypoints[0].Destination;
+            if (this.Waypoints.Count > 0) waypoint.Destination = this.Waypoints[0].Destination;
+            else waypoint.Destination = InOrbit.ToString();
             waypoint.WarpFactor = 0;
             WaypointCommand command = new WaypointCommand(CommandMode.Add, waypoint, 0);
             command.FleetKey = Key;

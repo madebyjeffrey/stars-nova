@@ -56,6 +56,13 @@ namespace Nova.Server.TurnSteps
             public Fleet Fleet { get; }
             public Waypoint Waypoint { get; }
         }
+        /// <summary>
+        /// The CargoTasks and SplitMergeTasks were preProcessed in sequence but not removed (during "ParseCommands") so as to keep the indexes alligned between server and client.
+        /// All that is left now is to remove the already processed waypoints.
+        /// 
+        /// </summary>
+        /// <param name="serverState"></param>
+        /// <returns></returns>
         public List <Message> Process(ServerData serverState)
         {
             List<Message> result = new List<Message>();
@@ -66,7 +73,7 @@ namespace Nova.Server.TurnSteps
                 if (fleet.Waypoints.Count > 0)
                 {
                     WaypointZeroDestination = fleet.Waypoints[0].Destination;
-                    Index = 1;
+                    Index = 0;
                     while ((Index < fleet.Waypoints.Count) && (fleet.Waypoints[Index].Destination == WaypointZeroDestination))
                     {
                         if ((fleet.Waypoints[Index].Task is SplitMergeTask) || (fleet.Waypoints[Index].Task is CargoTask) || (fleet.Waypoints[Index].Task is NoTask))
