@@ -336,7 +336,7 @@ namespace Nova.WinForms.Console
             // consoleTimer
             // 
             this.consoleTimer.Enabled = true;
-            this.consoleTimer.Interval = 5000;
+            this.consoleTimer.Interval = 1000;
             this.consoleTimer.Tick += new System.EventHandler(this.ConsoleTimer_Tick);
             // 
             // playerMenu

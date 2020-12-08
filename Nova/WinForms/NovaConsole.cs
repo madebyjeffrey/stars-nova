@@ -285,6 +285,7 @@ namespace Nova.WinForms.Console
         private void ConsoleTimer_Tick(object sender, EventArgs e)
         {
             // Don't want multiple ticks
+            consoleTimer.Interval = 5000; //First tick at 1000 then 5000 thereafter
             consoleTimer.Enabled = false;
 
             try

@@ -313,12 +313,16 @@ namespace Nova.ControlLibrary
 
                 Tasks[mode].Amount[commodity.Key] = Math.Abs(leftCargo[commodity.Key] - fleet.Cargo[commodity.Key]);
                 Tasks[mode].Target = target;
+
+
             }
+            if (fleet.FuelAvailable >= leftFuel) mode = CargoMode.Unload; else mode = CargoMode.Load;
+            Tasks[mode].mgFuel = (int) Math.Abs(leftFuel - fleet.FuelAvailable);
 
             WaypointCommand command;
             foreach (CargoTask task in Tasks.Values)
             {
-                if (task.Amount.Mass != 0)
+                if ((task.Amount.Mass != 0) || (task.mgFuel != 0))
                 {
                     Waypoint waypoint = new Waypoint(fleet.Waypoints[0]); // copy first Waypoint
                     waypoint.Task = task;

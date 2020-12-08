@@ -67,7 +67,7 @@ namespace Nova.Common.Waypoints
         /// Cargo object representing the amount to Load or Unload.
         /// </summary>
         public Cargo Amount { get; set; }
-
+        public int mgFuel = 0;
 
         /// <summary>
         /// Load or Unload cargo. Mixed operations are represented by more than one Task.
@@ -126,6 +126,9 @@ namespace Nova.Common.Waypoints
                         case "mode":
                             Mode = (CargoMode)Enum.Parse(typeof(CargoMode), mainNode.FirstChild.Value);
                             break;
+                        case "mgfuel":
+                            mgFuel = int.Parse( mainNode.FirstChild.Value);
+                            break;
                     }
                 }
                 catch (Exception e)
@@ -144,7 +147,7 @@ namespace Nova.Common.Waypoints
             Global.SaveData(xmldoc, xmlelTask, "Mode", Mode.ToString());
             if (Target != null) xmlelTask.AppendChild(Target.ToXml(xmldoc));
             xmlelTask.AppendChild(Amount.ToXml(xmldoc));
-
+            if (mgFuel != 0) Global.SaveData(xmldoc, xmlelTask, "mgFuel", mgFuel.ToString());
             return xmlelTask;
         }
 
@@ -306,7 +309,9 @@ namespace Nova.Common.Waypoints
                         Messages.Add(message);
 
                         other.Cargo.Add(Amount);
+                        other.FuelAvailable += mgFuel;
                         fleet.Cargo.Remove(Amount);
+                        fleet.FuelAvailable -= mgFuel;
 
                         return true;
                     }
@@ -369,7 +374,9 @@ namespace Nova.Common.Waypoints
                     message.Text = "Fleet " + fleet.Name + " has transferred cargo from " + other.Name + ".";
                     Messages.Add(message);
                     fleet.Cargo.Add(Amount);
+                    fleet.FuelAvailable += mgFuel;
                     other.Cargo.Remove(Amount);
+                    other.FuelAvailable -= mgFuel;
                     return true;
                 }
                 else
