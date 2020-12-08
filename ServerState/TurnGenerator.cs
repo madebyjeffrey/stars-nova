@@ -125,7 +125,7 @@ namespace Nova.Server
             //the Waypoint Zero commands were applied to the EmpireState during the ParseCommands()
             //but their waypoints have not been removed yet so do that now:
             
-            serverState.AllMessages.AddRange(new SplitFleetStep().Process(serverState));
+            serverState.AllMessages.AddRange(new SplitFleetStep().Process(serverState)); // Remove spent cargo and splitmerge waypoints
 
             serverState.AllMessages.AddRange( new FirstStep().Process(serverState));
             // ToDo: Step 1 --> Scrap Fleet if waypoint 0 order; here, and only here.

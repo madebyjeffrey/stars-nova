@@ -153,17 +153,17 @@ namespace Nova.WinForms.Gui
 
             zoomFactor = 1.0;
             Zoom();
-            Bitmap trans = new Bitmap (Posturize(clientState.EmpireState.Race.Icon.Image));
+            Bitmap trans = Posturize(new Bitmap (clientState.EmpireState.Race.Icon.Image));
             trans.MakeTransparent();
             transparentRaceIcons.Add(clientState.EmpireState.Id, trans);
-            Bitmap red = new Bitmap (PosturizeRed(clientState.EmpireState.Race.Icon.Image));
+            Bitmap red = PosturizeRed(new Bitmap (clientState.EmpireState.Race.Icon.Image));
             redRaceIcons.Add(clientState.EmpireState.Id, red);
             foreach (EmpireIntel empire in clientState.EmpireState.EmpireReports.Values)
             {
-                trans = new Bitmap(Posturize(empire.Icon.Image));
+                trans = Posturize(new Bitmap(empire.Icon.Image));
                 trans.MakeTransparent();
                 transparentRaceIcons.Add(empire.Id, trans);
-                red = new Bitmap(PosturizeRed(empire.Icon.Image));
+                red = PosturizeRed(new Bitmap(empire.Icon.Image));
                 redRaceIcons.Add(empire.Id, red);
             }
 
