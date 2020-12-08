@@ -833,7 +833,7 @@ namespace Nova.WinForms.Gui
                     waypoint.Task = new SplitMergeTask(
                         splitFleet.SourceComposition,
                         splitFleet.OtherComposition,
-                        (otherFleet == null) ? 0 : otherFleet.Key);
+                        (otherFleet == null) ? Global.Unset : otherFleet.Key);
 
                     WaypointCommand command = new WaypointCommand(CommandMode.Insert, topFleet.Key, index);
 

@@ -163,14 +163,12 @@ namespace Nova.Common.Waypoints
         {
             XmlElement xmlelTask = xmldoc.CreateElement("SplitMergeTask");            
             
-            // We are either merging or splitting. For a merge we need two keys (one comes from this waypoint's owner)
-            // and for a split, one key and 2 compositions. Avoid extra XML clutter.
-            if (OtherFleetKey != 0)
-            {
-                // ??? How is a partial merge handled? - Dan 04 May 17
-                Global.SaveData(xmldoc, xmlelTask, "RightKey", OtherFleetKey.ToString("X"));
-            }
-            else
+            // We are either merging or splitting or combining two fleets into 2 fleets of different compositions.
+            // For a merge we need two keys (one comes from this waypoint's owner)
+            // and for a split, one key and 2 compositions. 
+            // and for a splitmerge we need everything
+            Global.SaveData(xmldoc, xmlelTask, "RightKey", OtherFleetKey.ToString("X"));
+            if (OtherFleetKey != 0) 
             {            
                 XmlElement xmlelLeft = xmldoc.CreateElement("LeftComposition");
                 foreach (ShipToken token in LeftComposition.Values)
@@ -221,7 +219,7 @@ namespace Nova.Common.Waypoints
         { 
             Fleet secondFleet = null;
             
-            // Look for an appropiate fleet for a merge.
+            // Look for an appropriate fleet for a merge.
             if ((OtherFleetKey != 0) && (OtherFleetKey != Global.Unset))
             {
                 // This allows to merge with other empires if desired at some point.
@@ -243,9 +241,9 @@ namespace Nova.Common.Waypoints
             }
             else if (OtherFleetKey != Global.Unset)          // It's a complex swap where tokens come from 2 fleets and we end up with 2 Fleets
             {
-                ReassignShips(fleet, secondFleet, sender.PeekFleetKey());
+                ReassignShips(fleet,secondFleet , sender.PeekFleetKey());
             }
-            else           // Else it's a split. Need a new fleet so clone original and change stuff.
+            else  //(OtherFleetKey == Global.Unset)         // Else it's a split. Need a new fleet so clone original and change stuff.
             {
                 secondFleet = sender.MakeNewFleet(fleet);
                 ReassignShips(fleet, secondFleet,sender.PeekFleetKey());
@@ -297,10 +295,14 @@ namespace Nova.Common.Waypoints
         {
             long mostVessels = 0;
             String designName = "";
-            foreach (long key in LeftComposition.Keys)
+            List<long> allKeys = new List<long>();
+            allKeys.AddRange(LeftComposition.Keys);
+            foreach (long newKey in RightComposition.Keys) if (!allKeys.Contains(newKey)) allKeys.Add(newKey);
+
+            foreach (long key in allKeys)
             {
-                int leftNewCount = LeftComposition[key].Quantity;
-                int leftOldCount = left.Composition.ContainsKey(key) ? left.Composition[key].Quantity : 0;                
+                int leftNewCount = LeftComposition.ContainsKey(key) ? LeftComposition[key].Quantity : 0;
+                int leftOldCount = left.Composition.ContainsKey(key) ? left.Composition[key].Quantity : 0;
 
                 if (leftNewCount == leftOldCount)
                 {

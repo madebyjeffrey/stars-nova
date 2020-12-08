@@ -363,9 +363,9 @@ namespace Nova.ControlLibrary
                             {
 
                                 // Also perform it here, to update client state for manual xfer.
-                                if (command.Waypoint.Task.IsValid(fleet, other, clientData.EmpireState, null,out message))
+                                if (command.Waypoint.Task.IsValid(fleet, target, clientData.EmpireState, null,out message))
                                 {
-                                    command.Waypoint.Task.Perform(fleet, other, clientData.EmpireState, null, out message); // Load, Unload
+                                    command.Waypoint.Task.Perform(fleet, target, clientData.EmpireState, null, out message); // Load, Unload
                                     if ((message != null) && (Global.Debug)) Report.Information(message.Text);
                                 }
                                 else if (Global.Debug) Report.Information(message.Text);
