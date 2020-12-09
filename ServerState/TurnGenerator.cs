@@ -102,8 +102,12 @@ namespace Nova.Server
         /// </summary>
         public void Generate()
         {
+            ProgressDialog ServerProgress = new ProgressDialog();
+            ServerProgress.Text = "Backup Turn";
+            ServerProgress.Show();
+            ServerProgress.Name = "Server";
             BackupTurn();
-
+            ServerProgress.Text = "Read Orders";
 
 
 
@@ -116,6 +120,7 @@ namespace Nova.Server
 
             // for all commands of all empires: command.ApplyToState(empire);
             // for WaypointCommand: Add Waypoints to Fleets.
+            ServerProgress.Text = "Waypoint Zero Commands";
             ParseCommands();
 
             // Do all fleet movement and actions 
@@ -124,14 +129,19 @@ namespace Nova.Server
             //Stars! Split functionality splits the fleets at the current position before moving!!
             //the Waypoint Zero commands were applied to the EmpireState during the ParseCommands()
             //but their waypoints have not been removed yet so do that now:
-            
+
+            ServerProgress.Text = "Cleanup Waypoint Zero Commands";
             serverState.AllMessages.AddRange(new SplitFleetStep().Process(serverState)); // Remove spent cargo and splitmerge waypoints
 
+            ServerProgress.Text = "Lay Mines";
             serverState.AllMessages.AddRange( new FirstStep().Process(serverState));
             // ToDo: Step 1 --> Scrap Fleet if waypoint 0 order; here, and only here.
             // ToDo: ScrapFleetStep / foreach ITurnStep for waypoint 0. Own TurnStep-List for Waypoint 0?
 
+            ServerProgress.Text = "Scrap Fleets";
             serverState.AllMessages.AddRange(new ScrapFleetStep().Process(serverState));
+
+            ServerProgress.Text = "Move Fleets";
             List<Fleet> destroyed = new List<Fleet>();
             foreach (Fleet fleet in serverState.IterateAllFleets())
             {
@@ -153,7 +163,8 @@ namespace Nova.Server
             {
                 empire.BattleReports.Clear();
             }
-                                
+
+            ServerProgress.Text = "Run Battle Engine";
             if (GameSettings.Data.UseRonBattleEngine ) ronBattleEngine.Run();
             else battleEngine.Run();
 
@@ -175,6 +186,7 @@ namespace Nova.Server
                 if (messages != null) foreach (Message message in messages) serverState.AllMessages.Add(message);
             }
 
+            ServerProgress.Text = "Move Mineral Packets";
             foreach (Fleet fleet in serverState.IterateAllFleets())  // Move Mineral Packets after they are created
             {
                 if (fleet.Name.Contains("Mineral Packet"))
@@ -186,6 +198,7 @@ namespace Nova.Server
             }
             serverState.CleanupFleets();
 
+            ServerProgress.Text = "Record entities Visible to Radar";
 
             foreach (EmpireData empire in serverState.AllEmpires.Values)
             {
@@ -269,6 +282,7 @@ namespace Nova.Server
 
 
 
+            ServerProgress.Text = "Write Stuff Out";
 
             WriteIntel();
 
@@ -276,8 +290,9 @@ namespace Nova.Server
             serverState.AllMessages = new List<Message>();
             
             CleanupOrders();
+            ServerProgress.Close();
         }
-        
+
 
         protected virtual void WriteIntel()
         {
