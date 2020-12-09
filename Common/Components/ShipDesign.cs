@@ -172,12 +172,19 @@ namespace Nova.Common.Components
                 return (int)rating;
             }
         }
+        public Double missileAccuracy( Double missileBaseAccuracy)
+        {
+            Double increase = 1;
+            if (Summary.Properties.ContainsKey("Computer")) increase = 1.0 + ((Summary.Properties["Computer"] as Computer).Accuracy / 100.0);
+            return missileBaseAccuracy  * increase;  
+        }
 
         public int NovaRating
         {
             get
             {
                 Update();
+
                 double rating = 0;
                 foreach (Weapon weapon in this.Weapons)
                 {
@@ -192,11 +199,11 @@ namespace Nova.Common.Components
                             rating += Global.beamRatingMultiplier[((int)BattleSpeed * 4), weapon.Range - 1] * (Double)weapon.Power;
                         }
                     }
-                    else if (weapon.Range > 5) rating += weapon.Power;
-                    else rating += 1.5 * weapon.Power;
+                    else if (weapon.Range > 5) rating += weapon.Power * missileAccuracy(weapon.Accuracy/100.0);
+                    else rating += 1.5 * weapon.Power * missileAccuracy(weapon.Accuracy/100.0);
                 }
                 if (rating == 0) return 0;
-                else return (int)rating + Shield + Armor;
+                else return (int)rating + (Shield + Armor) /2;
             }
         }
 

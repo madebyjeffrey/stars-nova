@@ -53,7 +53,7 @@ namespace Nova.WinForms.Gui
         private double movement = 0;
         private int designShields = 0;
         private int designArmor = 0;
-
+        private double Accuracy = 1.0;
         /// <Summary>
         /// Initializes a new instance of the ShipDesignDialog class.
         /// </Summary>
@@ -328,7 +328,8 @@ namespace Nova.WinForms.Gui
             engine = null;
             weaponlist.Clear();
             movement = 0;
-
+            Accuracy = 1.00;
+            int numberOfComputers = 0;
             foreach (HullModule module in HullGrid.ActiveModules)
             {
                 Component component = module.AllocatedComponent;
@@ -362,7 +363,12 @@ namespace Nova.WinForms.Gui
                 }
                 if (component.Properties.ContainsKey("Weapon"))
                 {
-                    for (int weaponCount = 1; weaponCount <= module.ComponentCount;weaponCount++) weaponlist.Add(component.Properties["Weapon"] as Weapon);
+                    for (int weaponCount = 1; weaponCount <= module.ComponentCount; weaponCount++) weaponlist.Add(component.Properties["Weapon"] as Weapon);
+                }
+                if (component.Properties.ContainsKey("Computer"))
+                {
+                    numberOfComputers += module.ComponentCount;
+                    Accuracy = (component.Properties["Computer"] as Computer).Accuracy / 100.0;
                 }
                 if (component.Properties.ContainsKey("Battle Movement"))
                 {
@@ -374,7 +380,7 @@ namespace Nova.WinForms.Gui
                     fuel += module.ComponentCount * fuelProperty.Capacity;
                 }
             }
-
+            if (numberOfComputers > 0) Accuracy = (1.0 - Math.Pow(1.0 - (Accuracy), numberOfComputers));
             DesignResources.Value = cost;
             designMass = mass;
 
@@ -405,18 +411,18 @@ namespace Nova.WinForms.Gui
                     {
                         if (weapon.Range < 1)
                         {
-                            rating += (Double)weapon.Power; // FIXME (priority 4) - this was a quick fix to prevent a crash when indexing Nova.Common.Global.beamRatingMultiplier with a beam weapon range of zero. Need to determine the Stars! rating multiplier.
+                            rating += (Double)weapon.Power ; // FIXME (priority 4) - this was a quick fix to prevent a crash when indexing Nova.Common.Global.beamRatingMultiplier with a beam weapon range of zero. Need to determine the Stars! rating multiplier.
                         }
                         else
                         {
                             rating += Global.beamRatingMultiplier[((int)BattleSpeed * 4), weapon.Range - 1] * (Double)weapon.Power;
                         }
                     }
-                    else if (weapon.Range > 5) rating += weapon.Power;
-                    else rating += 1.5 * weapon.Power;
+                    else if (weapon.Range > 5) rating += weapon.Power * Accuracy * (weapon.Accuracy / 100.0);
+                    else rating += 1.5 * weapon.Power * Accuracy * (weapon.Accuracy / 100.0);
                 }
                 if (rating == 0) return 0;
-                else return (int)rating + designShields + designArmor;
+                else return (int)rating + (designShields + designArmor)/2;
             }
         }
 

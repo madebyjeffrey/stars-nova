@@ -179,11 +179,11 @@ namespace Nova.Common
             return input;
         }
 
-        Bitmap Paste(Bitmap dest, Bitmap source, int tokenRow, int tokenColumn)
+        void Paste(Bitmap dest, Bitmap source, int tokenRow, int tokenColumn)
         {
             int left = source.Width * (tokenColumn );   
             int top = source.Height * (tokenRow );
-            Bitmap result = new Bitmap(dest);
+            //Bitmap result = new Bitmap(dest);
             Color background = dest.GetPixel(0, 0);
             int row = 0;
             int column = 0;
@@ -195,7 +195,7 @@ namespace Nova.Common
                 }
             }
 
-            return result;
+            //return result;
         }
         /// <summary>
         /// Copy constructor. This is only used by the battle engine so only the fields
