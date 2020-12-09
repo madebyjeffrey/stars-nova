@@ -134,8 +134,8 @@ namespace Nova.Server
             // build the fleet stacks and invoke the battle at each location
             // between any enemies.
 
-            foreach (List<Fleet> battlingFleets in engagements)
-            {
+            foreach (List<Fleet> battlingFleets in engagements)  
+                    {
                 BattleReport battle = new BattleReport();
                 List<Stack> battlingStacks = GenerateStacks(battlingFleets);
 
@@ -536,7 +536,7 @@ namespace Nova.Server
             for (var phase = 1; phase <= movementPhasesPerRound; phase++)
             {
                 // TODO (priority 5) - Move in order of ship mass, juggle by 15%
-                foreach (Stack stack in battlingStacks)
+                foreach (Stack stack in battlingStacks) if ((stack != null) && (stack.Composition.Count > 0))
                 {
                     // report the position at the start so there is something in the battle report
                     stack.Position = PointUtilities.BattleMoveTo(stack.Position, stack.Position);
