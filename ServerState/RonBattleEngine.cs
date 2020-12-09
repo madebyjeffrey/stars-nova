@@ -114,54 +114,57 @@ namespace Nova.Server
                 List<NovaPoint> previousBattleLocations = new List<NovaPoint>();
                 foreach (Fleet fleet in battlingFleets)
                 {
-                    NovaPoint battleLocation = fleet.Position;
-                    if (!previousBattleLocations.Contains(battleLocation))
+                    if ((fleet != null) && (fleet.Composition.Count > 0))
                     {
-                        BattleReport battle = new BattleReport();
-                        previousBattleLocations.Add(battleLocation);
-                        List<Stack> battlingStacks = GenerateStacks(battlingFleets, battleLocation);
-
-                        // If no targets get selected (for whatever reason) then there is
-                        // no battle so we can give up here.
-
-                        if (SelectTargets(battlingStacks) == 0)
+                        NovaPoint battleLocation = fleet.Position;
+                        if (!previousBattleLocations.Contains(battleLocation))
                         {
-                            return;
+                            BattleReport battle = new BattleReport();
+                            previousBattleLocations.Add(battleLocation);
+                            List<Stack> battlingStacks = GenerateStacks(battlingFleets, battleLocation);
+
+                            // If no targets get selected (for whatever reason) then there is
+                            // no battle so we can give up here.
+
+                            if (SelectTargets(battlingStacks) == 0)
+                            {
+                                return;
+                            }
+
+
+
+                            stackId = 0;
+                            Fleet sample = battlingFleets.First() as Fleet;
+
+                            if (sample.InOrbit != null)
+                            {
+                                battle.Location = sample.InOrbit.Name;
+                            }
+                            else
+                            {
+                                battle.Location = "coordinates " + sample.Position.Scale((Double)(1.0 / gridScale)).ToString();
+                            }
+
+                            PositionStacks(battlingStacks, battle);
+
+                            // Copy the full list of stacks into the battle report. We need a
+                            // full list to start with as the list in the battle engine will
+                            // get depleted during the battle and may not (and most likely will
+                            // not) be fully populated by the time we Serialize the
+                            // report. Ensure we take a copy at this point as the "real" stack
+                            // may mutate as processing proceeds and even ships may vanish.
+                            battle.Stacks.Clear();
+                            foreach (Stack stack in battlingStacks)
+                            {
+                                //stack.Token.Design.Update();
+                                battle.Stacks[stack.Key] = new Stack(stack);
+
+                            }
+
+                            DoBattle(battlingStacks, battle);
+
+                            ReportBattle(battle);
                         }
-
-
-
-                        stackId = 0;
-                        Fleet sample = battlingFleets.First() as Fleet;
-
-                        if (sample.InOrbit != null)
-                        {
-                            battle.Location = sample.InOrbit.Name;
-                        }
-                        else
-                        {
-                            battle.Location = "coordinates " + sample.Position.Scale((Double)(1.0 / gridScale)).ToString();
-                        }
-
-                        PositionStacks(battlingStacks,battle);
-
-                        // Copy the full list of stacks into the battle report. We need a
-                        // full list to start with as the list in the battle engine will
-                        // get depleted during the battle and may not (and most likely will
-                        // not) be fully populated by the time we Serialize the
-                        // report. Ensure we take a copy at this point as the "real" stack
-                        // may mutate as processing proceeds and even ships may vanish.
-                        battle.Stacks.Clear();
-                        foreach (Stack stack in battlingStacks)
-                        {
-                            //stack.Token.Design.Update();
-                            battle.Stacks[stack.Key] = new Stack(stack);
-
-                        }
-
-                        DoBattle(battlingStacks,battle);
-
-                        ReportBattle(battle);
                     }
                 }
             }
@@ -582,7 +585,7 @@ namespace Nova.Server
         public void MoveStacks(List<Stack> battlingStacks,int battleRound, BattleReport battle)
         {
             // Fleets initially advance until their opponents are within weapon range  
-            // then withdraw to keep out of their opponents weapon range.
+            // then (depending on BattlePlan) withdraw to keep out of their opponents weapon range.
             // once your opponent is within weapon range you do not move a further 
             // 2 squares towards them and let them move a further 3 squares towards
             // you before you fire.
@@ -592,61 +595,64 @@ namespace Nova.Server
 
             foreach (Stack stack in battlingStacks)
             {
-                if ((stack.Target != null) && (!stack.IsStarbase))
+                if ((stack != null) && (stack.Composition.Count > 0))
                 {
-                    NovaPoint vectorToTarget = stack.Target.Position - stack.Position;
-                    NovaPoint newHeading;
-                    newHeading = vectorToTarget.BattleSpeedVector(stack.BattleSpeed * gridScale);
-                    if ((!stack.Token.Design.HasWeapons) || (battleRound < 5)) // unarmed ships are curious for first 5 rounds and move around
-                        if (battleRound < 5)
-                        {
-                            Random random = new Random();
-                            int interestingHeading = random.Next(1,3);
-                            switch (interestingHeading)
+                    if ((stack.Target != null) && (!stack.IsStarbase))
+                    {
+                        NovaPoint vectorToTarget = stack.Target.Position - stack.Position;
+                        NovaPoint newHeading;
+                        newHeading = vectorToTarget.BattleSpeedVector(stack.BattleSpeed * gridScale);
+                        if ((!stack.Token.Design.HasWeapons) || (battleRound < 5)) // unarmed ships are curious for first 5 rounds and move around
+                            if (battleRound < 5)
                             {
-                                case 1:
-                                    newHeading = newHeading.Scale(1.0);
-                                    break;
-                                case 2:
-                                    newHeading.turnAsFastAsPossible(newHeading.Scale(-1), newHeading);
-                                    break;
-                                case 3: break;
+                                Random random = new Random();
+                                int interestingHeading = random.Next(1, 3);
+                                switch (interestingHeading)
+                                {
+                                    case 1:
+                                        newHeading = newHeading.Scale(1.0);
+                                        break;
+                                    case 2:
+                                        newHeading.turnAsFastAsPossible(newHeading.Scale(-1), newHeading);
+                                        break;
+                                    case 3: break;
+                                }
                             }
+                            else if (stack.distanceTo(stack.Target) / gridScale < Global.MaxWeaponRange) newHeading = newHeading.Scale(-1.0);  // armed enemy is getting close - run away
+                            else newHeading = new NovaPoint(0, 0);  //we are unarmed so don't do anything more unless an enemy approaches
+                        if (stack.VelocityVector == null) stack.VelocityVector = newHeading;
+                        if (stack.Target.VelocityVector == null) stack.Target.VelocityVector = new NovaPoint(0, 0); //when we calculate the move for the target this will be calculated - first time is unknown
+                        if ((stack.Target.IsStarbase) && (vectorToTarget.lengthSquared() < stack.VelocityVector.lengthSquared()))
+                        {
+                            stack.VelocityVector = vectorToTarget; // This will put us on top of the target so ignore other logic
+                            newHeading = vectorToTarget; // travelling at less than BattleSpeed !!
                         }
-                    else if (stack.distanceTo(stack.Target)/gridScale < Global.MaxWeaponRange)  newHeading = newHeading.Scale(-1.0);  // armed enemy is getting close - run away
-                        else newHeading = new NovaPoint(0, 0);  //we are unarmed so don't do anything more unless an enemy approaches
-                    if (stack.VelocityVector == null) stack.VelocityVector = newHeading;
-                    if (stack.Target.VelocityVector == null) stack.Target.VelocityVector = new NovaPoint(0, 0); //when we calculate the move for the target this will be calculated - first time is unknown
-                    if ((stack.Target.IsStarbase) && (vectorToTarget.lengthSquared() < stack.VelocityVector.lengthSquared() ))
-                    {
-                        stack.VelocityVector = vectorToTarget; // This will put us on top of the target so ignore other logic
-                        newHeading = vectorToTarget; // travelling at less than BattleSpeed !!
-                    }
-                    else
-                    {
-                        bool collisionDetected = ((vectorToTarget + stack.Target.VelocityVector - newHeading).lengthSquared() <
-                            (vectorToTarget + stack.Target.VelocityVector - newHeading.Scale(2)).lengthSquared());
-                        if (collisionDetected) stack.VelocityVector = stack.VelocityVector.prepareForFlyby(stack.VelocityVector, newHeading);
                         else
                         {
-                            double turnAngle = newHeading.angleBetween(stack.VelocityVector, newHeading);
-                            if (turnAngle > 90) // target just passed us do a "turnAsFastAsPossible"
+                            bool collisionDetected = ((vectorToTarget + stack.Target.VelocityVector - newHeading).lengthSquared() <
+                                (vectorToTarget + stack.Target.VelocityVector - newHeading.Scale(2)).lengthSquared());
+                            if (collisionDetected) stack.VelocityVector = stack.VelocityVector.prepareForFlyby(stack.VelocityVector, newHeading);
+                            else
                             {
-                                stack.VelocityVector.turnAsFastAsPossible(stack.VelocityVector, newHeading);
+                                double turnAngle = newHeading.angleBetween(stack.VelocityVector, newHeading);
+                                if (turnAngle > 90) // target just passed us do a "turnAsFastAsPossible"
+                                {
+                                    stack.VelocityVector.turnAsFastAsPossible(stack.VelocityVector, newHeading);
+                                }
+                                else stack.VelocityVector = newHeading;
                             }
-                            else stack.VelocityVector = newHeading;
                         }
+                        NovaPoint oldPosition = stack.Position;
+                        stack.Position = stack.Position + newHeading;
+
+
+                        // Update the battle report with these movements.
+                        BattleStepMovement report = new BattleStepMovement();
+                        report.StackKey = stack.Key;
+                        report.Position = stack.Position;
+                        if (oldPosition != stack.Position) battle.Steps.Add(report);
+
                     }
-                    NovaPoint oldPosition = stack.Position;
-                    stack.Position = stack.Position + newHeading;
-
-
-                    // Update the battle report with these movements.
-                    BattleStepMovement report = new BattleStepMovement();
-                    report.StackKey = stack.Key;
-                    report.Position = stack.Position;
-                    if (oldPosition != stack.Position) battle.Steps.Add(report);
-
                 }
             }
                 
@@ -888,7 +894,7 @@ namespace Nova.Server
 
             // Add the fleet to the state data so it can be tracked.
             serverState.AllEmpires[fleet.Owner].AddOrUpdateFleet(fleet);
-            fleet.Cargo = cargo.Scale(0.75); //TODO priority 1 check if we want to allow survivors to be rescued or do we have to murder them all?
+            fleet.Cargo = cargo.Scale(0.75); //TODO priority 1 check if we want to allow survivors to be rescued or do we have to Laser all Escape Pods.
             fleet.Cargo.Ironium += (int)(salvage.Ironium * 0.75); 
             fleet.Cargo.Boranium += (int)(salvage.Boranium * 0.75);
             fleet.Cargo.Germanium += (int)(salvage.Germanium * 0.75); //TODO priority 1 check salvage conversion ratios
