@@ -38,7 +38,7 @@ namespace Nova.Server
     public class RonBattleEngine
     {
         private readonly Random random = new Random();
-        private readonly int maxBattleRounds = 160;
+        private readonly int maxBattleRounds = 80;
         private readonly int gridSize = 1000;
         private readonly int gridScale = 100; //MUST BE gridSize /10
         private readonly int gridScaleSquared = 10000; // 
