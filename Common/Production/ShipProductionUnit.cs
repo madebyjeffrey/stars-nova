@@ -203,10 +203,11 @@ namespace Nova.Common
                 if (star.ResourcesOnHand.Boranium < 0) star.ResourcesOnHand.Boranium = 0;
                 if (star.ResourcesOnHand.Germanium < 0) star.ResourcesOnHand.Germanium = 0;
                 if (star.ResourcesOnHand.Energy < 0) star.ResourcesOnHand.Energy = 0;
-                message = new Message();
-                message.Audience = star.Owner;
-                message.Type = "Ship";
-                message.Text = star.Name.ToString() + " has built a new "+this.Name;
+                //message = new Message();
+                //message.Audience = star.Owner;
+                //message.Type = "Ship";
+                //message.Text = star.Name.ToString() + " has built a new "+this.Name;
+                message = null;
                 return true;
             }
         }
