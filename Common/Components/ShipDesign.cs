@@ -360,7 +360,7 @@ namespace Nova.Common.Components
                 {
                     Engine engine = (Engine)Summary.Properties["Engine"];
                     speed = (((double)engine.OptimalSpeed) - 4.0) / 4.0;
-                    speed -= Summary.Mass / 70 / 4 / Number_of_Engines;
+                    speed -= Summary.Mass / 70.0 / 4.0 / (double)Number_of_Engines;
                 }
                 if (Summary.Properties.ContainsKey("Battle Movement"))
                 {
@@ -723,6 +723,7 @@ namespace Nova.Common.Components
                 case "Driver":
                 case "Fuel":
                 case "Movement":
+                case "Battle Movement":
                 case "Orbital Adjuster":
                 case "Radiation":
                 case "Robot":

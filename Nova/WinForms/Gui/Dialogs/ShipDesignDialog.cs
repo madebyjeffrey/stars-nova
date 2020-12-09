@@ -384,8 +384,8 @@ namespace Nova.WinForms.Gui
             ShipShields.Text = shield.ToString(System.Globalization.CultureInfo.InvariantCulture);
             designShields = shield;
             CargoCapacity.Text = cargo.ToString(System.Globalization.CultureInfo.InvariantCulture);
-            starsrating.Text = NovaPowerRating.ToString(System.Globalization.CultureInfo.InvariantCulture);
-            novarating.Text = PowerRating.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            starsrating.Text = PowerRating.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            novarating.Text = NovaPowerRating.ToString(System.Globalization.CultureInfo.InvariantCulture);
             battlespeed.Text = BattleSpeed.ToString(System.Globalization.CultureInfo.InvariantCulture);
             if (!hull.IsStarbase)
             {
