@@ -237,6 +237,54 @@ namespace Nova.Common.Components
                                 callback.SetText(string.Format(hint+": Loading component: {0}", nodesLoaded));
                                 callback.StepTo(nodesLoaded);
                                 Component newComponent = new Component(xmlnode);
+                                if (newComponent.Description == "")
+                                {
+
+                                    foreach (String propName in newComponent.Properties.Keys)
+                                    {
+                                        ComponentProperty prop;
+                                        if (newComponent.Properties.TryGetValue(propName, out prop))
+                                        {
+                                            if (prop is IntegerProperty) newComponent.Description += propName + " = " + (prop as IntegerProperty).Value.ToString() + "\r\n";
+                                            if (prop is CapacitorProperty) newComponent.Description += propName + " = " + (prop as CapacitorProperty).Value.ToString() + "\r\n";
+                                            if (prop is Fuel) newComponent.Description += "Fuel Capacity = " + (prop as Fuel).Capacity.ToString() + "\r\n";
+                                            if (prop is Fuel) newComponent.Description += "Fuel Generation = " + (prop as Fuel).Generation.ToString() + "\r\n";
+                                            if (prop is DoubleProperty) newComponent.Description += propName + " = " + (prop as DoubleProperty).Value.ToString() + "\r\n";
+                                            if (prop is Computer) newComponent.Description += "Computer Accuracy = " + (prop as Computer).Accuracy.ToString() + "\r\n";
+                                            if (prop is Computer) newComponent.Description += "Computer Initiative = " + (prop as Computer).Initiative.ToString() + "\r\n";
+                                            if (prop is Bomb)
+                                            {
+                                                if ((prop as Bomb).IsSmart) newComponent.Description += "SMART BOMB" + "\r\n";
+                                                newComponent.Description += "Minimum Population Killed = " + (prop as Bomb).MinimumKill.ToString() + "\r\n";
+                                                newComponent.Description += "Population Killed = " + (prop as Bomb).PopKill.ToString() + "\r\n";
+                                                newComponent.Description += "Minimum Defenses, Factories and mines destroyed = " + (prop as Bomb).Installations.ToString() + "\r\n";
+                                            }
+                                            if (prop is Gate) newComponent.Description += "Safe Range = " + (prop as Gate).SafeRange.ToString() + "\r\n";
+                                            if (prop is Gate) newComponent.Description += "Safe Hull Mass = " + (prop as Gate).SafeHullMass.ToString() + "\r\n";
+                                            if (prop is ProbabilityProperty) newComponent.Description += propName + " = " + (prop as ProbabilityProperty).Value.ToString() + "%\r\n";
+                                            if (prop is Scanner) newComponent.Description += "Normal Scan Range = " + (prop as Scanner).NormalScan.ToString() + "\r\n";
+                                            if (prop is Weapon) if ((prop as Weapon).IsMissile) newComponent.Description += "MISSILE" + "\r\n";
+                                            if (prop is Weapon) if ((prop as Weapon).IsBeam) newComponent.Description += "BEAM WEAPON" + "\r\n";
+                                            if (prop is Weapon) newComponent.Description +=  "Power = " + (prop as Weapon).Power.ToString() + "\r\n";
+                                            if (prop is Weapon) newComponent.Description +=  "Accuracy = " + (prop as Weapon).Accuracy.ToString() + "\r\n";
+                                            if (prop is Weapon) newComponent.Description +=  "Range = " + (prop as Weapon).Range.ToString() + "\r\n";
+                                            if (prop is Weapon) newComponent.Description +=  "Initiative = " + (prop as Weapon).Initiative.ToString() + "\r\n";
+                                            if (prop is MineLayer)
+                                            {
+                                                if ((prop as MineLayer).HitChance == MineLayer.HeavyHitChance) newComponent.Description += "HEAVY Mine Layer" + "\r\n";
+                                                if ((prop as MineLayer).HitChance == MineLayer.StandardHitChance) newComponent.Description += "Standard Mine Layer" + "\r\n";
+                                                if ((prop as MineLayer).HitChance == MineLayer.SpeedTrapHitChance) newComponent.Description += "Speed-trap Mine Layer" + "\r\n";
+                                                newComponent.Description += "Mines laid per year = " + (prop as MineLayer).LayerRate.ToString() + "\r\n";
+                                                newComponent.Description += "Maximum Warp speed = Warp " + (prop as MineLayer).SafeSpeed.ToString() + "\r\n";
+                                                newComponent.Description += "Chance per l.y. of a hit = " + (prop as MineLayer).HitChance.ToString() + "%\r\n";
+                                                newComponent.Description += "Minimum damage done to a fleet = " + (prop as MineLayer).MinFleetDamage.ToString() + "\r\n";
+                                                newComponent.Description += "Minimum damage done to a fleet that contains at least one RamScoop engine = " + (prop as MineLayer).MinRamScoopDamage.ToString() + "\r\n";
+                                                newComponent.Description += "Damage done to each ship " + (prop as MineLayer).DamagePerEngine.ToString() + "\r\n";
+                                                newComponent.Description += "Damage done to each ship that contains at least one RamScoop engine" + (prop as MineLayer).DamagePerRamScoop.ToString() + "\r\n";
+                                            }
+                                        }
+                                    }
+                                }
                                 components[newComponent.Name] = newComponent;
                                 xmlnode = xmlnode.NextSibling;
                             }
