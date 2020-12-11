@@ -196,7 +196,8 @@ namespace Nova.Ai
             List<Fleet> colonyShipsFleets = new List<Fleet>();
             foreach (Fleet fleet in clientState.EmpireState.OwnedFleets.Values)  //find idle colonisers
             {
-                if (fleet.CanColonize && ((fleet.Waypoints.Count == 0) || ((fleet.Waypoints.Count == 1) && fleet.Waypoints[0].Task is NoTask && ((fleet.InOrbit != null) && (fleet.InOrbit.Name == fleet.Waypoints[0].Destination)))))
+                if ((fleet.CanColonize && (fleet.Waypoints.Count == 0) && (fleet.FuelAvailable == fleet.TotalFuelCapacity) && (fleet.InOrbit != null) )
+                    || (fleet.CanColonize && (fleet.FuelAvailable == fleet.TotalFuelCapacity)&&(fleet.Waypoints.Count == 1) && fleet.Waypoints[0].Task is NoTask && (fleet.InOrbit != null) && (fleet.InOrbit.Name == fleet.Waypoints[0].Destination)))
                 {
                     colonyShipsFleets.Add(fleet);
                 }
@@ -208,7 +209,7 @@ namespace Nova.Ai
                 if (fleet.CanColonize)
                 {
                     foreach (Waypoint dest in fleet.Waypoints)
-                        if (dest.Task is ColoniseTask) destination = dest.Destination;
+                        if ((dest.Task is ColoniseTask) && (fleet.Cargo.Mass > 0)) destination = dest.Destination;
                 }
                 if (destination != "")
                 {
@@ -219,7 +220,7 @@ namespace Nova.Ai
 
             if (colonyShipsFleets.Count > 0)
             {
-                // check if there is any good stars to colonize
+                // check if there are any good stars to colonize
                 foreach (StarIntel report in turnData.EmpireState.StarReports.Values) //Let's cherry pick nice stars first!
                 {
                     if ((report.Year != Global.Unset && clientState.EmpireState.Race.HabitalValue(report) > 0.5 && report.Owner == Global.Nobody && report.mineralRich())
@@ -251,10 +252,11 @@ namespace Nova.Ai
                 {
                     if (report.Year != Global.Unset && clientState.EmpireState.Race.HabitalValue(report) > 0 && report.Owner == Global.Nobody)
                     {
-                        foreach (Fleet fleet in colonyShipsFleets) if (fleet.canReach(report, clientState.EmpireState.Race) && (fleet.Waypoints.Count < 2))
+                        foreach (Fleet fleet in colonyShipsFleets) if ((!beingColonised.Contains(report.Name)) && fleet.canReach(report, clientState.EmpireState.Race) && (fleet.Waypoints.Count < 2))
                             {
                                 // send fleet to colonise
                                 fleetAIs[fleet.Id].Colonise(report);
+                                colonyShipsFleets.RemoveAt(colonyShipsFleets.IndexOf(fleet));
                                 break;
                             }
                     }
