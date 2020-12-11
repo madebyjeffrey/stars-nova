@@ -225,7 +225,7 @@ namespace Nova.Ai
                     colonistsToLoadKt = System.Math.Max(colonistsToLoadKt, (ourStar.Colonists - 250000) / 2 / Nova.Common.Global.ColonistsPerKiloton);
                     // ensure we load at least 1 kT of colonists
                     colonistsToLoadKt = System.Math.Max(colonistsToLoadKt, 1000);
-
+                    colonistsToLoadKt = System.Math.Min(this.fleet.TotalCargoCapacity - germaniumToLoad, colonistsToLoadKt);
                     // load up
                     CargoTask wpTask = new CargoTask();
                     wpTask.Mode = CargoMode.Load;
