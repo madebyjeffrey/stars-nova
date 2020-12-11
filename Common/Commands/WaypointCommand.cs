@@ -342,13 +342,14 @@ namespace Nova.Common.Commands
             int theIndex = fleet.Waypoints.IndexOf(waypoint);
             int index = 0;
             String destination = fleet.Waypoints[0].Destination;
-            bool found = false;
-            while ((!found) && (index <= theIndex))
+            DataStructures.NovaPoint pos = fleet.Waypoints[0].Position;
+            bool sameLocation = true;
+            while ((sameLocation) && (index <= theIndex))
             {
-                found = ( !(fleet.Waypoints[index].Task is SplitMergeTask) && !(fleet.Waypoints[index].Task is CargoTask));
+                sameLocation = ((fleet.Waypoints[index].Destination == destination) || (fleet.Waypoints[index].Position == pos));
                 index++;
             }
-            return !found;
+            return sameLocation;
 
         }
 
