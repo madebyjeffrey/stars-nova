@@ -348,7 +348,7 @@ namespace Nova.Common
                 // low pop planet
                 populationGrowth = Colonists * growthRate / 100.0 * habitalValue;
             }
-            else if (capacity > 0.25 && capacity < 1.0)
+            else if (capacity >= 0.25 && capacity < 1.0)
             {
                 // early crowding
                 populationGrowth = Colonists * growthRate / 100.0 * habitalValue;
