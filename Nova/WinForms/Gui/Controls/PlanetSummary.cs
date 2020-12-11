@@ -67,6 +67,7 @@ namespace Nova.WinForms.Gui
         private Label radiationLevel;
         private Panel panel2;
         private Label label10;
+        private Label planetValuePostTerr;
         private Panel panel1;
 
         /// <Summary>
@@ -128,14 +129,15 @@ namespace Nova.WinForms.Gui
             this.temperatureLevel = new System.Windows.Forms.Label();
             this.radiationLevel = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.ironiumGauge = new Nova.ControlLibrary.Gauge();
-            this.boraniumGauge = new Nova.ControlLibrary.Gauge();
-            this.germaniumGauge = new Nova.ControlLibrary.Gauge();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.label10 = new System.Windows.Forms.Label();
             this.gravityGauge = new Nova.ControlLibrary.Gauge();
             this.temperatureGauge = new Nova.ControlLibrary.Gauge();
             this.radiationGauge = new Nova.ControlLibrary.Gauge();
-            this.label10 = new System.Windows.Forms.Label();
+            this.ironiumGauge = new Nova.ControlLibrary.Gauge();
+            this.boraniumGauge = new Nova.ControlLibrary.Gauge();
+            this.germaniumGauge = new Nova.ControlLibrary.Gauge();
+            this.planetValuePostTerr = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -152,9 +154,9 @@ namespace Nova.WinForms.Gui
             // 
             this.planetValue.Location = new System.Drawing.Point(146, 15);
             this.planetValue.Name = "planetValue";
-            this.planetValue.Size = new System.Drawing.Size(34, 13);
+            this.planetValue.Size = new System.Drawing.Size(38, 13);
             this.planetValue.TabIndex = 27;
-            this.planetValue.Text = "0";
+            this.planetValue.Text = "100%";
             this.planetValue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // population
@@ -295,60 +297,6 @@ namespace Nova.WinForms.Gui
             this.panel1.Size = new System.Drawing.Size(331, 51);
             this.panel1.TabIndex = 43;
             // 
-            // ironiumGauge
-            // 
-            this.ironiumGauge.BackColor = System.Drawing.Color.Black;
-            this.ironiumGauge.Barcolor = System.Drawing.Color.Blue;
-            this.ironiumGauge.BottomValue = 0D;
-            this.ironiumGauge.Location = new System.Drawing.Point(0, 2);
-            this.ironiumGauge.Marker = 0;
-            this.ironiumGauge.Markercolor = System.Drawing.Color.Blue;
-            this.ironiumGauge.Maximum = 5000D;
-            this.ironiumGauge.Minimum = 0D;
-            this.ironiumGauge.Name = "ironiumGauge";
-            this.ironiumGauge.ShowText = false;
-            this.ironiumGauge.Size = new System.Drawing.Size(330, 10);
-            this.ironiumGauge.TabIndex = 28;
-            this.ironiumGauge.TopValue = 500D;
-            this.ironiumGauge.Units = null;
-            this.ironiumGauge.Value = 500D;
-            // 
-            // boraniumGauge
-            // 
-            this.boraniumGauge.BackColor = System.Drawing.Color.Black;
-            this.boraniumGauge.Barcolor = System.Drawing.Color.GreenYellow;
-            this.boraniumGauge.BottomValue = 0D;
-            this.boraniumGauge.Location = new System.Drawing.Point(0, 19);
-            this.boraniumGauge.Marker = 0;
-            this.boraniumGauge.Markercolor = System.Drawing.Color.GreenYellow;
-            this.boraniumGauge.Maximum = 5000D;
-            this.boraniumGauge.Minimum = 0D;
-            this.boraniumGauge.Name = "boraniumGauge";
-            this.boraniumGauge.ShowText = false;
-            this.boraniumGauge.Size = new System.Drawing.Size(330, 10);
-            this.boraniumGauge.TabIndex = 29;
-            this.boraniumGauge.TopValue = 500D;
-            this.boraniumGauge.Units = null;
-            this.boraniumGauge.Value = 500D;
-            // 
-            // germaniumGauge
-            // 
-            this.germaniumGauge.BackColor = System.Drawing.Color.Black;
-            this.germaniumGauge.Barcolor = System.Drawing.Color.Yellow;
-            this.germaniumGauge.BottomValue = 0D;
-            this.germaniumGauge.Location = new System.Drawing.Point(0, 36);
-            this.germaniumGauge.Marker = 0;
-            this.germaniumGauge.Markercolor = System.Drawing.Color.Gold;
-            this.germaniumGauge.Maximum = 5000D;
-            this.germaniumGauge.Minimum = 0D;
-            this.germaniumGauge.Name = "germaniumGauge";
-            this.germaniumGauge.ShowText = false;
-            this.germaniumGauge.Size = new System.Drawing.Size(330, 10);
-            this.germaniumGauge.TabIndex = 30;
-            this.germaniumGauge.TopValue = 500D;
-            this.germaniumGauge.Units = null;
-            this.germaniumGauge.Value = 500D;
-            // 
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.Black;
@@ -360,6 +308,15 @@ namespace Nova.WinForms.Gui
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(331, 51);
             this.panel2.TabIndex = 44;
+            // 
+            // label10
+            // 
+            this.label10.Location = new System.Drawing.Point(77, 15);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(74, 13);
+            this.label10.TabIndex = 45;
+            this.label10.Text = "Planet Value";
+            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // gravityGauge
             // 
@@ -415,17 +372,72 @@ namespace Nova.WinForms.Gui
             this.radiationGauge.Units = null;
             this.radiationGauge.Value = 85D;
             // 
-            // label10
+            // ironiumGauge
             // 
-            this.label10.Location = new System.Drawing.Point(77, 15);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(74, 13);
-            this.label10.TabIndex = 45;
-            this.label10.Text = "Planet Value";
-            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.ironiumGauge.BackColor = System.Drawing.Color.Black;
+            this.ironiumGauge.Barcolor = System.Drawing.Color.Blue;
+            this.ironiumGauge.BottomValue = 0D;
+            this.ironiumGauge.Location = new System.Drawing.Point(0, 2);
+            this.ironiumGauge.Marker = 0;
+            this.ironiumGauge.Markercolor = System.Drawing.Color.Blue;
+            this.ironiumGauge.Maximum = 5000D;
+            this.ironiumGauge.Minimum = 0D;
+            this.ironiumGauge.Name = "ironiumGauge";
+            this.ironiumGauge.ShowText = false;
+            this.ironiumGauge.Size = new System.Drawing.Size(330, 10);
+            this.ironiumGauge.TabIndex = 28;
+            this.ironiumGauge.TopValue = 500D;
+            this.ironiumGauge.Units = null;
+            this.ironiumGauge.Value = 500D;
+            // 
+            // boraniumGauge
+            // 
+            this.boraniumGauge.BackColor = System.Drawing.Color.Black;
+            this.boraniumGauge.Barcolor = System.Drawing.Color.GreenYellow;
+            this.boraniumGauge.BottomValue = 0D;
+            this.boraniumGauge.Location = new System.Drawing.Point(0, 19);
+            this.boraniumGauge.Marker = 0;
+            this.boraniumGauge.Markercolor = System.Drawing.Color.GreenYellow;
+            this.boraniumGauge.Maximum = 5000D;
+            this.boraniumGauge.Minimum = 0D;
+            this.boraniumGauge.Name = "boraniumGauge";
+            this.boraniumGauge.ShowText = false;
+            this.boraniumGauge.Size = new System.Drawing.Size(330, 10);
+            this.boraniumGauge.TabIndex = 29;
+            this.boraniumGauge.TopValue = 500D;
+            this.boraniumGauge.Units = null;
+            this.boraniumGauge.Value = 500D;
+            // 
+            // germaniumGauge
+            // 
+            this.germaniumGauge.BackColor = System.Drawing.Color.Black;
+            this.germaniumGauge.Barcolor = System.Drawing.Color.Yellow;
+            this.germaniumGauge.BottomValue = 0D;
+            this.germaniumGauge.Location = new System.Drawing.Point(0, 36);
+            this.germaniumGauge.Marker = 0;
+            this.germaniumGauge.Markercolor = System.Drawing.Color.Gold;
+            this.germaniumGauge.Maximum = 5000D;
+            this.germaniumGauge.Minimum = 0D;
+            this.germaniumGauge.Name = "germaniumGauge";
+            this.germaniumGauge.ShowText = false;
+            this.germaniumGauge.Size = new System.Drawing.Size(330, 10);
+            this.germaniumGauge.TabIndex = 30;
+            this.germaniumGauge.TopValue = 500D;
+            this.germaniumGauge.Units = null;
+            this.germaniumGauge.Value = 500D;
+            // 
+            // planetValuePostTerr
+            // 
+            this.planetValuePostTerr.Location = new System.Drawing.Point(175, 15);
+            this.planetValuePostTerr.Name = "planetValuePostTerr";
+            this.planetValuePostTerr.Size = new System.Drawing.Size(49, 13);
+            this.planetValuePostTerr.TabIndex = 46;
+            this.planetValuePostTerr.Text = "(100%)";
+            this.planetValuePostTerr.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // PlanetSummary
             // 
+            this.Controls.Add(this.planetValuePostTerr);
             this.Controls.Add(this.planetValue);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.panel2);
@@ -462,9 +474,9 @@ namespace Nova.WinForms.Gui
             {
                 currentStar = value;
                 int reportYear = empireState.StarReports[value.Name].Year;
-                
+
                 int habValue = (int)Math.Ceiling(empireState.Race.HabitalValue(value) * 100);
-                
+
                 this.planetValue.Text = habValue.ToString(System.Globalization.CultureInfo.InvariantCulture) + "%";
                 if (habValue < 0)
                 {
@@ -473,7 +485,18 @@ namespace Nova.WinForms.Gui
                 else
                 {
                     this.planetValue.ForeColor = Color.Green;
-                } 
+                }
+                habValue = (int)Math.Ceiling(empireState.Race.HabitalValue(value, true, empireState.gravityModCapability, empireState.temperatureModCapability, empireState.radiationModCapability) * 100);
+
+                this.planetValuePostTerr.Text = "(" + habValue.ToString(System.Globalization.CultureInfo.InvariantCulture) + "%)";
+                if (habValue < 0)
+                {
+                    this.planetValuePostTerr.ForeColor = Color.Red;
+                }
+                else
+                {
+                    this.planetValuePostTerr.ForeColor = Color.Green;
+                }
 
                 if (empireState.StarReports[value.Name].Owner == Global.Nobody)
                 {
@@ -576,7 +599,7 @@ namespace Nova.WinForms.Gui
             
             if (currentStar != null
                 && currentStar.Owner == empireState.Id
-                && empireState.StarReports[currentStar.Name].Year == Global.Unset)
+                && empireState.StarReports[currentStar.Name].Year != Global.Unset)
             {
                 tt += "Your population on " + currentStar.Name + " is " + currentStar.Colonists + "." + Environment.NewLine           
                     + currentStar.Name + " will support a population of up to "
