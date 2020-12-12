@@ -77,15 +77,19 @@ namespace Nova.Common.Waypoints
         /// The "this" fleet is the fleet this waypoint task belongs to.
         /// </remarks>
         public long OtherFleetKey { get; set; }
-        
+        public bool SimpleMerge { get; set; }
+        public bool EqualCargoDistribution { get; set; }
+
         /// <summary>
         /// Default Constructor.
         /// </summary>
-        public SplitMergeTask(Dictionary<long, ShipToken> leftComposition, Dictionary<long, ShipToken> rightComposition, long otherFleetKey = 0)
+        public SplitMergeTask(Dictionary<long, ShipToken> leftComposition, Dictionary<long, ShipToken> rightComposition, long otherFleetKey = 0, bool simpleMerge = false, bool equalCargoDist = false)
         {
             LeftComposition = leftComposition;            
             RightComposition = rightComposition;
             OtherFleetKey = otherFleetKey;
+            SimpleMerge = simpleMerge;
+            EqualCargoDistribution = equalCargoDist;
         }
         
 
@@ -98,9 +102,11 @@ namespace Nova.Common.Waypoints
             LeftComposition = new Dictionary<long, ShipToken>(copy.LeftComposition);            
             RightComposition = new Dictionary<long, ShipToken>(copy.RightComposition);
             OtherFleetKey = copy.OtherFleetKey;
+            SimpleMerge = copy.SimpleMerge;
+            EqualCargoDistribution = copy.EqualCargoDistribution;
         }
-        
-        
+
+
         /// <summary>
         /// Load: Read an object of this class from and XmlNode representation.
         /// </summary>
@@ -118,6 +124,8 @@ namespace Nova.Common.Waypoints
             XmlNode mainNode = node.FirstChild;
             XmlNode subNode;
             ShipToken token;
+            SimpleMerge = false;
+            EqualCargoDistribution = false;
             while (mainNode != null)
             {
                 try
@@ -125,11 +133,17 @@ namespace Nova.Common.Waypoints
                     subNode = mainNode.FirstChild;
                     
                     switch (mainNode.Name.ToLower())
-                    {                            
+                    {
+                        case "simplemerge":
+                            SimpleMerge = bool.Parse(subNode.Value);
+                            break;
+                        case "equaldist":
+                            EqualCargoDistribution = bool.Parse(subNode.Value);
+                            break;
                         case "rightkey":
                             OtherFleetKey = long.Parse(subNode.Value, System.Globalization.NumberStyles.HexNumber);
                             break;
-                            
+
                         case "leftcomposition":
                             while (subNode != null)
                             {
@@ -161,14 +175,16 @@ namespace Nova.Common.Waypoints
         /// <inheritdoc />
         public XmlElement ToXml(XmlDocument xmldoc)
         {
-            XmlElement xmlelTask = xmldoc.CreateElement("SplitMergeTask");            
-            
+            XmlElement xmlelTask = xmldoc.CreateElement("SplitMergeTask");
+
             // We are either merging or splitting or combining two fleets into 2 fleets of different compositions.
             // For a merge we need two keys (one comes from this waypoint's owner)
             // and for a split, one key and 2 compositions. 
             // and for a splitmerge we need everything
+            if (SimpleMerge) Global.SaveData(xmldoc, xmlelTask, "SimpleMerge", SimpleMerge.ToString());
+            if (EqualCargoDistribution) Global.SaveData(xmldoc, xmlelTask, "EqualDist", EqualCargoDistribution.ToString());
             Global.SaveData(xmldoc, xmlelTask, "RightKey", OtherFleetKey.ToString("X"));
-            if (OtherFleetKey != 0) 
+            if (!SimpleMerge)
             {            
                 XmlElement xmlelLeft = xmldoc.CreateElement("LeftComposition");
                 foreach (ShipToken token in LeftComposition.Values)
@@ -235,7 +251,7 @@ namespace Nova.Common.Waypoints
             }
             
                    
-            if ((secondFleet == null) && (OtherFleetKey != Global.Unset))  //Simple merge where all fleets end up in the same Fleet
+            if (SimpleMerge)  //Simple merge where all fleets end up in the same Fleet
             {
                 MergeFleets(fleet, secondFleet);
             }

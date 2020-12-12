@@ -1047,7 +1047,7 @@ namespace Nova.Common
         public WaypointCommand merge(Fleet other)
         {
             Waypoint waypoint = new Waypoint();
-            waypoint.Task = new SplitMergeTask(this.tokens,other.tokens, 0);
+            waypoint.Task = new SplitMergeTask(this.tokens,other.tokens, other.Key, true , true);
             waypoint.Position = other.Position;
             if (this.Waypoints.Count > 0) waypoint.Destination = this.Waypoints[0].Destination;
             else waypoint.Destination = InOrbit.ToString();
