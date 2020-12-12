@@ -606,7 +606,7 @@ namespace Nova.Ai
                 else if (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Propulsion] < 12)
                 {
                     // Propulsion 12 - overthruster
-                    targetResearchField = TechLevel.ResearchField.Weapons;
+                    targetResearchField = TechLevel.ResearchField.Propulsion;
                 }
                 else if (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] < 13)
                 {
