@@ -832,7 +832,10 @@ namespace Nova.WinForms.Gui
                     if (found) index--;
                     Waypoint waypoint = new Waypoint(topFleet.Waypoints[0]);
 
-                    waypoint.Task = new SplitMergeTask(
+                    if (splitFleet.leftCount == 0) waypoint.Task = new SplitMergeTask(null, null, otherFleet.Key, true, false, true);
+                    else if (splitFleet.rightCount == 0) waypoint.Task = new SplitMergeTask(null, null, otherFleet.Key, true, false, false);
+
+                    else waypoint.Task = new SplitMergeTask(
                         splitFleet.SourceComposition,
                         splitFleet.OtherComposition,
                         (otherFleet == null) ? Global.Unset : otherFleet.Key);

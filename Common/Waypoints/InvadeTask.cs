@@ -136,6 +136,13 @@ namespace Nova.Common.Waypoints
 
             }
 
+            if ((receiver != null) && (receiver.Id != fleet.Owner) && ((Star)target).Starbase != null)
+            {
+                message.Text += star.Name + " but the starbase at " + star.Name + " would kill all invading troops. Order has been cancelled.";
+                messageOut = message;
+                return true;
+            }
+
             // check for starbase
             if (star.Starbase != null)
             {

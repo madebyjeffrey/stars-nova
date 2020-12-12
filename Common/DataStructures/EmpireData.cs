@@ -794,7 +794,7 @@ namespace Nova.Common
 
                 if (star.Starbase != null)
                 {
-                    star.Starbase = OwnedFleets[star.Starbase.Key];        
+                    if (!OwnedFleets.TryGetValue(star.Starbase.Key, out star.Starbase)) star.Starbase = null; // Something broken on the Server but try to continue
                 }
             }    
         }

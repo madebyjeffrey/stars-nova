@@ -38,7 +38,8 @@ namespace Nova.WinForms.Gui.Dialogs
         private List<NumericUpDown> leftNumerics;
         private List<NumericUpDown> rightNumerics;
         public long nextFleetID;
-
+        public int leftCount = 0;
+        public int rightCount = 0;
         private enum Side 
         { 
             Left, 
@@ -117,6 +118,7 @@ namespace Nova.WinForms.Gui.Dialogs
                 leftNumerics.Add(num);
                 num.ValueChanged += delegate { ValueChanged(Side.Left, index); };
                 fleetLayoutPanel.Controls.Add(num, 0, i);
+                leftCount += (int)num.Value;
 
                 Label designName = new Label();
                 designName.Text = designs[i].Name;
@@ -131,6 +133,7 @@ namespace Nova.WinForms.Gui.Dialogs
                 rightNumerics.Add(num);
                 num.ValueChanged += delegate { ValueChanged(Side.Right, index); };
                 fleetLayoutPanel.Controls.Add(num, 2, i);
+                rightCount += (int)num.Value;
             }
         }
 
@@ -152,6 +155,13 @@ namespace Nova.WinForms.Gui.Dialogs
                 SourceComposition[designs[index].Key].Quantity = (int)newval;
             }
             if ((lblFleetRight.Text == "New Fleet") && (OtherComposition[designs[index].Key] != null)) lblFleetRight.Text = designs[index].Name + " #"+ nextFleetID.ToString();
+            leftCount = 0;
+            rightCount = 0;
+            for (int i = 0; i < designs.Count; ++i)
+            {
+                leftCount += (int)leftNumerics[i].Value;
+                rightCount += (int)rightNumerics[i].Value;
+            }
 
         }
     }

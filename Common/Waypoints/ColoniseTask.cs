@@ -86,7 +86,13 @@ namespace Nova.Common.Waypoints
             
             Star star = (Star)target;
             message.Text += target.Name;
-            
+            if ((reciever != null) && (reciever.Id != fleet.Owner) && ((Star)target).Starbase != null)
+            {
+                message.Text += " but the Starbase there would kill them, ";
+                messageOut = message;
+                return true;
+            }
+
             if (star.Colonists != 0)
             {
                 message.Text += " but it is already occupied, ";
@@ -107,8 +113,8 @@ namespace Nova.Common.Waypoints
                 messageOut = message;
                 return false;
             }
-            
-            Messages.Clear();
+
+                Messages.Clear();
             messageOut = null;
             return true;           
         }

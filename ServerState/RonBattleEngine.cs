@@ -819,6 +819,7 @@ namespace Nova.Server
             // FIXME (Priority 7) What about losses of a single ship within the token???
             if (target.Token.Armor <= 0) 
             {
+                if (target.IsStarbase) serverState.AllEmpires[target.Owner].OwnedStars[target.InOrbit.Name].Starbase = null;
                 DestroyStack(attacker, target, battle);
             }
         }

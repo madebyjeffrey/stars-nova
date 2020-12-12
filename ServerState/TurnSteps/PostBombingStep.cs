@@ -46,10 +46,17 @@ namespace Nova.Server.TurnSteps
                                 bool invading = false;
                                 if ((receiver != null) && (receiver != serverState.AllEmpires[fleet.Owner]))
                                 {
-                                    fleet.Waypoints[index].Task = new NoTask();
+                                    fleet.Waypoints[index].Task = new CargoTask(); //After The Battle leave an unload waypoint to unload the rest of the cargo
+                                    (fleet.Waypoints[index].Task as CargoTask).Mode = CargoMode.Unload;
+                                    (fleet.Waypoints[index].Task as CargoTask).Amount.ColonistsInKilotons = fleet.TotalCargoCapacity;
+                                    (fleet.Waypoints[index].Task as CargoTask).Amount.Germanium = fleet.TotalCargoCapacity;
+                                    (fleet.Waypoints[index].Task as CargoTask).Amount.Ironium = fleet.TotalCargoCapacity;
+                                    (fleet.Waypoints[index].Task as CargoTask).Amount.Boranium = fleet.TotalCargoCapacity;
+                                    (fleet.Waypoints[index].Task as CargoTask).Amount.Silicoxium = fleet.TotalCargoCapacity;
+                                    (fleet.Waypoints[index].Task as CargoTask).Target = target;
                                     invading = true;
                                     IWaypointTask invade = new InvadeTask();
-                                    invade.Perform(fleet, target, serverState.AllEmpires[fleet.Owner], receiver, out message); //Not exactly how Stars! does it but it should make programming the AI easier
+                                    if (invade.IsValid(fleet, target, serverState.AllEmpires[fleet.Owner], receiver, out message)) invade.Perform(fleet, target, serverState.AllEmpires[fleet.Owner], receiver, out message); //Not exactly how Stars! does it but it should make programming the AI easier
                                     if (message != null)
                                     {
                                         serverState.AllMessages.Add(message);

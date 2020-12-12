@@ -329,7 +329,7 @@ namespace Nova.Server
                                     else command.ApplyToState(empire);
                                     serverState.CleanupFleets();  
                                 }
-                                else (command as WaypointCommand).ApplyToState(empire); // might be a waypoint delete or edit so keep the Waypoint indexes alligned between server and the clients Waypoint Lists
+                                else (command as WaypointCommand).ApplyToState(empire); // might be a waypoint delete or edit so keep the Waypoint indexes alligned between server's and the client's Waypoint Lists
                             }
                             else
                             {

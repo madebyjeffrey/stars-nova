@@ -79,11 +79,18 @@ namespace Nova.Common.Waypoints
         public long OtherFleetKey { get; set; }
         public bool SimpleMerge { get; set; }
         public bool EqualCargoDistribution { get; set; }
+        public bool RemoveLeftFleet { get; set; }
 
         /// <summary>
-        /// Default Constructor.
+        ///  Default Constructor
         /// </summary>
-        public SplitMergeTask(Dictionary<long, ShipToken> leftComposition, Dictionary<long, ShipToken> rightComposition, long otherFleetKey = 0, bool simpleMerge = false, bool equalCargoDist = false)
+        /// <param name="leftComposition"></param>  // for complex splitmerge this will be the new source Fleet composition, for split this will be the source composition after the spli
+        /// <param name="rightComposition"></param> // for complex splitmerge this will be the new "other" Fleet composition
+        /// <param name="otherFleetKey"></param>    // required (may be peekNewFleetKey())
+        /// <param name="simpleMerge"></param>      // true if just putting every ship into one fleet
+        /// <param name="equalCargoDist"></param>   // true if every ship gets an equal amount of the cargo
+        /// <param name="removeLeft"></param>       // true for simple merge where every ship ends up in the "other" fleet
+        public SplitMergeTask(Dictionary<long, ShipToken> leftComposition, Dictionary<long, ShipToken> rightComposition, long otherFleetKey = 0, bool simpleMerge = false, bool equalCargoDist = false, bool removeLeft = false)
         {
             LeftComposition = leftComposition;            
             RightComposition = rightComposition;
@@ -126,6 +133,7 @@ namespace Nova.Common.Waypoints
             ShipToken token;
             SimpleMerge = false;
             EqualCargoDistribution = false;
+            RemoveLeftFleet = false;
             while (mainNode != null)
             {
                 try
@@ -136,6 +144,9 @@ namespace Nova.Common.Waypoints
                     {
                         case "simplemerge":
                             SimpleMerge = bool.Parse(subNode.Value);
+                            break;
+                        case "removeleft":
+                            RemoveLeftFleet = bool.Parse(subNode.Value);
                             break;
                         case "equaldist":
                             EqualCargoDistribution = bool.Parse(subNode.Value);
@@ -180,9 +191,10 @@ namespace Nova.Common.Waypoints
             // We are either merging or splitting or combining two fleets into 2 fleets of different compositions.
             // For a merge we need two keys (one comes from this waypoint's owner)
             // and for a split, one key and 2 compositions. 
-            // and for a splitmerge we need everything
+            // and for a splitmerge we need everything 
             if (SimpleMerge) Global.SaveData(xmldoc, xmlelTask, "SimpleMerge", SimpleMerge.ToString());
             if (EqualCargoDistribution) Global.SaveData(xmldoc, xmlelTask, "EqualDist", EqualCargoDistribution.ToString());
+            if (RemoveLeftFleet) Global.SaveData(xmldoc, xmlelTask, "RemoveLeft", RemoveLeftFleet.ToString());
             Global.SaveData(xmldoc, xmlelTask, "RightKey", OtherFleetKey.ToString("X"));
             if (!SimpleMerge)
             {            
@@ -253,7 +265,8 @@ namespace Nova.Common.Waypoints
                    
             if (SimpleMerge)  //Simple merge where all fleets end up in the same Fleet
             {
-                MergeFleets(fleet, secondFleet);
+                if (!RemoveLeftFleet) MergeFleets(fleet, secondFleet);
+                else MergeFleets(secondFleet, fleet);
             }
             else if (OtherFleetKey != Global.Unset)          // It's a complex swap where tokens come from 2 fleets and we end up with 2 Fleets
             {
