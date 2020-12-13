@@ -686,6 +686,7 @@ namespace Nova.Common
             double targetTime = legDistance / speed;
             double targetTimeStars270j = legDistance / speedStars270j;
             double fuelConsumptionRate = FuelConsumption(warpFactor, race);
+            if (Name.Contains( "Mineral Packet")) fuelConsumptionRate = 1 / int.MaxValue;
             if (warpFactor == 1) fuelConsumptionRate = -1; // From observation of millions of Fleets in Stars! 2.70j
             double fuelTime = targetTime; // Let's say we have enough fuel until we prove that we don't
             if (fuelConsumptionRate > 0) fuelTime = FuelAvailable / fuelConsumptionRate;

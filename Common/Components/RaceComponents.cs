@@ -112,9 +112,11 @@ namespace Nova.Common.Components
             Component candidate = null;
             foreach (Component component in this.Values)
             { // no properties of overthrusters in component !!
-                if (component.Properties.ContainsKey("Mechanical"))
-                if ((component.Type == ItemType.Mechanical) && (component.Name.Contains("Maneuvering Jet")) && (candidate == null)) candidate = component; //increases speed by 1/4 square
-                if ((component.Type == ItemType.Mechanical) && (component.Name.Contains("Overthruster"))) candidate = component; // increases speed by 1/2 square
+                if (component.Properties.ContainsKey("Battle Movement"))
+                {
+                    if ((component.Type == ItemType.Mechanical) && (component.Properties.ContainsKey("Battle Movement")) && (candidate == null)) candidate = component;
+                    if ((component.Type == ItemType.Mechanical) && (component.Properties.ContainsKey("Battle Movement")) && (candidate != null) && (component.Properties["Battle Movement"] as DoubleProperty).Value > (candidate.Properties["Battle Movement"] as DoubleProperty).Value) candidate = component;
+                }
             }
             return candidate;
 

@@ -761,12 +761,12 @@ namespace Nova.Ai
                         module.AllocatedComponent = torpedo;
                         module.ComponentCount = module.ComponentMaximum;
                     }
-                    else if ((module.ComponentType == "Mechanical") || (module.ComponentType == "Scanner Electrical Mechanical"))
+                    else if ((module.ComponentType == "Mechanical") )
                     {
                         module.AllocatedComponent = clientState.EmpireState.AvailableComponents.GetBestManeuveringJet();
                         module.ComponentCount = module.ComponentMaximum;
                     }
-                    else if ((module.ComponentType == "Electrical") || (module.ComponentType == "Shield Electrical Mechanical"))
+                    else if ((module.ComponentType == "Electrical") || (module.ComponentType == "Shield Electrical Mechanical") || (module.ComponentType == "Scanner Electrical Mechanical"))
                     {
                         module.AllocatedComponent = clientState.EmpireState.AvailableComponents.GetBestBattleComputer();
                         module.ComponentCount = module.ComponentMaximum;
@@ -865,7 +865,7 @@ namespace Nova.Ai
         { // it may seem counter-intuitive to produce obsolete ships but in large battles it is best 
             // to have all escort ships to be of the same design so damage is shared equally over the (say) 200 escorts
             // rather than have (say) 5 ships destroyed per battle step
-            // This is because the Battle engine always targets the fleet with the smallest number of vessels
+            // This is/was because the Stars! Battle engine always targets the fleet with the smallest number of vessels
             //so try not to have a mix of designs in a bombing escort fleet
             Component engine = clientState.EmpireState.AvailableComponents.GetBestEngine(Hull, false);
             Component beam = clientState.EmpireState.AvailableComponents.GetBestBeamWeapon();
@@ -880,7 +880,7 @@ namespace Nova.Ai
                     found = true;
                     destroyer = ship;
                 }
-            if (!found)
+            if (found)
             {
                 destroyer.Blueprint = Hull;
                 foreach (HullModule module in destroyer.Hull.Modules)
