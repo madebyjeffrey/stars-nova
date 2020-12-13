@@ -108,7 +108,7 @@ namespace Nova.WinForms.Gui
             foreach (ShipDesign design in clientState.EmpireState.Designs.Values)
             {
                 if (design.Obsolete) continue;
-                if ((design.Name.Contains("Mineral Packet")) && (starbase.MassDriverspeed == 0)) continue;
+                if ((design.Name.Contains("Mineral Packet")) && (starbase != null) && (starbase.MassDriverspeed == 0)) continue;
                 // prevent the current starbase design from being re-used
                 if (starbase != null)
                 {
