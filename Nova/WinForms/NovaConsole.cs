@@ -276,6 +276,35 @@ namespace Nova.WinForms.Console
             // RunAI();
         }
 
+
+        private bool noAIrunning()
+        {
+            bool AIrunning = false;
+            Stream intelLock = null;
+            foreach (PlayerSettings settings in serverState.AllPlayers)
+            {
+                if (settings.AiProgram == "Human")
+                {
+                    continue;
+                }
+
+                EmpireData empireData;
+                serverState.AllEmpires.TryGetValue(settings.PlayerNumber, out empireData);
+                try
+                {
+                    intelLock = File.OpenWrite(settings.RaceName + "." + "lock");
+                    intelLock.Close();
+                }
+                catch (System.IO.IOException)
+                {
+                    AIrunning = true;
+                }
+
+            }
+            return !AIrunning;
+        }
+
+
         /// <Summary>
         /// Process the timer event, used to determine how often the console,
         /// checks if the AI needs to run or a new turn can be generated.
@@ -285,48 +314,51 @@ namespace Nova.WinForms.Console
         private void ConsoleTimer_Tick(object sender, EventArgs e)
         {
             // Don't want multiple ticks
-            consoleTimer.Interval = 5000; //First tick at 1000 then 5000 thereafter
+            consoleTimer.Interval = 1000; 
             consoleTimer.Enabled = false;
+            if (noAIrunning())
+            {
 
-            try
-            {
-                // TODO (priority 4) - reading all the .orders files is overkill. Only really want to read orders for races that aren't turned in yet, and only if they have changed.
-                OrderReader orderReader = new OrderReader(serverState);
-                orderReader.ReadOrders();
-                if ((gui != null) && (gui.nextTurnQueued))
+                try
                 {
-                    gui.nextTurnQueued = false;
-                    consoleTimer.Enabled = true;
-                    //gui.NextTurn();
-                    consoleTimer.Enabled = true;
-                }
-                int selectedRow = -1;
-                if (playerList.SelectedIndices.Count > 0) selectedRow = playerList.SelectedIndices[0];
-                if (SetPlayerList())
-                {
-                    generateTurnMenuItem.Enabled = true;
-                    if (autoGenerateCheckBox.Checked)
+                    // TODO (priority 4) - reading all the .orders files is overkill. Only really want to read orders for races that aren't turned in yet, and only if they have changed.
+                    OrderReader orderReader = new OrderReader(serverState);
+                    orderReader.ReadOrders();
+                    if ((gui != null) && (gui.nextTurnQueued))
                     {
-                        // TODO (Priority 4) Grey out the players or something so it is clearer you can not click to play at the moment.
-                        GenerateTurn();
+                        gui.nextTurnQueued = false;
+                        consoleTimer.Enabled = true;
+                        //gui.NextTurn();
+                        consoleTimer.Enabled = true;
                     }
-                }
-                else
-                {
-                    if (runAiCheckBox.Checked)
+                    int selectedRow = -1;
+                    if (playerList.SelectedIndices.Count > 0) selectedRow = playerList.SelectedIndices[0];
+                    if (SetPlayerList())
                     {
-                        // Look for AIs to run, and launch their processes. Do this in a seperate thread, so it does not stop the human player from opening a turn.
-                        // Dan 7 May 17 - not sure if putting this in a thread improved performance or not. Doesn't seem to hurt so I am leaving it in.
-                        ThreadPool.QueueUserWorkItem(new WaitCallback(RunAI));
+                        generateTurnMenuItem.Enabled = true;
+                        if (autoGenerateCheckBox.Checked)
+                        {
+                            // TODO (Priority 4) Grey out the players or something so it is clearer you can not click to play at the moment.
+                            GenerateTurn();
+                        }
                     }
+                    else
+                    {
+                        if (runAiCheckBox.Checked)
+                        {
+                            // Look for AIs to run, and launch their processes. Do this in a seperate thread, so it does not stop the human player from opening a turn.
+                            // Dan 7 May 17 - not sure if putting this in a thread improved performance or not. Doesn't seem to hurt so I am leaving it in.
+                            ThreadPool.QueueUserWorkItem(new WaitCallback(RunAI));
+                        }
+                    }
+                    if (selectedRow > 0) playerList.Items[selectedRow].Selected = true;
                 }
-                if (selectedRow > 0) playerList.Items[selectedRow].Selected = true;
+                finally
+                {
+                    //if ((gui != null) && (gui.nextTurnQueued)) gui.NextTurn();
+                }
             }
-            finally
-            {
-               //if ((gui != null) && (gui.nextTurnQueued)) gui.NextTurn();
-                consoleTimer.Enabled = true;
-            }
+            consoleTimer.Enabled = true;
         }
 
         /// <summary>
