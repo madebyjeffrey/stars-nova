@@ -880,7 +880,7 @@ namespace Nova.Ai
                     found = true;
                     destroyer = ship;
                 }
-            if (found)
+            if (!found)
             {
                 destroyer.Blueprint = Hull;
                 foreach (HullModule module in destroyer.Hull.Modules)

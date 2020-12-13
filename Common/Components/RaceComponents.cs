@@ -187,7 +187,7 @@ namespace Nova.Common.Components
                     if ((component.Properties["Hull"] as Hull).DockCapacity > 0)
                 { 
                     if (candidate == null) candidate = component;
-                    if ((candidate.Properties["Hull"] as Hull).ArmorStrength >
+                    if ((candidate.Properties["Hull"] as Hull).ArmorStrength <
                         (component.Properties["Hull"] as Hull).ArmorStrength) candidate = component; //All properties scale up with better designs so just compare one property
                 }
             return candidate;

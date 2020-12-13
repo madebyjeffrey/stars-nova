@@ -186,12 +186,24 @@ namespace Nova.Common
             }
         }
 
+        public int MassDriverspeed
+        {
+            get
+            {
+                int speed = 0;    // Starbase should be the only token in a fleet so just examine First() token
+                foreach (HullModule component in tokens.Values.First().Design.Hull.Modules) if (component.AllocatedComponent.Properties.ContainsKey("Mass Driver")) 
+                    {
+                        speed = Math.Max(speed, (component.AllocatedComponent.Properties["Mass Driver"] as MassDriver).Value);
+                    }
+                return speed;
+            }
+        }
 
         public int SlowestEngine
         {
             get
             {
-                int speed = 10;
+                int speed = 20;
                 foreach (ShipToken token in tokens.Values)
                 {
                     if (token.Design.Engine == null) return 0;

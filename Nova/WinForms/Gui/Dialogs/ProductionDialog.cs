@@ -92,7 +92,7 @@ namespace Nova.WinForms.Gui
             designList.Items.Add(item);
 
             item = new ListViewItem();
-            item.Text = "Terraform <Autobuild>";
+            item.Text = "Terraform";
             item.Tag = new TerraformProductionUnit(clientState.EmpireState.Race);
             designList.Items.Add(item);
 
@@ -108,7 +108,7 @@ namespace Nova.WinForms.Gui
             foreach (ShipDesign design in clientState.EmpireState.Designs.Values)
             {
                 if (design.Obsolete) continue;
-
+                if ((design.Name.Contains("Mineral Packet")) && (starbase.MassDriverspeed == 0)) continue;
                 // prevent the current starbase design from being re-used
                 if (starbase != null)
                 {

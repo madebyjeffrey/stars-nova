@@ -193,6 +193,12 @@ namespace Nova.Server
                 {
                     ProcessFleet(fleet);
                     serverState.SetFleetOrbit(fleet);
+                    if (fleet.InOrbit != null)
+                    {
+                        serverState.AllMessages.Add(new Message(fleet.Owner, "Your Mineral Packet Destroyed 3/4 of the population of " + fleet.InOrbit.Name.ToString(), "Fleet", null, 0));
+                        serverState.AllMessages.Add(new Message(((Star)fleet.InOrbit).Owner, "A Mineral Packet Destroyed 3/4 of your population on " + fleet.InOrbit.Name.ToString(), "Fleet", null, 0));
+                        ((Star)fleet.InOrbit).Colonists = ((Star)fleet.InOrbit).Colonists / 4;
+                    }
                     serverState.AllEmpires[fleet.Owner].FleetReports[fleet.Key].Update(fleet, ScanLevel.Owned, serverState.TurnYear);
                 }
             }

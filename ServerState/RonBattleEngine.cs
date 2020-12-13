@@ -38,7 +38,7 @@ namespace Nova.Server
     public class RonBattleEngine
     {
         private readonly Random random = new Random();
-        private readonly int maxBattleRounds = 80;
+        private readonly int maxBattleRounds = 60;
         private readonly int gridSize = 1000;
         private readonly int gridScale = 100; //MUST BE gridSize /10
         private readonly int gridScaleSquared = 10000; // 
@@ -646,12 +646,14 @@ namespace Nova.Server
                         stack.Position = stack.Position + newHeading;
 
 
-                        // Update the battle report with these movements.
-                        BattleStepMovement report = new BattleStepMovement();
-                        report.StackKey = stack.Key;
-                        report.Position = stack.Position;
-                        if (oldPosition != stack.Position) battle.Steps.Add(report);
-
+                        if ((newHeading.distanceToSquared(new NovaPoint(0, 0)) > 1) || (battleRound < 5))
+                        {
+                            // Update the battle report with these movements.
+                            BattleStepMovement report = new BattleStepMovement();
+                            report.StackKey = stack.Key;
+                            report.Position = stack.Position;
+                            battle.Steps.Add(report);
+                        }
                     }
                 }
             }
@@ -988,7 +990,7 @@ namespace Nova.Server
                 target.Token.Shields = 0;
             }
 
-            // Calculate remianing weapon power, after damaging shields (if any)
+            // Calculate remaining weapon power, after damaging shields (if any)
             double damageDone = initialShields - target.Token.Shields;
             double remainingPower = hitPower - damageDone;
             
