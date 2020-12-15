@@ -59,6 +59,8 @@ namespace Nova.WinForms.Gui
         public event EventHandler StarmapChanged;
         public event EventHandler<SelectionArgs> WaypointIndexChanged;
 
+        private bool WaypointSelection_executing = false;
+        private bool FleetChange_executing = false;
 
         /// <Summary>
         /// Property to set or get the fleet currently being displayed.
@@ -69,7 +71,9 @@ namespace Nova.WinForms.Gui
             {
                 if (value != null)
                 {
+                    FleetChange_executing = true;
                     SetFleetDetails(value);
+                    FleetChange_executing = false;
                 }
             }
             get
@@ -139,57 +143,60 @@ namespace Nova.WinForms.Gui
         /// <param name="e">A <see cref="EventArgs"/> that contains the event data.</param>
         private void WaypointSpeedChanged(object sender, System.EventArgs e)
         {
+            if ((!WaypointSelection_executing) && (!FleetChange_executing))
+            { 
             //TODO (priority 8) The last edit of this waypoint could be dozens of commands ago so we can't POP it and we may need an insert instead of an edit? 
             warpText.Text = "Warp " + warpFactor.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
-            if (wayPoints.SelectedItems.Count > 0)
-            {
-                int index = wayPoints.SelectedIndices[0];
-
-                Waypoint editedWaypoint = new Waypoint();
-
-                editedWaypoint.Destination = topFleet.Waypoints[index].Destination;
-                editedWaypoint.Position = topFleet.Waypoints[index].Position;
-                editedWaypoint.Task = topFleet.Waypoints[index].Task;
-
-                editedWaypoint.WarpFactor = warpFactor.Value;
-
-                WaypointCommand command = new WaypointCommand(CommandMode.Edit, editedWaypoint, topFleet.Key, index);
-
-                // Minimizing clutter. If the last command (at all) was a speed/task change for this same waypoint,
-                // then just use that instead of adding a potentialy huge pile of speed edits.
-
-                if (commands.Count > 0)
+                if (wayPoints.SelectedItems.Count > 0)
                 {
-                    ICommand lastCommand = commands.Peek();
+                    int index = wayPoints.SelectedIndices[0];
 
-                    // Make sure it's the same waypoint except for speed/task, and that it's not a freshly added
-                    // waypoint.
-                    if (lastCommand is WaypointCommand && (lastCommand as WaypointCommand).Waypoint != null)
+                    Waypoint editedWaypoint = new Waypoint();
+
+                    editedWaypoint.Destination = topFleet.Waypoints[index].Destination;
+                    editedWaypoint.Position = topFleet.Waypoints[index].Position;
+                    editedWaypoint.Task = topFleet.Waypoints[index].Task;
+
+                    editedWaypoint.WarpFactor = warpFactor.Value;
+
+                    WaypointCommand command = new WaypointCommand(CommandMode.Edit, editedWaypoint, topFleet.Key, index);
+
+                    // Minimizing clutter. If the last command (at all) was a speed/task change for this same waypoint,
+                    // then just use that instead of adding a potentialy huge pile of speed edits.
+
+                    if (commands.Count > 0)
                     {
-                        if ((lastCommand as WaypointCommand).Waypoint.Destination == editedWaypoint.Destination &&
-                            (lastCommand as WaypointCommand).Waypoint.Position == editedWaypoint.Position &&
-                            (lastCommand as WaypointCommand).Mode != CommandMode.Add)
+                        ICommand lastCommand = commands.Peek();
+
+                        // Make sure it's the same waypoint except for speed/task, and that it's not a freshly added
+                        // waypoint.
+                        if (lastCommand is WaypointCommand && (lastCommand as WaypointCommand).Waypoint != null)
                         {
-                            // Discard it.
-                            commands.Pop();
+                            if ((lastCommand as WaypointCommand).Waypoint.Destination == editedWaypoint.Destination &&
+                                (lastCommand as WaypointCommand).Waypoint.Position == editedWaypoint.Position &&
+                                (lastCommand as WaypointCommand).Mode != CommandMode.Add)
+                            {
+                                // Discard it.
+                                commands.Pop();
+                            }
                         }
                     }
+
+                    commands.Push(command);
+
+                    Nova.Common.Message message;
+                    if (command.IsValid(empireState, out message))
+                    {
+                        command.ApplyToState(empireState);
+                        //TODO separate the commandList from the WaypointListbox and only display waypoints that the user 
+                        // can edit while maintaining links from the WaypointListbox.index to the commandList.index (obviously not
+                        // one to one)
+                    }
+                    else if (Global.Debug) Report.Information(message.Text);
+
+                    DisplayLegDetails(index);
                 }
-
-                commands.Push(command);
-
-                Nova.Common.Message message;
-                if (command.IsValid(empireState, out message))
-                {
-                    command.ApplyToState(empireState);
-                    //TODO separate the commandList from the WaypointListbox and only display waypoints that the user 
-                    // can edit while maintaining links from the WaypointListbox.index to the commandList.index (obviously not
-                    // one to one)
-                }
-                else if (Global.Debug) Report.Information(message.Text);
-
-                DisplayLegDetails(index);
             }
         }
 
@@ -201,6 +208,8 @@ namespace Nova.WinForms.Gui
         /// <param name="e">A <see cref="EventArgs"/> that contains the event data.</param>
         private void WaypointSelection(object sender, System.EventArgs e)
         {
+            WaypointSelection_executing = true;
+
             if (wayPoints.SelectedItems.Count <= 0)
             {
                 return;
@@ -213,6 +222,7 @@ namespace Nova.WinForms.Gui
             SelectionArgs positionArg = new SelectionArgs(destination);
             WaypointIndexChanged(this, positionArg);
 
+            WaypointSelection_executing = false;
         }
 
         /// <Summary>
@@ -222,6 +232,7 @@ namespace Nova.WinForms.Gui
         /// <param name="e">A <see cref="EventArgs"/> that contains the event data.</param>
         private void CargoButton_Click(object sender, System.EventArgs e)
         {
+            FleetChange_executing = true;
             try
             {
                 Star target = null;
@@ -249,7 +260,7 @@ namespace Nova.WinForms.Gui
             {
                 Report.Debug("FleetDetail.cs : CargoButton_Click() - Failed to open cargo dialog.");
             }
-        
+            FleetChange_executing = false;
         }
 
         /// <Summary>
@@ -349,6 +360,7 @@ namespace Nova.WinForms.Gui
         /// <param name="e">A <see cref="EventArgs"/> that contains the event data.</param>
         private void WaypointTaskChanged(object sender, EventArgs e)
         {
+            WaypointSelection_executing = true;
             if (topFleet != lastFleet)
             {
                 lastFleet = topFleet;
@@ -414,6 +426,7 @@ namespace Nova.WinForms.Gui
                 }
                 else if (Global.Debug) Report.Information(message.Text);
             }
+            FleetChange_executing = false;
         }
 
         /// <Summary>
@@ -423,7 +436,9 @@ namespace Nova.WinForms.Gui
         /// <param name="e">A <see cref="EventArgs"/> that contains the event data.</param>
         private void SplitFleetClick(object sender, EventArgs e)
         {
+            FleetChange_executing = true;
             DoSplitMerge(null);
+            FleetChange_executing = false;
         }
 
         /// <Summary>
@@ -433,6 +448,7 @@ namespace Nova.WinForms.Gui
         /// <param name="e">A <see cref="EventArgs"/> that contains the event data.</param>
         private void NextFleet_Click(object sender, System.EventArgs e)
         {
+            FleetChange_executing = true;
             if (empireState.OwnedFleets.Count == 1)
             {
                 previousFleet.Enabled = false;
@@ -447,6 +463,7 @@ namespace Nova.WinForms.Gui
 
             // Signal the change.
             OnFleetSelectionChanged(new SelectionArgs(topFleet));
+            FleetChange_executing = false;
         }
 
 
@@ -457,6 +474,7 @@ namespace Nova.WinForms.Gui
         /// <param name="e">A <see cref="EventArgs"/> that contains the event data.</param>
         private void PreviousFleet_Click(object sender, EventArgs e)
         {
+            FleetChange_executing = true;
             if (empireState.OwnedFleets.Count == 1)
             {
                 previousFleet.Enabled = false;
@@ -471,6 +489,7 @@ namespace Nova.WinForms.Gui
 
             // Signal the change.
             OnFleetSelectionChanged(new SelectionArgs(topFleet));
+            FleetChange_executing = false;
         }
 
         /// <Summary>
@@ -554,6 +573,7 @@ namespace Nova.WinForms.Gui
         /// <param name="fleet">The selected fleet.</param>
         private void SetFleetDetails(Fleet topFleet)
         {
+            FleetChange_executing = true;
             wayPoints.DrawMode = DrawMode.OwnerDrawFixed;
             wayPoints.DrawItem += new DrawItemEventHandler(wayPoints_DrawItem);
             if (topFleet == null)
@@ -646,6 +666,7 @@ namespace Nova.WinForms.Gui
 
             UpdateCargoMeters();
             Invalidate();
+            FleetChange_executing = false;
         }
 
         private void UpdateCargoMeters()
@@ -697,24 +718,30 @@ namespace Nova.WinForms.Gui
 
         private void ButtonGotoPlanet_Click(object sender, EventArgs e)
         {
+            FleetChange_executing = true;
             if (topFleet != null && topFleet.InOrbit != null)
             {
                 OnFleetSelectionChanged(new SelectionArgs(topFleet.InOrbit as Star));
             }
+            FleetChange_executing = false;
         }
 
         private void ButtonGotoFleet_Click(object sender, EventArgs e)
         {
+            FleetChange_executing = true;
             Fleet newFleet = GettopFleetAtLocation();
 
             // Inform of the selection change to all listening objects.
             OnFleetSelectionChanged(new SelectionArgs(newFleet));
+            FleetChange_executing = false;
         }
 
         private void ButtonMerge_Click(object sender, EventArgs e)
         {
+            FleetChange_executing = true;
             Fleet newFleet = GettopFleetAtLocation();
             DoSplitMerge(newFleet);
+            FleetChange_executing = false;
         }
 
         /// <Summary>
@@ -814,6 +841,7 @@ namespace Nova.WinForms.Gui
         /// <param name="otherFleet">The second fleet to merge with or split into (may be null).</param>
         private void DoSplitMerge(Fleet otherFleet = null)
         {
+            FleetChange_executing = true;
             using (SplitFleetDialog splitFleet = new SplitFleetDialog())
             {
                 splitFleet.SetFleet(topFleet, otherFleet);
@@ -910,10 +938,12 @@ namespace Nova.WinForms.Gui
                 wayPoints.DataSource = null;
                 wayPoints.DataSource = topFleet.Waypoints;
             }
+            FleetChange_executing = false;
         }
 
         private void ButtonCargoXfer_Click(object sender, EventArgs e)
         {
+            FleetChange_executing = true;
             CargoTransferDialog cargoTransferDialog = new CargoTransferDialog();
             {
                 cargoTransferDialog.SetFleets(topFleet, GettopFleetAtLocation(), clientData);
@@ -921,7 +951,7 @@ namespace Nova.WinForms.Gui
                 UpdateCargoMeters();
                 Invalidate();
             }
-
+            FleetChange_executing = false;
 
         }
 
@@ -951,6 +981,7 @@ namespace Nova.WinForms.Gui
 
         protected virtual void OnFleetSelectionChanged(SelectionArgs e)
         {
+            FleetChange_executing = true;
             if (e != null)
                 if (e.Selection is Fleet) SetFleetDetails(e.Selection as Fleet);
 
@@ -958,14 +989,17 @@ namespace Nova.WinForms.Gui
             {
                 FleetSelectionChanged(this, e);
             }
+            FleetChange_executing = false;
         }
 
         // Updates WaypointList when waypoints are changed from the StarMap (or other).
         public void UpdateWaypointList(object sender, EventArgs e)
         {
+            WaypointSelection_executing = true;
             ((CurrencyManager)wayPoints.BindingContext[wayPoints.DataSource]).Refresh();
 
             wayPoints.SelectedIndex = wayPoints.Items.Count - 1;
+            WaypointSelection_executing = false;
         }
 
         protected virtual void OnStarmapChanged(EventArgs e)
@@ -1025,14 +1059,17 @@ namespace Nova.WinForms.Gui
 
         private void buttonSplitAll_Click(object sender, EventArgs e)
         {
+            FleetChange_executing = true;
             Fleet nextFleet = keepOneSplitRemainder(topFleet, clientData.EmpireState);
             while (nextFleet != null) nextFleet = keepOneSplitRemainder(nextFleet, clientData.EmpireState);
             OnFleetSelectionChanged(new SelectionArgs(topFleet));
+            FleetChange_executing = false;
         }
     
 
     private Fleet keepOneSplitRemainder(Fleet fleet, EmpireData empire)
-        {                                                                   //  take all but one vessel to the new fleet
+        {
+            FleetChange_executing = true;                                   //  take all but one vessel to the new fleet
                                                                             // and we can split that fleet recursively
 
             Dictionary<long, ShipToken> LeftComposition = new Dictionary<long, ShipToken>();
@@ -1122,8 +1159,8 @@ namespace Nova.WinForms.Gui
                 else if (Global.Debug) Report.Information(message.Text);
 
             }
+            FleetChange_executing = false;
             return newFleet;
-
         }
 
     }
