@@ -212,6 +212,7 @@ namespace Nova.WinForms.Gui
 
             if (wayPoints.SelectedItems.Count <= 0)
             {
+                WaypointSelection_executing = false;
                 return;
             }
             WaypointTasks.Enabled = !((topFleet.Waypoints[wayPoints.SelectedIndex].Task is SplitMergeTask) || (topFleet.Waypoints[wayPoints.SelectedIndex].Task is CargoTask))  ;
@@ -364,10 +365,12 @@ namespace Nova.WinForms.Gui
             if (topFleet != lastFleet)
             {
                 lastFleet = topFleet;
+                WaypointSelection_executing = false;
                 return;     //The selected Fleet changed so this event was fired by mistake
             }
             if (wayPoints.SelectedItems.Count <= 0)
             {
+                WaypointSelection_executing = false;
                 return;
             }
 
@@ -375,6 +378,7 @@ namespace Nova.WinForms.Gui
             if (((topFleet.Waypoints[index].Task is SplitMergeTask) || (topFleet.Waypoints[index].Task is CargoTask))  && (topFleet.Waypoints[index].Destination == topFleet.Waypoints[0].Destination))
             {
                 if (Global.Debug) Report.Information("That is a waypoint zero task, editing it may result in a loss of Fleet split, merge, load and unload actions for this fleet and/or other fleets");
+                WaypointSelection_executing = false;
                 return;
             }
             else
@@ -453,6 +457,7 @@ namespace Nova.WinForms.Gui
             {
                 previousFleet.Enabled = false;
                 nextFleet.Enabled = false;
+                WaypointSelection_executing = false;
                 return;
             }
 
@@ -479,6 +484,7 @@ namespace Nova.WinForms.Gui
             {
                 previousFleet.Enabled = false;
                 nextFleet.Enabled = false;
+                WaypointSelection_executing = false;
                 return;
             }
 
@@ -578,6 +584,7 @@ namespace Nova.WinForms.Gui
             wayPoints.DrawItem += new DrawItemEventHandler(wayPoints_DrawItem);
             if (topFleet == null)
             {
+                WaypointSelection_executing = false;
                 return;
             }
 
@@ -929,7 +936,7 @@ namespace Nova.WinForms.Gui
                         else if (Global.Debug) Report.Information(message.Text);
                     }
                     else if (Global.Debug) Report.Information(message.Text);
-                    topFleet = (otherFleet == null) ? topFleet : otherFleet;
+                    topFleet = (otherFleet == null) ?otherFleet  : topFleet;
 
                 }
 
@@ -1095,7 +1102,11 @@ namespace Nova.WinForms.Gui
                 first = false;
             }
 
-            if (rightQuantity == 0) return null;
+            if (rightQuantity == 0)
+            {
+                WaypointSelection_executing = false;
+                return null;
+            }
 
             //find the last waypoint with the current destination - it is the last Waypoint zero command so insert after it
             int wpindex = 0;
