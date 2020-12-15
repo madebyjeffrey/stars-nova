@@ -383,6 +383,13 @@ namespace Nova.Common
 
             return finalGrowth;
         }
+
+
+        /// <summary>
+        /// The unterraformed percentage value (% of Max growth rate)
+        /// </summary>
+        /// <param name="race"></param>
+        /// <returns></returns>
         public int MinValue(Race race)
         {
             double habitalValue = race.HabValue(this);
@@ -392,10 +399,6 @@ namespace Nova.Common
             {
                 growthRate *= Global.GrowthFactorHyperExpansion;
             }
-
-
-
-
             double minValue = growthRate * 100.0 * habitalValue;
             return (int) minValue;
         } 

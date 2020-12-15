@@ -62,7 +62,7 @@ namespace Nova.Ai
         {
             // keep track of the position in the production queue
             int productionIndex = 0;
-
+            Message message = null;
             // Clear the current manufacturing queue (except for partially built ships/starbases).
             Queue<ProductionCommand> clearProductionList = new Queue<ProductionCommand>();
             foreach (ProductionOrder productionOrderToclear in this.planet.ManufacturingQueue.Queue)
@@ -70,7 +70,6 @@ namespace Nova.Ai
                 if ((productionOrderToclear.Unit.Cost == productionOrderToclear.Unit.RemainingCost) && !(productionOrderToclear.Unit is ShipProductionUnit))
                 {
                     ProductionCommand clearProductionCommand = new ProductionCommand(CommandMode.Delete, productionOrderToclear, this.planet.Key);
-                    Message message;
                     if (clearProductionCommand.IsValid(clientState.EmpireState,out message))
                     {
                         // Put the items to be cleared in a queue, as the actual cleanup can not be done while iterating the list.
@@ -116,12 +115,23 @@ namespace Nova.Ai
                         ProductionOrder factoryOrder = new ProductionOrder(factoriesToBuild, new FactoryProductionUnit(clientState.EmpireState.Race), false);
                         ProductionCommand factoryCommand = new ProductionCommand(CommandMode.Add, factoryOrder, this.planet.Key, FactoryProductionPrecedence);
                         productionIndex++;
-                        Message message;
                         if (factoryCommand.IsValid(clientState.EmpireState,out message))
                         {
                             factoryCommand.ApplyToState(clientState.EmpireState);
                             this.clientState.Commands.Push(factoryCommand);
                         }
+                    }
+                }
+                // Min Terraform
+                if (planet.MinValue(clientState.EmpireState.Race) < 10)
+                {
+                    ProductionOrder terraformOrder1 = new ProductionOrder(100, new TerraformProductionUnit(clientState.EmpireState.Race), false);
+                    ProductionCommand terraformCommand1 = new ProductionCommand(CommandMode.Add, terraformOrder1, this.planet.Key,productionIndex);
+                    productionIndex++;
+                    if (terraformCommand1.IsValid(clientState.EmpireState, out message))
+                    {
+                        terraformCommand1.ApplyToState(clientState.EmpireState);
+                        clientState.Commands.Push(terraformCommand1);
                     }
                 }
 
@@ -132,13 +142,25 @@ namespace Nova.Ai
                     ProductionOrder mineOrder = new ProductionOrder(maxMines - this.planet.Mines, new MineProductionUnit(clientState.EmpireState.Race), false);
                     ProductionCommand mineCommand = new ProductionCommand(CommandMode.Add, mineOrder, this.planet.Key, Math.Min(MineProductionPrecedence, productionIndex));
                     productionIndex++;
-                    Message message;
                     if (mineCommand.IsValid(clientState.EmpireState,out message))
                     {
                         mineCommand.ApplyToState(clientState.EmpireState);
                         clientState.Commands.Push(mineCommand);
                     }
                 }
+                // Max Terraform
+
+               
+                ProductionOrder terraformOrder = new ProductionOrder(100, new TerraformProductionUnit(clientState.EmpireState.Race), false);
+                ProductionCommand terraformCommand = new ProductionCommand(CommandMode.Add, terraformOrder, this.planet.Key, productionIndex);
+                productionIndex++;
+
+                if (terraformCommand.IsValid(clientState.EmpireState, out message))
+                {
+                    terraformCommand.ApplyToState(clientState.EmpireState);
+                    clientState.Commands.Push(terraformCommand);
+                }
+                
 
                 // Build ships
                 productionIndex = BuildShips(productionIndex);
@@ -150,7 +172,6 @@ namespace Nova.Ai
                     ProductionOrder defenseOrder = new ProductionOrder(defenseToBuild, new DefenseProductionUnit(), false);
                     ProductionCommand defenseCommand = new ProductionCommand(CommandMode.Add, defenseOrder, this.planet.Key, productionIndex);
                     productionIndex++;
-                    Message message;
                     if (defenseCommand.IsValid(clientState.EmpireState, out message))
                     {
                         defenseCommand.ApplyToState(clientState.EmpireState);
@@ -322,18 +343,22 @@ namespace Nova.Ai
             Resources nextOneYears = new Resources(planet.GetMiningRate(planet.MineralConcentration.Ironium), planet.GetMiningRate(planet.MineralConcentration.Boranium), planet.GetMiningRate(planet.MineralConcentration.Germanium), planet.GetFutureResourceRate(0));
             resourcesOnHand = resourcesOnHand + 8 * nextOneYears;  //rough approximation
             double howMany = 0;
-            if (currentStarbase == null)
-            {  //fleet
-                if (fleet!=null)  howMany = resourcesOnHand / fleet.Cost;
-            }
-            else
-            {  //Starbase upgrade
-                if (fleet != null)
-                {
-                    if (fleet.Cost == currentStarbase) howMany = 0;
-                    else howMany = resourcesOnHand / (fleet.Cost - currentStarbase);
+            if (fleet.IsStarbase)
+            {
+                if (currentStarbase == null)
+                {  //fleet
+                    if (fleet != null) howMany = resourcesOnHand / fleet.Cost;
+                }
+                else
+                {  //Starbase upgrade
+                    if (fleet != null)
+                    {
+                        if (fleet.Cost == currentStarbase) howMany = 0;
+                        else howMany = resourcesOnHand / (fleet.Cost - currentStarbase);
+                    }
                 }
             }
+            else howMany = resourcesOnHand / fleet.Cost; // Not Starbase
             return howMany;
         }
         private int BuidSuitableFleet(int productionIndex) //Based on this planets resources and the empire needs
