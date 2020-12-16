@@ -221,8 +221,9 @@ namespace Nova.Common.Waypoints
                     if (node == null)
                     {
                         InvadeTask wpTask = new InvadeTask();
+                        Task = wpTask;
                     }
-                    else new InvadeTask(node);
+                    else Task = new InvadeTask(node);
                     break;
                 case "lay minestask":
                     Task = new LayMinesTask(node);
