@@ -23,7 +23,7 @@ namespace Nova.Server.TurnSteps
             {
                 int index = 0;
                 int maxIndex = fleet.Waypoints.Count - 1;
-                if (fleet.Waypoints.Count > 0)
+                if ((!fleet.IsStarbase)&&(fleet.Waypoints.Count > 0))
                 {
                     string dest0 = fleet.Waypoints[0].Destination;
                     while (index <= maxIndex)

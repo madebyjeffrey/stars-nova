@@ -394,7 +394,7 @@ namespace Nova.WinForms.Gui
                 Mappable target = null;
                 foreach (Star star in empireState.OwnedStars.Values) if (star.Name == topFleet.Waypoints[index].Destination) target = star;
                 if (target == null) foreach (Fleet fleet in empireState.OwnedFleets.Values) if (fleet.Name == topFleet.Waypoints[index].Destination) target = fleet;
-                editedWaypoint.LoadTask(WaypointTasks.Text, null, target);
+                editedWaypoint.Task = editedWaypoint.LoadTask(WaypointTasks.Text, null, target);
 
 
                 WaypointCommand command = new WaypointCommand(CommandMode.Edit, editedWaypoint, topFleet.Key, index);

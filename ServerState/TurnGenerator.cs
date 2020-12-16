@@ -121,7 +121,7 @@ namespace Nova.Server
             // for all commands of all empires: command.ApplyToState(empire);
             // for WaypointCommand: Add Waypoints to Fleets.
             ServerProgress.Text = "Waypoint Zero Commands";
-            ParseCommands();
+            ParseCommands();  //PreProcess CargoTask and Splitmerge tasks because the Fleet ID's may be deleted before the waypoint0 tasks are completed or may not exist until after waypoint0 tasks are performed
 
             // Do all fleet movement and actions 
             // TODO (priority 4) - split this up into waypoint zero and waypoint 1 actions
