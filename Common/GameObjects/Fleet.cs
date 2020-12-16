@@ -760,7 +760,7 @@ namespace Nova.Common
 
             // Added check if fleet run out of full it's speed will be changed 
             // to free warp speed.
-            if ((arrived == TravelStatus.InTransit) && (targetTime > fuelTime) && ()) //dropping back to FreeWarp a little before completely running out of fuel can be beneficial as the player still has a little fuel and may be able to reach the destination by using a lower warpspeed (maybe)
+            if ((arrived == TravelStatus.InTransit) && (targetTime > fuelTime) && (fuelConsumptionRate > this.FuelAvailable)) //dropping back to FreeWarp a little before completely running out of fuel can be beneficial as the player still has a little fuel and may be able to reach the destination by using a lower warpspeed (maybe)
             {
                 target.WarpFactor = this.FreeWarpSpeed;
                 if (target.WarpFactor == 0) target.WarpFactor = 1; // in Stars every fleet can travel at warp 1 and generate 1mg of fuel per turn
