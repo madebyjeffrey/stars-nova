@@ -85,6 +85,12 @@ namespace Nova.Common.Waypoints
             Mode = CargoMode.Unload;
             Target = new Mappable();
         }
+        public CargoTask(int amount)
+        {
+            Amount = new Cargo(amount, amount, amount, amount, amount );
+            Mode = CargoMode.Unload;
+            Target = new Mappable();
+        }
 
 
         /// <summary>
@@ -333,6 +339,7 @@ namespace Nova.Common.Waypoints
         /// </summary>
         private bool Load(Fleet fleet, Item target, EmpireData sender, EmpireData receiver, out Message message)
         {
+            if (Amount.Mass > fleet.TotalCargoCapacity) Amount = Amount.Scale(fleet.TotalCargoCapacity /(double) Amount.Mass); //Final check to prevent overloading
             if ((target.Type == ItemType.Star) || (target.Type == ItemType.StarIntel))
             {
                 if (sender.OwnedStars.ContainsKey(target.Name))

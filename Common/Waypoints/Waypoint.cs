@@ -200,12 +200,7 @@ namespace Nova.Common.Waypoints
                 case "unload cargotask":
                     if (node == null)
                     {
-                        CargoTask wpTask = new CargoTask();
-                        wpTask.Mode = CargoMode.Unload;
-                        wpTask.Amount.ColonistsInKilotons = int.MaxValue;
-                        wpTask.Amount.Germanium = int.MaxValue;
-                        wpTask.Amount.Ironium = int.MaxValue;
-                        wpTask.Amount.Germanium = int.MaxValue;
+                        CargoTask wpTask = new CargoTask(int.MaxValue);
                         wpTask.Target = target;
                         Task = wpTask;
                     }

@@ -867,13 +867,13 @@ namespace Nova.WinForms.Gui
                     if (found) index--;
                     Waypoint waypoint = new Waypoint(topFleet.Waypoints[0]);
 
-                    if (splitFleet.leftCount == 0) waypoint.Task = new SplitMergeTask(null, null, otherFleet.Key, true, false, true);
-                    else if (splitFleet.rightCount == 0) waypoint.Task = new SplitMergeTask(null, null, otherFleet.Key, true, false, false);
+                    if (splitFleet.leftCount == 0) waypoint.Task = new SplitMergeTask(null, null, otherFleet.Key, true, comboCargoDist.SelectedIndex == 1, true);
+                    else if (splitFleet.rightCount == 0) waypoint.Task = new SplitMergeTask(null, null, otherFleet.Key, true, comboCargoDist.SelectedIndex==1, false);
 
                     else waypoint.Task = new SplitMergeTask(
                         splitFleet.SourceComposition,
                         splitFleet.OtherComposition,
-                        (otherFleet == null) ? Global.Unset : otherFleet.Key);
+                        (otherFleet == null) ? Global.Unset : otherFleet.Key,false, comboCargoDist.SelectedIndex == 1);
 
                     WaypointCommand command = new WaypointCommand(CommandMode.Insert, topFleet.Key, index);
 
@@ -930,13 +930,14 @@ namespace Nova.WinForms.Gui
                                 else
                                 {
                                     empireState.AddOrUpdateFleet(newFleet);
+                                    otherFleet = newFleet;
                                 }
                             }
                         }
                         else if (Global.Debug) Report.Information(message.Text);
                     }
                     else if (Global.Debug) Report.Information(message.Text);
-                    topFleet = (otherFleet == null) ?otherFleet  : topFleet;
+                    topFleet = (topFleet == null) ?  otherFleet : topFleet;
 
                 }
 
@@ -1067,14 +1068,15 @@ namespace Nova.WinForms.Gui
         private void buttonSplitAll_Click(object sender, EventArgs e)
         {
             FleetChange_executing = true;
-            Fleet nextFleet = keepOneSplitRemainder(topFleet, clientData.EmpireState);
+            Fleet nextFleet = keepOneSplitRemainder(topFleet, clientData.EmpireState,(comboCargoDist.SelectedIndex==0));
             while (nextFleet != null) nextFleet = keepOneSplitRemainder(nextFleet, clientData.EmpireState);
             OnFleetSelectionChanged(new SelectionArgs(topFleet));
             FleetChange_executing = false;
         }
-    
 
-    private Fleet keepOneSplitRemainder(Fleet fleet, EmpireData empire)
+
+
+        private Fleet keepOneSplitRemainder(Fleet fleet, EmpireData empire, bool cargoLeft = true)
         {
             FleetChange_executing = true;                                   //  take all but one vessel to the new fleet
                                                                             // and we can split that fleet recursively
@@ -1126,7 +1128,7 @@ namespace Nova.WinForms.Gui
             waypoint.Task = new SplitMergeTask(
                 LeftComposition,
                 RightComposition,
-                Global.Unset);
+                Global.Unset,false, comboCargoDist.SelectedIndex == 1);
             WaypointCommand command = new WaypointCommand(CommandMode.Insert, fleet.Key, wpindex);
 
 

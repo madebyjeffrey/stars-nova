@@ -27,27 +27,27 @@ namespace Nova.Common.Waypoints
     using System.Diagnostics;
     using System.Linq;
     using System.Xml;
-    
+
     using Nova.Common;
     using Nova.Common.Components;
-    
+
     /// <summary>
     /// Performs split or merge of fleets.
     /// </summary>
     public class SplitMergeTask : IWaypointTask
-    {           
+    {
         private List<Message> messages = new List<Message>();
-        
+
         /// <inheritdoc />
         public List<Message> Messages
         {
             get { return messages; }
         }
-        
+
         /// <inheritdoc />
         public string Name
         {
-            get 
+            get
             {
                 if (OtherFleetKey == 0)
                 {
@@ -59,17 +59,17 @@ namespace Nova.Common.Waypoints
                 }
             }
         }
-        
+
         /// <summary>
         /// Composition of the fleet on the left side of the SplitFleetsDialog dialog.
         /// </summary>
         public Dictionary<long, ShipToken> LeftComposition { get; set; }
-        
+
         /// <summary>
         /// Composition of the fleet on the right side of the SplitFleetsDialog dialog.
         /// </summary>
         public Dictionary<long, ShipToken> RightComposition { get; set; }
-        
+
         /// <summary>
         /// The Fleet.Key of the target fleet to merge with, if any.
         /// </summary>
@@ -92,13 +92,13 @@ namespace Nova.Common.Waypoints
         /// <param name="removeLeft"></param>       // true for simple merge where every ship ends up in the "other" fleet
         public SplitMergeTask(Dictionary<long, ShipToken> leftComposition, Dictionary<long, ShipToken> rightComposition, long otherFleetKey = 0, bool simpleMerge = false, bool equalCargoDist = false, bool removeLeft = false)
         {
-            LeftComposition = leftComposition;            
+            LeftComposition = leftComposition;
             RightComposition = rightComposition;
             OtherFleetKey = otherFleetKey;
             SimpleMerge = simpleMerge;
             EqualCargoDistribution = equalCargoDist;
         }
-        
+
 
         /// <summary>
         /// Copy Constructor.
@@ -106,7 +106,7 @@ namespace Nova.Common.Waypoints
         /// <param name="other">SplitTask to copy.</param>
         public SplitMergeTask(SplitMergeTask copy)
         {
-            LeftComposition = new Dictionary<long, ShipToken>(copy.LeftComposition);            
+            LeftComposition = new Dictionary<long, ShipToken>(copy.LeftComposition);
             RightComposition = new Dictionary<long, ShipToken>(copy.RightComposition);
             OtherFleetKey = copy.OtherFleetKey;
             SimpleMerge = copy.SimpleMerge;
@@ -124,10 +124,10 @@ namespace Nova.Common.Waypoints
             {
                 return;
             }
-            
+
             LeftComposition = new Dictionary<long, ShipToken>();
             RightComposition = new Dictionary<long, ShipToken>();
-            
+
             XmlNode mainNode = node.FirstChild;
             XmlNode subNode;
             ShipToken token;
@@ -139,7 +139,7 @@ namespace Nova.Common.Waypoints
                 try
                 {
                     subNode = mainNode.FirstChild;
-                    
+
                     switch (mainNode.Name.ToLower())
                     {
                         case "simplemerge":
@@ -163,7 +163,7 @@ namespace Nova.Common.Waypoints
                                 subNode = subNode.NextSibling;
                             }
                             break;
-                            
+
                         case "rightcomposition":
                             while (subNode != null)
                             {
@@ -171,7 +171,7 @@ namespace Nova.Common.Waypoints
                                 RightComposition.Add(token.Key, token);
                                 subNode = subNode.NextSibling;
                             }
-                            break;                             
+                            break;
                     }
                 }
                 catch (Exception e)
@@ -181,8 +181,8 @@ namespace Nova.Common.Waypoints
                 mainNode = mainNode.NextSibling;
             }
         }
-        
-        
+
+
         /// <inheritdoc />
         public XmlElement ToXml(XmlDocument xmldoc)
         {
@@ -197,26 +197,26 @@ namespace Nova.Common.Waypoints
             if (RemoveLeftFleet) Global.SaveData(xmldoc, xmlelTask, "RemoveLeft", RemoveLeftFleet.ToString());
             Global.SaveData(xmldoc, xmlelTask, "RightKey", OtherFleetKey.ToString("X"));
             if (!SimpleMerge)
-            {            
+            {
                 XmlElement xmlelLeft = xmldoc.CreateElement("LeftComposition");
                 foreach (ShipToken token in LeftComposition.Values)
                 {
                     xmlelLeft.AppendChild(token.ToXml(xmldoc));
-                }            
+                }
                 xmlelTask.AppendChild(xmlelLeft);
-                
+
                 XmlElement xmlelRight = xmldoc.CreateElement("RightComposition");
                 foreach (ShipToken token in RightComposition.Values)
                 {
                     xmlelRight.AppendChild(token.ToXml(xmldoc));
-                }            
+                }
                 xmlelTask.AppendChild(xmlelRight);
             }
-            
+
             return xmlelTask;
         }
 
-        
+
         /// <inheritdoc />
         public bool IsValid(Fleet fleet, Item target, EmpireData sender, EmpireData receiver, out Message message)
         {
@@ -229,8 +229,8 @@ namespace Nova.Common.Waypoints
             message = null;
             return true;
         }
-        
-        
+
+
         /// <summary>
         /// Performs three functions 
         /// 1/ Move one or more tokens from Fleet A to Fleet B
@@ -243,10 +243,10 @@ namespace Nova.Common.Waypoints
         /// <param name="receiver"></param> receiver empire (to allow expansion where fleet exchange with another empire is allowed)
         /// <param name="message"></param> 
         /// <returns></returns>
-        public bool Perform(Fleet fleet, Item target, EmpireData sender, EmpireData receiver,out Message message)
-        { 
+        public bool Perform(Fleet fleet, Item target, EmpireData sender, EmpireData receiver, out Message message)
+        {
             Fleet secondFleet = null;
-            
+
             // Look for an appropriate fleet for a merge.
             if ((OtherFleetKey != 0) && (OtherFleetKey != Global.Unset))
             {
@@ -255,14 +255,14 @@ namespace Nova.Common.Waypoints
                 {
                     secondFleet = receiver.OwnedFleets[OtherFleetKey];
                 }
-                else if (sender.OwnedFleets.ContainsKey(OtherFleetKey)) 
+                else if (sender.OwnedFleets.ContainsKey(OtherFleetKey))
                 {
                     // The other fleet is also ours: OtherFleetKey belongs to the same Race/Player as the fleet with the SplitMergeTask waypoint order.
-                    secondFleet = sender.OwnedFleets[OtherFleetKey];    
+                    secondFleet = sender.OwnedFleets[OtherFleetKey];
                 }
             }
-            
-                   
+
+
             if (SimpleMerge)  //Simple merge where all fleets end up in the same Fleet
             {
                 if (!RemoveLeftFleet) MergeFleets(fleet, secondFleet);
@@ -270,17 +270,17 @@ namespace Nova.Common.Waypoints
             }
             else if (OtherFleetKey != Global.Unset)          // It's a complex swap where tokens come from 2 fleets and we end up with 2 Fleets
             {
-                ReassignShips(fleet,secondFleet , sender.PeekFleetKey());
+                ReassignShips(fleet, secondFleet, sender.PeekFleetKey());
             }
             else  //(OtherFleetKey == Global.Unset)         // Else it's a split. Need a new fleet so clone original and change stuff.
             {
                 secondFleet = sender.MakeNewFleet(fleet);
-                ReassignShips(fleet, secondFleet,sender.PeekFleetKey());
+                ReassignShips(fleet, secondFleet, sender.PeekFleetKey());
                 // Now send new Fleets to limbo pending inclusion.
-                sender.TemporaryFleets.Add(secondFleet);                
+                sender.TemporaryFleets.Add(secondFleet);
             }
             message = null;
-            return true;            
+            return true;
         }
 
 
@@ -320,7 +320,7 @@ namespace Nova.Common.Waypoints
         /// </summary>
         /// <param name="left">Original Fleet.</param>
         /// <param name="right">New Fleet.</param>
-        private void ReassignShips(Fleet left, Fleet right,long fleetNumber)
+        private void ReassignShips(Fleet left, Fleet right, long fleetNumber)
         {
             long mostVessels = 0;
             String designName = "";
@@ -341,7 +341,7 @@ namespace Nova.Common.Waypoints
                 Fleet from;
                 Fleet to;
                 int moveCount;
-                
+
                 if (leftNewCount > leftOldCount)
                 {
                     from = right;
@@ -354,36 +354,37 @@ namespace Nova.Common.Waypoints
                     to = right;
                     moveCount = leftOldCount - leftNewCount;
                     if (moveCount > mostVessels)
-                    { 
+                    {
                         mostVessels = moveCount;
                         designName = left.Composition[key].Design.Name;
-                        right.Name = designName + " #" + ((int) fleetNumber).ToString();  //Name of new fleet is taken from the design of the most populous vessel in the fleet
+                        right.Name = designName + " #" + ((int)fleetNumber).ToString();  //Name of new fleet is taken from the design of the most populous vessel in the fleet
 
                     }
                 }
-                
+
                 if (!to.Composition.ContainsKey(key))
                 {
                     to.Composition.Add(key, new ShipToken(from.Composition[key].Design, 0));
                 }
-                
+
                 to.Composition[key].Quantity += moveCount;
                 from.Composition[key].Quantity -= moveCount;
-                
+
                 if (from.Composition[key].Quantity == 0)
                 {
                     from.Composition.Remove(key);
                 }
-                
-                ReassignCargo(left, right);
-            }            
+
+                if (EqualCargoDistribution) ReassignCargoEqual(left, right);
+                else ReassignCargoToLeft(left, right);
+            }
         }
-      
-        
+
+
         /// <summary>
         /// Used to redistribute cargo (including colonists) and fuel once fleets are split.
         /// </summary>
-        private void ReassignCargo(Fleet left, Fleet right)
+        private void ReassignCargoToLeft(Fleet left, Fleet right)
         {
             // Ships are moved. Now to reassign fuel/cargo
             int ktToMove = 0;
@@ -466,6 +467,21 @@ namespace Nova.Common.Waypoints
                 left.FuelAvailable += right.FuelAvailable - right.TotalFuelCapacity;
                 right.FuelAvailable = right.TotalFuelCapacity;
             }
+        }
+        private void ReassignCargoEqual(Fleet left, Fleet right)
+        {
+            // Ships are moved. Now to reassign fuel/cargo
+            double leftRatio = left.TotalCargoCapacity / (double)(left.TotalCargoCapacity + right.TotalCargoCapacity);
+            double rightRatio = right.TotalCargoCapacity / (double)(left.TotalCargoCapacity + right.TotalCargoCapacity);
+            Cargo total = new Cargo(left.Cargo);
+            total.Add(right.Cargo);
+            left.Cargo = total.Scale(leftRatio); //this is how much should be in left
+            right.Cargo = total.Scale(rightRatio); //this is how much should be in right
+            double leftFuelRatio = left.TotalFuelCapacity / (double)(left.TotalFuelCapacity + right.TotalFuelCapacity);
+            double rightFuelRatio = right.TotalFuelCapacity / (double)(left.TotalFuelCapacity + right.TotalFuelCapacity);
+            int totalFuelAvailable = (int) (left.FuelAvailable + right.FuelAvailable);
+            left.FuelAvailable = leftFuelRatio * totalFuelAvailable;
+            right.FuelAvailable = rightFuelRatio * totalFuelAvailable;
         }
     }
 }

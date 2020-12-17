@@ -170,17 +170,33 @@ namespace Nova.Common
                 }
             }
         }
-        
+
         /// <summary>
         /// Default constructor (needed if there is a copy constructor).
         /// </summary>
-        public Cargo() 
+        public Cargo()
         {
             Ironium = 0;
             Boranium = 0;
             Germanium = 0;
             ColonistsInKilotons = 0;
             Silicoxium = 0;
+        }
+        public Cargo(int ironium, int boronium, int germanium, int colonistsInKilotons)
+        {
+            Ironium = ironium;
+            Boranium = boronium;
+            Germanium = germanium;
+            ColonistsInKilotons = colonistsInKilotons;
+            Silicoxium = 0;
+        }
+        public Cargo(int ironium, int boronium, int germanium, int colonistsInKilotons, int silicoxyium)
+        {
+            Ironium = ironium;
+            Boranium = boronium;
+            Germanium = germanium;
+            ColonistsInKilotons = colonistsInKilotons;
+            Silicoxium = silicoxyium;
         }
 
         /// <summary>

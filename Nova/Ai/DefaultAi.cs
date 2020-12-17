@@ -349,10 +349,7 @@ namespace Nova.Ai
                                         loadCargo.ApplyToState(clientState.EmpireState);
                                         clientState.Commands.Push(loadCargo);
 
-                                        CargoTask unload = new CargoTask();
-                                        unload.Mode = CargoMode.Unload;
-                                        unload.Amount.ColonistsInKilotons = nextTransport.TotalCargoCapacity;
-                                        unload.Amount.Germanium = nextTransport.TotalCargoCapacity;
+                                        CargoTask unload = new CargoTask(int.MaxValue);
                                         unload.Target = clientState.EmpireState.StarReports[target];
                                         SendFleet(clientState.EmpireState.StarReports[target], nextTransport, unload);
                                         surplusPopulationKT = surplusPopulationKT - nextTransport.TotalCargoCapacity;
@@ -376,7 +373,7 @@ namespace Nova.Ai
                                 }
                             if (found)
                             {
-                                SendFleet(clientState.EmpireState.StarReports[source.Name], nextTransport, new CargoTask());
+                                SendFleet(clientState.EmpireState.StarReports[source.Name], nextTransport, new CargoTask(int.MaxValue));
                                 surplusPopulationKT = surplusPopulationKT - nextTransport.Cargo.Mass;
                                 occupiedFleets.Add(nextTransport);
                                 if (surplusPopulationKT <= 0) break;

@@ -73,6 +73,7 @@ namespace Nova.WinForms.Gui
             this.blahToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.wayPoints = new Nova.WinForms.Gui.WaypointListBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.comboCargoDist = new System.Windows.Forms.ComboBox();
             this.buttonSplitAll = new System.Windows.Forms.Button();
             this.btnRename = new System.Windows.Forms.Button();
             this.fleetComposition = new System.Windows.Forms.ListView();
@@ -240,7 +241,7 @@ namespace Nova.WinForms.Gui
             // 
             // manageFleet
             // 
-            this.manageFleet.Location = new System.Drawing.Point(22, 116);
+            this.manageFleet.Location = new System.Drawing.Point(4, 116);
             this.manageFleet.Name = "manageFleet";
             this.manageFleet.Size = new System.Drawing.Size(56, 23);
             this.manageFleet.TabIndex = 92;
@@ -441,6 +442,7 @@ namespace Nova.WinForms.Gui
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.comboCargoDist);
             this.groupBox4.Controls.Add(this.buttonSplitAll);
             this.groupBox4.Controls.Add(this.btnRename);
             this.groupBox4.Controls.Add(this.fleetComposition);
@@ -452,9 +454,24 @@ namespace Nova.WinForms.Gui
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Fleet Composition";
             // 
+            // comboCargoDist
+            // 
+            this.comboCargoDist.DropDownWidth = 390;
+            this.comboCargoDist.FormattingEnabled = true;
+            this.comboCargoDist.Items.AddRange(new object[] {
+            "Left - Move Fuel and Cargo to the leftmost fleet/s in the split/merge - Left",
+            "Equal - Split Fuel and Cargo equally amongst all fleets in the split/merge -Equal" +
+                ""});
+            this.comboCargoDist.Location = new System.Drawing.Point(128, 117);
+            this.comboCargoDist.Name = "comboCargoDist";
+            this.comboCargoDist.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.comboCargoDist.Size = new System.Drawing.Size(52, 21);
+            this.comboCargoDist.TabIndex = 95;
+            this.comboCargoDist.Text = "Left";
+            // 
             // buttonSplitAll
             // 
-            this.buttonSplitAll.Location = new System.Drawing.Point(102, 116);
+            this.buttonSplitAll.Location = new System.Drawing.Point(68, 116);
             this.buttonSplitAll.Name = "buttonSplitAll";
             this.buttonSplitAll.Size = new System.Drawing.Size(56, 23);
             this.buttonSplitAll.TabIndex = 94;
@@ -464,7 +481,7 @@ namespace Nova.WinForms.Gui
             // 
             // btnRename
             // 
-            this.btnRename.Location = new System.Drawing.Point(181, 116);
+            this.btnRename.Location = new System.Drawing.Point(204, 116);
             this.btnRename.Name = "btnRename";
             this.btnRename.Size = new System.Drawing.Size(56, 23);
             this.btnRename.TabIndex = 93;
@@ -729,5 +746,6 @@ namespace Nova.WinForms.Gui
         private System.ComponentModel.IContainer components;
         private ToolStripMenuItem blahToolStripMenuItem;
         private Button buttonSplitAll;
+        private ComboBox comboCargoDist;
     }
 }

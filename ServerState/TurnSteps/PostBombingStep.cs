@@ -46,13 +46,7 @@ namespace Nova.Server.TurnSteps
                                 bool invading = false;
                                 if ((receiver != null) && (receiver != serverState.AllEmpires[fleet.Owner]))
                                 {
-                                    fleet.Waypoints[index].Task = new CargoTask(); //After The Battle leave an unload waypoint to unload the rest of the cargo
-                                    (fleet.Waypoints[index].Task as CargoTask).Mode = CargoMode.Unload;
-                                    (fleet.Waypoints[index].Task as CargoTask).Amount.ColonistsInKilotons = fleet.TotalCargoCapacity;
-                                    (fleet.Waypoints[index].Task as CargoTask).Amount.Germanium = fleet.TotalCargoCapacity;
-                                    (fleet.Waypoints[index].Task as CargoTask).Amount.Ironium = fleet.TotalCargoCapacity;
-                                    (fleet.Waypoints[index].Task as CargoTask).Amount.Boranium = fleet.TotalCargoCapacity;
-                                    (fleet.Waypoints[index].Task as CargoTask).Amount.Silicoxium = fleet.TotalCargoCapacity;
+                                    fleet.Waypoints[index].Task = new CargoTask(int.MaxValue); //After The Battle leave an unload waypoint to unload the rest of the cargo
                                     (fleet.Waypoints[index].Task as CargoTask).Target = target;
                                     invading = true;
                                     IWaypointTask invade = new InvadeTask();
