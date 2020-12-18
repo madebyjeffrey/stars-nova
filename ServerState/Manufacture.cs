@@ -59,12 +59,22 @@ namespace Nova.Server
             
             foreach (ProductionOrder productionOrder in star.ManufacturingQueue.Queue)
             {
-                if (productionOrder.IsBlocking(star, race, gravityModCapability,  radiationModCapability,  temperatureModCapability))
-                {
-                    // Items block the queue when they can't be processed (i.e. not enough resources)
-                    // AND they are not autobuild orders (autobuild never blocks the Queue).
-                    break;
+                if ((star.Starbase == null) && (productionOrder.Unit is ShipProductionUnit))
+                {                               //if the planet has no StarBase then there should be no fleets in the queue (other than Starbases)
+                    ShipDesign design = null;   // so if there are don't let them block the queue
+                    serverState.AllEmpires[star.Owner].Designs.TryGetValue((productionOrder.Unit as ShipProductionUnit).DesignKey, out design);
+                    if (!design.IsStarbase) continue;
                 }
+
+                if (productionOrder.IsBlocking(star, race, gravityModCapability, radiationModCapability, temperatureModCapability))
+                    if (serverState.AllPlayers[star.Owner-1].AiProgram == "Human") // the AI WILL make mistakes that a human would recognise so nothing blocks the queue for AI
+                    {
+                        // Items block the queue when they can't be processed (i.e. not enough resources)
+                        // AND they are not autobuild orders (autobuild never blocks the Queue).
+                        break;
+                    }
+                    else continue;
+
 
                 // Deal with the production Order.
 

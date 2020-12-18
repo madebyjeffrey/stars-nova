@@ -44,8 +44,8 @@ namespace Nova.Server.TurnSteps
                                     message = null;
                                 }
                                 bool invading = false;
-                                if ((receiver != null) && (receiver != serverState.AllEmpires[fleet.Owner]))
-                                {
+                                if ((receiver != null) && (receiver != serverState.AllEmpires[fleet.Owner]) && (fleet.Waypoints[index].Task is ColoniseTask))
+                                { // it is a colonise task but someone beat us to it so invade
                                     fleet.Waypoints[index].Task = new CargoTask(int.MaxValue); //After The Battle leave an unload waypoint to unload the rest of the cargo
                                     (fleet.Waypoints[index].Task as CargoTask).Target = target;
                                     invading = true;

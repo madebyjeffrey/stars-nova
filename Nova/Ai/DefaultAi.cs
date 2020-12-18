@@ -802,7 +802,8 @@ namespace Nova.Ai
             Component shield = clientState.EmpireState.AvailableComponents.GetBestShield();
             Component beamWeapon = clientState.EmpireState.AvailableComponents.GetBestBeamWeapon();
             bool found = false;
-            String designName = torpedo.Name.Substring(0,5) + designPrefix + armor.Name.Substring(0,5) + shield.Name.Substring(0,5);
+            String designName =  torpedo.Name.Substring(0,5) + designPrefix + armor.Name.Substring(0,5) + shield.Name.Substring(0,5);
+            if (!populateEverything) designName = "Baby " + designName;
             ShipDesign starbase = new ShipDesign(clientState.EmpireState.GetNextDesignKey());
             foreach (ShipDesign ship in clientState.EmpireState.Designs.Values) if (ship.Name == designName)
                 {

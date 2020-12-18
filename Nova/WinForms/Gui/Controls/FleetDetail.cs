@@ -430,7 +430,7 @@ namespace Nova.WinForms.Gui
                 }
                 else if (Global.Debug) Report.Information(message.Text);
             }
-            FleetChange_executing = false;
+            WaypointSelection_executing = false;
         }
 
         /// <Summary>
@@ -1005,6 +1005,7 @@ namespace Nova.WinForms.Gui
         {
             WaypointSelection_executing = true;
             ((CurrencyManager)wayPoints.BindingContext[wayPoints.DataSource]).Refresh();
+            WaypointSelection_executing = true;
 
             wayPoints.SelectedIndex = wayPoints.Items.Count - 1;
             WaypointSelection_executing = false;

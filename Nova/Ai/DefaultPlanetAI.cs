@@ -150,15 +150,17 @@ namespace Nova.Ai
                 }
                 // Max Terraform
 
-               
-                ProductionOrder terraformOrder = new ProductionOrder(100, new TerraformProductionUnit(clientState.EmpireState.Race), false);
-                ProductionCommand terraformCommand = new ProductionCommand(CommandMode.Add, terraformOrder, this.planet.Key, productionIndex);
-                productionIndex++;
-
-                if (terraformCommand.IsValid(clientState.EmpireState, out message))
+                if ((planet.Capacity(clientState.EmpireState.Race) < 25) || (this.planet.Starbase != null))
                 {
-                    terraformCommand.ApplyToState(clientState.EmpireState);
-                    clientState.Commands.Push(terraformCommand);
+                    ProductionOrder terraformOrder = new ProductionOrder(100, new TerraformProductionUnit(clientState.EmpireState.Race), false);
+                    ProductionCommand terraformCommand = new ProductionCommand(CommandMode.Add, terraformOrder, this.planet.Key, productionIndex);
+                    productionIndex++;
+
+                    if (terraformCommand.IsValid(clientState.EmpireState, out message))
+                    {
+                        terraformCommand.ApplyToState(clientState.EmpireState);
+                        clientState.Commands.Push(terraformCommand);
+                    }
                 }
                 
 
@@ -219,12 +221,14 @@ namespace Nova.Ai
         private int BuildShips(int productionIndex)
         {
             if (this.planet.Starbase == null) productionIndex = BuidMinimalStarbase(productionIndex);
-            productionIndex = BuildScout(productionIndex);
-            productionIndex = BuildColonizer(productionIndex);
-            productionIndex = BuildTransport(productionIndex);
-            productionIndex = BuidSuitableFleet(productionIndex);
-            productionIndex = BuildRefueler(productionIndex);
-
+            else
+            {
+                productionIndex = BuildScout(productionIndex);
+                productionIndex = BuildColonizer(productionIndex);
+                productionIndex = BuildTransport(productionIndex);
+                productionIndex = BuidSuitableFleet(productionIndex);
+                productionIndex = BuildRefueler(productionIndex);
+            }
             return productionIndex;
         } // Build ships
 
@@ -423,7 +427,7 @@ namespace Nova.Ai
             int queueEnergy = 0;
             foreach (ProductionOrder order in this.planet.ManufacturingQueue.Queue)
             {
-                queueEnergy += (order.NeededResources() as Resources).Energy;
+                if (order is MineProductionUnit) queueEnergy += (order.NeededResources() as Resources).Energy;
             }
             queueYears = queueEnergy / Math.Max(1, this.planet.ResourcesOnHand.Energy);
             if (queueYears > 1) return productionIndex;
