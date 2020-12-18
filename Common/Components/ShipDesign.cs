@@ -155,17 +155,7 @@ namespace Nova.Common.Components
                 double rating = 0;
                 foreach (Weapon weapon in this.Weapons)
                 {
-                    if (weapon.IsBeam)
-                    {
-                        if (weapon.Range < 1)
-                        {
-                            rating += (Double)weapon.Power; // FIXME (priority 4) - this was a quick fix to prevent a crash when indexing Nova.Common.Global.beamRatingMultiplier with a beam weapon range of zero. Need to determine the Stars! rating multiplier.
-                        }
-                        else
-                        {
-                            rating += Global.beamRatingMultiplier[((int)BattleSpeed * 4), weapon.Range - 1] * (Double)weapon.Power;
-                        }
-                    }
+                    if (weapon.IsBeam) rating += Global.beamRatingMultiplier[((int)BattleSpeed * 4), 3 - weapon.Range] * (Double)weapon.Power;
                     else if (weapon.Range > 5) rating += weapon.Power;
                     else rating += 1.5 * weapon.Power;
                 }
@@ -190,17 +180,10 @@ namespace Nova.Common.Components
                 {
                     if (weapon.IsBeam)
                     {
-                        if (weapon.Range < 1)
-                        {
-                            rating += (Double)weapon.Power; // FIXME (priority 4) - this was a quick fix to prevent a crash when indexing Nova.Common.Global.beamRatingMultiplier with a beam weapon range of zero. Need to determine the Stars! rating multiplier.
-                        }
-                        else
-                        {
-                            rating += Global.beamRatingMultiplier[((int)BattleSpeed * 4), weapon.Range - 1] * (Double)weapon.Power;
-                        }
+                        if (weapon.IsBeam) rating += Global.beamRatingMultiplier[((int)BattleSpeed * 4), 3 - weapon.Range] * (Double)weapon.Power;
+                        else if (weapon.Range > 5) rating += weapon.Power * missileAccuracy(weapon.Accuracy / 100.0);
+                        else rating += 1.5 * weapon.Power * missileAccuracy(weapon.Accuracy / 100.0);
                     }
-                    else if (weapon.Range > 5) rating += weapon.Power * missileAccuracy(weapon.Accuracy/100.0);
-                    else rating += 1.5 * weapon.Power * missileAccuracy(weapon.Accuracy/100.0);
                 }
                 if (rating == 0) return 0;
                 else return (int)rating + (Shield + Armor) /2;

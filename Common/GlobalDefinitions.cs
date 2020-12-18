@@ -172,18 +172,19 @@ namespace Nova.Common
         public const double TotalFileWaitTime = 8.0; // (s) Maximum time to wait for a file to become available.
         public const int FileWaitRetryTime = 100; // (ms) Time to wait before trying again to access the file.
 
-        public static Double[,] beamRatingMultiplier = new double[11, 3] {
-            {   0.9,    0.75,   0.6 }, //0  battlespeed
-            {   0.9,    0.75,   0.6 }, // 0.25
-            {   1.0,    0.875,  0.7 }, // 0.5
-            {   1.05,   0.875,  0.7 }, //0.75
-            {   1.2,    1.0,    0.8 }, // 1.0
-            {   1.35,   1.125,  0.9 }, // 1.25
-            {   1.5,    1.25,   1.0 }, // 1.5
-            {   1.65,   1.375,  1.1 }, //1.75
-            {   1.8,    1.50,   1.2 }, //2.0
-            {   1.95,   1.625,  1.3 }, // 2.25
-            {   2.1,    1.75,   1.4 }}; // 2.5
+        public static Double[,] beamRatingMultiplier = new double[11, 4] {
+            {   0.9,    0.75,   0.6 , 0.365}, //0  battlespeed
+            {   0.9,    0.75,   0.6 , 0.365}, // 0.25
+            {   1.0,    0.875,  0.7 , 0.45}, // 0.5
+            {   1.05,   0.875,  0.7 , 0.524}, //0.75
+            {   1.2,    1.0,    0.8 , 0.6}, // 1.0
+            {   1.35,   1.125,  0.9 , 0.675}, // 1.25
+            {   1.5,    1.25,   1.0 , 0.749}, // 1.5
+            {   1.65,   1.375,  1.1 , 0.82}, //1.75
+            {   1.8,    1.50,   1.2 , 0.897}, //2.0
+            {   1.95,   1.625,  1.3 , 0.973}, // 2.25
+            {   2.1,    1.75,   1.4 , 1.047}}; // 2.5
+        //  {range 3      2      1      0
          // From direct observation of Stars! 2.70j    using Hyper Expansion Race
 
 
