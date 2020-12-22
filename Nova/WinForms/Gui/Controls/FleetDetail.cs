@@ -71,7 +71,7 @@ namespace Nova.WinForms.Gui
             {
                 if (value != null)
                 {
-                    FleetChange_executing = true;
+                    FleetChange_executing = true;// set a flag to tell other UI event handlers to not create commands in response to this routine changing tasks or waypoints
                     SetFleetDetails(value);
                     FleetChange_executing = false;
                 }
@@ -143,9 +143,8 @@ namespace Nova.WinForms.Gui
         /// <param name="e">A <see cref="EventArgs"/> that contains the event data.</param>
         private void WaypointSpeedChanged(object sender, System.EventArgs e)
         {
-            if ((!WaypointSelection_executing) && (!FleetChange_executing))
+            if ((!WaypointSelection_executing) && (!FleetChange_executing)) // examine flags to determine if the tasks or waypoints are changing as a direct result of a change that the users wants to persist (by the creation of a command) or just as a result of some other operation that is redrawing the controls
             { 
-            //TODO (priority 8) The last edit of this waypoint could be dozens of commands ago so we can't POP it and we may need an insert instead of an edit? 
             warpText.Text = "Warp " + warpFactor.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
                 if (wayPoints.SelectedItems.Count > 0)
@@ -208,7 +207,7 @@ namespace Nova.WinForms.Gui
         /// <param name="e">A <see cref="EventArgs"/> that contains the event data.</param>
         private void WaypointSelection(object sender, System.EventArgs e)
         {
-            WaypointSelection_executing = true;
+            WaypointSelection_executing = true; // set a flag to tell other UI event handlers to not create commands in response to this routine changing or selecting new fleets or waypoints
 
             if (wayPoints.SelectedItems.Count <= 0)
             {
@@ -228,12 +227,13 @@ namespace Nova.WinForms.Gui
 
         /// <Summary>
         /// Cargo button pressed. Pop up the cargo transfer dialog.
+        /// Transfer to/from a Planet
         /// </Summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">A <see cref="EventArgs"/> that contains the event data.</param>
         private void CargoButton_Click(object sender, System.EventArgs e)
         {
-            FleetChange_executing = true;
+            FleetChange_executing = true;// set a flag to tell other UI event handlers to not create commands in response to this routine changing tasks or waypoints
             try
             {
                 Star target = null;
@@ -263,6 +263,9 @@ namespace Nova.WinForms.Gui
             }
             FleetChange_executing = false;
         }
+
+
+
 
         /// <Summary>
         /// Catch the backspace key to delete a fleet waypoint.
@@ -361,7 +364,7 @@ namespace Nova.WinForms.Gui
         /// <param name="e">A <see cref="EventArgs"/> that contains the event data.</param>
         private void WaypointTaskChanged(object sender, EventArgs e)
         {
-            WaypointSelection_executing = true;
+            WaypointSelection_executing = true; // set a flag to tell other UI event handlers to not create commands in response to this routine changing or selecting new fleets or waypoints
             if (topFleet != lastFleet)
             {
                 lastFleet = topFleet;
@@ -440,7 +443,7 @@ namespace Nova.WinForms.Gui
         /// <param name="e">A <see cref="EventArgs"/> that contains the event data.</param>
         private void SplitFleetClick(object sender, EventArgs e)
         {
-            FleetChange_executing = true;
+            FleetChange_executing = true;// set a flag to tell other UI event handlers to not create commands in response to this routine changing tasks or waypoints
             DoSplitMerge(null);
             FleetChange_executing = false;
         }
@@ -452,7 +455,7 @@ namespace Nova.WinForms.Gui
         /// <param name="e">A <see cref="EventArgs"/> that contains the event data.</param>
         private void NextFleet_Click(object sender, System.EventArgs e)
         {
-            FleetChange_executing = true;
+            FleetChange_executing = true;// set a flag to tell other UI event handlers to not create commands in response to this routine changing tasks or waypoints
             if (empireState.OwnedFleets.Count == 1)
             {
                 previousFleet.Enabled = false;
@@ -479,7 +482,7 @@ namespace Nova.WinForms.Gui
         /// <param name="e">A <see cref="EventArgs"/> that contains the event data.</param>
         private void PreviousFleet_Click(object sender, EventArgs e)
         {
-            FleetChange_executing = true;
+            FleetChange_executing = true;// set a flag to tell other UI event handlers to not create commands in response to this routine changing tasks or waypoints
             if (empireState.OwnedFleets.Count == 1)
             {
                 previousFleet.Enabled = false;
@@ -579,7 +582,7 @@ namespace Nova.WinForms.Gui
         /// <param name="fleet">The selected fleet.</param>
         private void SetFleetDetails(Fleet topFleet)
         {
-            FleetChange_executing = true;
+            FleetChange_executing = true;// set a flag to tell other UI event handlers to not create commands in response to this routine changing tasks or waypoints
             wayPoints.DrawMode = DrawMode.OwnerDrawFixed;
             wayPoints.DrawItem += new DrawItemEventHandler(wayPoints_DrawItem);
             if (topFleet == null)
@@ -725,7 +728,7 @@ namespace Nova.WinForms.Gui
 
         private void ButtonGotoPlanet_Click(object sender, EventArgs e)
         {
-            FleetChange_executing = true;
+            FleetChange_executing = true;// set a flag to tell other UI event handlers to not create commands in response to this routine changing tasks or waypoints
             if (topFleet != null && topFleet.InOrbit != null)
             {
                 OnFleetSelectionChanged(new SelectionArgs(topFleet.InOrbit as Star));
@@ -735,7 +738,7 @@ namespace Nova.WinForms.Gui
 
         private void ButtonGotoFleet_Click(object sender, EventArgs e)
         {
-            FleetChange_executing = true;
+            FleetChange_executing = true;// set a flag to tell other UI event handlers to not create commands in response to this routine changing tasks or waypoints
             Fleet newFleet = GettopFleetAtLocation();
 
             // Inform of the selection change to all listening objects.
@@ -745,7 +748,7 @@ namespace Nova.WinForms.Gui
 
         private void ButtonMerge_Click(object sender, EventArgs e)
         {
-            FleetChange_executing = true;
+            FleetChange_executing = true;// set a flag to tell other UI event handlers to not create commands in response to this routine changing tasks or waypoints
             Fleet newFleet = GettopFleetAtLocation();
             DoSplitMerge(newFleet);
             FleetChange_executing = false;
@@ -848,11 +851,11 @@ namespace Nova.WinForms.Gui
         /// <param name="otherFleet">The second fleet to merge with or split into (may be null).</param>
         private void DoSplitMerge(Fleet otherFleet = null)
         {
-            FleetChange_executing = true;
+            FleetChange_executing = true;// set a flag to tell other UI event handlers to not create commands in response to this routine changing tasks or waypoints
             using (SplitFleetDialog splitFleet = new SplitFleetDialog())
             {
                 splitFleet.SetFleet(topFleet, otherFleet);
-                splitFleet.nextFleetID = empireState.PeekNextFleetKey();
+                splitFleet.nextFleetID = empireState.PeekNextFleetId();
                 if (splitFleet.ShowDialog() == DialogResult.OK)
                 {
                     //find the last waypoint with the current destination - it is the last Waypoint zero command so insert after it
@@ -949,9 +952,15 @@ namespace Nova.WinForms.Gui
             FleetChange_executing = false;
         }
 
+
+        /// <summary>
+        /// Cargo transfer between fleets , between a fleet  and a Mineral Packet or between a fleet and Salvage.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ButtonCargoXfer_Click(object sender, EventArgs e)
         {
-            FleetChange_executing = true;
+            FleetChange_executing = true;  // set a flag to tell other UI event handlers to not create commands in response to this routine changing tasks or waypoints
             CargoTransferDialog cargoTransferDialog = new CargoTransferDialog();
             {
                 cargoTransferDialog.SetFleets(topFleet, GettopFleetAtLocation(), clientData);
@@ -989,7 +998,7 @@ namespace Nova.WinForms.Gui
 
         protected virtual void OnFleetSelectionChanged(SelectionArgs e)
         {
-            FleetChange_executing = true;
+            FleetChange_executing = true;// set a flag to tell other UI event handlers to not create commands in response to this routine changing tasks or waypoints
             if (e != null)
                 if (e.Selection is Fleet) SetFleetDetails(e.Selection as Fleet);
 
@@ -1003,7 +1012,7 @@ namespace Nova.WinForms.Gui
         // Updates WaypointList when waypoints are changed from the StarMap (or other).
         public void UpdateWaypointList(object sender, EventArgs e)
         {
-            WaypointSelection_executing = true;
+            WaypointSelection_executing = true; // set a flag to tell other UI event handlers to not create commands in response to this routine changing or selecting new fleets or waypoints
             ((CurrencyManager)wayPoints.BindingContext[wayPoints.DataSource]).Refresh();
             WaypointSelection_executing = true;
 
@@ -1068,7 +1077,7 @@ namespace Nova.WinForms.Gui
 
         private void buttonSplitAll_Click(object sender, EventArgs e)
         {
-            FleetChange_executing = true;
+            FleetChange_executing = true;// set a flag to tell other UI event handlers to not create commands in response to this routine changing tasks or waypoints
             Fleet nextFleet = keepOneSplitRemainder(topFleet, clientData.EmpireState,(comboCargoDist.SelectedIndex==0));
             while (nextFleet != null) nextFleet = keepOneSplitRemainder(nextFleet, clientData.EmpireState);
             OnFleetSelectionChanged(new SelectionArgs(topFleet));
@@ -1076,16 +1085,19 @@ namespace Nova.WinForms.Gui
         }
 
 
-
+        /// <summary>
+        /// keeps a quantity of 1 of the first Design from the first token in the Fleet and moves all remaining Disigns and tokens to a new fleet.
+        /// </summary>
+        /// <param name="fleet"></param>
+        /// <param name="empire"></param>
+        /// <param name="cargoLeft"></param>
+        /// <returns></returns>
         private Fleet keepOneSplitRemainder(Fleet fleet, EmpireData empire, bool cargoLeft = true)
         {
-            FleetChange_executing = true;                                   //  take all but one vessel to the new fleet
-                                                                            // and we can split that fleet recursively
-
+            FleetChange_executing = true;   // set a flag to tell other UI event handlers to not create commands in response to this routine changing tasks or waypoints
+                                            //  take all but one vessel to the new fleet and we can split that fleet recursively
             Dictionary<long, ShipToken> LeftComposition = new Dictionary<long, ShipToken>();
             Dictionary<long, ShipToken> RightComposition = new Dictionary<long, ShipToken>();
-
-
             bool first = true;
             int rightQuantity = 0;
             foreach (long key in fleet.Composition.Keys)

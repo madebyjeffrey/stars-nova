@@ -166,7 +166,8 @@ namespace Nova.Common.Waypoints
 
                 Message message = new Message();
                 message.Audience = fleet.Owner;
-                message.FleetID = fleet.Id;
+                message.Event = fleet;
+                message.FleetKey = fleet.Key;
                 message.Type = "Load/Unload";
                 message.Text = "Fleet " + fleet.Name + " attempted to load/unload cargo to empty space: ";
                 Messages.Add(message);
@@ -184,7 +185,8 @@ namespace Nova.Common.Waypoints
 
                         Message message = new Message();
                         message.Audience = fleet.Owner;
-                        message.FleetID = fleet.Id;
+                        message.FleetKey = fleet.Key;
+                        message.Event = fleet;
                         message.Type = "Load/Unload";
                         message.Text = "Fleet " + fleet.Name + " attempted to load/unload cargo when too far from target: " + target.Name;
                         Messages.Add(message);
@@ -234,7 +236,8 @@ namespace Nova.Common.Waypoints
                     {
                         Message message = new Message();
                         message.Audience = fleet.Owner;
-                        message.FleetID = fleet.Id;
+                        message.Event = fleet;
+                        message.FleetKey = fleet.Key;
                         message.Type = "Load/Unload";
                         message.Text = "Fleet " + fleet.Name + " attempted to load/unload cargo when too far from target: " + target.Name;
                         Messages.Add(message);
@@ -281,7 +284,8 @@ namespace Nova.Common.Waypoints
                         message = new Message();
                         message.Audience = fleet.Owner;
                         message.Type = "Load/Unload";
-                        message.FleetID = fleet.Id;
+                        message.FleetKey = fleet.Key;
+                        message.Event = fleet;
                         message.Text = "Fleet " + fleet.Name + " has unloaded its cargo at " + star.Name + ".";
                         Messages.Add(message);
                         Amount = Amount.Min(Amount, fleet.Cargo);
@@ -294,7 +298,8 @@ namespace Nova.Common.Waypoints
                 {
                     message = new Message();
                     message.Audience = fleet.Owner;
-                    message.FleetID = fleet.Id;
+                    message.FleetKey = fleet.Key;
+                    message.Event = fleet;
                     message.Type = "Load/Unload";
                     message.Text = "Fleet " + fleet.Name + " couldn't find " + target + " to unload cargo to.";
                     return false;
@@ -308,7 +313,8 @@ namespace Nova.Common.Waypoints
                     {
                         Fleet other = sender.OwnedFleets[target.Key];
                         message = new Message();
-                        message.FleetID = fleet.Id;
+                        message.FleetKey = fleet.Key;
+                        message.Event = fleet;
                         message.Audience = fleet.Owner;
                         message.Type = "Load/Unload";
                         message.Text = "Fleet " + fleet.Name + " has transferred cargo to " + other.Name + ".";
@@ -325,7 +331,8 @@ namespace Nova.Common.Waypoints
                 {
                     message = new Message();
                     message.Audience = fleet.Owner;
-                    message.FleetID = fleet.Id;
+                    message.FleetKey = fleet.Key;
+                    message.Event = fleet;
                     message.Type = "Load/Unload";
                     message.Text = "Fleet " + fleet.Name + " couldn't find " + target + " to unload cargo to.";
                     return false;
@@ -348,7 +355,8 @@ namespace Nova.Common.Waypoints
                     {
                         message = new Message();
                         message.Audience = fleet.Owner;
-                        message.FleetID = fleet.Id;
+                        message.FleetKey = fleet.Key;
+                        message.Event = fleet;
                         message.Type = "Load/Unload";
                         message.Text = "Fleet " + fleet.Name + " has loaded cargo from " + star.Name + ".";
                         Messages.Add(message);
@@ -361,7 +369,8 @@ namespace Nova.Common.Waypoints
                 {
                     message = new Message();
                     message.Audience = fleet.Owner;
-                    message.FleetID = fleet.Id;
+                    message.FleetKey = fleet.Key;
+                    message.Event = fleet;
                     message.Type = "Load/Unload";
                     message.Text = "Fleet " + fleet.Name + " couldn't find " + target + " to load cargo to.";
                     return false;
@@ -376,7 +385,8 @@ namespace Nova.Common.Waypoints
                     else other = receiver.OwnedFleets[target.Key];
                     message = new Message();
                     message.Audience = fleet.Owner;
-                    message.FleetID = fleet.Id;
+                    message.Event = fleet;
+                    message.FleetKey = fleet.Key;
                     message.Type = "Load/Unload";
                     message.Text = "Fleet " + fleet.Name + " has transferred cargo from " + other.Name + ".";
                     Messages.Add(message);
@@ -390,7 +400,8 @@ namespace Nova.Common.Waypoints
                 {
                     message = new Message();
                     message.Audience = fleet.Owner;
-                    message.FleetID = fleet.Id;
+                    message.FleetKey = fleet.Key;
+                    message.Event = fleet;
                     message.Type = "Load/Unload";
                     message.Text = "Fleet " + fleet.Name + " couldn't find " + target + " to load cargo to.";
                     return false;
@@ -399,7 +410,8 @@ namespace Nova.Common.Waypoints
             {
                 message = new Message();
                 message.Audience = fleet.Owner;
-                message.FleetID = fleet.Id;
+                message.FleetKey = fleet.Key;
+                message.Event = fleet;
                 message.Type = "Load/Unload";
                 message.Text = "Fleet " + fleet.Name + " couldn't find " + target + " to load cargo to.";
                 return false;

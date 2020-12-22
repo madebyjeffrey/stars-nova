@@ -217,6 +217,7 @@ namespace Nova.Common.Components
             {
                 star.Radiation -= 1;
                 message = new Message();
+                message.Event = star;
                 message.Audience = star.Owner;
                 message.Type = "Terraform";
                 message.Text = star.Name.ToString() + " has decreased its Radiation to " + star.Gravity.ToString() + "mR\r\n it's value is now " + Math.Ceiling(race.HabValue(star) * 100) + "%";
@@ -225,6 +226,7 @@ namespace Nova.Common.Components
             {
                 star.Radiation += 1;
                 message = new Message();
+                message.Event = star;
                 message.Audience = star.Owner;
                 message.Type = "Terraform";
                 message.Text = star.Name.ToString() + " has increased its Radiation to " + star.Gravity.ToString() + "mR\r\n it's value is now " + Math.Ceiling(race.HabValue(star) * 100) + "%";
@@ -241,6 +243,7 @@ namespace Nova.Common.Components
             {
                 star.Temperature -= 1;
                 message = new Message();
+                message.Event = star;
                 message.Audience = star.Owner;
                 message.Type = "Terraform";
                 message.Text = star.Name.ToString() + " has decreased its Temperature to " + star.Gravity.ToString() + "°C\r\n it's value is now " + Math.Ceiling(race.HabValue(star) * 100) + "%";
@@ -249,6 +252,7 @@ namespace Nova.Common.Components
             {
                 star.Temperature += 1;
                 message = new Message();
+                message.Event = star;
                 message.Audience = star.Owner;
                 message.Type = "Terraform";
                 message.Text = star.Name.ToString() + " has increased its Temperature to " + star.Gravity.ToString() + "°C\r\n it's value is now " + Math.Ceiling(race.HabValue(star) * 100) + "%";
@@ -265,6 +269,7 @@ namespace Nova.Common.Components
             {
                 star.Gravity -= 1;
                 message = new Message();
+                message.Event = star;
                 message.Audience = star.Owner;
                 message.Type = "Terraform";
                 message.Text = star.Name.ToString() + " has decreased its Gravity to " + star.Gravity.ToString() + "g\r\n it's value is now " + Math.Ceiling(race.HabValue(star) * 100) + "%";
@@ -274,6 +279,7 @@ namespace Nova.Common.Components
             {
                 star.Gravity += 1;
                 message = new Message();
+                message.Event = star;
                 message.Audience = star.Owner;
                 message.Type = "Terraform";
                 message.Text = star.Name.ToString() + " has increased its Gravity to " + star.Gravity.ToString() + "g\r\n it's value is now " + Math.Ceiling(race.HabValue(star) * 100) + "%";

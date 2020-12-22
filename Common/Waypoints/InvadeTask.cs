@@ -67,9 +67,10 @@ namespace Nova.Common.Waypoints
         {
             Message message = new Message();
             Messages.Add(message);
-            
+            message.Type = "Fleet";
+            message.Event = fleet;
             message.Audience = fleet.Owner;
-            message.FleetID = fleet.Id;
+            message.FleetKey = fleet.Key;
             message.Text = "Fleet " + fleet.Name + " has waypoint orders to invade ";
             
             // First check that we are actuallly in orbit around a planet.
@@ -165,8 +166,14 @@ namespace Nova.Common.Waypoints
             // Set up the message recipients before the star (potentially) changes hands.
             Message wolfMessage = new Message();
             wolfMessage.Audience = fleet.Owner;
+            wolfMessage.Type = "Star";
+            wolfMessage.Event = star;
+            wolfMessage.FleetKey = fleet.Key;
             Message lambMessage = new Message();
             lambMessage.Audience = star.Owner;
+            lambMessage.Type = "Fleet";
+            lambMessage.Event = star;
+            lambMessage.FleetKey = fleet.Key;
 
             // Take into account the Defenses
             Defenses.ComputeDefenseCoverage(star);
@@ -208,12 +215,12 @@ namespace Nova.Common.Waypoints
 
                 wolfMessage.Text = messageText;
                 wolfMessage.Type = "StarIntel";
-                wolfMessage.Event = star.Position;
+                wolfMessage.Event = star;
                 Messages.Add(wolfMessage);
 
                 lambMessage.Text = messageText;
                 lambMessage.Type = "StarIntel";
-                wolfMessage.Event = star.Position;
+                wolfMessage.Event = star;
                 Messages.Add(lambMessage);
             }
             else if (survivorStrength < 0)

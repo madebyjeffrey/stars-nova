@@ -84,6 +84,16 @@ namespace Nova.WinForms.Gui
                 MapControl.SelectionChanged += SelectionDetails.DetailChangeSelection;
                 MapControl.WaypointChanged += SelectionDetails.FleetDetail.UpdateWaypointList;
                 Messages.doStarIntelStuff += SelectionDetails.DetailChangeSelection;
+                Messages.doStarIntelStuff += MapControl.RefreshStarMap;
+                Messages.doStarIntelStuff += MapControl.SetCursor;
+                Messages.doMineIntelStuff += SelectionDetails.DetailChangeSelection;
+                Messages.doMineIntelStuff += MapControl.RefreshStarMap;
+                Messages.doMineIntelStuff += MapControl.SetCursor;
+                Messages.doFleetIntelStuff += SelectionDetails.DetailChangeSelection;
+                Messages.doFleetIntelStuff += MapControl.RefreshStarMap;
+                Messages.doFleetIntelStuff += MapControl.SetCursor;
+                Messages.doPositionIntelStuff += MapControl.RefreshStarMap;
+                Messages.doPositionIntelStuff += MapControl.SetCursor;
             }
         }
 
@@ -395,6 +405,9 @@ namespace Nova.WinForms.Gui
         public void initializeControls()
         {
             this.Messages.Year = clientState.EmpireState.TurnYear;
+            this.messages.stars = clientState.EmpireState.StarReports;
+            this.messages.visibleMinefields = clientState.EmpireState.VisibleMinefields;
+            this.messages.knownFleets = clientState.EmpireState.FleetReports;
             this.Messages.MessageList = clientState.Messages;
 
             this.CurrentTurn = clientState.EmpireState.TurnYear;

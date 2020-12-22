@@ -71,7 +71,6 @@ namespace Nova.WinForms.Gui
             new Point(5, -12)
         };
 
-        //private readonly Dictionary<long, Minefield> visibleMinefields = new Dictionary<long, Minefield>();
         private readonly Font nameFont;
 
         private Intel turnData;
@@ -100,6 +99,27 @@ namespace Nova.WinForms.Gui
 
         private Dictionary<int, Bitmap> transparentRaceIcons = new Dictionary<int, Bitmap>();
         private Dictionary<int, Bitmap> redRaceIcons = new Dictionary<int, Bitmap>();
+        private string graphicsFilePath = "";
+        public string GraphicsPath
+        {
+            get
+            {
+                if (graphicsFilePath == "")
+                {
+                    graphicsFilePath = FileSearcher.GetGraphicsPath();
+                    if (!string.IsNullOrEmpty(graphicsFilePath))
+                    {
+                        using (Config conf = new Config())
+                        {
+                            conf[Global.GraphicsFolderKey] = graphicsFilePath;
+                        }
+                    }
+                }
+
+                return graphicsFilePath;
+            }
+        }
+
         /// <Summary>
         /// Initializes a new instance of the StarMap class.
         /// </Summary>
@@ -281,25 +301,46 @@ namespace Nova.WinForms.Gui
 
             foreach (Minefield minefield in clientState.EmpireState.VisibleMinefields.Values)
             {
-                Color cb;
-                Color cf;
-
-                if (minefield.Empire == clientState.EmpireState.Id)
+                if (minefield.MineType == 0)
                 {
-                    cb = Color.FromArgb(0, 0, 0, 0);
-                    cf = Color.FromArgb(128, 0, 128, 0);
+                    Color cb;
+                    Color cf;
+
+                    if (minefield.Empire == clientState.EmpireState.Id)
+                    {
+                        cb = Color.FromArgb(0, 0, 0, 0);
+                        cf = Color.FromArgb(128, 0, 128, 0);
+                    }
+                    else
+                    {
+                        cb = Color.FromArgb(0, 0, 0, 0);
+                        cf = Color.FromArgb(128, 128, 0, 128);
+                    }
+
+
+                    HatchStyle style = HatchStyle.DiagonalCross | HatchStyle.Percent50;
+                    HatchBrush srMineBrush = new HatchBrush(style, cf, cb);
+                    int radius = minefield.Radius;
+                    DrawCircle(g, srMineBrush, (Point)minefield.Position, radius);
                 }
-                else
+                if (minefield.MineType == 1)
                 {
-                    cb = Color.FromArgb(0, 0, 0, 0);
-                    cf = Color.FromArgb(128, 128, 0, 128);
+                    Bitmap GoldMineField = (Bitmap)Image.FromFile(GraphicsPath+ "\\Mine_Layer\\MediumMineGoldSmall.png");
+                    Color background = GoldMineField.GetPixel(0, 0);
+                    GoldMineField.MakeTransparent(background);
+
+                    Rectangle mines = new Rectangle(new Point(GoldMineField.Width / 2 - (int)(minefield.Radius * zoomFactor * 2), GoldMineField.Height / 2 - (int)(minefield.Radius * zoomFactor * 2)),new System.Drawing.Size ((int)(minefield.Radius* zoomFactor * 4), (int)(minefield.Radius * zoomFactor * 4 )));
+                    Bitmap clipRegion = GoldMineField.Clone(mines, System.Drawing.Imaging.PixelFormat.DontCare);
+                    Bitmap circle = new Bitmap(clipRegion.Width, clipRegion.Height, clipRegion.PixelFormat);
+                    Graphics G = Graphics.FromImage(circle);
+                    G.Clear(background);
+                    TextureBrush TB = new TextureBrush(clipRegion);
+                    G.FillEllipse(TB, 0, 0, (int)(minefield.Radius * zoomFactor * 4), (int)(minefield.Radius * zoomFactor * 4));
+
+                    G.ScaleTransform((float)zoomFactor, (float)zoomFactor);
+
+                    g.DrawImage(circle,new Point(minefield.Position.X,minefield.Position.Y));
                 }
-
-
-                HatchStyle style = HatchStyle.DiagonalCross | HatchStyle.Percent50;
-                HatchBrush srMineBrush = new HatchBrush(style, cf, cb);
-                int radius = minefield.Radius;
-                DrawCircle(g, srMineBrush, (Point)minefield.Position, radius);
             }
 
 
@@ -534,6 +575,7 @@ namespace Nova.WinForms.Gui
 
 
 
+
         private void DrawCircle(Graphics g, Pen pen, Point position, int radius)
         {
             g.DrawArc(
@@ -585,7 +627,6 @@ namespace Nova.WinForms.Gui
 
             FillCircle(g, brush, (Point)position, (int)(logicalRadius * zoomFactor));
         }
-
 
         /// <Summary>
         /// Draw a fleet. We only draw fleets that are not in orbit. Indications of

@@ -50,33 +50,44 @@ namespace Nova.Server.TurnSteps
                     {
                         Waypoint waypointZero = fleet.Waypoints[0];
                         Message message;
-                        if (waypointZero.Task.IsValid(fleet, null, serverState.AllEmpires[fleet.Owner], null, out message))
-                        {
-                            if (null != message) serverState.AllMessages.Add(message);
 
-                            long key = ((fleet.Position.X / Global.MineFieldSnapToGridSize) * 4294967296 + (fleet.Position.Y / Global.MineFieldSnapToGridSize)) + fleet.Owner * 1152921504606846976;
-                                Minefield minefield;
-                            serverState.AllMinefields.TryGetValue(key, out minefield);
-                            if (minefield != null)
+                        for (int mineType = 0; mineType < 3; mineType++) //an indexor on the minetype would be nice
+                            if (((mineType == 0) && (fleet.NumberOfMines > 0))
+                                || ((mineType == 1) && (fleet.NumberOfHeavyMines > 0))
+                                || ((mineType == 2) && (fleet.NumberOfSpeedBumpMines > 0)))
                             {
-                                minefield.NumberOfMines += fleet.NumberOfMines;
-                                messages.Add(new Message(fleet.Owner, fleet.Name + " has increased a minefield by "+ fleet.NumberOfMines.ToString()+" mines.", "Increase Minefield", null, fleet.Id));
+                                message = null;
+                                if (waypointZero.Task.IsValid(fleet, null, serverState.AllEmpires[fleet.Owner], null, out message))
+                                {
+                                    if (null != message) serverState.AllMessages.Add(message);
+                                    long key = ((fleet.Position.X / Global.MineFieldSnapToGridSize) * 0x10000000 + (fleet.Position.Y / Global.MineFieldSnapToGridSize)) + fleet.Owner * 0x40000000000000 + mineType * 0x4000000;
+                                    Minefield minefield;
+                                    serverState.AllMinefields.TryGetValue(key, out minefield);
+                                    int increase = 0;
+                                    if (mineType == 0) increase = fleet.NumberOfMines;
+                                    if (mineType == 1) increase = fleet.NumberOfHeavyMines;
+                                    if (mineType == 2) increase = fleet.NumberOfSpeedBumpMines;
+                                    if (minefield != null)
+                                    {
+                                        minefield.NumberOfMines += increase;
+                                        messages.Add(new Message(fleet.Owner, fleet.Name + " has increased a " + minefield.MineDescriptor + " minefield by " + increase.ToString() + " mines.", "Increase Minefield", key, fleet.Key));
+                                    }
+                                    else
+                                    {                                       // No Minefield found. Start a new one.
+                                        Minefield newField = new Minefield();
+
+                                        newField.Position = fleet.Position;
+                                        newField.Owner = fleet.Owner;
+                                        newField.NumberOfMines = increase;
+                                        newField.Key = key;
+
+                                        serverState.AllMinefields[key] = newField;
+                                        messages.Add(new Message(fleet.Owner, fleet.Name + " has created a " + newField.MineDescriptor + " minefield with " + increase.ToString() + " mines.", "New Minefield", key, fleet.Key));
+
+                                    }
+                                }
+                                if (message != null) messages.Add(message);
                             }
-                            else
-                            {                                       // No Minefield found. Start a new one.
-                                Minefield newField = new Minefield();
-
-                                newField.Position = fleet.Position;
-                                newField.Owner = fleet.Owner;
-                                newField.NumberOfMines = fleet.NumberOfMines;
-                                newField.Key = key;
-
-                                serverState.AllMinefields[key] = newField;
-                                messages.Add(new Message(fleet.Owner, fleet.Name + " has created a minefield with " + fleet.NumberOfMines.ToString() + " mines.", "New Minefield", null, fleet.Id));
-
-                            }
-                        }
-                        if (message != null) messages.Add(message);
                     }
             List<long> deleted = new List<long>(); 
             foreach (long minefieldKey in serverState.AllMinefields.Keys)

@@ -141,6 +141,8 @@ namespace Nova.Common.Waypoints
             {
 
                 Message message = new Message();
+                message.Type = "Fleet";
+                message.Event = fleet;
                 message.Audience = fleet.Owner;
                 message.Text = "Fleet " + fleet.Name + " attempted to load/unload fuel to empty space: ";
                 Messages.Add(message);
@@ -157,8 +159,10 @@ namespace Nova.Common.Waypoints
                     {
 
                         Message message = new Message();
+                        message.Type = "Fleet";
                         message.Audience = fleet.Owner;
-                        message.FleetID = fleet.Id;
+                        message.Event = fleet;
+                        message.FleetKey = fleet.Key;
                         message.Text = "Fleet " + fleet.Name + " attempted to load/unload fuel when too far from target: " + target.Name;
                         Messages.Add(message);
                         messageOut = message;
@@ -195,8 +199,9 @@ namespace Nova.Common.Waypoints
                     {
 
                         Message message = new Message();
+                        message.Type = "Fleet";
                         message.Audience = fleet.Owner;
-                        message.FleetID = fleet.Id;
+                        message.FleetKey = fleet.Key;
                         message.Text = "Fleet " + fleet.Name + " attempted to load/unload fuel when too far from target: " + target.Name;
                         Messages.Add(message);
                         messageOut = message;
@@ -229,8 +234,10 @@ namespace Nova.Common.Waypoints
                 else
                 {
                     Message message = new Message();
+                    message.Type = "Fleet";
+                    message.Event = fleet;
                     message.Audience = fleet.Owner;
-                    message.FleetID = fleet.Id;
+                    message.FleetKey = fleet.Key;
                     message.Text = "Fleet " + fleet.Name + " tried to load fuel to/from " + target.Name + ".";
                     Messages.Add(message);
                     messageOut = null;
@@ -247,12 +254,14 @@ namespace Nova.Common.Waypoints
                     message = new Message();
                     message.Text = "Fleet " + other.Name + " has received fuel from " + fleet.Name + ".";
                     message.Type = "WarpToChange";
-                    message.FleetID = other.Id;
+                    message.Event = fleet;
+                    message.FleetKey = other.Key;
                     Messages.Add(message);
                     message = new Message();
+                    message.Event = fleet;
                     message.Text = "Fleet " + fleet.Name + " has transferred fuel to " + other.Name + ".";
                     message.Type = "DestToChange";
-                    message.FleetID = fleet.Id;
+                    message.FleetKey = fleet.Key;
                     Messages.Add(message);
                     double AmountToTransfer = Amount.Value;
                     if (fleet.FuelAvailable < AmountToTransfer) AmountToTransfer = fleet.FuelAvailable; // existing AI commands just set Amount.value to int.MaxValue

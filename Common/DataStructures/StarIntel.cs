@@ -263,7 +263,7 @@ namespace Nova.Common
                     discovered = new Message();
                     discovered.Audience = scanner.Owner;
                     discovered.Type = "StarIntel";
-                    discovered.Event = star.Position;
+                    discovered.Event = star;
                     discovered.Text = "You have discovered a new habitable planet (" + star.Name + ")  with a current Value of " +  (int)Math.Ceiling(race.HabitalValue(this) * 100)
                     + "%, you currently have Tech to Terraform it's value to " + (int)Math.Ceiling(race.HabitalValue(this, true, gravityModCapability, temperatureModCapability, radiationModCapability) * 100) + "%";
                 }

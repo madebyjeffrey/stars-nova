@@ -34,6 +34,7 @@ using System.Windows.Forms;
 
 using Nova.Common;
 using Nova.Common.DataStructures;
+using System.Linq;
 
 
 namespace Nova.WinForms.Gui
@@ -43,7 +44,13 @@ namespace Nova.WinForms.Gui
     /// </Summary>
     public class Messages : System.Windows.Forms.UserControl
     {
+        public Dictionary<string, StarIntel> stars;            //TODO priority(3) is it better to convert the message.event keys in LinkIntelReferences() or here?
+        public Dictionary<long, Minefield> visibleMinefields;
+        public Dictionary<long, FleetIntel> knownFleets;
         public event EventHandler<SelectionArgs> doStarIntelStuff = null;
+        public event EventHandler<SelectionArgs> doFleetIntelStuff = null;
+        public event EventHandler<SelectionArgs> doMineIntelStuff = null;
+        public event EventHandler<SelectionArgs> doPositionIntelStuff = null;
         private List<Common.Message> messages;
         private int currentMessage;
         private int turnYear;
@@ -54,6 +61,7 @@ namespace Nova.WinForms.Gui
         private System.Windows.Forms.Button nextButton;
         private System.Windows.Forms.Button previousButton;
         private Button gotoButton;
+        private Button GotoFleetButton;
         private System.ComponentModel.Container components = null;
         #endregion
 
@@ -98,11 +106,13 @@ namespace Nova.WinForms.Gui
             this.previousButton = new System.Windows.Forms.Button();
             this.nextButton = new System.Windows.Forms.Button();
             this.messageBox = new System.Windows.Forms.Label();
+            this.GotoFleetButton = new System.Windows.Forms.Button();
             this.messageForm.SuspendLayout();
             this.SuspendLayout();
             // 
             // messageForm
             // 
+            this.messageForm.Controls.Add(this.GotoFleetButton);
             this.messageForm.Controls.Add(this.gotoButton);
             this.messageForm.Controls.Add(this.previousButton);
             this.messageForm.Controls.Add(this.nextButton);
@@ -111,7 +121,7 @@ namespace Nova.WinForms.Gui
             this.messageForm.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.messageForm.Location = new System.Drawing.Point(0, 0);
             this.messageForm.Name = "messageForm";
-            this.messageForm.Size = new System.Drawing.Size(350, 120);
+            this.messageForm.Size = new System.Drawing.Size(450, 180);
             this.messageForm.TabIndex = 0;
             this.messageForm.TabStop = false;
             this.messageForm.Text = "Year 2100 - No Messages";
@@ -154,14 +164,26 @@ namespace Nova.WinForms.Gui
             this.messageBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.messageBox.Location = new System.Drawing.Point(104, 25);
             this.messageBox.Name = "messageBox";
-            this.messageBox.Size = new System.Drawing.Size(340, 86);
+            this.messageBox.Size = new System.Drawing.Size(340, 146);
             this.messageBox.TabIndex = 0;
+            // 
+            // GotoFleetButton
+            // 
+            this.GotoFleetButton.Enabled = false;
+            this.GotoFleetButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.GotoFleetButton.Location = new System.Drawing.Point(8, 116);
+            this.GotoFleetButton.Name = "GotoFleetButton";
+            this.GotoFleetButton.Size = new System.Drawing.Size(75, 23);
+            this.GotoFleetButton.TabIndex = 5;
+            this.GotoFleetButton.Text = "Go To Fleet";
+            this.GotoFleetButton.Visible = false;
+            this.GotoFleetButton.Click += new System.EventHandler(this.GotoFleetButton_Click);
             // 
             // Messages
             // 
             this.Controls.Add(this.messageForm);
             this.Name = "Messages";
-            this.Size = new System.Drawing.Size(350, 120);
+            this.Size = new System.Drawing.Size(450, 180);
             this.messageForm.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -231,17 +253,62 @@ namespace Nova.WinForms.Gui
         {
             Nova.Common.Message thisMessage = messages[currentMessage];
 
-            if (thisMessage.Event is BattleReport)
+            if (thisMessage.Type == "BattleReport") //an enumerated type would be less error prone
             {
                 DoDialog(new BattleViewer(thisMessage.Event as BattleReport));
             }
+            string[] minefields = { "Minefield", "New Minefield", "Increase Minefield" };
+            if (minefields.Contains(thisMessage.Type))
+            {
+                try
+                {
+                    if (thisMessage.Event is Minefield)
+                    {// our minefield or the fleet hit the minefield but still has at least one ship with a scanner
+                        SelectionArgs positionArg = new SelectionArgs((thisMessage.Event as Minefield));
+                        if (doMineIntelStuff != null) doMineIntelStuff(sender, positionArg);
+                    }
+                    else
+                    {// the fleet hit the minefield and blew up so we can't see minefield and we have no VisibleMinefield record for the minefield (just the last reported position)
+                        SelectionArgs positionArg = new SelectionArgs((thisMessage.Event as Mappable));
+                        if (doPositionIntelStuff != null) doPositionIntelStuff(sender, positionArg);
+                    }
+                }
+                catch { }
+            }
+            if (thisMessage.Event is FleetIntel)
+            {
+                SelectionArgs positionArg = new SelectionArgs((thisMessage.Event as FleetIntel));
+                if (doFleetIntelStuff != null) doFleetIntelStuff(sender, positionArg);
+            }
             if (thisMessage.Event is StarIntel)
             {
-                
-                Mappable destination = new Mappable((thisMessage.Event as StarIntel).Position);
-                SelectionArgs positionArg = new SelectionArgs(destination);
+                SelectionArgs positionArg = new SelectionArgs(thisMessage.Event as StarIntel);
                 if (doStarIntelStuff != null) doStarIntelStuff(sender, positionArg);
             }
+
+        }
+        /// <summary>
+        /// For some events there is a Main Event Key and also a FleetID for a second fleet involved
+        /// this button appears for those events
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void GotoFleetButton_Click(object sender, EventArgs e)
+        {
+            Nova.Common.Message thisMessage = messages[currentMessage];
+
+
+            if ((thisMessage.FleetKey != null) && (thisMessage.FleetKey != 0))
+            {
+                FleetIntel fleet;
+                knownFleets.TryGetValue(thisMessage.FleetKey, out fleet);
+                if (fleet != null)
+                {
+                    SelectionArgs positionArg = new SelectionArgs(fleet);
+                    if (doFleetIntelStuff != null) doFleetIntelStuff(sender, positionArg);
+                }
+            }
+
 
         }
 
@@ -257,6 +324,8 @@ namespace Nova.WinForms.Gui
         public void SetMessage()
         {
             this.gotoButton.Enabled = false;
+            this.GotoFleetButton.Enabled = false;
+            this.GotoFleetButton.Visible = false;
 
             StringBuilder title = new StringBuilder();
             title.AppendFormat("Year {0} - ", turnYear);
@@ -277,10 +346,42 @@ namespace Nova.WinForms.Gui
                 Nova.Common.Message thisMessage = new Nova.Common.Message();
                 thisMessage = messages[currentMessage];
                 messageBox.Text = thisMessage.Text;
+                if (thisMessage.EventString != null)
+                { 
+                if (thisMessage.EventString.Contains("Star:"))
+                {
+                    StarIntel star = null;
+                    stars.TryGetValue(thisMessage.EventString.Substring(6, thisMessage.EventString.Length-6), out star);
+                    if (star != null) thisMessage.Event = star;
+                }
+                else
+                {
+                        long key = 0;
+                        long.TryParse(thisMessage.EventString, out key);
+                        if ((key != 0) && (key >= 0x40000000000000))
+                        {
+                            if (visibleMinefields.ContainsKey(key)) thisMessage.Event = visibleMinefields[key];  //minefield key
+                            else
+                            {
+                                int Y = Global.MineFieldSnapToGridSize * (int)(key % 0x4000000);
+                                int X = Global.MineFieldSnapToGridSize * (int)((key / 0x10000000) % 0x4000000);
+
+                                thisMessage.Event = new Mappable(new NovaPoint(X, Y));
+                            }
+                        }
+                        else if ((key != 0) && (key < 0x40000000000000)) thisMessage.Event = knownFleets[key];  //fleet key
+                        //else thisMessage.Event = (object)thisMessage.EventString;  // BattleReport was loaded early so LinkIntelReferences() could populate it
+                    }
+                }
 
                 if (thisMessage.Event != null)
                 {
                     this.gotoButton.Enabled = true;
+                }
+                if ((thisMessage.FleetKey != null) && (thisMessage.FleetKey != 0))
+                {
+                    this.GotoFleetButton.Visible = true;
+                    this.GotoFleetButton.Enabled = true;
                 }
             }
         }

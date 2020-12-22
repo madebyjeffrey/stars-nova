@@ -36,9 +36,9 @@ namespace Nova.Common
         public int Audience;     // An int representing the destination of the message. 0 means everyone. 
         public string Type;      // Text that indicates the type of event that generated the message.
         public object Event;     // An object used with the Goto button to display more information to the player. See Messages.GotoButton_Click
-        public uint FleetID;     // Required for messages of type "Fuel"
+        public long FleetKey;     // Required for messages of type "Fuel"
         // Ensure when adding new message types to add code to the Xml functions to handle your object type.
-
+        public string EventString;
         /// <summary>
         /// Default constructor.
         /// </summary>
@@ -52,13 +52,13 @@ namespace Nova.Common
         /// <param name="audience">A string representing the destination of the message. Either a race name or and asterisk.</param>
         /// <param name="messageEvent">An object used with the Goto button to display more information to the player. See Messages.GotoButton_Click.</param>
         /// <param name="text">The text to display in the message box.</param>
-        public Message(int audience, string text, string messageType, object messageEvent,uint fleetId = 0)
+        public Message(int audience, string text, string messageType, object messageEvent,long fleetKey = 0)
         {
             Audience = audience;
             Text     = text;
             Type     = messageType;
             Event    = messageEvent;
-            FleetID = fleetId;
+            FleetKey = fleetKey;
         }
 
         /// <summary>
@@ -95,22 +95,15 @@ namespace Nova.Common
                                 Type = subnode.FirstChild.Value;
                             }
                             break;
-                        case "fleetid":
+                        case "fleetkey":
                             if (subnode.FirstChild != null)
                             {
-                                FleetID = uint.Parse(subnode.FirstChild.Value);
+                                FleetKey = long.Parse(subnode.FirstChild.Value);
                             }
                             break;
                         case "event":
-                            Event = (object)subnode.FirstChild.Value;
-                            break;
-
-                        case "Minefield":
-                            Event = subnode.FirstChild.Value;
-                            break;
-
-                        case "StarID":
-                            Event = subnode.FirstChild.Value;
+                            EventString = (string)subnode.FirstChild.Value;
+                            Event = (object)subnode.FirstChild.Value; // this is only true for BattleReports but we need the BattleReport key put in before LinkIntelReferences()
                             break;
 
                         default: break;
@@ -144,9 +137,9 @@ namespace Nova.Common
                 Global.SaveData(xmldoc, xmlelMessage, "Type", Type);
             }
 
-            if (FleetID != 0)
+            if (FleetKey != 0) // many messages involve a star and a fleet so allow both keys to be saved
             {
-                Global.SaveData(xmldoc, xmlelMessage, "FleetID", FleetID);
+                Global.SaveData(xmldoc, xmlelMessage, "FleetKey", FleetKey);
             }
 
             if (Event != null)
@@ -155,30 +148,36 @@ namespace Nova.Common
                 {
                     case "TechAdvance":
                     case "NewComponent":
+                    case "Invalid Command":
+                        // No object reference required to be saved.
+                        break;
+                    case "Load/Unload":
                     case "WarpToChange":
                     case "DestToChange":
                     case "Cheap Engines":
                     case "Fuel":
-                    case "Star":
-                    case "Invalid Command":
-                    case "Load/Unload":
-                    case "Ship":
-                    case "Factory":
-                    case "Mine":
+                    case "Ship":            // Key is (long)fleetCounter | ((long)empireId << 32);
+                    case "Fleet":           // "
+                        if (Event != null)
+                        {
+                            if (Event is Fleet) Global.SaveData(xmldoc, xmlelMessage, "Event", (Event as Fleet).Key);   // 0000 0000 0000 0000 0000 00EE EEEE EEEE  FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF
+                            if (Event is FleetIntel) Global.SaveData(xmldoc, xmlelMessage, "Event", (Event as FleetIntel).Key);   // 0000 0000 0000 0000 0000 00EE EEEE EEEE  FFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFF
+                        }
+                        break;  
+                        // E = Empire (Bits 32-41)    F = fleet key  
+                    case "New Minefield":
+                    case "Increase Minefield":  // for minefields there is a unique address for each 5 x 5 square and laying mines anywhere in that 5 x 5 square add to the minefield at the address of that square.
+                    case "Minefield": //(long)key = ((fleet.Position.X / Global.MineFieldSnapToGridSize) * 268,435,456 + (fleet.Position.Y / Global.MineFieldSnapToGridSize)) + minefield.Owner * 18,014,398,509,481,984;
+                        if (Event != null) Global.SaveData(xmldoc, xmlelMessage, "Event", Event.ToString());   // EEEE EEEE EEYY YYYY YYYY YYYY YYYY YYYY YYYY TTXX XXXX XXXX XXXX XXXX XXXX XXXX 
+                        break;                                                                      // E = Empire (Bits 54-63)     Y = Minefield.Position.Y (Bits 28-53)   T = Type of mine (Bits 26-27)   X = Minefield.Position.X (bits 0-25)
+
                     case "New Defense":
                     case "Terraform":
-                    case "New Minefield":
-                    case "Increase Minefield":
-                    case "Fleet":
-                        // No object reference required to be saved.
-                        break;
-
-                    case "Minefield":
-                        Global.SaveData(xmldoc, xmlelMessage, "Event", (Event as Minefield).Key);
-                        break;
-
-                    case "StarIntel":
-                        Global.SaveData(xmldoc, xmlelMessage, "Event", Event.ToString() );
+                    case "Factory":
+                    case "Mine":
+                    case "Star":
+                    case "StarIntel": // "Key" is a string in the form "Star: Ssssssssssssssssssssssssssssssssss"
+                        if (Event != null) Global.SaveData(xmldoc, xmlelMessage, "Event", Event.ToString() );
                         break;
 
                     case "BattleReport":
@@ -186,7 +185,7 @@ namespace Nova.Common
                         break;
 
                     default:
-                        Report.Error("Message.ToXml() - Unable to convert Message.Event of type " + Event.ToString());
+                        Report.Error("Message.ToXml() - Unable to convert Message.Event of type: (\"" + Type +"\"), Event = "+ Event.ToString()+". The message TEXT is : "+Text);
                         break;
                 }
             }

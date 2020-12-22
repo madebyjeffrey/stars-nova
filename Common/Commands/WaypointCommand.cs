@@ -310,7 +310,7 @@ namespace Nova.Common.Commands
                         message = new Message();
                         message.Audience = Global.Everyone;
                         message.Type = "Invalid command";
-                        message.FleetID = empire.OwnedFleets[FleetKey].Id;
+                        message.FleetKey = empire.OwnedFleets[FleetKey].Key;
                         message.Text = "Empire " + empire.Id.ToString() + ", Fleet " + empire.OwnedFleets[FleetKey].Name + " Waypoint.delete.index=" + Index.ToString() + " with Waypoint.count = " + empire.OwnedFleets[FleetKey].Waypoints.Count.ToString() + " please sack the programmers";
                         return message;
                     }
@@ -323,7 +323,7 @@ namespace Nova.Common.Commands
                     {
                         message.Audience = Global.Everyone;
                         message.Type = "Invalid command";
-                        message.FleetID = empire.OwnedFleets[FleetKey].Id;
+                        message.FleetKey = empire.OwnedFleets[FleetKey].Key;
                         message.Text = "Empire "+empire.Id.ToString()+", Fleet "+ empire.OwnedFleets[FleetKey].Name+" Waypoint.edit.index="+Index.ToString()+" with Waypoint.count = "+ empire.OwnedFleets[FleetKey].Waypoints.Count.ToString()+" please sack the programmers";
                         empire.OwnedFleets[FleetKey].Waypoints.RemoveAt(Index - 1);  // TODO (priority 8) the code that sent this Waypoint.Edit command sent a bad index and must be fixed 
                     }

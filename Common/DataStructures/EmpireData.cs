@@ -156,7 +156,13 @@ namespace Nova.Common
         public long PeekNextFleetKey()
         {
 
-            return fleetCounter + 1 | ((long)empireId << 32); ;
+            return fleetCounter + 1 | ((long)empireId << 32) ;
+        }
+
+        public long PeekNextFleetId()
+        {
+
+            return fleetCounter + 1  ;
         }
 
 

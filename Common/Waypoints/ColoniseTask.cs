@@ -74,7 +74,9 @@ namespace Nova.Common.Waypoints
             Messages.Add(message);
             
             message.Audience = fleet.Owner;
-            message.FleetID = fleet.Id;
+            message.FleetKey = fleet.Key;
+            message.Event = fleet;
+            message.Type = "Fleet";
             message.Text = fleet.Name + " attempted to colonise ";
             
             if (fleet.InOrbit == null || target == null || !(target is Star))
@@ -126,7 +128,8 @@ namespace Nova.Common.Waypoints
             if (fleet.Owner == star.Owner)            {
                 message = new Message();
                 message.Audience = fleet.Owner;
-                message.FleetID = fleet.Id;
+                message.Event = fleet;
+                message.FleetKey = fleet.Key;
                 message.Type = "Load/Unload";
                 message.Text = fleet.Cargo.ColonistNumbers.ToString() + " colonists beamed to surface of " + star.Name + "."; // This helps the AI by emptying the Colonizer
                 message.Audience = fleet.Owner;
@@ -143,7 +146,8 @@ namespace Nova.Common.Waypoints
                 message = new Message();
                 message.Audience = fleet.Owner;
                 message.Text = " You have colonised " + star.Name + ".";
-                message.Type = "DestToChange";
+                message.Type = "Star";
+                message.Event = star;
                 Messages.Add(message);
 
                 star.ResourcesOnHand = fleet.Cargo.ToResource();

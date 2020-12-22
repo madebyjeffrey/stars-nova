@@ -65,9 +65,9 @@ namespace Nova.Common.Components
         // Mine layers which create different types of minefields.
         // Note we assume that there will be three types of minefields: standard, heavy and speed bump
         // and they can be distinguised by the % chance of collision. (0.3, 1.0 and 3.5 respectivly).
-        public MineLayer StandardMines = new MineLayer();
-        public MineLayer HeavyMines = new MineLayer();
-        public MineLayer SpeedBumbMines = new MineLayer();
+        public MineLayer StandardMines = new MineLayer(MineLayer.StandardHitChance);
+        public MineLayer HeavyMines = new MineLayer(MineLayer.HeavyHitChance);
+        public MineLayer SpeedBumpMines = new MineLayer(MineLayer.SpeedTrapHitChance);
 
         /// <summary>
         /// The image assigned to this ship design, which may be different from the default hull module component image. 
@@ -530,7 +530,23 @@ namespace Nova.Common.Components
                 return StandardMines.LayerRate;
             }
         }
-        
+        public int HeavyMineCount
+        {
+            get
+            {
+                Update();
+                return HeavyMines.LayerRate;
+            }
+        }
+        public int SpeedBumpMineCount
+        {
+            get
+            {
+                Update();
+                return SpeedBumpMines.LayerRate;
+            }
+        }
+
         /// <summary>
         /// Get if this ship has weapons.
         /// </summary>
@@ -633,9 +649,9 @@ namespace Nova.Common.Components
             }
             Weapons.Clear();
             Summary.Properties.Clear(); // StarMapInitialiser.prepareDesign cs.Update enters here with Summary.Properties.engine containing a hullAfinity so clear the whole thing every time  
-            StandardMines = new MineLayer();                            // May be just an initialisation problem with Summary.Properties?
-            HeavyMines = new MineLayer();
-            SpeedBumbMines = new MineLayer();
+            StandardMines = new MineLayer(MineLayer.StandardHitChance);                            // May be just an initialisation problem with Summary.Properties?
+            HeavyMines = new MineLayer(MineLayer.HeavyHitChance);
+            SpeedBumpMines = new MineLayer(MineLayer.SpeedTrapHitChance);
             // Start by copying the basic properties of the hull
             Summary = new Component(Blueprint);
 
@@ -779,11 +795,13 @@ namespace Nova.Common.Components
                     MineLayer layer = property as MineLayer;
                     if (layer.HitChance == MineLayer.HeavyHitChance)
                     {
-                        HeavyMines += layer * componentCount;
+                        if (HeavyMines.LayerRate == 0) HeavyMines = layer;   // Before this point HeavyMines was just a Standard Mine Layer with the HeavyMines HitChance so put "Real" values in the other properties by taking a copy
+                        else HeavyMines += layer * componentCount;
                     }
                     else if (layer.HitChance == MineLayer.SpeedTrapHitChance)
                     {
-                        SpeedBumbMines += layer * componentCount;
+                        if (SpeedBumpMines.LayerRate == 0) SpeedBumpMines = layer;   // Before this point SpeedBumpMines was just a Standard Mine Layer with the SpeedBumpMines HitChance so put "Real" values in the other properties by taking a copy
+                        else SpeedBumpMines += layer * componentCount;
                     }
                     else
                     {

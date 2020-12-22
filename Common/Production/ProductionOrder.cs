@@ -132,8 +132,9 @@ namespace Nova.Common
             if (oldQuantity != Quantity)
             {
                 message = new Message();
+                message.Event = star;
                 message.Audience = star.Owner;
-                message.Type = Unit.ToString();
+                message.Type = "Star";
                 if (oldQuantity - Quantity == 1) message.Text = star.Name.ToString() + " has built a " + Unit.Name.ToString();
                 else message.Text = star.Name.ToString() + " has built " + (oldQuantity - Quantity).ToString() + " " + Unit.Name.ToString();
                 messages.Add(message);

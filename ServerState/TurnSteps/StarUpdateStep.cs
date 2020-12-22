@@ -72,6 +72,8 @@ namespace Nova.Server.TurnSteps
                 {
                     int died = initialPopulation - finalPopulation;
                     Message message = new Message();
+                    message.Event = star;
+                    message.Type = "Star";
                     message.Audience = star.Owner;
                     message.Text = died.ToString(System.Globalization.CultureInfo.InvariantCulture)
                        + " of your colonists have been killed"

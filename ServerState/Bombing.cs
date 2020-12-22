@@ -139,11 +139,15 @@ namespace Nova.Server
             Message lamb = new Message();
             lamb.Text = messageText;
             lamb.Audience = previousOwer;
+            lamb.Type = "Star";
+            lamb.Event = star;
             messageOut.Add(lamb);
 
             Message wolf = new Message();
             wolf.Text = messageText;
             wolf.Audience = fleet.Owner;
+            wolf.Type = "Star";
+            wolf.Event = star;
             messageOut.Add(wolf);
             return messageOut;
         }

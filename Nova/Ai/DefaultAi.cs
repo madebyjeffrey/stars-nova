@@ -404,9 +404,9 @@ namespace Nova.Ai
                 }
                 if (!string.IsNullOrEmpty(msg.Type) && msg.Type == "Fuel")
                 {
-                    if (clientState.EmpireState.OwnedFleets.ContainsKey(msg.FleetID))
+                    if (clientState.EmpireState.OwnedFleets.ContainsKey(msg.FleetKey))
                     {
-                        Fleet crippled = clientState.EmpireState.OwnedFleets[msg.FleetID];
+                        Fleet crippled = clientState.EmpireState.OwnedFleets[msg.FleetKey];
                         int distanceToCrippled = int.MaxValue;
                         uint refuelerID = 0;
                         Fleet chosenRefueler = null;
@@ -443,9 +443,9 @@ namespace Nova.Ai
             {
                 if (!string.IsNullOrEmpty(msg.Type) && msg.Type == "WarpToChange")
                 {
-                    if (clientState.EmpireState.OwnedFleets.ContainsKey(msg.FleetID))
+                    if (clientState.EmpireState.OwnedFleets.ContainsKey(msg.FleetKey))
                     {
-                        Fleet fleet = clientState.EmpireState.OwnedFleets[msg.FleetID];
+                        Fleet fleet = clientState.EmpireState.OwnedFleets[msg.FleetKey];
                         // for the AI the first Waypoint is the destination not the current location?
                         StarIntel dest = new StarIntel();
                         clientState.EmpireState.StarReports.TryGetValue(fleet.Waypoints[0].Destination, out dest);
@@ -466,9 +466,9 @@ namespace Nova.Ai
             {
                 if (!string.IsNullOrEmpty(msg.Type) && msg.Type == "DestToChange")
                 {
-                    if (clientState.EmpireState.OwnedFleets.ContainsKey(msg.FleetID))
+                    if (clientState.EmpireState.OwnedFleets.ContainsKey(msg.FleetKey))
                     {
-                        Fleet fleet = clientState.EmpireState.OwnedFleets[msg.FleetID];
+                        Fleet fleet = clientState.EmpireState.OwnedFleets[msg.FleetKey];
                         if ((fleet.Waypoints.Count == 0) || ((fleet.Waypoints.Count == 1) && fleet.Waypoints[0].Task is NoTask)) return;
                         // for the AI the first Waypoint is the destination not the current location?
 

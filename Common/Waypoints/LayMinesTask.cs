@@ -39,18 +39,35 @@ namespace Nova.Common.Waypoints
         public List<Message> Messages
         {
             get{ return messages;}
-        } 
-        
+        }
+
+        int mineType = 0; // 0 = standard   1= heavy  2 = smart
+
         public string Name
         {
             get{return "Lay Mines";}
         }
-        
-        public LayMinesTask()
+
+        public int MineType
         {
-             
+            get
+            {
+                return mineType;
+            }
+            set
+            {
+                mineType = MineType;
+            }
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>// 0 = standard   1= heavy  2 = smart
+        public LayMinesTask(int type = 0)
+        {
+            mineType = type;
+        }
+
         /// <summary>
         /// Load: Read in a ColoniseTask from and XmlNode representation.
         /// </summary>
@@ -60,17 +77,39 @@ namespace Nova.Common.Waypoints
             if (node == null)
             {
                 return;
-            }    
+            }
+            mineType = 0; // default value is not saved
+            XmlNode mainNode = node.FirstChild;
+            while (mainNode != null)
+            {
+                try
+                {
+                    switch (mainNode.Name.ToLower())
+                    {
+                        case "minetype":
+                            mineType = int.Parse(mainNode.FirstChild.Value);
+                            break;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Report.Error(e.Message);
+                }
+                mainNode = mainNode.NextSibling;
+            }
         }
-        
-        public bool IsValid(Fleet fleet, Item target, EmpireData sender, EmpireData receiver,out Message messageOut)
+
+
+            public bool IsValid(Fleet fleet, Item target, EmpireData sender, EmpireData receiver,out Message messageOut)
         {
             Message message = new Message();
             Messages.Add(message);            
             message.Audience = fleet.Owner;
-            message.FleetID = fleet.Id;
+            message.FleetKey = fleet.Key;
+            message.Event = fleet;
+            message.Type = "Fleet";
 
-            if (fleet.NumberOfMines == 0)
+            if ((fleet.NumberOfMines == 0) && (fleet.NumberOfHeavyMines == 0) && (fleet.NumberOfSpeedBumpMines == 0))
             {
                 message.Text = fleet.Name + " attempted to lay mines. The order has been canceled because no ship in the fleet has a mine laying pod.";
                 messageOut = message;
@@ -117,7 +156,8 @@ namespace Nova.Common.Waypoints
         public XmlElement ToXml(XmlDocument xmldoc)
         {
             XmlElement xmlelTask = xmldoc.CreateElement("LayMinesTask");
-            
+            if (mineType != 0) Global.SaveData(xmldoc, xmlelTask, "MineType", mineType.ToString());
+
             return xmlelTask;
         }
     }

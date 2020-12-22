@@ -36,7 +36,7 @@ namespace Nova.Common.Components
         public static double SpeedTrapHitChance = 3.5;
         public static double StandardHitChance = 0.3;
 
-        // Standar Mine Stats
+        // Standard Mine Stats
         public int LayerRate = 0;
         public int SafeSpeed = 4;
         public double HitChance = 0.3;
@@ -50,6 +50,10 @@ namespace Nova.Common.Components
         /// </summary>
         public MineLayer()
         {
+        }
+        public MineLayer(double hitChance)
+        {
+            HitChance = hitChance;
         }
 
         /// <summary>

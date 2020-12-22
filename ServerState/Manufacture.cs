@@ -124,9 +124,10 @@ namespace Nova.Server
 
             Message message = new Message();
             message.Audience = star.Owner;
+            message.Event = star;
+            message.Type = "Star";
+            message.FleetKey = fleet.Key;
             message.Text = star.Name + " has produced " + countToBuild + " new " + design.Name;
-            // message.Event = fleet; // will not be persisted unless the Type is implemented.
-            // message.Type = "Fleet"; // TODO (priority 5) - need to add a fleet type message so it can save/load.
             serverState.AllMessages.Add(message);
             
             // Add the fleet to the state data so it can be tracked.

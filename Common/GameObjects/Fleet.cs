@@ -37,7 +37,7 @@ namespace Nova.Common
     /// Fleet class. A fleet is a container for one or more ships (which may be of
     /// different designs). Ship instances do not exist by themselves, they are
     /// always part of a fleet (even if they are the only ship in the fleet).
-    /// A fleet may be a starbase.
+    /// A fleet may be a starbase, mineral packet or salvage.
     /// </summary>
     [Serializable]
     public class Fleet : Mappable
@@ -326,6 +326,34 @@ namespace Nova.Common
                 foreach (ShipToken token in tokens.Values)
                 {
                     mineCount += token.Design.MineCount;
+                }
+
+                return mineCount;
+            }
+        }
+        public int NumberOfHeavyMines
+        {
+            get
+            {
+                int mineCount = 0;
+
+                foreach (ShipToken token in tokens.Values)
+                {
+                    mineCount += token.Design.HeavyMineCount;
+                }
+
+                return mineCount;
+            }
+        }
+        public int NumberOfSpeedBumpMines
+        {
+            get
+            {
+                int mineCount = 0;
+
+                foreach (ShipToken token in tokens.Values)
+                {
+                    mineCount += token.Design.SpeedBumpMineCount;
                 }
 
                 return mineCount;
@@ -652,11 +680,12 @@ namespace Nova.Common
         /// <param name="availableTime">The portion of a year left for travel.</param>
         /// <param name="race">The race this fleet belongs to.</param>
         /// <returns>A TravelStatus indicating arrival or in-transit.</returns>
-        public TravelStatus Move(ref double availableTime, Race race, ref List<Message> messageOut, int targetVelocity, NovaPoint targetVelocityVector)
+        public TravelStatus Move(ref double availableTime, Race race, out List<Message> messageOut, int targetVelocity, NovaPoint targetVelocityVector)
         {
             List<Message> messages = new List<Message>();
             if (GetTravelStatus() == TravelStatus.Arrived)
             {
+                messageOut = messages;
                 return TravelStatus.Arrived;
             }
 
@@ -750,7 +779,6 @@ namespace Nova.Common
             {
                 Message message = new Message();
                 message.Audience = Owner;
-                message.FleetID = Id;
                 message.Text = "Fleet " + Name + " has generated " + (-1.0 * fuelUsed).ToString() + "mg of fuel.";
                 message.Type = "WarpToChange";
                 message.Event = this;
@@ -766,10 +794,10 @@ namespace Nova.Common
                 if (target.WarpFactor == 0) target.WarpFactor = 1; // in Stars every fleet can travel at warp 1 and generate 1mg of fuel per turn
                 Message message = new Message();
                 message.Audience = Owner;
-                message.FleetID = Id;
+                message.FleetKey = Key;
                 message.Text = "Fleet " + Name + " has run out of fuel. Its speed has been reduced to Warp " + this.FreeWarpSpeed.ToString() + ".";
                 message.Type = "WarpToChange";
-                message.FleetID = this.Id;
+                message.FleetKey = this.Key;
                 message.Event = this;
                 messages.Add(message);
 

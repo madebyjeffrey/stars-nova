@@ -150,7 +150,7 @@ namespace Nova.WinForms.Gui
             // sampleItemToolStripMenuItem
             // 
             this.sampleItemToolStripMenuItem.Name = "sampleItemToolStripMenuItem";
-            this.sampleItemToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.sampleItemToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.sampleItemToolStripMenuItem.Text = "SampleItem";
             // 
             // radioButtonNormal

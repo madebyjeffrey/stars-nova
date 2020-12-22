@@ -195,8 +195,8 @@ namespace Nova.Server
                     serverState.SetFleetOrbit(fleet);
                     if (fleet.InOrbit != null)
                     {
-                        serverState.AllMessages.Add(new Message(fleet.Owner, "Your Mineral Packet Destroyed 3/4 of the population of " + fleet.InOrbit.Name.ToString(), "Fleet", null, 0));
-                        serverState.AllMessages.Add(new Message(((Star)fleet.InOrbit).Owner, "A Mineral Packet Destroyed 3/4 of your population on " + fleet.InOrbit.Name.ToString(), "Fleet", null, 0));
+                        serverState.AllMessages.Add(new Message(fleet.Owner, "Your Mineral Packet Destroyed 3/4 of the population of " + fleet.InOrbit.Name.ToString(), "Star", ((Star)fleet.InOrbit), 0));
+                        serverState.AllMessages.Add(new Message(((Star)fleet.InOrbit).Owner, "A Mineral Packet Destroyed 3/4 of your population on " + fleet.InOrbit.Name.ToString(), "Star", ((Star)fleet.InOrbit), 0));
                         ((Star)fleet.InOrbit).Colonists = ((Star)fleet.InOrbit).Colonists / 4;
                     }
                     serverState.AllEmpires[fleet.Owner].FleetReports[fleet.Key].Update(fleet, ScanLevel.Owned, serverState.TurnYear);
@@ -598,7 +598,7 @@ namespace Nova.Server
                         message.Audience = fleet.Owner;
                         message.Text = "Fleet " + fleet.Name + "'s engines failed to start. Fleet has not moved this turn.";
                         message.Type = "Cheap Engines";
-                        message.Event = this;
+                        message.Event = fleet;
                         serverState.AllMessages.Add(message);
                         fleetMoveResult = Fleet.TravelStatus.InTransit;
                     }
@@ -615,9 +615,11 @@ namespace Nova.Server
                                 targetVelocityVector = target.Waypoints[0].Position - target.Position;
                                 continue;
                             }
+                        List < Message > messages = new List<Message>();
                         ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-                        fleetMoveResult = fleet.Move(ref availableTime, race, ref serverState.AllMessages, targetVelocity, targetVelocityVector);
+                        fleetMoveResult = fleet.Move(ref availableTime, race, out messages, targetVelocity, targetVelocityVector);
                         //////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        serverState.AllMessages.AddRange(messages);
                     }
 
 

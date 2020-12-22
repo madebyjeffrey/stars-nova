@@ -63,7 +63,26 @@ namespace Nova.Common
         {
             get
             {
-                return (int) (Key / 1152921504606846976);
+                return (int) (Key / 0x40000000000000);
+            }
+        }
+
+        public int MineType
+        {
+            get
+            {
+                return (int)((Key / 0x4000000) % 4);
+            }
+        }
+        public string MineDescriptor
+        {
+            get
+            {
+                String descriptor = "";
+                if (MineType == 0) descriptor = "Standard";
+                if (MineType == 1) descriptor = "Heavy";
+                if (MineType == 2) descriptor = "SpeedBump";
+                return descriptor;
             }
         }
         /// <summary>
@@ -117,7 +136,9 @@ namespace Nova.Common
                     Report.Error("Error loading Minefield : " + e.Message);
                 }
                 subnode = subnode.NextSibling;
-            }   
+            }
+            this.Position.Y = Global.MineFieldSnapToGridSize * (int) (Key % 0x4000000);
+            this.Position.X = Global.MineFieldSnapToGridSize * (int)((Key / 0x10000000) % 0x4000000);
         }
     }
 }

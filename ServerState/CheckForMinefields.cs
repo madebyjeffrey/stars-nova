@@ -178,11 +178,12 @@ namespace Nova.Server
                 cargoLost.Add(cargoBefore);
                 cargoLost.Remove(cargoAfter);
             }
-//            serverState.AllMessages.Add(new Message(minefield.Owner, "Enemy fleet " + fleet.Name + " has hit your minefield at " + fleet.Position.ToString(), "Minefield", null, 0));
+//            serverState.AllMessages.Add(new Message(minefield.Owner, "Enemy fleet " + fleet.Name + " has hit your minefield at " + fleet.Position.ToString(), "Minefield", minefield, 0));
             Message message = new Message();
             message.Audience = fleet.Owner;
-            message.Type = "Fleet";
-            message.Event = fleet.Id;
+            message.Type = "Minefield";
+            message.Event = minefield.Key;
+            message.FleetKey = fleet.Key;
             message.Text = "Fleet " + fleet.Name
                + " has hit a Minefield." + "\n\n";
 
@@ -249,17 +250,18 @@ namespace Nova.Server
             if (minesToDestroy > 10)   
             {
                 Message message = new Message();
-                message.Type = "Fleet";
+                message.Type = "Minefield";
                 message.Audience = fleet.Owner;
-                message.Event = fleet.Id;
+                message.Event = minefield.Key;
+                message.FleetKey = fleet.Key;
                 message.Text = "Fleet " + fleet.Name
                    + " has destroyed " + minesToDestroy.ToString() + " mines" + "\n\n";
                 serverState.AllMessages.Add(message);
                 Message message2 = new Message();
-                message2.Type = "Fleet";
+                message2.Type = "Minefield";
+                message2.Event = minefield.Key;
                 message2.Audience = minefield.Empire;
-                message2.Event = fleet.Id;
-                message2.Text = "Someone has destroyed " + minesToDestroy.ToString() + " mines" + "\n\n";
+                message2.Text = "Someone has destroyed " + minesToDestroy.ToString() + " mines in your minefield at " + minefield.Position.ToString() + "\n\n";
                 serverState.AllMessages.Add(message);
             }
         }
