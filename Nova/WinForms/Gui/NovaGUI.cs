@@ -438,6 +438,9 @@ namespace Nova.WinForms.Gui
         public void reinitializeControls()
         {
             this.Messages.Year = clientState.EmpireState.TurnYear;
+            this.messages.stars = clientState.EmpireState.StarReports;
+            this.messages.visibleMinefields = clientState.EmpireState.VisibleMinefields;
+            this.messages.knownFleets = clientState.EmpireState.FleetReports;
             this.Messages.MessageList = clientState.Messages;
 
             this.CurrentTurn = clientState.EmpireState.TurnYear;
