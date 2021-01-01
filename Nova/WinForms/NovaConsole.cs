@@ -504,11 +504,10 @@ namespace Nova.WinForms.Console
                     yearItem.ForeColor = System.Drawing.Color.Green;
                 }
                 listItem.SubItems.Add(yearItem);
-
+                listItem.UseItemStyleForSubItems = false;
                 playerList.Items.Add(listItem);
-                playerList.Items[playerList.Items.Count - 1].UseItemStyleForSubItems = false;
+                //playerList.Items[playerList.Items.Count - 1].UseItemStyleForSubItems = false;
 
-                // PlayerList.Invalidate(); // Tried this in an attempt to get the colors to show. Dan - 6 Feb 10
             }
 
             return allTurnedIn;

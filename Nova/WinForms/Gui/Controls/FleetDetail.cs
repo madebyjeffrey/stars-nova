@@ -530,15 +530,24 @@ namespace Nova.WinForms.Gui
                     Waypoint to = topFleet.Waypoints[index];
                     double distance = PointUtilities.Distance(from.Position, to.Position);
 
-                    double time = distance / (to.WarpFactor * to.WarpFactor);
+                    double time = distance  / (to.WarpFactor * to.WarpFactor);
+
+                    double StarsTime = (distance - 0.9999999999999999) / (to.WarpFactor * to.WarpFactor);
 
                     double fuelUsed = topFleet.FuelConsumption(to.WarpFactor, empireState.Race)
 
                                     * time;
 
+                    if ((StarsTime <= 1.00) && (time > 1.00)) time = 1.0;                          //Stars 2.7J allows up to 1 LY free travel time on last leg 
+
+                    if ((time - Math.Floor(time)) < 0.1)
+                    {                                                   //Don't display (say) 2.0 unless the fleet will get there in 2 years
+                        if ((time - Math.Floor(time)) < 0.01) time += 0.01;     // if the fraction is less than .01 don't display .00
+                        legTime.Text = string.Format("{0}", time.ToString("f2"));
+                    }
+                    else legTime.Text = string.Format("{0}", time.ToString("f1"));
                     legDistance.Text = string.Format("{0}", distance.ToString("f1"));
                     legFuel.Text = string.Format("{0}", fuelUsed.ToString("f1"));
-                    legTime.Text = string.Format("{0}", time.ToString("f1"));
                 }
                 else
                 {

@@ -1360,6 +1360,7 @@ namespace Nova.WinForms.Gui
         public void SetCursor(NovaPoint position)
         {
             cursorPosition = position;
+            CenterMapOnPoint(cursorPosition);
             RefreshStarMap(this, EventArgs.Empty);
         }
 
