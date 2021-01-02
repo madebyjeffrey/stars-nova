@@ -813,7 +813,7 @@ namespace Nova.Ai
             if (!found)
             {
                 bool hasMinesweeper = false;
-                starbase.Blueprint = clientState.EmpireState.AvailableComponents.GetBestStationHull();
+                starbase.Blueprint = new Component(clientState.EmpireState.AvailableComponents.GetBestStationHull());
                 if (starbase.Blueprint == null) return null;
                 foreach (HullModule module in starbase.Hull.Modules)
                 {
