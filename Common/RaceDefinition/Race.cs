@@ -68,6 +68,30 @@ namespace Nova.Common
         // Growth goes from 3 to 20 and is not normalized here.
         public double GrowthRate;
 
+        // AI characteristics that modify the default AI behaviour
+        public byte AI_proclivities_Research = 50;
+        public byte AI_proclivities_Factories = 50;
+        public byte AI_proclivities_Starbases = 50;
+        public byte AI_proclivities_Interceptors = 50;
+        public byte AI_proclivities_Bombers = 50;
+        public byte AI_proclivities_Escorts = 50;
+        public byte AI_proclivities_MineLayers = 20;
+        public byte AI_proclivities_Colonizers = 50;
+        public byte AI_proclivities_Aggression = 50;
+        public byte AI_proclivities_Hit_Unarmed = 50;
+        public byte AI_proclivities_Hit_Minefields = 50;
+        public byte AI_proclivities_Hit_Humanses = 50;
+        public byte AI_proclivities_Terraform = 50;
+        public byte AI_proclivities_MineralPackets= 20;
+        public byte AI_proclivities_Unused1 = 50;
+        public byte AI_proclivities_Unused2 = 50;
+        public byte AI_proclivities_Unused3 = 50;
+        public byte AI_proclivities_Unused4 = 50;
+        public byte AI_proclivities_Unused5 = 50;
+
+
+
+
         // required for searializable class
         public Race() 
         { 
@@ -582,6 +606,27 @@ namespace Nova.Common
             }
             Global.SaveData(xmldoc, xmlelRace, "LeftoverPoints", LeftoverPointTarget.ToString(System.Globalization.CultureInfo.InvariantCulture));
 
+            //The AI proclivities
+            Global.SaveData(xmldoc, xmlelRace, "AI_proclivities_Research", AI_proclivities_Research.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            Global.SaveData(xmldoc, xmlelRace, "AI_proclivities_Factories", AI_proclivities_Factories.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            Global.SaveData(xmldoc, xmlelRace, "AI_proclivities_Starbases", AI_proclivities_Starbases.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            Global.SaveData(xmldoc, xmlelRace, "AI_proclivities_Interceptors", AI_proclivities_Interceptors.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            Global.SaveData(xmldoc, xmlelRace, "AI_proclivities_Bombers", AI_proclivities_Bombers.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            Global.SaveData(xmldoc, xmlelRace, "AI_proclivities_Escorts", AI_proclivities_Escorts.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            Global.SaveData(xmldoc, xmlelRace, "AI_proclivities_MineLayers", AI_proclivities_MineLayers.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            Global.SaveData(xmldoc, xmlelRace, "AI_proclivities_Colonizers", AI_proclivities_Colonizers.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            Global.SaveData(xmldoc, xmlelRace, "AI_proclivities_Aggression", AI_proclivities_Aggression.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            Global.SaveData(xmldoc, xmlelRace, "AI_proclivities_Hit_Unarmed", AI_proclivities_Hit_Unarmed.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            Global.SaveData(xmldoc, xmlelRace, "AI_proclivities_Hit_Minefields", AI_proclivities_Hit_Minefields.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            Global.SaveData(xmldoc, xmlelRace, "AI_proclivities_Hit_Humanses", AI_proclivities_Hit_Humanses.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            Global.SaveData(xmldoc, xmlelRace, "AI_proclivities_Terraform", AI_proclivities_Terraform.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            Global.SaveData(xmldoc, xmlelRace, "AI_proclivities_MineralPackets", AI_proclivities_MineralPackets.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            Global.SaveData(xmldoc, xmlelRace, "AI_proclivities_Unused1", AI_proclivities_Unused1.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            Global.SaveData(xmldoc, xmlelRace, "AI_proclivities_Unused2", AI_proclivities_Unused2.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            Global.SaveData(xmldoc, xmlelRace, "AI_proclivities_Unused3", AI_proclivities_Unused3.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            Global.SaveData(xmldoc, xmlelRace, "AI_proclivities_Unused4", AI_proclivities_Unused4.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            Global.SaveData(xmldoc, xmlelRace, "AI_proclivities_Unused5", AI_proclivities_Unused5.ToString(System.Globalization.CultureInfo.InvariantCulture));
+
             return xmlelRace;
         }
 
@@ -704,6 +749,63 @@ namespace Nova.Common
                             break;
                         case "leftoverpoints":
                             this.LeftoverPointTarget = xmlnode.FirstChild.Value;
+                            break;
+                        case "ai_proclivities_research":
+                            AI_proclivities_Research = (byte)int.Parse(xmlnode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                        case "ai_proclivities_factories":
+                            AI_proclivities_Factories = (byte)int.Parse(xmlnode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                        case "ai_proclivities_starbases":
+                            AI_proclivities_Starbases = (byte)int.Parse(xmlnode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                        case "ai_proclivities_interceptors":
+                            AI_proclivities_Interceptors = (byte)int.Parse(xmlnode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                        case "ai_proclivities_bombers":
+                            AI_proclivities_Bombers = (byte)int.Parse(xmlnode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                        case "ai_proclivities_escorts":
+                            AI_proclivities_Escorts = (byte)int.Parse(xmlnode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                        case "ai_proclivities_mineLayers":
+                            AI_proclivities_MineLayers = (byte)int.Parse(xmlnode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                        case "ai_proclivities_colonizers":
+                            AI_proclivities_Colonizers = (byte)int.Parse(xmlnode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                        case "ai_proclivities_aggression":
+                            AI_proclivities_Aggression = (byte)int.Parse(xmlnode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                        case "ai_proclivities_hit_unarmed":
+                            AI_proclivities_Hit_Unarmed = (byte)int.Parse(xmlnode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                        case "ai_proclivities_hit_minefields":
+                            AI_proclivities_Hit_Minefields = (byte)int.Parse(xmlnode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                        case "ai_proclivities_hit_humanses":
+                            AI_proclivities_Hit_Humanses = (byte)int.Parse(xmlnode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                        case "ai_proclivities_terraform":
+                            AI_proclivities_Terraform = (byte)int.Parse(xmlnode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                        case "ai_proclivities_mineralpackets":
+                            AI_proclivities_MineralPackets = (byte)int.Parse(xmlnode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                        case "ai_proclivities_unused1":
+                            AI_proclivities_Unused1 = (byte)int.Parse(xmlnode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                        case "ai_proclivities_unused2":
+                            AI_proclivities_Unused2 = (byte)int.Parse(xmlnode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                        case "ai_proclivities_unused3":
+                            AI_proclivities_Unused3 = (byte)int.Parse(xmlnode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                        case "ai_proclivities_unused4":
+                            AI_proclivities_Unused4 = (byte)int.Parse(xmlnode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                        case "ai_proclivities_unused5":
+                            AI_proclivities_Unused5 = (byte)int.Parse(xmlnode.FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
                             break;
 
                         default: break;

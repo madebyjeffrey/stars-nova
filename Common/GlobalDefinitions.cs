@@ -160,6 +160,8 @@ namespace Nova.Common
         public const String AiMineLayer = " Pidgeon";
         public const String AiMineSweeper = " Pool Guy";
         public const String AiStarbase = " Death Star";
+        public const String AiBeamHull = " Athena";
+        public const String AiTorpedoHull = " Spear Fish";
         public static String[] VictimNames = { "Starbase", "Capital Ship", "Bomber", "Escort", "Support ship", "Any Armed ship", "Any ship" };
         public enum Victims { Starbase = 0, CapitalShip = 1, Bomber = 2, Escort = 3, SupportShip = 4, ArmedShip = 5, AnyShip = 6 }
 

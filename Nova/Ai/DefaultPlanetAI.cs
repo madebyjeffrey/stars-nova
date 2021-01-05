@@ -378,10 +378,10 @@ namespace Nova.Ai
             Resources currentStarbase = new Resources();
             if (this.planet.Starbase != null) currentStarbase = this.planet.Starbase.TotalCost;
 
-            double defenseFleets = howManyCanIBuild(aiPlan.currentDefenderDesign) * this.aiPlan.interceptorProductionPriority;
-            double bomberFleets = howManyCanIBuild(aiPlan.currentBomberDesign) * this.aiPlan.bomberProductionPriority;
-            double bomberCoverFleets = howManyCanIBuild(aiPlan.currentBomberCoverDesign) * this.aiPlan.bomberCoverProductionPriority;
-            double starStation = howManyCanIBuild(aiPlan.currentStarbaseDesign, currentStarbase ) * this.aiPlan.starbaseUpgradePriority;
+            double defenseFleets = howManyCanIBuild(aiPlan.currentDefenderDesign) * this.aiPlan.interceptorProductionPriority * clientState.EmpireState.Race.AI_proclivities_Interceptors/50.0;
+            double bomberFleets = howManyCanIBuild(aiPlan.currentBomberDesign) * this.aiPlan.bomberProductionPriority * clientState.EmpireState.Race.AI_proclivities_Bombers;
+            double bomberCoverFleets = howManyCanIBuild(aiPlan.currentBomberCoverDesign) * this.aiPlan.bomberCoverProductionPriority * clientState.EmpireState.Race.AI_proclivities_Escorts;
+            double starStation = howManyCanIBuild(aiPlan.currentStarbaseDesign, currentStarbase ) * this.aiPlan.starbaseUpgradePriority * clientState.EmpireState.Race.AI_proclivities_Starbases;
             ShipDesign chosenOne = null;
             int chosenQty = 1;
             if ((defenseFleets > bomberFleets) && (defenseFleets > bomberCoverFleets) && (defenseFleets > starStation))

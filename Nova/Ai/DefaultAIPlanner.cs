@@ -74,9 +74,10 @@ namespace Nova.Ai
         // similarly the second planets scores are 2x1 points if it makes bombers or 10x5 if it makes destroyers so it makes destroyers
         // if the empire needs more destroyers and changes the weighting of destroyers to 10 then both planets will choose to make destroyers
 
-        public int interceptorProductionPriority = 5; //5 where max = 100
-        public int starbaseUpgradePriority = 30; //(AR might bump it to 100)
-        public int coloniserProductionPriority = 5 ;
+        // default weightings  - as the AI gets into the end game it will adjust these as needed
+        public int interceptorProductionPriority = 5; //5 where max = 100 - if the AI feels more threatened it will increase this
+        public int starbaseUpgradePriority = 30; 
+        public int coloniserProductionPriority = 10 ;
         public int mineLayerProductionPriority = 5;
         public int mineSweeperProductionPriority = 5;
         public int bomberProductionPriority = 3;
@@ -119,9 +120,9 @@ namespace Nova.Ai
         public ShipDesign currentScoutDesign = null;
         public ShipDesign currentDefenderDesign = null; //general purpose defense / interceptor
         public ShipDesign currentBomberDesign = null;
-        public ShipDesign currentBomberCoverDesign = null; //sole purpose is to protect bombers
+        public ShipDesign currentBomberCoverDesign = null; //sole purpose is to protect bombers and kill Starbases
         public ShipDesign currentRefuelerDesign = null;
-        public ShipDesign currentReairerDesign = null;// sole purpose is to repair the currentBomberCoverDesign 
+        public ShipDesign currentRepairerDesign = null;// sole purpose is to repair the currentBomberCoverDesign 
         public ShipDesign currentMineLayerDesign = null;
         public ShipDesign currentMineSweeperDesign = null;
         public ShipDesign currentStarbaseDesign = null;
@@ -370,7 +371,7 @@ namespace Nova.Ai
                     transportDesign.Name = "Large Freighter";
                     transportDesign.Update();
 
-                    // add the design - done by the command???
+                    // add the design 
                     // clientState.EmpireState.Designs[transportDesign.Key] = transportDesign;
 
                     DesignCommand command = new DesignCommand(CommandMode.Add, transportDesign);
@@ -378,8 +379,8 @@ namespace Nova.Ai
                     Message message;
                     if (command.IsValid(clientState.EmpireState,out message))
                     {
-                        clientState.Commands.Push(command);
-                        command.ApplyToState(clientState.EmpireState);
+                        clientState.Commands.Push(command);               //queue the design command so it is done on the Server
+                        command.ApplyToState(clientState.EmpireState);    // also do it on the client so the client can build the design immediately
                     }
 
                     return transportDesign;
@@ -398,7 +399,6 @@ namespace Nova.Ai
             get
             {
                 return this.SurplusPopulationKT;
-                //return 5000;
             }
         }
 

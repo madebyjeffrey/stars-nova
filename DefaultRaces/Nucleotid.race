@@ -1,11 +1,35 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ROOT>
   <Race>
+    <MineBuildCost>15</MineBuildCost>
+    <FactoryBuildCost>10</FactoryBuildCost>
+    <ColonistsPerResource>900</ColonistsPerResource>
+    <FactoryProduction>10</FactoryProduction>
+    <OperableFactories>10</OperableFactories>
+    <MineProductionRate>10</MineProductionRate>
+    <OperableMines>5</OperableMines>
+    <MaxPopulation>1000000</MaxPopulation>
+    <GrowthRate>10</GrowthRate>
+    <Tech>
+      <Biotechnology>175</Biotechnology>
+      <Electronics>175</Electronics>
+      <Energy>175</Energy>
+      <Propulsion>175</Propulsion>
+      <Weapons>175</Weapons>
+      <Construction>175</Construction>
+    </Tech>
+    <PRT>SS</PRT>
+    <LRT>ISB</LRT>
+    <LRT>ARM</LRT>
+    <PluralName>Nucleotids</PluralName>
+    <Name>Nucleotid</Name>
+    <Password>83-87-8C-91-17-13-38-90-2E-0F-E0-FB-97-A8-C4-7A</Password>
+    <RaceIconName>00.jpg</RaceIconName>
     <GravityTolerance>
       <MinInternal>15</MinInternal>
       <MaxInternal>85</MaxInternal>
-      <MinTolerance>0,23g</MinTolerance>
-      <MaxTolerance>4,40g</MaxTolerance>
+      <MinTolerance>0.23g</MinTolerance>
+      <MaxTolerance>4.40g</MaxTolerance>
       <Immune>True</Immune>
     </GravityTolerance>
     <RadiationTolerance>
@@ -22,31 +46,25 @@
       <MaxTolerance>152°C</MaxTolerance>
       <Immune>False</Immune>
     </TemperatureTolerance>
-    <Tech>
-      <Biotechnology>175</Biotechnology>
-      <Electronics>175</Electronics>
-      <Energy>175</Energy>
-      <Propulsion>175</Propulsion>
-      <Weapons>175</Weapons>
-      <Construction>175</Construction>
-    </Tech>
-    <PRT>SS</PRT>
-    <LRT>ISB</LRT>
-    <LRT>ARM</LRT>
-    <LRT>ExtraTech</LRT>
-    <MineBuildCost>15</MineBuildCost>
-    <PluralName>Nucleotids</PluralName>
-    <Name>Nucleotid</Name>
-    <Password>B2F5FF47436671B6E533D8DC3614845D</Password>
-    <RaceIconName>28.jpg</RaceIconName>
-    <FactoryBuildCost>10</FactoryBuildCost>
-    <ColonistsPerResource>900</ColonistsPerResource>
-    <FactoryProduction>10</FactoryProduction>
-    <OperableFactories>10</OperableFactories>
-    <MineProductionRate>10</MineProductionRate>
-    <OperableMines>5</OperableMines>
-    <MaxPopulation>1000000</MaxPopulation>
-    <GrowthRate>10</GrowthRate>
     <LeftoverPoints>Factories</LeftoverPoints>
+    <AI_proclivities_Research>60</AI_proclivities_Research>
+    <AI_proclivities_Factories>60</AI_proclivities_Factories>
+    <AI_proclivities_Starbases>60</AI_proclivities_Starbases>
+    <AI_proclivities_Interceptors>40</AI_proclivities_Interceptors>
+    <AI_proclivities_Bombers>50</AI_proclivities_Bombers>
+    <AI_proclivities_Escorts>50</AI_proclivities_Escorts>
+    <AI_proclivities_MineLayers>24</AI_proclivities_MineLayers>
+    <AI_proclivities_Colonizers>60</AI_proclivities_Colonizers>
+    <AI_proclivities_Aggression>40</AI_proclivities_Aggression>
+    <AI_proclivities_Hit_Unarmed>50</AI_proclivities_Hit_Unarmed>
+    <AI_proclivities_Hit_Minefields>40</AI_proclivities_Hit_Minefields>
+    <AI_proclivities_Hit_Humanses>25</AI_proclivities_Hit_Humanses>
+    <AI_proclivities_Terraform>74</AI_proclivities_Terraform>
+    <AI_proclivities_MineralPackets>10</AI_proclivities_MineralPackets>
+    <AI_proclivities_Unused1>50</AI_proclivities_Unused1>
+    <AI_proclivities_Unused2>50</AI_proclivities_Unused2>
+    <AI_proclivities_Unused3>50</AI_proclivities_Unused3>
+    <AI_proclivities_Unused4>50</AI_proclivities_Unused4>
+    <AI_proclivities_Unused5>50</AI_proclivities_Unused5>
   </Race>
 </ROOT>

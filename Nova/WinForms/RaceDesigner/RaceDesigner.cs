@@ -149,6 +149,45 @@ namespace Nova.WinForms.RaceDesigner
         private GroupBox groupBox10;
         private ComboBox unusedPointsTarget;
         private Button encrpyt;
+        private TabPage tabPageArtificialIntelligence;
+        private Label label31;
+        private NumericUpDown numericUpDownE6;
+        private Label label30;
+        private NumericUpDown numericUpDownE5;
+        private Label label29;
+        private NumericUpDown numericUpDownE4;
+        private Label label28;
+        private NumericUpDown numericUpDownE3;
+        private Label label27;
+        private NumericUpDown numericUpDownE2;
+        private Label label26;
+        private NumericUpDown numericUpDownE1;
+        private Label label25;
+        private NumericUpDown numericUpDownTerraform;
+        private Label label24;
+        private NumericUpDown numericUpDownKillHuman;
+        private Label label23;
+        private NumericUpDown numericUpDownHitMinefield;
+        private Label label22;
+        private NumericUpDown numericUpDownHitNonArmed;
+        private Label label21;
+        private NumericUpDown numericUpDownAggressiveExpansion;
+        private Label label20;
+        private NumericUpDown numericUpDownExpansion;
+        private Label label19;
+        private NumericUpDown numericUpDownMineLayer;
+        private Label label18;
+        private NumericUpDown numericUpDownEscort;
+        private Label label17;
+        private NumericUpDown numericUpDownBomber;
+        private Label label16;
+        private NumericUpDown numericUpDownInterceptor;
+        private Label label15;
+        private NumericUpDown numericUpDownStarbase;
+        private Label label14;
+        private NumericUpDown numericUpDownFactories;
+        private Label label13;
+        private NumericUpDown numericUpDownResearch;
         private CheckBox cheapFactories;
 
         #endregion Designer Generated Variables
@@ -306,6 +345,45 @@ namespace Nova.WinForms.RaceDesigner
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.encrpyt = new System.Windows.Forms.Button();
+            this.tabPageArtificialIntelligence = new System.Windows.Forms.TabPage();
+            this.numericUpDownResearch = new System.Windows.Forms.NumericUpDown();
+            this.label13 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.numericUpDownFactories = new System.Windows.Forms.NumericUpDown();
+            this.label15 = new System.Windows.Forms.Label();
+            this.numericUpDownStarbase = new System.Windows.Forms.NumericUpDown();
+            this.label16 = new System.Windows.Forms.Label();
+            this.numericUpDownInterceptor = new System.Windows.Forms.NumericUpDown();
+            this.label17 = new System.Windows.Forms.Label();
+            this.numericUpDownBomber = new System.Windows.Forms.NumericUpDown();
+            this.label18 = new System.Windows.Forms.Label();
+            this.numericUpDownEscort = new System.Windows.Forms.NumericUpDown();
+            this.label19 = new System.Windows.Forms.Label();
+            this.numericUpDownMineLayer = new System.Windows.Forms.NumericUpDown();
+            this.label20 = new System.Windows.Forms.Label();
+            this.numericUpDownExpansion = new System.Windows.Forms.NumericUpDown();
+            this.label21 = new System.Windows.Forms.Label();
+            this.numericUpDownAggressiveExpansion = new System.Windows.Forms.NumericUpDown();
+            this.label22 = new System.Windows.Forms.Label();
+            this.numericUpDownHitNonArmed = new System.Windows.Forms.NumericUpDown();
+            this.label23 = new System.Windows.Forms.Label();
+            this.numericUpDownHitMinefield = new System.Windows.Forms.NumericUpDown();
+            this.label24 = new System.Windows.Forms.Label();
+            this.numericUpDownKillHuman = new System.Windows.Forms.NumericUpDown();
+            this.label25 = new System.Windows.Forms.Label();
+            this.numericUpDownTerraform = new System.Windows.Forms.NumericUpDown();
+            this.label26 = new System.Windows.Forms.Label();
+            this.numericUpDownE1 = new System.Windows.Forms.NumericUpDown();
+            this.label27 = new System.Windows.Forms.Label();
+            this.numericUpDownE2 = new System.Windows.Forms.NumericUpDown();
+            this.label28 = new System.Windows.Forms.Label();
+            this.numericUpDownE3 = new System.Windows.Forms.NumericUpDown();
+            this.label29 = new System.Windows.Forms.Label();
+            this.numericUpDownE4 = new System.Windows.Forms.NumericUpDown();
+            this.label30 = new System.Windows.Forms.Label();
+            this.numericUpDownE5 = new System.Windows.Forms.NumericUpDown();
+            this.label31 = new System.Windows.Forms.Label();
+            this.numericUpDownE6 = new System.Windows.Forms.NumericUpDown();
             this.groupBox1.SuspendLayout();
             this.tabConrol.SuspendLayout();
             this.raceTab.SuspendLayout();
@@ -334,6 +412,26 @@ namespace Nova.WinForms.RaceDesigner
             this.leftoverPointsTab.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.mainMenu.SuspendLayout();
+            this.tabPageArtificialIntelligence.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownResearch)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownFactories)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownStarbase)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInterceptor)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownBomber)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownEscort)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMineLayer)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownExpansion)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownAggressiveExpansion)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownHitNonArmed)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownHitMinefield)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownKillHuman)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTerraform)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownE1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownE2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownE3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownE4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownE5)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownE6)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -374,6 +472,7 @@ namespace Nova.WinForms.RaceDesigner
             this.tabConrol.Controls.Add(this.productionTab);
             this.tabConrol.Controls.Add(this.researchTab);
             this.tabConrol.Controls.Add(this.leftoverPointsTab);
+            this.tabConrol.Controls.Add(this.tabPageArtificialIntelligence);
             this.tabConrol.ItemSize = new System.Drawing.Size(0, 18);
             this.tabConrol.Location = new System.Drawing.Point(16, 73);
             this.tabConrol.Name = "tabConrol";
@@ -1469,6 +1568,453 @@ namespace Nova.WinForms.RaceDesigner
             this.encrpyt.Text = "Generate encrypted Race - can\'t be viewed or edited again!";
             this.encrpyt.Click += new System.EventHandler(this.encrpyt_Click);
             // 
+            // tabPageArtificialIntelligence
+            // 
+            this.tabPageArtificialIntelligence.Controls.Add(this.label31);
+            this.tabPageArtificialIntelligence.Controls.Add(this.numericUpDownE6);
+            this.tabPageArtificialIntelligence.Controls.Add(this.label30);
+            this.tabPageArtificialIntelligence.Controls.Add(this.numericUpDownE5);
+            this.tabPageArtificialIntelligence.Controls.Add(this.label29);
+            this.tabPageArtificialIntelligence.Controls.Add(this.numericUpDownE4);
+            this.tabPageArtificialIntelligence.Controls.Add(this.label28);
+            this.tabPageArtificialIntelligence.Controls.Add(this.numericUpDownE3);
+            this.tabPageArtificialIntelligence.Controls.Add(this.label27);
+            this.tabPageArtificialIntelligence.Controls.Add(this.numericUpDownE2);
+            this.tabPageArtificialIntelligence.Controls.Add(this.label26);
+            this.tabPageArtificialIntelligence.Controls.Add(this.numericUpDownE1);
+            this.tabPageArtificialIntelligence.Controls.Add(this.label25);
+            this.tabPageArtificialIntelligence.Controls.Add(this.numericUpDownTerraform);
+            this.tabPageArtificialIntelligence.Controls.Add(this.label24);
+            this.tabPageArtificialIntelligence.Controls.Add(this.numericUpDownKillHuman);
+            this.tabPageArtificialIntelligence.Controls.Add(this.label23);
+            this.tabPageArtificialIntelligence.Controls.Add(this.numericUpDownHitMinefield);
+            this.tabPageArtificialIntelligence.Controls.Add(this.label22);
+            this.tabPageArtificialIntelligence.Controls.Add(this.numericUpDownHitNonArmed);
+            this.tabPageArtificialIntelligence.Controls.Add(this.label21);
+            this.tabPageArtificialIntelligence.Controls.Add(this.numericUpDownAggressiveExpansion);
+            this.tabPageArtificialIntelligence.Controls.Add(this.label20);
+            this.tabPageArtificialIntelligence.Controls.Add(this.numericUpDownExpansion);
+            this.tabPageArtificialIntelligence.Controls.Add(this.label19);
+            this.tabPageArtificialIntelligence.Controls.Add(this.numericUpDownMineLayer);
+            this.tabPageArtificialIntelligence.Controls.Add(this.label18);
+            this.tabPageArtificialIntelligence.Controls.Add(this.numericUpDownEscort);
+            this.tabPageArtificialIntelligence.Controls.Add(this.label17);
+            this.tabPageArtificialIntelligence.Controls.Add(this.numericUpDownBomber);
+            this.tabPageArtificialIntelligence.Controls.Add(this.label16);
+            this.tabPageArtificialIntelligence.Controls.Add(this.numericUpDownInterceptor);
+            this.tabPageArtificialIntelligence.Controls.Add(this.label15);
+            this.tabPageArtificialIntelligence.Controls.Add(this.numericUpDownStarbase);
+            this.tabPageArtificialIntelligence.Controls.Add(this.label14);
+            this.tabPageArtificialIntelligence.Controls.Add(this.numericUpDownFactories);
+            this.tabPageArtificialIntelligence.Controls.Add(this.label13);
+            this.tabPageArtificialIntelligence.Controls.Add(this.numericUpDownResearch);
+            this.tabPageArtificialIntelligence.Location = new System.Drawing.Point(4, 22);
+            this.tabPageArtificialIntelligence.Name = "tabPageArtificialIntelligence";
+            this.tabPageArtificialIntelligence.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageArtificialIntelligence.Size = new System.Drawing.Size(392, 396);
+            this.tabPageArtificialIntelligence.TabIndex = 6;
+            this.tabPageArtificialIntelligence.Text = "A.I.";
+            this.tabPageArtificialIntelligence.UseVisualStyleBackColor = true;
+            // 
+            // numericUpDownResearch
+            // 
+            this.numericUpDownResearch.Location = new System.Drawing.Point(336, 8);
+            this.numericUpDownResearch.Name = "numericUpDownResearch";
+            this.numericUpDownResearch.Size = new System.Drawing.Size(48, 20);
+            this.numericUpDownResearch.TabIndex = 0;
+            this.numericUpDownResearch.Value = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(0, 12);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(109, 13);
+            this.label13.TabIndex = 1;
+            this.label13.Text = "Research Importance";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(0, 32);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(139, 13);
+            this.label14.TabIndex = 3;
+            this.label14.Text = "Factories/Mines Importance";
+            // 
+            // numericUpDownFactories
+            // 
+            this.numericUpDownFactories.Location = new System.Drawing.Point(336, 28);
+            this.numericUpDownFactories.Name = "numericUpDownFactories";
+            this.numericUpDownFactories.Size = new System.Drawing.Size(48, 20);
+            this.numericUpDownFactories.TabIndex = 2;
+            this.numericUpDownFactories.Value = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(0, 52);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(105, 13);
+            this.label15.TabIndex = 5;
+            this.label15.Text = "Starbase Importance";
+            // 
+            // numericUpDownStarbase
+            // 
+            this.numericUpDownStarbase.Location = new System.Drawing.Point(336, 48);
+            this.numericUpDownStarbase.Name = "numericUpDownStarbase";
+            this.numericUpDownStarbase.Size = new System.Drawing.Size(48, 20);
+            this.numericUpDownStarbase.TabIndex = 4;
+            this.numericUpDownStarbase.Value = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(0, 72);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(183, 13);
+            this.label16.TabIndex = 7;
+            this.label16.Text = "Defense/Interceptor Ship Importance";
+            // 
+            // numericUpDownInterceptor
+            // 
+            this.numericUpDownInterceptor.Location = new System.Drawing.Point(336, 68);
+            this.numericUpDownInterceptor.Name = "numericUpDownInterceptor";
+            this.numericUpDownInterceptor.Size = new System.Drawing.Size(48, 20);
+            this.numericUpDownInterceptor.TabIndex = 6;
+            this.numericUpDownInterceptor.Value = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(0, 92);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(99, 13);
+            this.label17.TabIndex = 9;
+            this.label17.Text = "Bomber Importance";
+            // 
+            // numericUpDownBomber
+            // 
+            this.numericUpDownBomber.Location = new System.Drawing.Point(336, 88);
+            this.numericUpDownBomber.Name = "numericUpDownBomber";
+            this.numericUpDownBomber.Size = new System.Drawing.Size(48, 20);
+            this.numericUpDownBomber.TabIndex = 8;
+            this.numericUpDownBomber.Value = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(0, 112);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(182, 13);
+            this.label18.TabIndex = 11;
+            this.label18.Text = "Bomber Fleet Escort Ship Importance";
+            // 
+            // numericUpDownEscort
+            // 
+            this.numericUpDownEscort.Location = new System.Drawing.Point(336, 108);
+            this.numericUpDownEscort.Name = "numericUpDownEscort";
+            this.numericUpDownEscort.Size = new System.Drawing.Size(48, 20);
+            this.numericUpDownEscort.TabIndex = 10;
+            this.numericUpDownEscort.Value = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(0, 132);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(112, 13);
+            this.label19.TabIndex = 13;
+            this.label19.Text = "MineLayer Importance";
+            // 
+            // numericUpDownMineLayer
+            // 
+            this.numericUpDownMineLayer.Location = new System.Drawing.Point(336, 128);
+            this.numericUpDownMineLayer.Name = "numericUpDownMineLayer";
+            this.numericUpDownMineLayer.Size = new System.Drawing.Size(48, 20);
+            this.numericUpDownMineLayer.TabIndex = 12;
+            this.numericUpDownMineLayer.Value = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(0, 152);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(174, 13);
+            this.label20.TabIndex = 15;
+            this.label20.Text = "Colonising New Planets Importance";
+            // 
+            // numericUpDownExpansion
+            // 
+            this.numericUpDownExpansion.Location = new System.Drawing.Point(336, 148);
+            this.numericUpDownExpansion.Name = "numericUpDownExpansion";
+            this.numericUpDownExpansion.Size = new System.Drawing.Size(48, 20);
+            this.numericUpDownExpansion.TabIndex = 14;
+            this.numericUpDownExpansion.Value = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(0, 172);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(167, 13);
+            this.label21.TabIndex = 17;
+            this.label21.Text = "Aggressive Expansion Importance";
+            // 
+            // numericUpDownAggressiveExpansion
+            // 
+            this.numericUpDownAggressiveExpansion.Location = new System.Drawing.Point(336, 168);
+            this.numericUpDownAggressiveExpansion.Name = "numericUpDownAggressiveExpansion";
+            this.numericUpDownAggressiveExpansion.Size = new System.Drawing.Size(48, 20);
+            this.numericUpDownAggressiveExpansion.TabIndex = 16;
+            this.numericUpDownAggressiveExpansion.Value = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(0, 192);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(181, 13);
+            this.label22.TabIndex = 19;
+            this.label22.Text = "Agression to non-armed fleets nearby";
+            // 
+            // numericUpDownHitNonArmed
+            // 
+            this.numericUpDownHitNonArmed.Location = new System.Drawing.Point(336, 188);
+            this.numericUpDownHitNonArmed.Name = "numericUpDownHitNonArmed";
+            this.numericUpDownHitNonArmed.Size = new System.Drawing.Size(48, 20);
+            this.numericUpDownHitNonArmed.TabIndex = 18;
+            this.numericUpDownHitNonArmed.Value = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(0, 212);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(139, 13);
+            this.label23.TabIndex = 21;
+            this.label23.Text = "Dislike for enemy minefields ";
+            // 
+            // numericUpDownHitMinefield
+            // 
+            this.numericUpDownHitMinefield.Location = new System.Drawing.Point(336, 208);
+            this.numericUpDownHitMinefield.Name = "numericUpDownHitMinefield";
+            this.numericUpDownHitMinefield.Size = new System.Drawing.Size(48, 20);
+            this.numericUpDownHitMinefield.TabIndex = 20;
+            this.numericUpDownHitMinefield.Value = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(0, 232);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(332, 13);
+            this.label24.TabIndex = 23;
+            this.label24.Text = "Tall Poppy Syndrome (target the Best race to stop them from winning)";
+            // 
+            // numericUpDownKillHuman
+            // 
+            this.numericUpDownKillHuman.Location = new System.Drawing.Point(336, 228);
+            this.numericUpDownKillHuman.Name = "numericUpDownKillHuman";
+            this.numericUpDownKillHuman.Size = new System.Drawing.Size(48, 20);
+            this.numericUpDownKillHuman.TabIndex = 22;
+            this.numericUpDownKillHuman.Value = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            // 
+            // label25
+            // 
+            this.label25.AutoSize = true;
+            this.label25.Location = new System.Drawing.Point(0, 252);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(108, 13);
+            this.label25.TabIndex = 25;
+            this.label25.Text = "Terraform Importance";
+            // 
+            // numericUpDownTerraform
+            // 
+            this.numericUpDownTerraform.Location = new System.Drawing.Point(336, 248);
+            this.numericUpDownTerraform.Name = "numericUpDownTerraform";
+            this.numericUpDownTerraform.Size = new System.Drawing.Size(48, 20);
+            this.numericUpDownTerraform.TabIndex = 24;
+            this.numericUpDownTerraform.Value = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.Location = new System.Drawing.Point(0, 272);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(133, 13);
+            this.label26.TabIndex = 27;
+            this.label26.Text = "Mineral Packet importance";
+            // 
+            // numericUpDownE1
+            // 
+            this.numericUpDownE1.Location = new System.Drawing.Point(336, 268);
+            this.numericUpDownE1.Name = "numericUpDownE1";
+            this.numericUpDownE1.Size = new System.Drawing.Size(48, 20);
+            this.numericUpDownE1.TabIndex = 26;
+            this.numericUpDownE1.Value = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            // 
+            // label27
+            // 
+            this.label27.AutoSize = true;
+            this.label27.Location = new System.Drawing.Point(0, 292);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(65, 13);
+            this.label27.TabIndex = 29;
+            this.label27.Text = "Expansion 1";
+            // 
+            // numericUpDownE2
+            // 
+            this.numericUpDownE2.Location = new System.Drawing.Point(336, 288);
+            this.numericUpDownE2.Name = "numericUpDownE2";
+            this.numericUpDownE2.Size = new System.Drawing.Size(48, 20);
+            this.numericUpDownE2.TabIndex = 28;
+            this.numericUpDownE2.Value = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            // 
+            // label28
+            // 
+            this.label28.AutoSize = true;
+            this.label28.Location = new System.Drawing.Point(0, 312);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(65, 13);
+            this.label28.TabIndex = 31;
+            this.label28.Text = "Expansion 2";
+            // 
+            // numericUpDownE3
+            // 
+            this.numericUpDownE3.Location = new System.Drawing.Point(336, 308);
+            this.numericUpDownE3.Name = "numericUpDownE3";
+            this.numericUpDownE3.Size = new System.Drawing.Size(48, 20);
+            this.numericUpDownE3.TabIndex = 30;
+            this.numericUpDownE3.Value = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.Location = new System.Drawing.Point(0, 332);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(65, 13);
+            this.label29.TabIndex = 33;
+            this.label29.Text = "Expansion 3";
+            // 
+            // numericUpDownE4
+            // 
+            this.numericUpDownE4.Location = new System.Drawing.Point(336, 328);
+            this.numericUpDownE4.Name = "numericUpDownE4";
+            this.numericUpDownE4.Size = new System.Drawing.Size(48, 20);
+            this.numericUpDownE4.TabIndex = 32;
+            this.numericUpDownE4.Value = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            // 
+            // label30
+            // 
+            this.label30.AutoSize = true;
+            this.label30.Location = new System.Drawing.Point(0, 352);
+            this.label30.Name = "label30";
+            this.label30.Size = new System.Drawing.Size(65, 13);
+            this.label30.TabIndex = 35;
+            this.label30.Text = "Expansion 4";
+            // 
+            // numericUpDownE5
+            // 
+            this.numericUpDownE5.Location = new System.Drawing.Point(336, 348);
+            this.numericUpDownE5.Name = "numericUpDownE5";
+            this.numericUpDownE5.Size = new System.Drawing.Size(48, 20);
+            this.numericUpDownE5.TabIndex = 34;
+            this.numericUpDownE5.Value = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            // 
+            // label31
+            // 
+            this.label31.AutoSize = true;
+            this.label31.Location = new System.Drawing.Point(0, 372);
+            this.label31.Name = "label31";
+            this.label31.Size = new System.Drawing.Size(65, 13);
+            this.label31.TabIndex = 37;
+            this.label31.Text = "Expansion 5";
+            // 
+            // numericUpDownE6
+            // 
+            this.numericUpDownE6.Location = new System.Drawing.Point(336, 368);
+            this.numericUpDownE6.Name = "numericUpDownE6";
+            this.numericUpDownE6.Size = new System.Drawing.Size(48, 20);
+            this.numericUpDownE6.TabIndex = 36;
+            this.numericUpDownE6.Value = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            // 
             // RaceDesignerForm
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -1519,6 +2065,27 @@ namespace Nova.WinForms.RaceDesigner
             this.groupBox10.ResumeLayout(false);
             this.mainMenu.ResumeLayout(false);
             this.mainMenu.PerformLayout();
+            this.tabPageArtificialIntelligence.ResumeLayout(false);
+            this.tabPageArtificialIntelligence.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownResearch)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownFactories)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownStarbase)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInterceptor)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownBomber)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownEscort)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMineLayer)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownExpansion)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownAggressiveExpansion)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownHitNonArmed)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownHitMinefield)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownKillHuman)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTerraform)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownE1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownE2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownE3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownE4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownE5)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownE6)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1885,6 +2452,25 @@ namespace Nova.WinForms.RaceDesigner
 
             race.LeftoverPointTarget = this.unusedPointsTarget.Text;
 
+            race.AI_proclivities_Research = (byte) this.numericUpDownResearch.Value;
+            race.AI_proclivities_Factories = (byte) this.numericUpDownFactories.Value;
+            race.AI_proclivities_Starbases = (byte) this.numericUpDownStarbase.Value;
+            race.AI_proclivities_Interceptors = (byte) this.numericUpDownInterceptor.Value;
+            race.AI_proclivities_Bombers = (byte) this.numericUpDownBomber.Value;
+            race.AI_proclivities_Escorts = (byte) this.numericUpDownEscort.Value;
+            race.AI_proclivities_MineLayers = (byte) this.numericUpDownMineLayer.Value;
+            race.AI_proclivities_Colonizers = (byte) this.numericUpDownExpansion.Value;
+            race.AI_proclivities_Aggression = (byte) this.numericUpDownAggressiveExpansion.Value;
+            race.AI_proclivities_Hit_Unarmed = (byte) this.numericUpDownHitNonArmed.Value;
+            race.AI_proclivities_Hit_Minefields = (byte) this.numericUpDownHitMinefield.Value;
+            race.AI_proclivities_Hit_Humanses = (byte) this.numericUpDownKillHuman.Value;
+            race.AI_proclivities_Terraform = (byte) this.numericUpDownTerraform.Value;
+            race.AI_proclivities_MineralPackets = (byte)this.numericUpDownE1.Value;
+            race.AI_proclivities_Unused1 = (byte) this.numericUpDownE2.Value;
+            race.AI_proclivities_Unused2 = (byte) this.numericUpDownE3.Value;
+            race.AI_proclivities_Unused3 = (byte) this.numericUpDownE4.Value;
+            race.AI_proclivities_Unused4 = (byte) this.numericUpDownE5.Value;
+            race.AI_proclivities_Unused5 = (byte) this.numericUpDownE6.Value;
             return race;
         }
 
@@ -2028,6 +2614,7 @@ namespace Nova.WinForms.RaceDesigner
                     ReloadBuildCosts(raceParameters);
                     ReloadEnvironmentalTolerance(raceParameters);
                     ReloadResearchCosts(raceParameters);
+                    Reload_AI_Proclivities(raceParameters);
                     /*
                     }
 
@@ -2161,6 +2748,45 @@ namespace Nova.WinForms.RaceDesigner
             this.constructionResearch.Cost  = (int)raceParameters.ResearchCosts[TechLevel.ResearchField.Construction];
             this.electronicsResearch.Cost   = (int)raceParameters.ResearchCosts[TechLevel.ResearchField.Electronics];
             this.biotechnologyResearch.Cost = (int)raceParameters.ResearchCosts[TechLevel.ResearchField.Biotechnology];
+        }
+
+
+        public void Reload_AI_Proclivities(Race race)
+        {
+            this.numericUpDownResearch.Value = race.AI_proclivities_Research;
+
+            this.numericUpDownFactories.Value = race.AI_proclivities_Factories ;
+
+            this.numericUpDownStarbase.Value = race.AI_proclivities_Starbases ;
+
+            numericUpDownInterceptor.Value = race.AI_proclivities_Interceptors ;
+
+            numericUpDownBomber.Value = race.AI_proclivities_Bombers ;
+
+            numericUpDownEscort.Value = race.AI_proclivities_Escorts ;
+
+            numericUpDownMineLayer.Value = race.AI_proclivities_MineLayers ;
+
+            numericUpDownExpansion.Value = race.AI_proclivities_Colonizers ;
+
+            numericUpDownAggressiveExpansion.Value = race.AI_proclivities_Aggression;
+
+            numericUpDownHitNonArmed.Value = race.AI_proclivities_Hit_Unarmed;
+
+            numericUpDownHitMinefield.Value = race.AI_proclivities_Hit_Minefields;
+
+            numericUpDownKillHuman.Value = race.AI_proclivities_Hit_Humanses;
+
+            numericUpDownTerraform.Value = race.AI_proclivities_Terraform;
+
+            this.numericUpDownE1.Value = race.AI_proclivities_MineralPackets;
+
+            this.numericUpDownE2.Value = race.AI_proclivities_Unused1;
+            this.numericUpDownE3.Value = race.AI_proclivities_Unused2;
+            this.numericUpDownE4.Value = race.AI_proclivities_Unused3;
+            this.numericUpDownE5.Value = race.AI_proclivities_Unused4;
+            this.numericUpDownE6.Value = race.AI_proclivities_Unused5;
+
         }
 
         #endregion
