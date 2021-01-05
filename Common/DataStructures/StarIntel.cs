@@ -91,6 +91,9 @@ namespace Nova.Common
         public StarIntel(XmlNode node) :
             base(node)
         {
+            HasFleetsInOrbit = false; //default value is not saved to XML file to reduce size of file
+            HasFreeTransportInOrbit = false;
+            HasRefuelerInOrbit = false;
             XmlNode mainNode = node.FirstChild;
             
             while (mainNode != null)
@@ -352,9 +355,9 @@ namespace Nova.Common
 
             Global.SaveData(xmldoc, xmlelStarIntel, "Colonists", Colonists.ToString(System.Globalization.CultureInfo.InvariantCulture));
 
-            Global.SaveData(xmldoc, xmlelStarIntel, "HasFleetsInOrbit", HasFleetsInOrbit.ToString());
-            Global.SaveData(xmldoc, xmlelStarIntel, "HasRefuelerInOrbit", HasRefuelerInOrbit.ToString());
-            Global.SaveData(xmldoc, xmlelStarIntel, "HasFreeTransportInOrbit", HasFreeTransportInOrbit.ToString());
+            if (HasFleetsInOrbit) Global.SaveData(xmldoc, xmlelStarIntel, "HasFleetsInOrbit", HasFleetsInOrbit.ToString());
+            if (HasRefuelerInOrbit) Global.SaveData(xmldoc, xmlelStarIntel, "HasRefuelerInOrbit", HasRefuelerInOrbit.ToString());
+            if (HasFreeTransportInOrbit) Global.SaveData(xmldoc, xmlelStarIntel, "HasFreeTransportInOrbit", HasFreeTransportInOrbit.ToString());
 
             if (Starbase != null)
             {
