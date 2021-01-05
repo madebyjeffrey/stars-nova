@@ -62,6 +62,7 @@ namespace Nova.Server
         {
             foreach (EmpireData empire in serverState.AllEmpires.Values)
             {
+                bool writeSuccess = false;
                 turnData = new Intel();
                 turnData.AllMinefields = serverState.AllMinefields;
                 turnData.EmpireState = serverState.AllEmpires[empire.Id];
@@ -98,6 +99,7 @@ namespace Nova.Server
                     return;
                 }
                 string turnFileName = Path.Combine(serverState.GameFolder, empire.Race.Name + Global.IntelExtension);
+                string cStateFileName = Path.Combine(serverState.GameFolder, empire.Race.Name + Global.ClientStateExtension);
 
                 // Write out the intel file, as xml
                 bool waitForFile = false;
@@ -116,6 +118,7 @@ namespace Nova.Server
                             xmldoc.ChildNodes.Item(1).AppendChild(turnData.ToXml(xmldoc));
 
                             xmldoc.Save(turnFile);
+                            writeSuccess = true;
                         }
                         waitForFile = false;
                     }
@@ -136,6 +139,18 @@ namespace Nova.Server
                     }
                 } 
                 while (waitForFile);
+                if (writeSuccess)
+                {
+                    try
+                    {
+                        FileInfo cStateFile = new FileInfo(cStateFileName);
+                        cStateFile.Delete();
+                    }
+                    catch
+                    {
+
+                    }
+                }
             }
         }
     }
