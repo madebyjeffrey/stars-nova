@@ -277,7 +277,7 @@ namespace Nova.Ai
                     foreach (Fleet coloniser in colonyShipsFleets)
                     {
                         int index = 0;
-                        while ((idleRefuelFleets.Count > 0) && (coloniser.Position != idleRefuelFleets[index].Position) && (index < idleRefuelFleets.Count - 1))
+                        while ((idleRefuelFleets.Count > 0) && (coloniser.Position != idleRefuelFleets[index].Position) && (index <= idleRefuelFleets.Count - 1))
                         {
                             index++;
                         }
@@ -285,9 +285,9 @@ namespace Nova.Ai
                         {
                             Fleet refueler = idleRefuelFleets[index];
                             idleRefuelFleets.Remove(refueler);
-                            if (idleRefuelFleets.Count == 0) break;
                             WaypointCommand command = refueler.merge(coloniser);
                             clientState.Commands.Push(command);
+                            if (idleRefuelFleets.Count == 0) break;
                         }
 
 
@@ -545,6 +545,17 @@ namespace Nova.Ai
                     // Long Hump 7
                     targetResearchField = TechLevel.ResearchField.Propulsion;
                 }
+                else if (clientState.EmpireState.Race.HasTrait("SD") && clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Energy] < 9)
+                {
+                    // Energy 9 - mine layers
+                    targetResearchField = TechLevel.ResearchField.Energy;
+                }
+                else if (clientState.EmpireState.Race.HasTrait("SD") && clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Biotechnology] < 7)
+                {
+                    // biotech 7 - mine layers
+                    targetResearchField = TechLevel.ResearchField.Biotechnology;
+                }
+
                 else if (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Electronics] < 5)
                 {
                     // Elec 5 - Scanners
@@ -708,19 +719,36 @@ namespace Nova.Ai
                 if ((component.Properties.ContainsKey("Hull")) && (component.Name == "Destroyer")) destroyerHull = component;
                 if ((component.Properties.ContainsKey("Hull")) && (component.Name == "Frigate")) frigateHull = component;
             }
-
-            if (BattleCruiserHull != null) aiPlan.currentDefenderDesign =  designDestroyers(BattleCruiserHull, Global.AiDefensiveBattleCruiser);
-            else if (cruiserHull != null) aiPlan.currentDefenderDesign = designDestroyers(cruiserHull, Global.AiDefensiveCruiser);
-            else if (destroyerHull != null) aiPlan.currentDefenderDesign = designDestroyers(destroyerHull, Global.AiDefensiveDestroyer);
-            if (frigateHull != null) aiPlan.currentMineSweeperDesign =  designFrigate(frigateHull, Global.AiMineSweeper);
-            if (BattleCruiserHull != null) aiPlan.currentBomberCoverDesign = designFrigate(BattleCruiserHull,Global.AiBomberCoverBattleCruiser ,false);
-            else if (cruiserHull != null) aiPlan.currentBomberCoverDesign = designFrigate(cruiserHull, Global.AiBomberCoverCruiser,false);
-            else if (frigateHull != null) aiPlan.currentBomberCoverDesign = designFrigate(frigateHull, Global.AiBomberCoverFrigate,false);
-            if (clientState.EmpireState.AvailableComponents.GetBestRefuelerHull() != null)
-                aiPlan.currentRefuelerDesign = designRefuelers(clientState.EmpireState.AvailableComponents.GetBestRefuelerHull(), Global.AiRefueler);
-            else aiPlan.currentRefuelerDesign = designRefuelers(allComponents.Fetch("Scout"), Global.AiRefueler); // for earlygame have one scout hull with a fuel tank to use as a refueller
-            if (clientState.EmpireState.AvailableComponents.GetBestRepairerHull() != null) 
-                aiPlan.currentReairerDesign =  designRefuelers(clientState.EmpireState.AvailableComponents.GetBestRefuelerHull(), Global.AiRepairer);
+            if (clientState.EmpireState.Race.Name == "AIs")
+            {                                                   // trial the empirical hull selection routines on the AI race only
+                frigateHull = clientState.EmpireState.AvailableComponents.GetBestLongRangeHull();
+                destroyerHull = clientState.EmpireState.AvailableComponents.GetBestCloseRangeHull();
+                if (frigateHull != null)
+                {
+                    aiPlan.currentDefenderDesign = designDestroyers(destroyerHull, Global.AiTorpedoHull + " " + destroyerHull.Name);
+                    aiPlan.currentBomberCoverDesign = designFrigate(frigateHull, Global.AiBeamHull + " " + frigateHull.Name);
+                    aiPlan.currentMineSweeperDesign = designFrigate(frigateHull, Global.AiBeamHull + " RTA ");
+                    if (clientState.EmpireState.AvailableComponents.GetBestRefuelerHull() != null)
+                        aiPlan.currentRefuelerDesign = designRefuelers(clientState.EmpireState.AvailableComponents.GetBestRefuelerHull(), Global.AiRefueler);
+                    if (clientState.EmpireState.AvailableComponents.GetBestRepairerHull() != null)
+                        aiPlan.currentRepairerDesign = designRefuelers(clientState.EmpireState.AvailableComponents.GetBestRepairerHull(), Global.AiRepairer);
+                }
+            }
+            else
+            {
+                if (BattleCruiserHull != null) aiPlan.currentDefenderDesign = designDestroyers(BattleCruiserHull, Global.AiDefensiveBattleCruiser);
+                else if (cruiserHull != null) aiPlan.currentDefenderDesign = designDestroyers(cruiserHull, Global.AiDefensiveCruiser);
+                else if (destroyerHull != null) aiPlan.currentDefenderDesign = designDestroyers(destroyerHull, Global.AiDefensiveDestroyer);
+                if (frigateHull != null) aiPlan.currentMineSweeperDesign = designFrigate(frigateHull, Global.AiMineSweeper);
+                if (BattleCruiserHull != null) aiPlan.currentBomberCoverDesign = designFrigate(BattleCruiserHull, Global.AiBomberCoverBattleCruiser, false);
+                else if (cruiserHull != null) aiPlan.currentBomberCoverDesign = designFrigate(cruiserHull, Global.AiBomberCoverCruiser, false);
+                else if (frigateHull != null) aiPlan.currentBomberCoverDesign = designFrigate(frigateHull, Global.AiBomberCoverFrigate, false);
+                if (clientState.EmpireState.AvailableComponents.GetBestRefuelerHull() != null)
+                    aiPlan.currentRefuelerDesign = designRefuelers(clientState.EmpireState.AvailableComponents.GetBestRefuelerHull(), Global.AiRefueler);
+                else aiPlan.currentRefuelerDesign = designRefuelers(allComponents.Fetch("Scout"), Global.AiRefueler); // for earlygame have one scout hull with a fuel tank to use as a refueller
+                if (clientState.EmpireState.AvailableComponents.GetBestRepairerHull() != null)
+                    aiPlan.currentRepairerDesign = designRefuelers(clientState.EmpireState.AvailableComponents.GetBestRepairerHull(), Global.AiRepairer);
+            }
             aiPlan.currentStarbaseDesign = designStarbase(Global.AiStarbase);
             aiPlan.currentMinimalStarbaseDesign = designStarbase(Global.AiStarbase,false);
         }

@@ -285,7 +285,7 @@ namespace Nova.Common
 
             foreach (string key in TechLevel.ResearchKeys)
             {
-                if (lhsT[key] < rhsT[key])
+                if (lhsT[key] <= rhsT[key])
                 {
                     return true;
                 }

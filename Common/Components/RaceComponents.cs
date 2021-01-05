@@ -142,7 +142,7 @@ namespace Nova.Common.Components
                 if (component.Type == ItemType.Armor)
                 { // Best Armour - ignore mass
                     if (candidate == null) candidate = component;
-                    if (component.Properties.ContainsKey("Electrical"))
+                    if (component.Properties.ContainsKey("Armor"))
                     if ((component.Properties["Armor"] as IntegerProperty).Value  >
                         (candidate.Properties["Armor"] as IntegerProperty).Value ) candidate = component;
                 }
@@ -153,12 +153,14 @@ namespace Nova.Common.Components
         {
             Component candidate = null;
             foreach (Component component in this.Values)
-                if (component.Type == ItemType.Armor)
-                { // Best Armour per KG of mass
-                    if (candidate == null) candidate = component;
-                    if (component.Properties.ContainsKey("Electrical"))
-                    if ((component.Properties["Electrical"] as IntegerProperty).Value >
-                        (candidate.Properties["Electrical"] as IntegerProperty).Value ) candidate = component;
+                if (component.Type == ItemType.Electrical)
+                {
+                    if (component.Properties.ContainsKey("Capacitor"))
+                    {
+                        if (candidate == null) candidate = component;
+                        if ((component.Properties["Capacitor"] as CapacitorProperty).Value >
+                            (candidate.Properties["Capacitor"] as CapacitorProperty).Value) candidate = component;
+                    }
                 }
             return candidate;
 
@@ -190,9 +192,147 @@ namespace Nova.Common.Components
                     if ((candidate.Properties["Hull"] as Hull).ArmorStrength <
                         (component.Properties["Hull"] as Hull).ArmorStrength) candidate = component; //All properties scale up with better designs so just compare one property
                 }
-            return candidate;
+            if (candidate == null) return null;
+            else return new Component(candidate);
 
         }
+
+        /// <summary>
+        /// in Stars! 2.70j beam weapons have a shorter range than torpedos so a vessel whose primary role is to engage other vessels
+        /// and that is to be armed with Beam Weapons (usually higher power but shorter range) must not be within range of the enemy for 
+        /// too long without being able to fire it's own weapons - i.e. a craft with beam weapons must be as fast as possible because an opponent
+        /// with longer range weapons may reverse away from the ship with shorter range whilst firing it's own weapons (i.e. keepingout of range of the vessel with short range 
+        /// weapons.
+        /// Battle tactics are not very developed in Stars!Nova yet but we should still plan for when better tactics are implemented.
+        /// </summary>
+        /// <returns></returns>
+        public Component GetBestCloseRangeHull() //"Beam Weapon" hull
+        {
+            Component candidate = null;
+            int candidateRating = 0;
+            List<Component> possibleHull = new List<Component>();
+
+
+            foreach (Component hull in this.Values)
+            {
+                int power = 0;
+                int speed = 0;
+                int capacitor = 0;
+                int armour = 0;
+                int shield = 0;
+                int initiative = 0;
+                if ((hull.Type == ItemType.Hull)  && !(hull.Properties["Hull"] as Hull).IsStarbase)
+                {
+                    armour = (hull.Properties["Hull"] as Hull).ArmorStrength;
+                    initiative = (hull.Properties["Hull"] as Hull).BattleInitiative;
+                    foreach (HullModule module in (hull.Properties["Hull"] as Hull).Modules)
+                    {
+                        if (module.ComponentType == "Scanner")
+                        {
+                            power += 1;  //there is a small advantage in having a scanner on an attack vessel
+                        }
+                        else if ((module.ComponentType == "General Purpose") || (module.ComponentType == "Weapon"))
+                        {
+                            power += 1000 * module.ComponentMaximum; //Weapons slots are the best slot
+                        }
+                        else if ((module.ComponentType == "Mechanical") || (module.ComponentType == "Shield Electrical Mechanical") || (module.ComponentType == "Scanner Electrical Mechanical"))
+                        {
+                            speed += module.ComponentMaximum; //overthruster 
+                        }
+                        else if ((module.ComponentType == "Electrical"))
+                        {
+                            capacitor += module.ComponentMaximum;
+                        }
+                        else if ((module.ComponentType == "Armor"))
+                        {
+                            armour += module.ComponentMaximum;
+                        }
+                        else if ((module.ComponentType == "Shield") || (module.ComponentType == "Shield or Armor"))
+                        {
+                            shield += module.ComponentMaximum;
+                        }
+                        // these weightings are "best guess" - perhaps they should be broken out to the Race designer?
+                        int hullRating = power * (1000 * speed + 100 * shield + 50 * armour + 200 * capacitor + 50 * initiative);
+                        if (candidate == null)
+                        {
+                            candidate = hull;
+                            candidateRating = hullRating;
+                        }
+
+                        if (hullRating > candidateRating)
+                        {
+                            candidate = hull;
+                            candidateRating = hullRating;
+                        }
+                    }
+                }
+            }
+            if (candidate == null) return null;
+            else return new Component(candidate);
+        }
+
+        public Component GetBestLongRangeHull() //"Torpedo Weapon" hull
+        {
+            Component candidate = null;
+            int candidateRating = 0;
+            foreach (Component hull in this.Values)
+            {
+                int power = 0;
+                int speed = 0;
+                int computer = 0;
+                int armour = 0;
+                int shield = 0;
+                int initiative = 0;
+                if ((hull.Type == ItemType.Hull)  && !(hull.Properties["Hull"] as Hull).IsStarbase)
+                {
+                    armour = (hull.Properties["Hull"] as Hull).ArmorStrength;
+                    initiative = (hull.Properties["Hull"] as Hull).BattleInitiative;
+                    foreach (HullModule module in (hull.Properties["Hull"] as Hull).Modules)
+                    {
+                        if (module.ComponentType == "Scanner")
+                        {
+                            power += 1;  //there is a small advantage in having a scanner on an attack vessel
+                        }
+                        else if ((module.ComponentType == "General Purpose") || (module.ComponentType == "Weapon"))
+                        {
+                            power += 1000 * module.ComponentMaximum; //Weapons slots are the best slot
+                        }
+                        else if ((module.ComponentType == "Mechanical") )
+                        {
+                            speed += module.ComponentMaximum; //overthruster 
+                        }
+                        else if ((module.ComponentType == "Electrical") || (module.ComponentType == "Shield Electrical Mechanical") || (module.ComponentType == "Scanner Electrical Mechanical"))
+                        {
+                            computer += module.ComponentMaximum;
+                        }
+                        else if ((module.ComponentType == "Armor") || (module.ComponentType == "Shield or Armor"))
+                        {
+                            armour += module.ComponentMaximum;
+                        }
+                        else if ((module.ComponentType == "Shield"))
+                        {
+                            shield += module.ComponentMaximum;
+                        }
+                        // these weightings are "best guess" - perhaps they should be broken out
+                        int hullRating = power * (400 * speed + 600 * shield + 900 * armour + 1200 * computer + 250 * initiative);
+                        if (candidate == null)
+                        {
+                            candidate = hull;
+                            candidateRating = hullRating;
+                        }
+
+                        if (hullRating > candidateRating)
+                        {
+                            candidate = hull;
+                            candidateRating = hullRating;
+                        }
+                    }
+                }
+            }
+            if (candidate == null) return null;
+            else return new Component(candidate);
+        }
+
 
         public Component GetBestEngine(Component hullType,bool preferWarp = true)
         {
@@ -270,7 +410,8 @@ namespace Nova.Common.Components
             {
                 if ((hull.Properties["Fuel"] as Fuel).Generation > (best.Properties["Fuel"] as Fuel).Generation) best = hull;
             }
-            return best;
+            if (best == null) return null;
+            else return new Component(best);
 
         }
         public Component GetBestRepairerHull()
@@ -288,7 +429,8 @@ namespace Nova.Common.Components
             {
                 if ((hull.Properties["HealOthersPercent"] as IntegerProperty).Value > (best.Properties["HealOthersPercent"] as IntegerProperty).Value) best = hull;
             }
-            return best;
+            if (best == null) return null;
+            else return new Component(best);
 
         }
 
@@ -320,6 +462,10 @@ namespace Nova.Common.Components
                 // first check the required tech level
                 if (tech < component.RequiredTech)
                 {
+                    if (component.Name.Contains("Capacitor"))
+                    {
+                        Report.Information(component.Name + " not available");
+                    }
                     continue;
                 }
                 if (Contains(component.Name))
