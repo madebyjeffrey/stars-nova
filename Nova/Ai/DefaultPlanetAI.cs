@@ -96,18 +96,19 @@ namespace Nova.Ai
             if (((planet.Capacity(clientState.EmpireState.Race) < 55) || ((clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] >= 3) && (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Propulsion] >= 5)))
                 && ((planet.Capacity(clientState.EmpireState.Race) < 80) || ((clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Construction] >= 8) && (clientState.EmpireState.ResearchLevels[TechLevel.ResearchField.Propulsion] >= 7))))
             {
-                Double earlyProductionMultiplier = 1.0; // Rush factories for 1st 8 years
-                if (clientState.EmpireState.TurnYear > 2106) earlyProductionMultiplier = 0.3; //then Rush some scouts
-                if (clientState.EmpireState.TurnYear > 2115) earlyProductionMultiplier = 0.5; //then build a mix of stuff
-                if (clientState.EmpireState.TurnYear > 2120) earlyProductionMultiplier = 0.6;
+                Double earlyFactoryProductionMultiplier = 1.0; // Rush factories for 1st 8 years
+                if (clientState.EmpireState.TurnYear > 2106) earlyFactoryProductionMultiplier = 0.3; //then Rush some scouts
+                if (clientState.EmpireState.TurnYear > 2115) earlyFactoryProductionMultiplier = 0.5; //then build a mix of stuff
+                if (clientState.EmpireState.TurnYear > 2120) earlyFactoryProductionMultiplier = 0.65;
+                if (clientState.EmpireState.TurnYear > 2130) earlyFactoryProductionMultiplier = 0.7;
                 // build factories (limited by Germanium, and don't want to use it all)
                 if (this.planet.ResourcesOnHand.Germanium > 50)
                 {
                     int factoryBuildCostGerm = clientState.EmpireState.Race.HasTrait("CF") ? 3 : 4;
                     int factoriesToBuild = (int)((this.planet.ResourcesOnHand.Germanium - 50) / factoryBuildCostGerm);
-                    if (factoriesToBuild > (int)(this.planet.GetOperableFactories() * earlyProductionMultiplier - this.planet.Factories))
+                    if (factoriesToBuild > (int)(this.planet.GetOperableFactories() * earlyFactoryProductionMultiplier - this.planet.Factories))
                     {
-                        factoriesToBuild = (int)(this.planet.GetOperableFactories() * earlyProductionMultiplier) - this.planet.Factories;
+                        factoriesToBuild = (int)(this.planet.GetOperableFactories() * earlyFactoryProductionMultiplier) - this.planet.Factories;
                     }
 
                     if (factoriesToBuild > 0)
@@ -136,11 +137,13 @@ namespace Nova.Ai
                 }
 
                 // build mines
-                int maxMines = (int)(this.planet.GetOperableMines() * earlyProductionMultiplier);
+                double earlyMineProductionMultiplier = earlyFactoryProductionMultiplier;
+                if (clientState.EmpireState.TurnYear > 2135) earlyMineProductionMultiplier = 0.95;
+                int maxMines = (int)(this.planet.GetOperableMines() * earlyMineProductionMultiplier);
                 if (this.planet.Mines < maxMines)
                 {
                     ProductionOrder mineOrder = new ProductionOrder(maxMines - this.planet.Mines, new MineProductionUnit(clientState.EmpireState.Race), false);
-                    ProductionCommand mineCommand = new ProductionCommand(CommandMode.Add, mineOrder, this.planet.Key, Math.Min(MineProductionPrecedence, productionIndex));
+                    ProductionCommand mineCommand = new ProductionCommand(CommandMode.Add, mineOrder, this.planet.Key, Math.Min(MineProductionPrecedence, MineProductionPrecedence));
                     productionIndex++;
                     if (mineCommand.IsValid(clientState.EmpireState,out message))
                     {

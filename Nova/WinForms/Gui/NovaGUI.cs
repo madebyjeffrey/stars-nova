@@ -210,7 +210,7 @@ namespace Nova.WinForms.Gui
         {
             try
             {
-               // clientState.Save();
+               // clientState.Save();  // if we are throwing out the orders then throw out the changes to the client also
             }
             catch (Exception ex)
             {

@@ -125,12 +125,15 @@ namespace Nova.WinForms.Gui
                     row[i++] = task;
                     row[i++] = fleet.FuelAvailable.ToString("f1");
                     row[i++] = cargoText.ToString();
-                    row[i++] = fleet.Composition.Count.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    int vessels = 0;
+                    foreach (ShipToken token in fleet.Composition.Values) vessels += token.Quantity;
+                    row[i++] = vessels.ToString(System.Globalization.CultureInfo.InvariantCulture);
                     row[i++] = "-";
                     row[i++] = fleet.BattlePlan;
                     row[i++] = fleet.Mass.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
                     this.fleetGridView.Rows.Add(row);
+                    this.fleetGridView.ScrollBars = ScrollBars.Both;
                 }
             }
 

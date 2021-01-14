@@ -197,7 +197,7 @@ namespace Nova.Ai
             foreach (Fleet fleet in clientState.EmpireState.OwnedFleets.Values)  //find idle colonisers
             {
                 if ((fleet.CanColonize && (fleet.Waypoints.Count == 0) && (fleet.FuelAvailable == fleet.TotalFuelCapacity) && (fleet.InOrbit != null) )
-                    || (fleet.CanColonize && (fleet.FuelAvailable == fleet.TotalFuelCapacity)&&(fleet.Waypoints.Count == 1) && fleet.Waypoints[0].Task is NoTask && (fleet.InOrbit != null) && (fleet.InOrbit.Name == fleet.Waypoints[0].Destination)))
+                    || (fleet.CanColonize && (fleet.FuelAvailable >= fleet.TotalFuelCapacity)&&(fleet.Waypoints.Count == 1) && fleet.Waypoints[0].Task is NoTask && (fleet.InOrbit != null) && (fleet.InOrbit.Name == fleet.Waypoints[0].Destination)))
                 {
                     colonyShipsFleets.Add(fleet);
                 }

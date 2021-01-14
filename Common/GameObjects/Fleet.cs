@@ -922,6 +922,7 @@ namespace Nova.Common
         /// </summary>
         public bool canReach(StarIntel destination, Race race)
         {
+            if (this.FreeWarpSpeed > 1) return true;
             double destinationDistance = this.distanceTo(destination);
             double yearsOfTravel = destinationDistance / (this.SlowestEngine * this.SlowestEngine);
             double fuelRequired = this.FuelConsumptionWhenFull(this.SlowestEngine, race) * yearsOfTravel;
