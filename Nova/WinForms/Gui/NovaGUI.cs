@@ -135,7 +135,7 @@ namespace Nova.WinForms.Gui
         /// <param name="e">A <see cref="EventArgs"/> that contains the event data.</param>
         private void MenuExit_Click(object sender, System.EventArgs e)
         {
-            clientState.Save();
+            //clientState.Save();
             Close();
         }
 
@@ -210,7 +210,7 @@ namespace Nova.WinForms.Gui
         {
             try
             {
-                clientState.Save();
+               // clientState.Save();
             }
             catch (Exception ex)
             {
@@ -311,7 +311,7 @@ namespace Nova.WinForms.Gui
         /// <param name="e">A <see cref="EventArgs"/> that contains the event data.</param>
         private void SaveAndSubmitTurnToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            clientState.Save();
+            // clientState.Save();
             OrderWriter orderWriter = new OrderWriter(clientState);
             orderWriter.WriteOrders();
             this.Close();
@@ -333,8 +333,8 @@ namespace Nova.WinForms.Gui
         {
             loadNextTurnToolStripMenuItem.Enabled = false;
             
-            //this.Update();
-            clientState.Save();
+            // this.Update();
+            // clientState.Save();
             OrderWriter orderWriter = new OrderWriter(clientState);
             orderWriter.WriteOrders();
 
