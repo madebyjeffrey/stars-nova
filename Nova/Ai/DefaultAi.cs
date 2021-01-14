@@ -268,7 +268,7 @@ namespace Nova.Ai
                 foreach (Fleet fleet in clientState.EmpireState.OwnedFleets.Values)
                     if (fleet.Name.Contains(Global.AiRefueler))
                     {
-                        if (fleet.CanRefuel == false && ((fleet.Waypoints.Count == 0) || ((fleet.Waypoints.Count == 1) && fleet.Waypoints[0].Task is NoTask && ((fleet.InOrbit != null) && (fleet.InOrbit.Name == fleet.Waypoints[0].Destination)))))
+                        if (!fleet.CanColonize && fleet.CanRefuel == false && ((fleet.Waypoints.Count == 0) || ((fleet.Waypoints.Count == 1) && fleet.Waypoints[0].Task is NoTask && ((fleet.InOrbit != null) && (fleet.InOrbit.Name == fleet.Waypoints[0].Destination)))))
                         {
                             idleRefuelFleets.Add(fleet);
                         }
@@ -277,17 +277,21 @@ namespace Nova.Ai
                     foreach (Fleet coloniser in colonyShipsFleets)
                     {
                         int index = 0;
-                        while ((idleRefuelFleets.Count > 0) && (coloniser.Position != idleRefuelFleets[index].Position) && (index <= idleRefuelFleets.Count - 1))
+                        bool found = false;
+                        while ((idleRefuelFleets.Count > 0) && (index <= idleRefuelFleets.Count - 1) && !found)
                         {
-                            index++;
-                        }
-                        if (coloniser.Position == idleRefuelFleets[index].Position)
-                        {
-                            Fleet refueler = idleRefuelFleets[index];
-                            idleRefuelFleets.Remove(refueler);
-                            WaypointCommand command = refueler.merge(coloniser);
-                            clientState.Commands.Push(command);
-                            if (idleRefuelFleets.Count == 0) break;
+                            if (coloniser.Position != idleRefuelFleets[index].Position)
+                            {
+                                index++;
+                            }
+                            else
+                            {
+                                Fleet refueler = idleRefuelFleets[index];
+                                idleRefuelFleets.Remove(refueler);
+                                WaypointCommand command = refueler.merge(coloniser);
+                                clientState.Commands.Push(command);
+                                found = true;
+                            }
                         }
 
 
@@ -791,12 +795,12 @@ namespace Nova.Ai
                         module.AllocatedComponent = clientState.EmpireState.AvailableComponents.GetBestManeuveringJet();
                         module.ComponentCount = module.ComponentMaximum;
                     }
-                    else if ((module.ComponentType == "Electrical") || (module.ComponentType == "Shield Electrical Mechanical") || (module.ComponentType == "Scanner Electrical Mechanical"))
+                    else if ((module.ComponentType.Contains("Electrical")) || (module.ComponentType == "Shield Electrical Mechanical") || (module.ComponentType == "Scanner Electrical Mechanical"))
                     {
                         module.AllocatedComponent = clientState.EmpireState.AvailableComponents.GetBestBattleComputer();
                         module.ComponentCount = module.ComponentMaximum;
                     }
-                    else if ((module.ComponentType == "Armor") || (module.ComponentType == "Shield or Armor"))
+                    else if ((module.ComponentType.Contains("Armor")) || (module.ComponentType == "Shield or Armor"))
                     {
                         module.AllocatedComponent = clientState.EmpireState.AvailableComponents.GetBestMobileArmour();
                         module.ComponentCount = module.ComponentMaximum;
@@ -804,6 +808,11 @@ namespace Nova.Ai
                     else if (module.ComponentType == "Shield")
                     {
                         module.AllocatedComponent = clientState.EmpireState.AvailableComponents.GetBestShield();
+                        module.ComponentCount = module.ComponentMaximum;
+                    }
+                    else if ((module.ComponentType.Contains("Mechanical")))
+                    {
+                        module.AllocatedComponent = clientState.EmpireState.AvailableComponents.GetBestManeuveringJet();
                         module.ComponentCount = module.ComponentMaximum;
                     }
                 }
@@ -926,24 +935,24 @@ namespace Nova.Ai
                         module.AllocatedComponent = beam;
                         module.ComponentCount = module.ComponentMaximum;
                     }
-                    else if ((module.ComponentType == "Mechanical") || (module.ComponentType == "Scanner Electrical Mechanical") || (module.ComponentType == "Shield Electrical Mechanical"))
+                    else if ((module.ComponentType.Contains("Mechanical")) || (module.ComponentType == "Scanner Electrical Mechanical") || (module.ComponentType == "Shield Electrical Mechanical"))
                     {
                         module.AllocatedComponent = clientState.EmpireState.AvailableComponents.GetBestManeuveringJet();
                         module.ComponentCount = module.ComponentMaximum;
                     }
-                    else if ((module.ComponentType == "Electrical") )
+                    else if ((module.ComponentType.Contains("Electrical")) )
                     {
                         module.AllocatedComponent = clientState.EmpireState.AvailableComponents.GetBestCapacitor();
                         module.ComponentCount = module.ComponentMaximum;
                     }
-                    else if (module.ComponentType == "Armor") 
-                    {
-                        module.AllocatedComponent = clientState.EmpireState.AvailableComponents.GetBestMobileArmour();
-                        module.ComponentCount = module.ComponentMaximum;
-                    }
-                    else if ((module.ComponentType == "Shield") || (module.ComponentType == "Shield or Armor"))
+                    else if ((module.ComponentType.Contains("Shield")) || (module.ComponentType == "Shield or Armor"))
                     {
                         module.AllocatedComponent = clientState.EmpireState.AvailableComponents.GetBestShield();
+                        module.ComponentCount = module.ComponentMaximum;
+                    }
+                    else if (module.ComponentType.Contains("Armor")) 
+                    {
+                        module.AllocatedComponent = clientState.EmpireState.AvailableComponents.GetBestMobileArmour();
                         module.ComponentCount = module.ComponentMaximum;
                     }
                 }

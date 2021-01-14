@@ -215,7 +215,7 @@ namespace Nova.Server
                     if ((fleet.InOrbit != null) && (!fleet.IsStarbase))
                     {
                         this.serverState.AllEmpires[empire.Id].StarReports[fleet.InOrbit.Name].HasFleetsInOrbit = true;
-                        if (fleet.Name.Contains(Global.AiRefueler)) this.serverState.AllEmpires[empire.Id].StarReports[fleet.InOrbit.Name].HasRefuelerInOrbit = true;
+                        if (fleet.Name.Contains(Global.AiRefueler) && !fleet.CanColonize) this.serverState.AllEmpires[empire.Id].StarReports[fleet.InOrbit.Name].HasRefuelerInOrbit = true;
                         if (fleet.Name.Contains(Global.AiFreighter) && (fleet.Waypoints.Count < 2)) this.serverState.AllEmpires[empire.Id].StarReports[fleet.InOrbit.Name].HasFreeTransportInOrbit = true;
                     }
             }
@@ -574,7 +574,8 @@ namespace Nova.Server
             Race race = serverState.AllEmpires[fleet.Owner].Race;
             if (fleet.Waypoints.Count > 0)
             {
-                Waypoint firstWaypoint = fleet.Waypoints[0];
+                Waypoint firstWaypoint = new Waypoint (fleet.Waypoints[0]);
+                firstWaypoint.Task = new NoTask();
                 Waypoint currentPosition = null;
                 currentPosition = fleet.Waypoints[0];
 
