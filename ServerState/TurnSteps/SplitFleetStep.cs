@@ -72,15 +72,37 @@ namespace Nova.Server.TurnSteps
             {
                 if (fleet.Waypoints.Count > 0)
                 {
+                    Waypoint waypointZero = new Waypoint (fleet.Waypoints[0]);
+                    waypointZero.Task = new NoTask();
                     WaypointZeroDestination = fleet.Waypoints[0].Destination;
                     Index = 0;
                     while ((Index < fleet.Waypoints.Count) && (fleet.Waypoints[Index].Destination == WaypointZeroDestination))
                     {
-                        if ((fleet.Waypoints[Index].Task is SplitMergeTask) || (fleet.Waypoints[Index].Task is CargoTask) )
+                        if (fleet.Waypoints[Index].Task is SplitMergeTask) 
                         {
                             fleet.Waypoints.RemoveAt(Index); //Remove waypoints that have already been processed
                         }
+                        else if  (fleet.Waypoints[Index].Task is CargoTask)
+                        {
+                            if ((fleet.Waypoints[Index].Task as CargoTask).Amount.Mass == 0)
+                            {
+                                fleet.Waypoints.RemoveAt(Index); //Only remove "spent" waypoints 
+                            }
+                            else 
+                            {
+                                Message messageIsValid = null;
+                                Message messagePerform = null;
+                                if ((fleet.Waypoints[Index].Task as CargoTask).IsValid(fleet, (fleet.Waypoints[Index].Task as CargoTask).Target, serverState.AllEmpires[fleet.Owner], null, out messageIsValid)) fleet.Waypoints[Index].Task.Perform(fleet, (fleet.Waypoints[Index].Task as CargoTask).Target, serverState.AllEmpires[fleet.Owner], null, out messagePerform);
+                                if (messageIsValid != null) result.Add(messageIsValid);
+                                if (messagePerform != null) result.Add(messagePerform);
+                                fleet.Waypoints.RemoveAt(Index); //Process and remove waypointZero cargoTask waypoints 
+                            }
+                        }
                         else Index++;
+                    }
+                    if (fleet.Waypoints.Count == 0)
+                    {
+                        fleet.Waypoints.Add(waypointZero);
                     }
                 }
             }
