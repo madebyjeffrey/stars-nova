@@ -779,7 +779,7 @@ namespace Nova.Common
             {
                 Message message = new Message();
                 message.Audience = Owner;
-                message.Text = "Fleet " + Name + " has generated " + (-1.0 * fuelUsed).ToString() + "mg of fuel.";
+                message.Text = "Fleet " + Name + " has generated " + (-1.0 * fuelUsed).ToString() + " mg of fuel.";
                 message.Type = "WarpToChange";
                 message.Event = this;
                 messages.Add(message);
@@ -1091,7 +1091,7 @@ namespace Nova.Common
         public WaypointCommand merge(Fleet other)
         {
             Waypoint waypoint = new Waypoint();
-            waypoint.Task = new SplitMergeTask(this.tokens,other.tokens, other.Key, true , true);
+            waypoint.Task = new SplitMergeTask(this.tokens,null, other.Key, true , true);
             waypoint.Position = other.Position;
             if (this.Waypoints.Count > 0) waypoint.Destination = this.Waypoints[0].Destination;
             else waypoint.Destination = InOrbit.ToString();

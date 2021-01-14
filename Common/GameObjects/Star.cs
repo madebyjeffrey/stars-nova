@@ -606,7 +606,9 @@ namespace Nova.Common
             : base(node)
         {
             Starbase = null;
-
+            HasFleetsInOrbit = false; //Load default values
+            HasFreeTransportInOrbit = false;
+            HasRefuelerInOrbit = false;
             XmlNode mainNode = node.FirstChild;
 
             // Read the node
@@ -728,9 +730,9 @@ namespace Nova.Common
 
             xmlelStar.AppendChild(ResourcesOnHand.ToXml(xmldoc, "ResourcesOnHand"));
 
-            Global.SaveData(xmldoc, xmlelStar, "HasFleetsInOrbit", HasFleetsInOrbit.ToString());
-            Global.SaveData(xmldoc, xmlelStar, "HasRefuelerInOrbit", HasRefuelerInOrbit.ToString());
-            Global.SaveData(xmldoc, xmlelStar, "HasFreeTransportInOrbit", HasFreeTransportInOrbit.ToString());
+            if (HasFleetsInOrbit) Global.SaveData(xmldoc, xmlelStar, "HasFleetsInOrbit", HasFleetsInOrbit.ToString());
+            if (HasRefuelerInOrbit) Global.SaveData(xmldoc, xmlelStar, "HasRefuelerInOrbit", HasRefuelerInOrbit.ToString());
+            if (HasFreeTransportInOrbit) Global.SaveData(xmldoc, xmlelStar, "HasFreeTransportInOrbit", HasFreeTransportInOrbit.ToString());
 
             // Starbase and ThisRace are stored as references only (just the name is saved).
             if (Starbase != null)
