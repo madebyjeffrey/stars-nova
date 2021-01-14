@@ -244,7 +244,10 @@ namespace Nova.Common.Commands
                              // to carry it's full payload of cargo PLUS the payload belonging to the "Other" fleet   :(
                                 if (Waypoint.Task is CargoTask)
                                 {
-                                    empire.OwnedFleets[FleetKey].Waypoints.Add(Waypoint);  // Add the Waypoint 
+                                    Waypoint spentWaypoint = new Waypoint(Waypoint);
+                                    spentWaypoint.Task = new CargoTask(0);
+                                    (spentWaypoint.Task as CargoTask).Target = (Waypoint.Task as CargoTask).Target;
+                                    empire.OwnedFleets[FleetKey].Waypoints.Add(spentWaypoint);  // Add the Waypoint to keep indexes aligned but mark it as "spent" (i.e. cargo = 0)
                                     if (isWaypointZeroCommand(Waypoint, empire.OwnedFleets[FleetKey]))
                                     {
                                         if ((Waypoint.Task as CargoTask).IsValid(empire.OwnedFleets[FleetKey], Target, empire, null, out message))

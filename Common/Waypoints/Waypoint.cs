@@ -83,7 +83,6 @@ namespace Nova.Common.Waypoints
             Position = other.Position;
             WarpFactor = other.WarpFactor;
             Destination = other.Destination;
-            //guiTimestamp = DateTime.UtcNow;
         }
         public NovaPoint destinationCurrentPosition(EmpireData empire)
 
