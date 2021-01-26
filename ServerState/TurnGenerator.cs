@@ -187,6 +187,7 @@ namespace Nova.Server
             }
 
             ServerProgress.Text = "Move Mineral Packets";
+            List<Fleet> explodedPackets = new List<Fleet>();
             foreach (Fleet fleet in serverState.IterateAllFleets())  // Move Mineral Packets after they are created
             {
                 if (fleet.Name.Contains("Mineral Packet"))
@@ -198,9 +199,19 @@ namespace Nova.Server
                         serverState.AllMessages.Add(new Message(fleet.Owner, "Your Mineral Packet Destroyed 3/4 of the population of " + fleet.InOrbit.Name.ToString(), "Star", ((Star)fleet.InOrbit), 0));
                         serverState.AllMessages.Add(new Message(((Star)fleet.InOrbit).Owner, "A Mineral Packet Destroyed 3/4 of your population on " + fleet.InOrbit.Name.ToString(), "Star", ((Star)fleet.InOrbit), 0));
                         ((Star)fleet.InOrbit).Colonists = ((Star)fleet.InOrbit).Colonists / 4;
+                        explodedPackets.Add(fleet);// TODO does the risk of impact decrease for packets launched from further away?
                     }
+                    else fleet.Cargo.Scale(0.95); //TODO find Stars! formula for eroding mineral packets or a formula for eroding asteroids when outside the solar system
                     serverState.AllEmpires[fleet.Owner].FleetReports[fleet.Key].Update(fleet, ScanLevel.Owned, serverState.TurnYear);
                 }
+            }
+            foreach (Fleet exploded in explodedPackets)  // Remove Mineral Packets that have hit their target;
+            {
+                foreach (EmpireData empire in serverState.AllEmpires.Values)
+                {
+                    empire.FleetReports.Remove(exploded.Key);
+                }
+                serverState.AllEmpires[exploded.Owner].OwnedFleets.Remove(exploded.Key);
             }
             serverState.CleanupFleets();
 
