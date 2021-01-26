@@ -220,7 +220,7 @@ namespace Nova.Common.Components
                 message.Event = star;
                 message.Audience = star.Owner;
                 message.Type = "Terraform";
-                message.Text = star.Name.ToString() + " has decreased its Radiation to " + star.Gravity.ToString() + "mR\r\n it's value is now " + Math.Ceiling(race.HabValue(star) * 100) + "%";
+                message.Text = star.Name.ToString() + " has decreased its Radiation to " + star.Radiation.ToString() + "mR\r\n it's value is now " + Math.Ceiling(race.HabValue(star) * 100) + "%";
             }
             else if (Below > Above)
             {
@@ -229,7 +229,7 @@ namespace Nova.Common.Components
                 message.Event = star;
                 message.Audience = star.Owner;
                 message.Type = "Terraform";
-                message.Text = star.Name.ToString() + " has increased its Radiation to " + star.Gravity.ToString() + "mR\r\n it's value is now " + Math.Ceiling(race.HabValue(star) * 100) + "%";
+                message.Text = star.Name.ToString() + " has increased its Radiation to " + star.Radiation.ToString() + "mR\r\n it's value is now " + Math.Ceiling(race.HabValue(star) * 100) + "%";
             }
             else message = null;
             return star;
@@ -246,7 +246,7 @@ namespace Nova.Common.Components
                 message.Event = star;
                 message.Audience = star.Owner;
                 message.Type = "Terraform";
-                message.Text = star.Name.ToString() + " has decreased its Temperature to " + star.Gravity.ToString() + "°C\r\n it's value is now " + Math.Ceiling(race.HabValue(star) * 100) + "%";
+                message.Text = star.Name.ToString() + " has decreased its Temperature to " + star.Temperature.ToString() + "°C\r\n it's value is now " + Math.Ceiling(race.HabValue(star) * 100) + "%";
             }
             else if (Above < Below)
             {
@@ -255,7 +255,7 @@ namespace Nova.Common.Components
                 message.Event = star;
                 message.Audience = star.Owner;
                 message.Type = "Terraform";
-                message.Text = star.Name.ToString() + " has increased its Temperature to " + star.Gravity.ToString() + "°C\r\n it's value is now " + Math.Ceiling(race.HabValue(star) * 100) + "%";
+                message.Text = star.Name.ToString() + " has increased its Temperature to " + star.Temperature.ToString() + "°C\r\n it's value is now " + Math.Ceiling(race.HabValue(star) * 100) + "%";
             }
             else message = null;
             return star;
