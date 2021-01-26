@@ -35,9 +35,10 @@ namespace Nova.Server.TurnSteps
         /// There could be dozens of splits and merges of fleets at an individual waypoint during one turn and dozens of new fleets moving in different directions during that turn.
         /// Process the splits and merges in Chronological Order or the process will be nonsensical!
         /// The design is clear - reproduce Stars! not some new game where merges are programmed to occur at some point in the future.
+        /// Once we have working code that performs WaypointZero SplitMerges we can extend it to work for future turns.
 
         /// We will implement this: 
-        /// 1/  Execute the Waypoint zero commands (which may include SplitMergeTask and Load/unloadTask or merge (or InvadeTask?) commands for fleets that do not exist yet or that will not exist at the start or WayPoint One processing), (Waypoint.PreProcess)
+        /// 1/  Execute the Waypoint zero commands (which may include SplitMergeTask and Load/unloadTask or merge (or InvadeTask?) commands for fleets that do not exist yet or that will not exist at the start of WayPoint One processing), (Waypoint.PreProcess)
         /// 2/  but do not remove them until all Waypoint.Edit and Waypoint.Insert commands are loaded (or their indexes will be nonsensical)
         /// 3/  Delete the waypoint Zero commands that have already been executed (SplitFleetStep)
 
@@ -57,9 +58,10 @@ namespace Nova.Server.TurnSteps
             public Waypoint Waypoint { get; }
         }
         /// <summary>
-        /// The CargoTasks and SplitMergeTasks were preProcessed in sequence but not removed (during "ParseCommands") so as to keep the indexes alligned between server and client.
-        /// All that is left now is to remove the already processed waypoints.
-        /// 
+        /// The CargoTask commands and SplitMergeTask commands were preProcessed in sequence but not removed (during "ParseCommands") so as to keep the indexes alligned between server and client.
+        /// We have no more commands with specific references to waypoint indices after this point so all that is left now is to 
+        /// remove the already processed "spent" waypoints.
+        /// Pre-Existing waypointZero tasks are also executed here as a matter of convenience.
         /// </summary>
         /// <param name="serverState"></param>
         /// <returns></returns>
@@ -89,7 +91,9 @@ namespace Nova.Server.TurnSteps
                                 fleet.Waypoints.RemoveAt(Index); //Only remove "spent" waypoints 
                             }
                             else 
-                            {
+                            {   // This block does not strictly belong here because it is processing waypoints that existed prior to 
+                                // this turn but we have identified the task as a waypointZero CargoTask so we might as well
+                                // process it.
                                 Message messageIsValid = null;
                                 Message messagePerform = null;
                                 if ((fleet.Waypoints[Index].Task as CargoTask).IsValid(fleet, (fleet.Waypoints[Index].Task as CargoTask).Target, serverState.AllEmpires[fleet.Owner], null, out messageIsValid)) fleet.Waypoints[Index].Task.Perform(fleet, (fleet.Waypoints[Index].Task as CargoTask).Target, serverState.AllEmpires[fleet.Owner], null, out messagePerform);
@@ -100,7 +104,7 @@ namespace Nova.Server.TurnSteps
                         }
                         else Index++;
                     }
-                    if (fleet.Waypoints.Count == 0)
+                    if (fleet.Waypoints.Count == 0)  //Stars! always has at least a NoTask waypoint for the current position
                     {
                         fleet.Waypoints.Add(waypointZero);
                     }

@@ -154,6 +154,7 @@ namespace Nova.Common.Commands
         /// There could be dozens of splits and merges of fleets at an individual waypoint during one turn and dozens of new fleets moving in different directions during that turn.
         /// Process the splits and merges in Chronological Order or the process will be nonsensical!
         /// The design is clear - reproduce Stars! not some new game where merges are programmed to occur at some point in the future.
+        /// Once we have working code that performs WaypointZero SplitMerges we can extend it to work for future turns.
         /// Practical example of Split/Merge using Stars! existing logic:
         /// The players primary invasion fleet arrives at an opponents Home Planet, after destroying the Station and defense fleet/s the player:
         /// 1/ Moves the escort ships from the Mine Layer group to the invasion fleet (Mine layer group must have been given the "Lay Mines" order 1 turn before arrival in order to lay mines during the first year at the opponents Home Planet.
@@ -259,7 +260,7 @@ namespace Nova.Common.Commands
                                     }
                                 } // we don't remove the waypoint until all waypoints are inserted as a Waypoint.Edit(7,waypoint) will not work too well
                                   // if we have removed 6 of the waypoints and Waypoint.Count = 1
-                                  // Look in SpliFleetStep.cs for the WaypointZero removals
+                                  // Look in SplitFleetStep.cs for the WaypointZero removals
                             }
                             foreach (Fleet newFleet in empire.TemporaryFleets) empire.AddOrUpdateFleet(newFleet);
                             empire.TemporaryFleets.Clear();
