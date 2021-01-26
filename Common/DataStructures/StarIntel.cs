@@ -80,7 +80,7 @@ namespace Nova.Common
         public StarIntel(Star star, ScanLevel scan, int year) :
             base()
         {
-            Clear();
+            //Clear();  // Why clear it? We should be displaying the least old report if we have no current report.
             Update(star, scan, year);
         }
         
@@ -204,6 +204,7 @@ namespace Nova.Common
         /// <param name="year">Year of the updated data.</param>
         public Message Update(Star star, ScanLevel scan, int year, bool set = false , Item scanner = null, Race race = null, int gravityModCapability = 0, int temperatureModCapability = 0,int radiationModCapability = 0)
         {
+            int oldYear = Year;
             Message discovered = null;
             if (set)
             {
@@ -260,7 +261,7 @@ namespace Nova.Common
                 Temperature = star.Temperature;
                 Starbase = star.Starbase;
                 ResourcesOnHand = star.ResourcesOnHand;
-                if ((Year < 0) && (scanner != null) && (this.MinValue(race) > 0)) //skip this step if empire is self-scanning owned stars
+                if ((oldYear < 0) && (scanner != null) && (this.MinValue(race) > 0)) //skip this step if empire is self-scanning owned stars
                 {
                     Year = year; 
                     discovered = new Message();
