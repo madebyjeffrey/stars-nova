@@ -1,0 +1,6 @@
+F:\Stars!Nova\Repos\code2\code\Graphics\bin\Debug\Graphics.dll
+F:\Stars!Nova\Repos\code2\code\Graphics\bin\Debug\Graphics.pdb
+F:\Stars!Nova\Repos\code2\code\Graphics\obj\Debug\Graphics.csprojAssemblyReference.cache
+F:\Stars!Nova\Repos\code2\code\Graphics\obj\Debug\Graphics.csproj.CoreCompileInputs.cache
+F:\Stars!Nova\Repos\code2\code\Graphics\obj\Debug\Graphics.dll
+F:\Stars!Nova\Repos\code2\code\Graphics\obj\Debug\Graphics.pdb

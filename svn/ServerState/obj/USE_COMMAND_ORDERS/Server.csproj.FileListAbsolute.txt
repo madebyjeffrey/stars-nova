@@ -1,0 +1,14 @@
+F:\Stars!Nova\Repos\svn\ServerState\bin\USE_COMMAND_ORDERS\components.xml
+F:\Stars!Nova\Repos\svn\ServerState\bin\USE_COMMAND_ORDERS\Nova.Server.dll
+F:\Stars!Nova\Repos\svn\ServerState\bin\USE_COMMAND_ORDERS\Nova.Server.pdb
+F:\Stars!Nova\Repos\svn\ServerState\bin\USE_COMMAND_ORDERS\Nova.Common.dll
+F:\Stars!Nova\Repos\svn\ServerState\bin\USE_COMMAND_ORDERS\Nova.ControlLibrary.dll
+F:\Stars!Nova\Repos\svn\ServerState\bin\USE_COMMAND_ORDERS\Nova.Common.pdb
+F:\Stars!Nova\Repos\svn\ServerState\bin\USE_COMMAND_ORDERS\Nova.ControlLibrary.pdb
+F:\Stars!Nova\Repos\svn\ServerState\obj\USE_COMMAND_ORDERS\Server.csprojAssemblyReference.cache
+F:\Stars!Nova\Repos\svn\ServerState\obj\USE_COMMAND_ORDERS\Server.csproj.CoreCompileInputs.cache
+F:\Stars!Nova\Repos\svn\ServerState\obj\USE_COMMAND_ORDERS\Server.csproj.CopyComplete
+F:\Stars!Nova\Repos\svn\ServerState\obj\USE_COMMAND_ORDERS\Nova.Server.dll
+F:\Stars!Nova\Repos\svn\ServerState\obj\USE_COMMAND_ORDERS\Nova.Server.pdb
+F:\Stars!Nova\Repos\svn\ServerState\obj\USE_COMMAND_ORDERS\Nova.Server.Properties.Resources.resources
+F:\Stars!Nova\Repos\svn\ServerState\obj\USE_COMMAND_ORDERS\Server.csproj.GenerateResource.cache

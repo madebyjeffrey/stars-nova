@@ -1,0 +1,13 @@
+F:\Stars!Nova\Repos\svn\GameFileInflator\bin\USE_COMMAND_ORDERS\components.xml
+F:\Stars!Nova\Repos\svn\GameFileInflator\bin\USE_COMMAND_ORDERS\GameFileInflator.exe.config
+F:\Stars!Nova\Repos\svn\GameFileInflator\bin\USE_COMMAND_ORDERS\GameFileInflator.exe
+F:\Stars!Nova\Repos\svn\GameFileInflator\bin\USE_COMMAND_ORDERS\GameFileInflator.pdb
+F:\Stars!Nova\Repos\svn\GameFileInflator\bin\USE_COMMAND_ORDERS\Nova.Common.dll
+F:\Stars!Nova\Repos\svn\GameFileInflator\bin\USE_COMMAND_ORDERS\Nova.Common.pdb
+F:\Stars!Nova\Repos\svn\GameFileInflator\obj\USE_COMMAND_ORDERS\GameFileInflator.GameFileInflator.resources
+F:\Stars!Nova\Repos\svn\GameFileInflator\obj\USE_COMMAND_ORDERS\GameFileInflator.Properties.Resources.resources
+F:\Stars!Nova\Repos\svn\GameFileInflator\obj\USE_COMMAND_ORDERS\GameFileInflator.csproj.GenerateResource.cache
+F:\Stars!Nova\Repos\svn\GameFileInflator\obj\USE_COMMAND_ORDERS\GameFileInflator.csproj.CoreCompileInputs.cache
+F:\Stars!Nova\Repos\svn\GameFileInflator\obj\USE_COMMAND_ORDERS\GameFileInflator.csproj.CopyComplete
+F:\Stars!Nova\Repos\svn\GameFileInflator\obj\USE_COMMAND_ORDERS\GameFileInflator.exe
+F:\Stars!Nova\Repos\svn\GameFileInflator\obj\USE_COMMAND_ORDERS\GameFileInflator.pdb

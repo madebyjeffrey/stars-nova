@@ -1,0 +1,11 @@
+F:\Stars!Nova\Repos\code2\code\NewGame\bin\Release\components.xml
+F:\Stars!Nova\Repos\code2\code\NewGame\bin\Release\NewGame.dll
+F:\Stars!Nova\Repos\code2\code\NewGame\bin\Release\NewGame.pdb
+F:\Stars!Nova\Repos\code2\code\NewGame\bin\Release\Nova.Common.dll
+F:\Stars!Nova\Repos\code2\code\NewGame\bin\Release\Nova.ServerState.dll
+F:\Stars!Nova\Repos\code2\code\NewGame\bin\Release\Nova.ServerState.pdb
+F:\Stars!Nova\Repos\code2\code\NewGame\obj\Release\NewGame.csprojAssemblyReference.cache
+F:\Stars!Nova\Repos\code2\code\NewGame\obj\Release\NewGame.csproj.CoreCompileInputs.cache
+F:\Stars!Nova\Repos\code2\code\NewGame\obj\Release\NewGame.csproj.CopyComplete
+F:\Stars!Nova\Repos\code2\code\NewGame\obj\Release\NewGame.dll
+F:\Stars!Nova\Repos\code2\code\NewGame\obj\Release\NewGame.pdb

@@ -1,0 +1,11 @@
+F:\Stars!Nova\Repos\svn\Build\Release\components.xml
+F:\Stars!Nova\Repos\svn\Build\Release\Nova.Common.dll
+F:\Stars!Nova\Repos\svn\Build\Release\Nova.Common.pdb
+F:\Stars!Nova\Repos\svn\Common\obj\Debug\Common.csprojAssemblyReference.cache
+F:\Stars!Nova\Repos\svn\Common\obj\Debug\Nova.Common.ProgressDialog.resources
+F:\Stars!Nova\Repos\svn\Common\obj\Debug\Nova.Common.Properties.Resources.resources
+F:\Stars!Nova\Repos\svn\Common\obj\Debug\Common.csproj.GenerateResource.cache
+F:\Stars!Nova\Repos\svn\Common\obj\Debug\Common.csproj.CoreCompileInputs.cache
+F:\Stars!Nova\Repos\svn\Common\obj\Debug\Common.csproj.CopyComplete
+F:\Stars!Nova\Repos\svn\Common\obj\Debug\Nova.Common.dll
+F:\Stars!Nova\Repos\svn\Common\obj\Debug\Nova.Common.pdb

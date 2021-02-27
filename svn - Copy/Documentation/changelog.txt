@@ -1,0 +1,88 @@
+Launcher & New Game Wizard:
+ - Updated the web link.
+ - New games are now created in their own folder.
+ - Major rebuild of the way stars are positioned on the map (density based star generation system). 
+ - Options added to the new game wizard for controlling star positioning.
+ - Races are renamed if two of the same name are selected.
+ - Added a starting scout ship and colony ship.
+ - HE starts with three mini colony ships.
+ - Starting population is now 25k / 100k for accelerated.
+ - Removed all use of windows registry values.
+
+Console/Server:
+ - Fleets now have the correct amount of armor.
+ - Corrected planet growth calculations.
+ - Colonization now works!
+ - Can build starbases on new planets.
+ - Major revision of the fleet combat engine. Many bug fixes. Fleet combat is playable but not yet consistent with Stars!
+ - Minor improvements to turn order, still a long way from the proper Stars! turn order.
+ - Invasion now works.
+ - Ship's without scanner's no longer scan planets.
+
+Client GUI:
+ - The research dialog now reports the correct number of resources required to reach the next tech level.
+ - Significant rework of research calculations.
+ - Significant rework of links between the map and the planet/fleet detail and summary displays.
+ - Added tooltips to the Fleet Detail control to display damage / armor remaining.
+ - Can delete ship designs.
+ - Can merge/split fleets! Still have some fuel glitches with merge/split.
+ - Added some more information to the battle viewer. Some of this is just for debugging and will be cleaned up later.
+ - Battle viewer now shows the step when weapons fire (in text).
+ - Population on the planet is now updated after beaming colonists up.
+ - Can build defenses.
+ - Major rebuild of the planetary production system.
+ - Added scanning.
+ - Added more messages.
+ - Added the ability to rename a fleet, however the new paint washes off quickly.
+ - Arrow keys now scroll the map.
+ - Added (working) cargo (and fuel) transfer dialog.
+ - Attempting to invade an empty planet now messages 'send a colony ship' to player.
+ - Added more ship icons!
+ - Added context menu selection (right click on map) for fleets/planets. (Can still cycle through them with left click.)
+ - Added mouse wheel zoom control.
+ - Improved map drawing, scrolling and zooming.
+ - Add a plasma background to the star map (can be turned off with the Bkg button above the map).
+ - Suposedly added a tooltip for planet population, but Dan can't find it. (Aeglos Rev# 506?)
+ - Fixed the warp speed slider.
+ - It's now possible to remove some items from a ship design (but not the last one). 
+
+Race Designer:
+ - Leftover points are now used instead of wasted.
+ - Some improvements to cost calculations - not quite there yet.
+ - Added immunities (at a fixed cost).
+
+AI:
+ - Now conducts research.
+ - Now builds only as many factories as can be operated.
+ - Now builds 'sensible' mines.
+ - Now builds defenses.
+ - Added a lock file to prevent the AI from trying to do its turn twice or more.
+
+Common/Core:
+ - Fixed lots of game crash issues. Game should be a _lot_ more stable.
+ - Fleets can now hold more fuel / cargo than one ship. Still some issues filling up with fuel.
+ - All persistence files are now in human readable (with effort) XML format.
+ - File encription is currently disabled for debugging.
+ - Nova can now find all of the files it uses.
+ - Implemented a system of issuing orders from the client to the server, which will enable easier checking of their validity.
+ - Complete rework of the waypoint system.
+ - Can now delete selected waypoints & tasks (del / backspace).
+ - More integration of the original Nova applications into one program.
+ - Added the Super Fuel Transport hull. Fixed some other hull designs.
+ - Fixed research / tech advancement.
+ - Partial implementation of cheep engines LRT (but they are not cheap yet, just nasty).
+ - Player's home world no longer disappears.
+ - Player's now start with a starbase, and it doesn't evaporate.
+ - Player relations now default to enemy in two player game.
+ - Added original Stars! gravity values.
+ - Corrected Trans-Galactic drive fuel useage.
+ - Colony ships with no colonization module can no longer colonize.
+
+Component Editor:
+ - Now calculates fastest free warp speed on the fly.
+ 
+Other:
+ - Added a file "command-line.txt" that lists the command line useage for Nova.exe
+
+
+

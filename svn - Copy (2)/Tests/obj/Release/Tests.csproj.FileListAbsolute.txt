@@ -1,0 +1,26 @@
+F:\Stars!Nova\Repos\svn\Build\Release\components.xml
+F:\Stars!Nova\Repos\svn\Build\Release\Nova.Tests.dll
+F:\Stars!Nova\Repos\svn\Build\Release\Nova.Tests.pdb
+F:\Stars!Nova\Repos\svn\Tests\obj\Release\Tests.csprojAssemblyReference.cache
+F:\Stars!Nova\Repos\svn\Tests\obj\Release\Tests.csproj.CoreCompileInputs.cache
+F:\Stars!Nova\Repos\svn\Tests\obj\Release\Tests.csproj.CopyComplete
+F:\Stars!Nova\Repos\svn\Tests\obj\Release\Nova.Tests.dll
+F:\Stars!Nova\Repos\svn\Tests\obj\Release\Nova.Tests.pdb
+F:\Stars!Nova\Repos\svn\Build\Release\LICENSE.txt
+F:\Stars!Nova\Repos\svn\Build\Release\Resources\Plasma.png
+F:\Stars!Nova\Repos\svn\Build\Release\Resources\Cursor.bmp
+F:\Stars!Nova\Repos\svn\Build\Release\Resources\Nova.ico
+F:\Stars!Nova\Repos\svn\Build\Release\Resources\newplasma.png
+F:\Stars!Nova\Repos\svn\Build\Release\Resources\fleet.png
+F:\Stars!Nova\Repos\svn\Build\Release\Resources\planeticon.png
+F:\Stars!Nova\Repos\svn\Build\Release\Resources\smallplus.png
+F:\Stars!Nova\Repos\svn\Build\Release\Resources\salvage0000.png
+F:\Stars!Nova\Repos\svn\Build\Release\Resources\MineralPacket0000.png
+F:\Stars!Nova\Repos\svn\Build\Release\Resources\Nova.jpg
+F:\Stars!Nova\Repos\svn\Build\Release\Resources\fleet2.png
+F:\Stars!Nova\Repos\svn\Build\Release\Resources\copyright free play button.jpg
+F:\Stars!Nova\Repos\svn\Build\Release\Resources\Diamond_Button.png
+F:\Stars!Nova\Repos\svn\Build\Release\DefaultRaces.zip
+F:\Stars!Nova\Repos\svn\Build\Release\Graphics.zip
+F:\Stars!Nova\Repos\svn\Build\Release\NOTICE.txt
+F:\Stars!Nova\Repos\svn\Build\Release\components.zip

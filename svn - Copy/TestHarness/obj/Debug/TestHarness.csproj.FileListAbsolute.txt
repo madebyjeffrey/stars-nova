@@ -1,0 +1,8 @@
+F:\Stars!Nova\Repos\svn\Build\Debug\components.xml
+F:\Stars!Nova\Repos\svn\Build\Debug\TestHarness.exe
+F:\Stars!Nova\Repos\svn\Build\Debug\TestHarness.pdb
+F:\Stars!Nova\Repos\svn\TestHarness\obj\Debug\TestHarness.csprojAssemblyReference.cache
+F:\Stars!Nova\Repos\svn\TestHarness\obj\Debug\TestHarness.csproj.CoreCompileInputs.cache
+F:\Stars!Nova\Repos\svn\TestHarness\obj\Debug\TestHarness.csproj.CopyComplete
+F:\Stars!Nova\Repos\svn\TestHarness\obj\Debug\TestHarness.exe
+F:\Stars!Nova\Repos\svn\TestHarness\obj\Debug\TestHarness.pdb

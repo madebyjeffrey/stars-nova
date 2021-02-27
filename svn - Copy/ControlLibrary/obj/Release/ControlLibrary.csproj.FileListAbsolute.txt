@@ -1,0 +1,17 @@
+F:\Stars!Nova\Repos\svn\Build\Release\components.xml
+F:\Stars!Nova\Repos\svn\Build\Release\Nova.ControlLibrary.dll
+F:\Stars!Nova\Repos\svn\ControlLibrary\obj\Release\ControlLibrary.csprojAssemblyReference.cache
+F:\Stars!Nova\Repos\svn\ControlLibrary\obj\Release\Nova.ControlLibrary.CargoTransfer.resources
+F:\Stars!Nova\Repos\svn\ControlLibrary\obj\Release\Nova.ControlLibrary.CheckPassword.resources
+F:\Stars!Nova\Repos\svn\ControlLibrary\obj\Release\Nova.ControlLibrary.EnabledCounter.resources
+F:\Stars!Nova\Repos\svn\ControlLibrary\obj\Release\Nova.ControlLibrary.Gauge.resources
+F:\Stars!Nova\Repos\svn\ControlLibrary\obj\Release\Nova.ControlLibrary.Graph.resources
+F:\Stars!Nova\Repos\svn\ControlLibrary\obj\Release\Nova.ControlLibrary.HullGrid.resources
+F:\Stars!Nova\Repos\svn\ControlLibrary\obj\Release\Nova.ControlLibrary.PlayerSelector.resources
+F:\Stars!Nova\Repos\svn\ControlLibrary\obj\Release\Nova.ControlLibrary.Range.resources
+F:\Stars!Nova\Repos\svn\ControlLibrary\obj\Release\Nova.ControlLibrary.ResearchCost.resources
+F:\Stars!Nova\Repos\svn\ControlLibrary\obj\Release\Nova.ControlLibrary.ResourceDisplay.resources
+F:\Stars!Nova\Repos\svn\ControlLibrary\obj\Release\ControlLibrary.csproj.GenerateResource.cache
+F:\Stars!Nova\Repos\svn\ControlLibrary\obj\Release\ControlLibrary.csproj.CoreCompileInputs.cache
+F:\Stars!Nova\Repos\svn\ControlLibrary\obj\Release\ControlLibrary.csproj.CopyComplete
+F:\Stars!Nova\Repos\svn\ControlLibrary\obj\Release\Nova.ControlLibrary.dll

@@ -1,0 +1,7 @@
+F:\Stars!Nova\Repos\code2\code\Common\bin\Release\components.xml
+F:\Stars!Nova\Repos\code2\code\Common\bin\Release\Nova.Common.dll
+F:\Stars!Nova\Repos\code2\code\Common\obj\Release\Nova.Common.ProgressDialog.resources
+F:\Stars!Nova\Repos\code2\code\Common\obj\Release\Nova.Common.Properties.Resources.resources
+F:\Stars!Nova\Repos\code2\code\Common\obj\Release\Common.csproj.GenerateResource.cache
+F:\Stars!Nova\Repos\code2\code\Common\obj\Release\Common.csproj.CoreCompileInputs.cache
+F:\Stars!Nova\Repos\code2\code\Common\obj\Release\Nova.Common.dll

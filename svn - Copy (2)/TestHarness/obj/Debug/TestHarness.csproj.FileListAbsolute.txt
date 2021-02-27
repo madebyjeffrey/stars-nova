@@ -1,0 +1,27 @@
+F:\Stars!Nova\Repos\svn\Build\Debug\components.xml
+F:\Stars!Nova\Repos\svn\Build\Debug\TestHarness.exe
+F:\Stars!Nova\Repos\svn\Build\Debug\TestHarness.pdb
+F:\Stars!Nova\Repos\svn\TestHarness\obj\Debug\TestHarness.csprojAssemblyReference.cache
+F:\Stars!Nova\Repos\svn\TestHarness\obj\Debug\TestHarness.csproj.CoreCompileInputs.cache
+F:\Stars!Nova\Repos\svn\TestHarness\obj\Debug\TestHarness.csproj.CopyComplete
+F:\Stars!Nova\Repos\svn\TestHarness\obj\Debug\TestHarness.exe
+F:\Stars!Nova\Repos\svn\TestHarness\obj\Debug\TestHarness.pdb
+F:\Stars!Nova\Repos\svn\Build\Debug\LICENSE.txt
+F:\Stars!Nova\Repos\svn\Build\Debug\Resources\Plasma.png
+F:\Stars!Nova\Repos\svn\Build\Debug\Resources\Cursor.bmp
+F:\Stars!Nova\Repos\svn\Build\Debug\Resources\Nova.ico
+F:\Stars!Nova\Repos\svn\Build\Debug\Resources\newplasma.png
+F:\Stars!Nova\Repos\svn\Build\Debug\Resources\fleet.png
+F:\Stars!Nova\Repos\svn\Build\Debug\Resources\planeticon.png
+F:\Stars!Nova\Repos\svn\Build\Debug\Resources\smallplus.png
+F:\Stars!Nova\Repos\svn\Build\Debug\Resources\salvage0000.png
+F:\Stars!Nova\Repos\svn\Build\Debug\Resources\MineralPacket0000.png
+F:\Stars!Nova\Repos\svn\Build\Debug\Resources\Nova.jpg
+F:\Stars!Nova\Repos\svn\Build\Debug\Resources\fleet2.png
+F:\Stars!Nova\Repos\svn\Build\Debug\Resources\copyright free play button.jpg
+F:\Stars!Nova\Repos\svn\Build\Debug\Resources\Diamond_Button.png
+F:\Stars!Nova\Repos\svn\Build\Debug\DefaultRaces.zip
+F:\Stars!Nova\Repos\svn\Build\Debug\Graphics.zip
+F:\Stars!Nova\Repos\svn\Build\Debug\TestHarness.exe.config
+F:\Stars!Nova\Repos\svn\Build\Debug\NOTICE.txt
+F:\Stars!Nova\Repos\svn\Build\Debug\components.zip

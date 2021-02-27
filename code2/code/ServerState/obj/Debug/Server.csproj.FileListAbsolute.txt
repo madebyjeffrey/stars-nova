@@ -1,0 +1,13 @@
+F:\Stars!Nova\Repos\code2\code\ServerState\bin\Debug\components.xml
+F:\Stars!Nova\Repos\code2\code\ServerState\bin\Debug\Nova.ServerState.dll
+F:\Stars!Nova\Repos\code2\code\ServerState\bin\Debug\Nova.ServerState.pdb
+F:\Stars!Nova\Repos\code2\code\ServerState\bin\Debug\Nova.Common.dll
+F:\Stars!Nova\Repos\code2\code\ServerState\bin\Debug\Nova.ControlLibrary.dll
+F:\Stars!Nova\Repos\code2\code\ServerState\bin\Debug\Nova.Common.pdb
+F:\Stars!Nova\Repos\code2\code\ServerState\bin\Debug\Nova.Common.xml
+F:\Stars!Nova\Repos\code2\code\ServerState\bin\Debug\Nova.ControlLibrary.pdb
+F:\Stars!Nova\Repos\code2\code\ServerState\obj\Debug\Server.csprojAssemblyReference.cache
+F:\Stars!Nova\Repos\code2\code\ServerState\obj\Debug\Server.csproj.CoreCompileInputs.cache
+F:\Stars!Nova\Repos\code2\code\ServerState\obj\Debug\Server.csproj.CopyComplete
+F:\Stars!Nova\Repos\code2\code\ServerState\obj\Debug\Nova.ServerState.dll
+F:\Stars!Nova\Repos\code2\code\ServerState\obj\Debug\Nova.ServerState.pdb

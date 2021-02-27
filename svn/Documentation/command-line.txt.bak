@@ -1,0 +1,31 @@
+          Start Launcher
+            Nova --launch
+          Start New Game wizard
+            Nova --new
+          Start Race Designer
+            Nova --race
+          Start Component Editor
+            Nova --components
+          Start Console
+            Nova --console
+          Start GUI
+            Nova --gui -r <race> -t <turn> -i <intel file> -s <state file>
+          Run AI
+            Nova --ai -r <race> -t <turn> -i <intel file>
+          Display the help screen
+            Nova --help
+
+Some example command lines:
+
+To open the GUI with the Humanoid race on Dan's computer:
+Nova --gui -r humanoid -t 2114 -i "C:\Users\daniel\Desktop\TurnTest\Humanoid.intel"
+
+To open the Nova Console on Dan's computer:
+Nova --console
+
+To run the Nova AI on Dan's computer:
+Nova --ai -r humanoid -t 2114 -i "C:\Users\daniel\Desktop\AITest\Humanoid.intel"
+
+on John's:
+--ai -r AIs -t 2114 -i "C:\Users\John\Documents\Stars! Nova\Feel the Nova\AIs.intel"
+

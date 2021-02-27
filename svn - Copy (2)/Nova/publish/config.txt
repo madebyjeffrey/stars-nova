@@ -1,0 +1,5 @@
+;!@Install@!UTF-8!
+ Title="Stars!Nova Install"
+ BeginPrompt="Do you want to install Stars!Nova 0.5.0"
+ RunProgram="Nova Installer.exe"
+ ;!@InstallEnd@!

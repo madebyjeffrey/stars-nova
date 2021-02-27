@@ -1,0 +1,8 @@
+F:\Stars!Nova\Repos\svn\Build\Debug\components.xml
+F:\Stars!Nova\Repos\svn\Build\Debug\Nova.Tests.dll
+F:\Stars!Nova\Repos\svn\Build\Debug\Nova.Tests.pdb
+F:\Stars!Nova\Repos\svn\Tests\obj\Debug\Tests.csprojAssemblyReference.cache
+F:\Stars!Nova\Repos\svn\Tests\obj\Debug\Tests.csproj.CoreCompileInputs.cache
+F:\Stars!Nova\Repos\svn\Tests\obj\Debug\Tests.csproj.CopyComplete
+F:\Stars!Nova\Repos\svn\Tests\obj\Debug\Nova.Tests.dll
+F:\Stars!Nova\Repos\svn\Tests\obj\Debug\Nova.Tests.pdb

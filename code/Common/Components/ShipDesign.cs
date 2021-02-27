@@ -1,0 +1,1139 @@
+#region Copyright Notice
+// ============================================================================
+// Copyright (C) 2008 Ken Reed
+// Copyright (C) 2009, 2010, 2011, 2012 The Stars-Nova Project
+//
+// This file is part of Stars-Nova.
+// See <http://sourceforge.net/projects/stars-nova/>.
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License version 2 as
+// published by the Free Software Foundation.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>
+// ===========================================================================
+#endregion
+
+#region Module Description
+// ===========================================================================
+// This module defines the potential design of a ship. Details of the actual
+// design are ony available once the hull modules have been populated.
+// ===========================================================================
+#endregion
+
+using System;
+using System.Collections.Generic;
+using System.Xml;
+
+namespace Nova.Common.Components
+{
+    /// <summary>
+    /// The blueprint for building a ship.
+    /// </summary>
+    [Serializable]
+    public class ShipDesign : Item
+    {
+        #region Data
+
+        // This is the component that contains the Hull property, to which all other ships components attach.
+        public Component Blueprint 
+        {
+            get; 
+            set;
+        }
+
+        // Obsolete designs do not appear in the production dialog - allows the user to hide designs that they do not want built again
+        public bool Obsolete
+        {
+            get;
+            set;
+        }
+        // The following information could be found from a scan of the the ShipHull
+        // HullModules but the ship designer fills them in for us as a
+        // convenience to save having to keep looking them up.
+
+        // Note there are get properties for: Armor, Shield, FuelCapacity, CargoCapacity, etc
+
+        // The Summary is a 'super' component with properties representing the sum of all 
+        // components added to the ship. 
+        public Component Summary = new Component();
+        // The following items can't be fully sumarised, as their properties can't be simply added.
+        // For example each weapon stack will fire separately at its own initiative.
+        public List<Weapon> Weapons = new List<Weapon>();
+        // The bombing capability of a ship can be summarised by the sum of its 
+        // Conventional bombs and the sum of its smart bombs.
+        public Bomb ConventionalBombs = new Bomb(0, 0, 0, false);
+        public Bomb SmartBombs = new Bomb(0, 0, 0, true);
+
+        // Mine layers which create different types of minefields.
+        // Note we assume that there will be three types of minefields: standard, heavy and speed bump
+        // and they can be distinguised by the % chance of collision. (0.3, 1.0 and 3.5 respectivly).
+        public MineLayer StandardMines = new MineLayer(MineLayer.StandardHitChance);
+        public MineLayer HeavyMines = new MineLayer(MineLayer.HeavyHitChance);
+        public MineLayer SpeedBumpMines = new MineLayer(MineLayer.SpeedTrapHitChance);
+
+        #endregion
+
+        #region Construction
+
+        /// ----------------------------------------------------------------------------
+        /// <summary>
+        /// The image assigned to this ship design, which may be different from the default hull module component image. 
+        /// The ship image shall be selectable when the ship is designed.
+        /// </summary>
+        /// ----------------------------------------------------------------------------
+        public ShipDesign()
+        {
+        }
+
+        #endregion
+
+        #region Methods
+
+        /// ----------------------------------------------------------------------------
+        /// <summary>
+        /// The ship design object has all information that could be found from a scan
+        /// of the the ship hull modules. However scanning these for a particular piece
+        /// of information is inefficient. This method reorganises the information
+        /// to save other routines from having to do this.
+        /// </summary>
+        /// ----------------------------------------------------------------------------
+        public void Update()
+        {
+            if (ShipHull == null) return; // not much of a ship yet
+            Hull hullProperties = null;
+            if (ShipHull.Properties.ContainsKey("Hull"))
+            {
+                hullProperties = ShipHull.Properties["Hull"] as Hull;
+            }
+            else
+                return; // still not much of a ship.
+
+            // Start by copying the basic properties of the hull
+            Summary = new Component(ShipHull);
+
+            // Add those properties which are included with the hull
+            
+            IntegerProperty armor = new IntegerProperty(hullProperties.ArmorStrength);
+            Summary.Properties.Add("Armor", armor);
+            IntegerProperty cargo = new IntegerProperty(hullProperties.BaseCargo);
+            Summary.Properties.Add("Cargo", cargo);
+            Fuel fuel = new Fuel(hullProperties.FuelCapacity, 0);
+            Summary.Properties.Add("Fuel", fuel);
+            
+
+            // Check any non Hull properties of the ShipHull
+            foreach (string key in ShipHull.Properties.Keys)
+            {
+                if (key == "Hull") continue;
+                SumProperty(ShipHull.Properties[key], key, 1);
+            }
+
+            // Then add all of the components fitted to the hull modules.
+            foreach (HullModule module in hullProperties.Modules)
+            {
+                if (module.AllocatedComponent == null) continue;
+                // Sumarise the mass & cost
+                Summary.Mass += module.AllocatedComponent.Mass;
+                Summary.Cost += module.AllocatedComponent.Cost;
+                // Summarise the properties
+                foreach (string key in module.AllocatedComponent.Properties.Keys)
+                {
+                    SumProperty(module.AllocatedComponent.Properties[key], key, module.ComponentCount);
+                }
+            }
+        }
+
+
+        /// ----------------------------------------------------------------------------
+        /// <summary>
+        /// Add a property to the ShipDesign.Summary.
+        /// </summary>
+        /// <param name="property">
+        /// The property to be added to the ShipDesign.Summary
+        /// </param><param name="type">
+        /// The type of the property: one of Component.propertyKeys, normally 
+        /// the key used to obtain it from a Properties dictionary.
+        /// </param>
+        /// ----------------------------------------------------------------------------
+        private void SumProperty(ComponentProperty property, string type, int componentCount)
+        {
+            switch (type)
+            {
+                // properties that can be summed up to a single property
+                case "Armor":
+                case "Capacitor":
+                case "Cargo":
+                case "Cloak":
+                case "Computer":
+                case "Defense":
+                case "Driver":
+                case "Fuel":
+                case "Jammer":
+                case "Movement":
+                case "Orbital Adjuster":
+                case "Radiation":
+                case "Robot":
+                case "Scanner":
+                case "Shield":
+                case "Terraforming":
+                    if (Summary.Properties.ContainsKey(type))
+                    {
+                        ComponentProperty toAdd = property.Clone() as ComponentProperty; // create a copy so scaling doesn't mess it up.
+                        toAdd.Scale(componentCount);
+                        Summary.Properties[type].Add(toAdd);
+                    }
+                    else
+                    {
+                        ComponentProperty toAdd = property.Clone() as ComponentProperty; // create a copy so scaling doesn't mess it up.
+                        toAdd.Scale(componentCount);
+                        Summary.Properties.Add(type, toAdd);
+                    }
+                    break;
+
+                // sum up the components in the slot, but keep a separate entry for 'different components'<-- has different meaning for each of these
+                case "Bomb":
+                    Bomb bomb = property as Bomb;
+                    if (bomb.IsSmart)
+                    {
+                        SmartBombs += bomb * componentCount;
+                    }
+                    else
+                    {
+                        ConventionalBombs += bomb * componentCount;
+                    }
+                    break;
+                case "Mine Layer":
+                    MineLayer layer = property as MineLayer;
+                    if (layer.HitChance == MineLayer.HeavyHitChance)
+                    {
+                        HeavyMines += layer * componentCount;
+                    }
+                    else if (layer.HitChance == MineLayer.SpeedTrapHitChance)
+                    {
+                        SpeedBumbMines += layer * componentCount;
+                    }
+                    else
+                    {
+                        StandardMines += layer * componentCount;
+                    }
+                    break;
+
+                case "Weapon":
+                    Weapon weapon = property as Weapon;
+                    Weapons.Add(weapon * componentCount);
+                    break;
+
+                // keep one of each type only - TODO (priority 2) keep the right one
+                case "Colonizer":
+                case "Engine":
+                case "Gate":
+                case "Hull":
+                case "Mine Layer Efficiency":
+                    if (Summary.Properties.ContainsKey(type))
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Summary.Properties.Add(type, property);
+                    }
+                    break;
+
+                // Ignore in this context
+                case "Hull Affinity":
+                case "Transport Ships Only":
+                    break;
+            }
+
+        }
+
+        #endregion
+
+        #region Properties
+
+        /// ----------------------------------------------------------------------------
+        /// <summary>
+        /// Get the total shield value of this ShipDesign.
+        /// </summary>
+        /// ----------------------------------------------------------------------------
+        public int Shield
+        {
+            get
+            {
+                if (Summary.Properties.ContainsKey("Shield"))
+                {
+                    return ((IntegerProperty)Summary.Properties["Shield"]).Value;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+
+        /// ----------------------------------------------------------------------------
+        /// <summary>
+        /// Get the total Armor value of this ShipDesign.
+        /// </summary>
+        /// ----------------------------------------------------------------------------
+        public int Armor
+        {
+            get
+            {
+                if (Summary.Properties.ContainsKey("Armor"))
+                {
+                    return ((IntegerProperty)Summary.Properties["Armor"]).Value;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+
+        /// ----------------------------------------------------------------------------
+        /// <summary>
+        /// Get the power rating of this ship 
+        /// </summary>
+        public int PowerRating
+        {
+            get
+            {
+                Update();
+                double rating = 0;
+                foreach (Weapon weapon in this.Weapons)
+                {
+                    if (weapon.IsBeam) rating += Global.beamRatingMultiplier[((int)BattleSpeed * 4), 3 - weapon.Range] * (Double)weapon.Power;
+                    else if (weapon.Range > 5) rating += weapon.Power;
+                    else rating += 1.5 * weapon.Power;
+                }
+                return (int)rating;
+            }
+        }
+        public Double missileAccuracy( Double missileBaseAccuracy)
+        {
+            Double increase = 1;
+            if (Summary.Properties.ContainsKey("Computer")) increase = 1.0 + ((Summary.Properties["Computer"] as Computer).Accuracy / 100.0);
+            return missileBaseAccuracy  * increase;  
+        }
+
+        public int NovaRating
+        {
+            get
+            {
+                Update();
+
+                double rating = 0;
+                foreach (Weapon weapon in this.Weapons)
+                {
+                    if (weapon.IsBeam)
+                    {
+                        if (weapon.IsBeam) rating += Global.beamRatingMultiplier[((int)BattleSpeed * 4), 3 - weapon.Range] * (Double)weapon.Power;
+                        else if (weapon.Range > 5) rating += weapon.Power * missileAccuracy(weapon.Accuracy / 100.0);
+                        else rating += 1.5 * weapon.Power * missileAccuracy(weapon.Accuracy / 100.0);
+                    }
+                }
+                if (rating == 0) return 0;
+                else return (int)rating + (Shield + Armor) /2;
+            }
+        }
+
+
+        /// <summary>
+        /// Get the total FuelCapacity of this ShipDesign.
+        /// </summary>
+        /// ----------------------------------------------------------------------------
+        public int FuelCapacity
+        {
+            get
+            {
+                if (Summary.Properties.Count == 0)
+                {
+                    Update();
+                }
+                if (Summary.Properties.ContainsKey("Fuel"))
+                {
+                    return ((Fuel)Summary.Properties["Fuel"]).Capacity;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+
+        /// ----------------------------------------------------------------------------
+        /// <summary>
+        /// Get the total cargo capacity of this design.
+        /// </summary>
+        /// ----------------------------------------------------------------------------
+        public int CargoCapacity
+        {
+            get
+            {
+                if (Summary.Properties.ContainsKey("Cargo"))
+                {
+                    return ((IntegerProperty)Summary.Properties["Cargo"]).Value;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+
+        /// ----------------------------------------------------------------------------
+        /// <summary>
+        /// Get the dock capacity of this ShipDesign (0 if none).
+        /// </summary>
+        /// ----------------------------------------------------------------------------
+        public int DockCapacity
+        {
+            get
+            {
+                if (Blueprint.Properties.ContainsKey("Hull"))
+                {
+                    return ((Hull)Blueprint.Properties["Hull"]).DockCapacity;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+
+        /// ----------------------------------------------------------------------------
+        /// <summary>
+        /// True if the ship design includes a scanner.
+        /// </summary>
+        public bool CanScan
+        {
+            get
+            {
+                if (Summary.Properties.ContainsKey("Scanner"))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get the normal scanner capability of this ShipDesign (0 if none).
+        /// </summary>
+        /// ----------------------------------------------------------------------------
+        public int NormalScan
+        {
+            get
+            {
+                if (Summary.Properties.ContainsKey("Scanner"))
+                {
+                    return ((Scanner)Summary.Properties["Scanner"]).NormalScan;
+                }
+                else
+                {
+                    if (Name.Contains("Mineral Packet")) return 10; else return 0;
+                }
+            }
+        }
+
+        /// ----------------------------------------------------------------------------
+        /// <summary>
+        /// Get the penetrating scanner ability of this ShipDesign (0 if none).
+        /// </summary>
+        /// ----------------------------------------------------------------------------
+        public int PenetratingScan
+        {
+            get
+            {
+                if (Summary.Properties.ContainsKey("Scanner"))
+                {
+                    return ((Scanner)Summary.Properties["Scanner"]).PenetratingScan;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+
+        /// ----------------------------------------------------------------------------
+        /// <summary>
+        /// Get the engine component fitted to this ShipDesign (null if none).
+        /// </summary>
+        /// ----------------------------------------------------------------------------
+        public Engine Engine
+        {
+            get
+            {
+                if (Summary.Properties.ContainsKey("Engine"))
+                {
+                    return (Engine)Summary.Properties["Engine"];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Get the highest speed the ship can travel for 0 fuel.
+        /// </summary>
+        public int FreeWarpSpeed
+        {
+            get
+            {
+                return Engine.FreeWarpSpeed; 
+            }
+        }
+
+        /// ----------------------------------------------------------------------------
+        /// <summary>
+        /// Get this design's battle speed (0.0 if it can't move, i.e. star-base).
+        /// </summary>
+        /// ----------------------------------------------------------------------------
+        public double BattleSpeed
+        {
+            get
+            {
+                if (IsStarbase)
+                {
+                    return 0.0;
+                }
+
+                // From the manual: Movement = (Ideal_Speed_of_Engine - 4) / 4 - (weight / 70 /4 / Number_of_Engines) + (Number_ofManeuvering_Jets / 4) + (Num_Overthrusters / 2)
+                double speed = 0;
+                if (Summary.Properties.ContainsKey("Engine"))
+                {
+                    Engine engine = (Engine)Summary.Properties["Engine"];
+                    speed = (((double)engine.OptimalSpeed) - 4.0) / 4.0;
+                    speed -= Summary.Mass / 70.0 / 4.0 / (double)Number_of_Engines;
+                }
+                if (Summary.Properties.ContainsKey("Battle Movement"))
+                {
+                    speed += ((DoubleProperty)Summary.Properties["Battle Movement"]).Value;
+                }
+                // ship speed is always between 0.5 and 2.5 in increments of 0.25
+                if (speed < 0.5)
+                {
+                    speed = 0.5; // Set a minimum ship speed.
+                }
+                if (speed > 2.5)
+                {
+                    speed = 2.5;
+                }
+                speed = ((double)((int)((speed * 4.0) + 0.5))) / 4.0;
+                return speed;
+            }
+        }
+
+        /// ----------------------------------------------------------------------------
+        /// <summary>
+        /// Get the total beam deflection capability.
+        /// </summary>
+        /// ----------------------------------------------------------------------------
+        public double BeamDeflectors
+        {
+            get
+            {
+                if (Summary.Properties.ContainsKey("Deflector"))
+                {
+                    return ((ProbabilityProperty)Summary.Properties["Deflector"]).Value;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+
+        /// ----------------------------------------------------------------------------
+        /// <summary>
+        /// Get a count of the number of engines. Assumes there is only one engine stack.
+        /// </summary>
+        /// ----------------------------------------------------------------------------
+        public int Number_of_Engines
+        {
+            get
+            {
+                if (Blueprint.Properties.ContainsKey("Hull"))
+                {
+                    foreach (HullModule module in Hull.Modules)
+                    {
+                        if (module.AllocatedComponent != null && module.AllocatedComponent.Type == ItemType.Engine)
+                        {
+                            return module.ComponentCount;
+                        }
+                    }
+                }
+                return 0;
+            }
+        }
+
+
+        /// ----------------------------------------------------------------------------
+        /// <summary>
+        /// Determine if this is a starbase hull.
+        /// </summary>
+        /// ----------------------------------------------------------------------------
+        public bool IsStarbase
+        {
+            get
+            {
+                if (Blueprint.Properties.ContainsKey("Hull"))
+                {
+                    return Hull.IsStarbase;
+                }
+                // It doesn't even have a Hull!
+                Report.Error("ShipDesign.IsStarbase called on a design with no hull.");
+                return false;
+            }
+        }
+
+
+        /// ----------------------------------------------------------------------------
+        /// <summary>
+        /// Get if this is a starbase that can provide unlimited fuel.
+        /// </summary>
+        /// ----------------------------------------------------------------------------
+        public bool CanRefuel
+        {
+            get
+            {
+                if (Blueprint.Properties.ContainsKey("Hull"))
+                {
+                    if (Blueprint.Properties.ContainsKey("Fuel"))
+                        return (Hull.CanRefuel || (Blueprint.Properties["Fuel"] as Fuel).Generation > 0);
+                    else return Hull.CanRefuel;
+                }
+                // It doesn't even have a Hull!
+                Report.Error("ShipDesign.CanRefuel called on a design with no hull.");
+                return false;
+            }
+        }
+        public int HealsOthersPercent
+        {
+            get
+            {
+                if (Blueprint.Properties.ContainsKey("Hull"))
+                {
+                    return Hull.HealsOthersPercent;
+                }
+                // It doesn't even have a Hull!
+                Report.Error("ShipDesign.HealsOthersPercent called on a design with no hull.");
+                return 0;
+            }
+        }
+
+
+        /// ----------------------------------------------------------------------------
+        /// <summary>
+        /// Get the initiative of the ShipDesign, including computers but not weapon initiative.
+        /// </summary>
+        /// ----------------------------------------------------------------------------
+        public int Initiative
+        {
+            get
+            {
+                int initiative = 0;
+                if (Blueprint.Properties.ContainsKey("Hull"))
+                {
+                    initiative += ((Hull)Blueprint.Properties["Hull"]).BattleInitiative;
+                }
+                if (Summary.Properties.ContainsKey("Computer"))
+                {
+                    initiative += ((Computer)Summary.Properties["Computer"]).Initiative;
+                }
+                return initiative;
+            }
+        }
+
+        /// <summary>
+        /// Get total bomb capability. 
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        public Bomb BombCapabilityConventional
+        {
+            get
+            {
+                Update();
+                return ConventionalBombs;
+            }
+        }
+        public Bomb BombCapabilitySmart
+        {
+            get
+            {
+                Update();
+                return SmartBombs;
+            }
+        }
+
+        /// <summary>
+        /// Get if the ship is a bomber.
+        /// </summary>
+        public bool IsBomber
+        {
+            get
+            {
+                Update();
+                if (ConventionalBombs.PopKill == 0 && SmartBombs.PopKill == 0)
+                {
+                    return false;
+                }
+                return true;
+            }
+        }
+        
+        /// <summary>
+        /// Get total mine laying capacity for this ship.
+        /// </summary>
+        /// <remarks>
+        /// TODO (priority 6) Client code must handle heavy and speed trap mines too.
+        /// </remarks>
+        public int MineCount
+        {
+            get
+            {
+                Update();
+                return StandardMines.LayerRate;
+            }
+        }
+        public int HeavyMineCount
+        {
+            get
+            {
+                Update();
+                return HeavyMines.LayerRate;
+            }
+        }
+        public int SpeedBumpMineCount
+        {
+            get
+            {
+                Update();
+                return SpeedBumpMines.LayerRate;
+            }
+        }
+
+        /// <summary>
+        /// Get if this ship has weapons.
+        /// </summary>
+        public bool HasWeapons
+        {
+            get
+            {
+                Update();
+                if (Weapons == null)  return false;
+                if (Weapons.Count == 0) return false;
+                return true;
+            }
+        }
+        
+        /// <summary>
+        /// The range of the ship's normal scanners.
+        /// </summary>
+        public int ScanRangeNormal
+        {
+            get
+            {
+                Update();
+                return NormalScan;
+            }
+        }
+
+        /// <summary>
+        /// The range of the ship's penetrating scanners.
+        /// </summary>
+        public int ScanRangePenetrating
+        {
+            get
+            {
+                Update();
+                return PenetratingScan;
+            }
+        }
+        
+        /// <summary>
+        /// Checks if ship can colonize.
+        /// </summary>
+        public bool CanColonize
+        {
+            get
+            {
+                return Summary.Properties.ContainsKey("Colonizer");
+            }
+        }
+        
+        /// <summary>
+        /// Parametric Constructors. Stores just the
+        /// Design Key for later lookup.
+        /// </summary>
+        /// <param name="designkey"></param>
+        public ShipDesign(long designkey)
+            : base(designkey)
+        {
+            Key = designkey;
+            Obsolete = false;
+        }
+
+        /// <summary>
+        /// Copy Constructor.
+        /// </summary>
+        /// <param name="copy">ShipDesign to copy.</param>
+        public ShipDesign(ShipDesign copy)
+            : base(copy)
+        {
+            copy.Update();
+            Icon = (ShipIcon)copy.Icon.Clone();
+            Blueprint = new Component(copy.Blueprint);
+            Obsolete = false;
+            Update();
+        }
+
+        /// <summary>
+        /// The ship design object has all information that could be found from a scan
+        /// of the the ship hull modules. However scanning these for a particular piece
+        /// of information is inefficient. This method reorganizes the information
+        /// to save other routines from having to do this.
+        /// </summary>
+        public void Update()
+        {
+            // We keep Ship Designs populated with different depths of knowledge and this module
+            //  has to guess how much information has already been populated and fill in the rest
+            //  sometimes we guess wrong and don't add enough (like fuel) or we keep adding components
+            //  over and over again (like weapons)
+            // The concept of only populating enough of the design to get the properties we need sounds good
+            //  but in practice we end up clearing and reloading the design over and over because
+            //  we never know how much detail it contains.
+
+            if (Blueprint == null)
+            {
+                return; // not much of a ship yet
+            }
+
+            if ( ! Blueprint.Properties.ContainsKey("Hull"))
+            {
+                return; // still not much of a ship.
+            }
+            Weapons.Clear();
+            Summary.Properties.Clear(); // StarMapInitialiser.prepareDesign cs.Update enters here with Summary.Properties.engine containing a hullAfinity so clear the whole thing every time  
+            StandardMines = new MineLayer(MineLayer.StandardHitChance);                            // May be just an initialisation problem with Summary.Properties?
+            HeavyMines = new MineLayer(MineLayer.HeavyHitChance);
+            SpeedBumpMines = new MineLayer(MineLayer.SpeedTrapHitChance);
+            // Start by copying the basic properties of the hull
+            Summary = new Component(Blueprint);
+
+            // Add those properties which are included with the hull
+
+            IntegerProperty armor = new IntegerProperty(Hull.ArmorStrength);
+            Summary.Properties.Add("Armor", armor);
+            IntegerProperty cargo = new IntegerProperty(Hull.BaseCargo);
+            Summary.Properties.Add("Cargo", cargo);
+
+            if ( ! Summary.Properties.ContainsKey("Fuel"))
+            {
+                Fuel fuel = new Fuel(Hull.FuelCapacity, 0);
+                Summary.Properties.Add("Fuel", fuel);
+            }
+            // Check any non Hull properties of the ShipHull
+            foreach (string key in Blueprint.Properties.Keys)
+            {
+                if (key != "Hull")
+                {
+                SumProperty(Blueprint.Properties[key], key, 1);
+                }
+            }
+
+            // Then add all of the components fitted to the hull modules.
+            foreach (HullModule module in Hull.Modules)
+            {
+                if (module.AllocatedComponent != null)
+                {
+                    AllComponents allComponents = new AllComponents(true,"ShipDesign");
+                    if (module.AllocatedComponent.Name != null)
+                    {
+                        module.AllocatedComponent =  allComponents.Fetch(module.AllocatedComponent.Name);
+                        if (module.AllocatedComponent.Type == ItemType.Engine)
+                        {
+                            (module.AllocatedComponent.Properties["Engine"] as Engine).OptimalSpeed
+                                  = (allComponents.Fetch(module.AllocatedComponent.Name).Properties["Engine"] as Engine).OptimalSpeed;
+                            (module.AllocatedComponent.Properties["Engine"] as Engine).FastestSafeSpeed
+                                  = (allComponents.Fetch(module.AllocatedComponent.Name).Properties["Engine"] as Engine).FastestSafeSpeed;
+                        }
+                    }
+                    
+                        // Sumarise the mass & cost
+                        Summary.Mass += module.AllocatedComponent.Mass;
+                    Summary.Cost += module.AllocatedComponent.Cost;
+                    // Summarise the properties
+                    
+                    foreach (string key in module.AllocatedComponent.Properties.Keys)
+                    {
+                        SumProperty(module.AllocatedComponent.Properties[key], key, module.ComponentCount);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Add a property to the ShipDesign.Summary.
+        /// </summary>
+        /// <param name="property">
+        /// The property to be added to the ShipDesign.Summary.
+        /// </param><param name="type">
+        /// The type of the property: one of Component.propertyKeys, normally 
+        /// the key used to obtain it from a Properties dictionary.
+        /// </param>
+        private void SumProperty(ComponentProperty property, string type, int componentCount)
+        {
+            switch (type)
+            {
+                // properties that can be summed up to a single property
+                case "Armor":
+                case "Capacitor":
+                case "Cargo":
+                case "Cloak":
+                case "Defense":
+                case "Driver":
+                case "Fuel":
+                case "Movement":
+                case "Battle Movement":
+                case "Orbital Adjuster":
+                case "Radiation":
+                case "Robot":
+                case "Scanner":
+                case "Shield":
+                case "Terraforming":
+                    if (Summary.Properties.ContainsKey(type))
+                    {
+                        ComponentProperty toAdd = property.Clone() as ComponentProperty; // create a copy so scaling doesn't mess it up.
+                        toAdd.Scale(componentCount);
+                        Summary.Properties[type].Add(toAdd);
+                    }
+                    else
+                    {
+                        ComponentProperty toAdd = property.Clone() as ComponentProperty; // create a copy so scaling doesn't mess it up.
+                        toAdd.Scale(componentCount);
+                        Summary.Properties.Add(type, toAdd);
+                    }
+                    break;
+                case "Jammer":
+                    if (Summary.Properties.ContainsKey(type))
+                    {
+                        ProbabilityProperty toAdd = property.Clone() as ProbabilityProperty; // create a copy 
+                        toAdd = toAdd * componentCount;
+                        Summary.Properties[type].Add(toAdd);
+                    }
+                    else
+                    {
+                        ProbabilityProperty toAdd = property.Clone() as ProbabilityProperty; // create a copy 
+                        toAdd = toAdd * componentCount;
+                        Summary.Properties.Add(type, toAdd);
+                    }
+                    break;
+                case "Computer":
+                    if (Summary.Properties.ContainsKey(type))
+                    {
+                        Computer toAdd = property.Clone() as Computer; // create a copy 
+                        toAdd = toAdd * componentCount;
+                        Summary.Properties[type].Add(toAdd);
+                    }
+                    else
+                    {
+                        Computer toAdd = property.Clone() as Computer; // create a copy 
+                        toAdd = toAdd * componentCount;
+                        Summary.Properties.Add(type, toAdd);
+                    }
+                    break;
+
+
+                // sum up the components in the slot, but keep a separate entry for 'different components'<-- has different meaning for each of these
+                case "Bomb":
+                    Bomb bomb = property as Bomb;
+                    if (bomb.IsSmart)
+                    {
+                        SmartBombs += bomb * componentCount;
+                    }
+                    else
+                    {
+                        ConventionalBombs += bomb * componentCount;
+                    }
+                    break;
+                case "Mine Layer":
+                    MineLayer layer = property as MineLayer;
+                    if (layer.HitChance == MineLayer.HeavyHitChance)
+                    {
+                        if (HeavyMines.LayerRate == 0) HeavyMines = layer;   // Before this point HeavyMines was just a Standard Mine Layer with the HeavyMines HitChance so put "Real" values in the other properties by taking a copy
+                        else HeavyMines += layer * componentCount;
+                    }
+                    else if (layer.HitChance == MineLayer.SpeedTrapHitChance)
+                    {
+                        if (SpeedBumpMines.LayerRate == 0) SpeedBumpMines = layer;   // Before this point SpeedBumpMines was just a Standard Mine Layer with the SpeedBumpMines HitChance so put "Real" values in the other properties by taking a copy
+                        else SpeedBumpMines += layer * componentCount;
+                    }
+                    else
+                    {
+                        StandardMines += layer * componentCount;
+                    }
+                    break;
+
+                case "Weapon":
+                    Weapon weapon = property as Weapon;
+                    Weapons.Add(weapon * componentCount);
+                    break;
+
+                // keep one of each type only - TODO (priority 2) keep the right one
+                case "Colonizer":
+                case "Engine":
+                case "Gate":
+                case "Hull":
+                case "Mine Layer Efficiency":
+                    if (Summary.Properties.ContainsKey(type))
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Summary.Properties.Add(type, property);
+                    }
+                    break;
+
+                // Ignore in this context
+                case "Hull Affinity":
+                case "Transport Ships Only":
+                    break;
+            }
+        }
+        
+        
+        /// <summary>
+        /// Calculate fuel consumption.
+        /// </summary>
+        /// <param name="warp">The speed the ship is travelling.</param>
+        /// <param name="race">The race the ship belongs too.</param>
+        /// <param name="cargoMass">The mass of any cargo carried (ship mass will be added automatically).</param>
+        /// <returns>The ship fuel consumption rate in mg per year.</returns>
+        /// <remarks>
+        /// Ship_fuel_usage = ship_mass x efficiency x distance / 200
+        ///
+        /// As distance = speed * time, and we are setting time to 1 year, then we can
+        /// just drop speed into the above equation and end up with mg per year. 
+        ///
+        /// If the secondary racial trait "improved fuel efficiency" is set then
+        /// fuel consumption is 15% less than advertised.
+        /// </remarks>
+        public double FuelConsumption(int warp, Race race, int cargoMass)
+        {
+            if (warp == 0)
+            {
+                return 0;
+            }
+            if (Engine == null)
+            {
+                return 0; // may be a star base
+            }
+            int generation = 0;
+            if (Summary.Properties.ContainsKey("Fuel"))
+            {
+                generation = ((Fuel)Summary.Properties["Fuel"]).Generation;
+            }
+            double fuelFactor = Engine.FuelConsumption[warp - 1];
+            double efficiency = fuelFactor / 100.0;
+            double speed = warp * warp;
+
+            double fuelConsumption = (Mass + cargoMass) * efficiency * speed / 200.0;
+
+            if (race.HasTrait("IFE"))
+            {
+                fuelConsumption *= 0.85;
+            }
+            fuelConsumption -=  generation;
+
+            return fuelConsumption;
+        }
+        
+        
+        /// <summary>
+        /// Removes all allocated components on this design,
+        /// but keeps the Hull.
+        /// </summary>
+        public void ClearAllocated()
+        {
+            foreach (HullModule module in Hull.Modules)
+            {
+                module.Empty();
+            }
+        }
+        
+        
+        /// <summary>
+        /// Generate an XmlElement representation of the ShipDesign for saving to file.
+        /// Note this uses the minimal approach of storing the ship hull object 
+        /// (and recursing through all components). All figured values will need to be 
+        /// recalculated on loading.
+        /// </summary>
+        /// <param name="xmldoc">The parent XmlDocument</param>
+        /// <returns>An XmlElement representing the ShipDesign</returns>
+        /// ----------------------------------------------------------------------------
+        public new XmlElement ToXml(XmlDocument xmldoc)
+        {
+            XmlElement xmlelShipDesign = xmldoc.CreateElement("ShipDesign");
+            xmlelShipDesign.AppendChild(base.ToXml(xmldoc));
+            Global.SaveData(xmldoc, xmlelShipDesign, "Obsolete", Obsolete ? 1 : 0);
+            Global.SaveData(xmldoc, xmlelShipDesign, "Icon", Icon.Source);
+            xmlelShipDesign.AppendChild(Blueprint.ToXml(xmldoc));            
+            return xmlelShipDesign;
+        }
+
+
+        /// ----------------------------------------------------------------------------
+        /// <summary>
+        /// Load: Initialising Constructor from an xml node.
+        /// </summary>
+        /// <param name="node">A "ShipDesign" node Nova save file (xml document)</param>
+        /// ----------------------------------------------------------------------------
+        public ShipDesign(XmlNode node)
+            : base(node)
+        {
+            XmlNode mainNode = node.FirstChild;
+            while (mainNode != null)
+            {
+                try
+                {
+                    switch (mainNode.Name.ToLower())
+                    {
+                        case "component":
+                            Blueprint = new Component(mainNode);
+                            break;
+                        case "obsolete":
+                            Obsolete =  (int.Parse(mainNode.FirstChild.Value) == 1);
+                            break;
+                        case "icon":
+                            string iconSource = mainNode.FirstChild.Value;
+                            Icon = AllShipIcons.Data.GetIconBySource(iconSource);
+                            break;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Report.Error("Error loading Ship Design : " + e.Message);
+                }
+                mainNode = mainNode.NextSibling;
+            }
+        }
+    }
+}
+

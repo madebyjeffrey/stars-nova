@@ -1,0 +1,8 @@
+F:\Stars!Nova\Repos\svn\Build\Debug\components.xml
+F:\Stars!Nova\Repos\svn\Build\Debug\Nova.Server.dll
+F:\Stars!Nova\Repos\svn\Build\Debug\Nova.Server.pdb
+F:\Stars!Nova\Repos\svn\ServerState\obj\Debug\Server.csprojAssemblyReference.cache
+F:\Stars!Nova\Repos\svn\ServerState\obj\Debug\Server.csproj.CoreCompileInputs.cache
+F:\Stars!Nova\Repos\svn\ServerState\obj\Debug\Server.csproj.CopyComplete
+F:\Stars!Nova\Repos\svn\ServerState\obj\Debug\Nova.Server.dll
+F:\Stars!Nova\Repos\svn\ServerState\obj\Debug\Nova.Server.pdb

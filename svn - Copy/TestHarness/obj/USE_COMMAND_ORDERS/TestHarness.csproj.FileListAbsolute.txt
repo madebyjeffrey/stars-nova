@@ -1,0 +1,15 @@
+F:\Stars!Nova\Repos\svn\TestHarness\bin\USE_COMMAND_ORDERS\components.xml
+F:\Stars!Nova\Repos\svn\TestHarness\bin\USE_COMMAND_ORDERS\TestHarness.exe
+F:\Stars!Nova\Repos\svn\TestHarness\bin\USE_COMMAND_ORDERS\TestHarness.pdb
+F:\Stars!Nova\Repos\svn\TestHarness\bin\USE_COMMAND_ORDERS\Nova.Common.dll
+F:\Stars!Nova\Repos\svn\TestHarness\bin\USE_COMMAND_ORDERS\Nova.Tests.dll
+F:\Stars!Nova\Repos\svn\TestHarness\bin\USE_COMMAND_ORDERS\Nova.Server.dll
+F:\Stars!Nova\Repos\svn\TestHarness\bin\USE_COMMAND_ORDERS\nunit.framework.dll
+F:\Stars!Nova\Repos\svn\TestHarness\bin\USE_COMMAND_ORDERS\Nova.Common.pdb
+F:\Stars!Nova\Repos\svn\TestHarness\bin\USE_COMMAND_ORDERS\Nova.Tests.pdb
+F:\Stars!Nova\Repos\svn\TestHarness\bin\USE_COMMAND_ORDERS\Nova.Server.pdb
+F:\Stars!Nova\Repos\svn\TestHarness\obj\USE_COMMAND_ORDERS\TestHarness.csprojAssemblyReference.cache
+F:\Stars!Nova\Repos\svn\TestHarness\obj\USE_COMMAND_ORDERS\TestHarness.csproj.CoreCompileInputs.cache
+F:\Stars!Nova\Repos\svn\TestHarness\obj\USE_COMMAND_ORDERS\TestHarness.csproj.CopyComplete
+F:\Stars!Nova\Repos\svn\TestHarness\obj\USE_COMMAND_ORDERS\TestHarness.exe
+F:\Stars!Nova\Repos\svn\TestHarness\obj\USE_COMMAND_ORDERS\TestHarness.pdb

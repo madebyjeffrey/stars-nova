@@ -1,0 +1,14 @@
+F:\Stars!Nova\Repos\svn\GameFileInflator\bin\Debug\components.xml
+F:\Stars!Nova\Repos\svn\GameFileInflator\bin\Debug\GameFileInflator.exe.config
+F:\Stars!Nova\Repos\svn\GameFileInflator\bin\Debug\GameFileInflator.exe
+F:\Stars!Nova\Repos\svn\GameFileInflator\bin\Debug\GameFileInflator.pdb
+F:\Stars!Nova\Repos\svn\GameFileInflator\bin\Debug\Nova.Common.dll
+F:\Stars!Nova\Repos\svn\GameFileInflator\bin\Debug\Nova.Common.pdb
+F:\Stars!Nova\Repos\svn\GameFileInflator\obj\Debug\GameFileInflator.csprojAssemblyReference.cache
+F:\Stars!Nova\Repos\svn\GameFileInflator\obj\Debug\GameFileInflator.GameFileInflator.resources
+F:\Stars!Nova\Repos\svn\GameFileInflator\obj\Debug\GameFileInflator.Properties.Resources.resources
+F:\Stars!Nova\Repos\svn\GameFileInflator\obj\Debug\GameFileInflator.csproj.GenerateResource.cache
+F:\Stars!Nova\Repos\svn\GameFileInflator\obj\Debug\GameFileInflator.csproj.CoreCompileInputs.cache
+F:\Stars!Nova\Repos\svn\GameFileInflator\obj\Debug\GameFileInflator.csproj.CopyComplete
+F:\Stars!Nova\Repos\svn\GameFileInflator\obj\Debug\GameFileInflator.exe
+F:\Stars!Nova\Repos\svn\GameFileInflator\obj\Debug\GameFileInflator.pdb
