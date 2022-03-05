@@ -107,7 +107,10 @@
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -568,7 +571,6 @@
     </Content>
     <None Include="Nova.ruleset" />
     <None Include="Nova.xcf" />
-    <None Include="Nova_TemporaryKey.pfx" />
     <Content Include="NOTICE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

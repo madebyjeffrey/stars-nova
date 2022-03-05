@@ -369,7 +369,10 @@ namespace Nova.WinForms.Gui
                                 thisMessage.Event = new Mappable(new NovaPoint(X, Y));
                             }
                         }
-                        else if ((key != 0) && (key < 0x40000000000000)) thisMessage.Event = knownFleets[key];  //fleet key
+                        else if ((key != 0) && (key < 0x40000000000000))
+                        {
+                            if (knownFleets.ContainsKey(key)) thisMessage.Event = knownFleets[key];  //fleet key
+                        }
                         //else thisMessage.Event = (object)thisMessage.EventString;  // BattleReport was loaded early so LinkIntelReferences() could populate it
                     }
                 }

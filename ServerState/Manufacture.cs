@@ -42,6 +42,8 @@ namespace Nova.Server
             this.serverState = serverState;
         }
 
+
+        /// ----------------------------------------------------------------------------
         /// <summary>
         /// Manufacture the items in a production queue (resources permitting).
         /// </summary>
@@ -103,6 +105,8 @@ namespace Nova.Server
         }
         
 
+
+        /// ----------------------------------------------------------------------------
         /// <summary>
         /// Create a new ship or starbase at the specified location. Starbases are
         /// handled just like ships except that they cannot move.
@@ -142,7 +146,8 @@ namespace Nova.Server
 
                 //TODO mineral packet has random destination at the moment
                 Random random = new Random();
-                int dest = random.Next(1, serverState.AllEmpires.Count - 1);
+                int dest = random.Next(1, serverState.AllEmpires.Count);
+                if (dest == fleet.Owner) dest = serverState.AllEmpires.Count - 1;
                 Star destination = null;
                 foreach (Star lamb in serverState.AllEmpires[dest].OwnedStars.Values)
                 {
@@ -191,7 +196,6 @@ namespace Nova.Server
                     star.Starbase = null;
                     // waypointTasks.Scrap(star.Starbase, star, false);
                 }
-                
                 star.Starbase = fleet;
                 fleet.Type = ItemType.Starbase;
                 fleet.Name = star.Name + " " + fleet.Type;

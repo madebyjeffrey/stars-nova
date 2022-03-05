@@ -1,0 +1,32 @@
+/* DATEI: articles.css für stars.arglos.net */
+
+body { max-width:1300px; overflow:auto; }
+h1,h2,h3,h4,p,ul,ol,li,div,td,th,address,blockquote,nobr,b,i { font-family:Arial,sans-serif; }
+p,ul,ol,li,div,td,th,address,blockquote,nobr,b,i { font-size:20px; }
+
+h1 { font-size:32px; margin-bottom:18px;margin-top:30px; }
+h2 { font-size:27px; margin-bottom:18px;margin-top:30px; }
+h3 { font-size:23px; margin-bottom:18px; }
+h4 { font-size:20px; margin-bottom:18px; }
+small { font-size:16px; }
+
+.rand15 { margin-left:15px; margin-right:15px; margin-top:15px; margin-bottom:15px; }
+.rand25 { margin-left:25px; margin-right:25px; margin-top:15px; margin-bottom:15px; }
+.pad10 { padding:10px; }
+
+.toc {
+	font-family:Arial,sans-serif;
+	font-size:12px;
+	font-weight:bold;
+	line-height:18px;
+	text-align:right;
+	margin-right:10px;
+	margin-bottom:2px;
+	margin-top:10px;
+	}
+
+.leftlist {
+	margin: 0 0 0 19px;
+	padding:0;
+	list-style:disc;
+	}

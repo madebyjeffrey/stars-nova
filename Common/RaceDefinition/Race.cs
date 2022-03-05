@@ -354,7 +354,7 @@ namespace Nova.Common
             int minv = tol.MinimumValue;
             int maxv = tol.MaximumValue;
             int span = Math.Abs(maxv - minv);
-            double totalClicksFromCenterToEdge = span / 2;
+            double totalClicksFromCenterToEdge = span / 2.0;
             double centre = minv + totalClicksFromCenterToEdge;
             double clicksFromCenter = Math.Abs(centre - starValue);
 

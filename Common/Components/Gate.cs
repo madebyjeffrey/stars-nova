@@ -26,11 +26,11 @@
 // ===========================================================================
 #endregion
 
+using System;
+using System.Xml;
+
 namespace Nova.Common.Components
 {
-    using System;
-    using System.Xml;
-
     /// <summary>
     /// Gate class.
     /// </summary>
@@ -42,17 +42,22 @@ namespace Nova.Common.Components
 
         #region Construction
 
-         /// <summary>
+        /// ----------------------------------------------------------------------------
+        /// <summary>
         /// Default constructor.
         /// </summary>
+        /// ----------------------------------------------------------------------------
         public Gate()
         {
         }
 
+
+        /// ----------------------------------------------------------------------------
         /// <summary>
         /// Copy constructor.
         /// </summary>
         /// <param name="existing">An existing <see cref="Gate"/> to copy.</param>
+        /// ----------------------------------------------------------------------------
         public Gate(Gate existing)
         {
             this.SafeHullMass = existing.SafeHullMass;
@@ -63,10 +68,12 @@ namespace Nova.Common.Components
 
         #region Interface IColneable
 
+        /// ----------------------------------------------------------------------------
         /// <summary>
         /// Implement the ICloneable interface so properties can be cloned.
         /// </summary>
         /// <returns>A copy of this <see cref="Gate"/>.</returns>
+        /// ----------------------------------------------------------------------------
         public override object Clone()
         {
             return new Gate(this);
@@ -94,6 +101,7 @@ namespace Nova.Common.Components
             return;
         }
 
+        /// ----------------------------------------------------------------------------
         /// <summary>
         /// Provide a way to add properties in the ship design.
         /// (Gates are not additive, see the remarks).
@@ -105,11 +113,14 @@ namespace Nova.Common.Components
         /// It is possible to have more than one gate on a hull, and it does
         /// make sense to use the best capabilities of each gate.
         /// </remarks>
+        /// ----------------------------------------------------------------------------
         public static Gate operator +(Gate op1, Gate op2)
         {
             return op1;
         }
 
+
+        /// ----------------------------------------------------------------------------
         /// <summary>
         /// Operator* to scale (multiply) properties in the ship design.
         /// Gates are not cumulative, see the remarks for the operator+.
@@ -117,6 +128,7 @@ namespace Nova.Common.Components
         /// <param name="op1"></param>
         /// <param name="scalar"></param>
         /// <returns></returns>
+        /// ----------------------------------------------------------------------------
         public static Gate operator *(Gate op1, int scalar)
         {
             return op1;
@@ -126,12 +138,14 @@ namespace Nova.Common.Components
 
         #region Load Save Xml
 
+        /// ----------------------------------------------------------------------------
         /// <summary>
-        /// Load from XML: initializing constructor from an XML node.
+        /// Load from XML: Initialising constructor from an XML node.
         /// </summary>
         /// <param name="node">An <see cref="XmlNode"/> within 
         /// a Nova component definition file (xml document).
         /// </param>
+        /// ----------------------------------------------------------------------------
         public Gate(XmlNode node)
         {
             XmlNode subnode = node.FirstChild;
@@ -156,11 +170,14 @@ namespace Nova.Common.Components
             }
         }
 
+
+        /// ----------------------------------------------------------------------------
         /// <summary>
-        /// Save: Serialize this property to an <see cref="XmlElement"/>.
+        /// Save: Serialise this property to an <see cref="XmlElement"/>.
         /// </summary>
         /// <param name="xmldoc">The parent <see cref="XmlDocument"/>.</param>
         /// <returns>An <see cref="XmlElement"/> representation of the Property.</returns>
+        /// ----------------------------------------------------------------------------
         public override XmlElement ToXml(XmlDocument xmldoc)
         {
             XmlElement xmlelProperty = xmldoc.CreateElement("Property");

@@ -27,10 +27,12 @@ namespace Nova.Server
     using Nova.Common;
     using Nova.Common.Components;
 
+    /// ----------------------------------------------------------------------------
     /// <summary>
     /// Class to identify weapon capability and their targets which is sortable by
     /// weapon system initiative.
     /// </summary>
+    /// ----------------------------------------------------------------------------
     public class WeaponDetails : IComparable
     {
         public struct TargetPercent

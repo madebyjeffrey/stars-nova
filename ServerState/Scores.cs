@@ -54,6 +54,8 @@ namespace Nova.Server
             return scores;
         }
 
+
+        /// ----------------------------------------------------------------------------
         /// <summary>
         /// Build a <see cref="ScoreRecord"/> for a given race.
         /// </summary>
@@ -172,6 +174,8 @@ namespace Nova.Server
             return score;
         }
 
+
+        /// ----------------------------------------------------------------------------
         /// <summary>
         /// Set the rank for all races.
         /// </summary>

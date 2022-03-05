@@ -26,11 +26,12 @@
 // ===========================================================================
 #endregion
 
+using System;
+using System.Xml;
+using Nova.Common;
+
 namespace Nova.Common.Components
 {
-    using System;
-    using System.Xml;
-    using Nova.Common;
 
     [Serializable]
     public class Defense : ComponentProperty
@@ -39,26 +40,32 @@ namespace Nova.Common.Components
 
         #region Construction
 
+        /// ----------------------------------------------------------------------------
         /// <summary>
         /// Default constructor.
         /// </summary>
-        public Defense() 
-        {
-        }
+        /// ----------------------------------------------------------------------------
+        public Defense() { }
 
+
+        /// ----------------------------------------------------------------------------
         /// <summary>
-        /// Initializing constructor.
+        /// Initialising constructor.
         /// </summary>
-        /// <param name="existing">Defense value of 1 defense of this type.</param>
+        /// <param name="existing">Defence value of 1 defence of this type.</param>
+        /// ----------------------------------------------------------------------------
         public Defense(double existing)
         {
             this.Value = existing;
         }
 
+
+        /// ----------------------------------------------------------------------------
         /// <summary>
         /// Copy constructor.
         /// </summary>
         /// <param name="existing">An existing object to copy.</param>
+        /// ----------------------------------------------------------------------------
         public Defense(Defense existing)
         {
             this.Value = existing.Value;
@@ -68,10 +75,12 @@ namespace Nova.Common.Components
 
         #region Interface ICloneable
 
+        /// ----------------------------------------------------------------------------
         /// <summary>
         /// Implement the ICloneable interface so properties can be cloned.
         /// </summary>
         /// <returns></returns>
+        /// ----------------------------------------------------------------------------
         public override object Clone()
         {
             return new Defense(this);
@@ -99,23 +108,28 @@ namespace Nova.Common.Components
             Value = (this * scalar).Value;
         }
 
+        /// ----------------------------------------------------------------------------
         /// <summary>
         /// Provide a way to add properties in the ship design.
         /// </summary>
         /// <param name="op1">LHS operand.</param>
         /// <param name="op2">RHS operand.</param>
         /// <returns>Sum of the properties.</returns>
+        /// ----------------------------------------------------------------------------
         public static Defense operator +(Defense op1, Defense op2)
         {
             return new Defense(1.0 - ((1.0 - op1.Value) * (1.0 - op2.Value)));
         }
 
+
+        /// ----------------------------------------------------------------------------
         /// <summary>
         /// Operator* to scale (multiply) properties in the ship design.
         /// </summary>
         /// <param name="op1">Property to scale.</param>
         /// <param name="scalar">Number of instances of this property.</param>
         /// <returns>A single property that represents all these instances.</returns>
+        /// ----------------------------------------------------------------------------
         public static Defense operator *(Defense op1, int scalar)
         {
             return new Defense(1.0 - Math.Pow(1.0 - op1.Value, scalar));
@@ -125,12 +139,14 @@ namespace Nova.Common.Components
 
         #region Load Save Xml
 
+        /// ----------------------------------------------------------------------------
         /// <summary>
-        /// Load from XML: Initializing constructor from an XML node.
+        /// Load from XML: Initialising constructor from an XML node.
         /// </summary>
         /// <param name="node">An <see cref="XmlNode"/> within 
         /// a Nova component definition file (xml document).
         /// </param>
+        /// ----------------------------------------------------------------------------
         public Defense(XmlNode node)
         {
             XmlNode subnode = node.FirstChild;
@@ -151,11 +167,14 @@ namespace Nova.Common.Components
             }
         }
 
+
+        /// ----------------------------------------------------------------------------
         /// <summary>
-        /// Save: Serialize this property to an <see cref="XmlElement"/>.
+        /// Save: Serialise this property to an <see cref="XmlElement"/>.
         /// </summary>
         /// <param name="xmldoc">The parent <see cref="XmlDocument"/>.</param>
         /// <returns>An <see cref="XmlElement"/> representation of the Property.</returns>
+        /// ----------------------------------------------------------------------------
         public override XmlElement ToXml(XmlDocument xmldoc)
         {
             XmlElement xmlelProperty = xmldoc.CreateElement("Property");

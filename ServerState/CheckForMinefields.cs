@@ -34,7 +34,7 @@ namespace Nova.Server
     /// </summary>
     public class CheckForMinefields
     {
-        private readonly Random random = new Random();
+        private static readonly Random random = new Random();
         private ServerData serverState;
         
         public CheckForMinefields(ServerData serverState)
@@ -42,11 +42,13 @@ namespace Nova.Server
             this.serverState = serverState;
         }
 
+        /// ----------------------------------------------------------------------------
         /// <summary>
         /// Do a check for minefields.
         /// </summary>
         /// <param name="fleet">A moving fleet.</param>
-        /// <returns>Returns false.</returns>
+        /// <returns>false</returns>
+        /// ----------------------------------------------------------------------------
         public bool Check(Fleet fleet)
         {
             foreach (Minefield minefield in serverState.AllMinefields.Values)
@@ -67,12 +69,18 @@ namespace Nova.Server
             return false;
         }
 
+
+        /// ----------------------------------------------------------------------------
         /// <summary>
         /// Determine if a fleet is within a Minefield. The fleet is inside the
         /// circle if the distance between the field and the center of the field is
         /// less than the radius of the field.
         /// </summary>
-        private bool IsInField(Fleet fleet, Minefield minefield)
+        /// <param name="fleet"></param>
+        /// <param name="minefield"></param>
+        /// <returns></returns>
+        /// ----------------------------------------------------------------------------
+        private static bool IsInField(Fleet fleet, Minefield minefield)
         {
             // If we are travelling at a "safe" speed we can just pretend we are
             // not in a Minefield.
@@ -94,6 +102,8 @@ namespace Nova.Server
             return false;
         }
 
+
+        /// ----------------------------------------------------------------------------
         /// <summary>
         /// Check if the fleet hits the minefield.
         /// </summary>
@@ -109,7 +119,8 @@ namespace Nova.Server
         /// <param name="fleet">The moving fleet.</param>
         /// <param name="minefield">The minefield being traversed.</param>
         /// <returns>true if the minefield is hit.</returns>
-        private bool CheckForHit(Fleet fleet, Minefield minefield)
+        /// ----------------------------------------------------------------------------
+        private static bool CheckForHit(Fleet fleet, Minefield minefield)
         {
             // Calculate how long we are going to be in the Minefield. This is the
             // lesser of the distance to the next waypoint and the radius of the
@@ -137,6 +148,8 @@ namespace Nova.Server
             return false;
         }
 
+
+        /// ----------------------------------------------------------------------------
         /// <summary>
         /// We've hit a mine. Inflict appropriate damage to the fleet and bring it to a
         /// stop. If all ships are gone destroy the fleet.
@@ -148,6 +161,7 @@ namespace Nova.Server
         /// </summary>
         /// <param name="fleet">The fleet that hit the minefield.</param>
         /// <param name="minefield">The minefield being impacted.</param>
+        /// ----------------------------------------------------------------------------
         private bool InflictDamage(Fleet fleet, Minefield minefield)
         {
             bool destroyed = false;
@@ -178,7 +192,7 @@ namespace Nova.Server
                 cargoLost.Add(cargoBefore);
                 cargoLost.Remove(cargoAfter);
             }
-//            serverState.AllMessages.Add(new Message(minefield.Owner, "Enemy fleet " + fleet.Name + " has hit your minefield at " + fleet.Position.ToString(), "Minefield", minefield, 0));
+
             Message message = new Message();
             message.Audience = fleet.Owner;
             message.Type = "Minefield";

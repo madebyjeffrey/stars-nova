@@ -35,7 +35,7 @@ namespace Nova.Server
     public class Bombing
     {
 
-
+        /// ----------------------------------------------------------------------------
         /// <summary>
         /// See if we can bomb the planet.
         /// </summary>
@@ -53,6 +53,13 @@ namespace Nova.Server
             {
                 return messageOut;
             }
+            // See if this is an enemy planet. If not, leave it alone.
+
+            //if (!((RaceData)ServerState.Data.AllRaceData[fleet.Owner]).IsEnememy(star.Owner))
+            //{
+            //    return;
+            //}
+
 
             // If we don't have bombers then there is nothing more to do here
 

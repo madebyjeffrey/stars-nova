@@ -45,6 +45,7 @@ namespace Nova.Server
         /// <summary>
         /// Check for victor.
         /// </summary>
+        /// ----------------------------------------------------------------------------
         public void Victor()
         {
             // check for last man standing - doesn't matter the year
@@ -107,6 +108,8 @@ namespace Nova.Server
             }
         }
 
+
+        /// ----------------------------------------------------------------------------
         /// <summary>
         /// Check to see if the player owns the required percentage of planets.
         /// </summary>
@@ -142,6 +145,8 @@ namespace Nova.Server
             return 0;
         }
 
+
+        /// ----------------------------------------------------------------------------
         /// <summary>
         /// Check to see if the player has attained the required tech level in the
         /// specified number of fields.
@@ -187,6 +192,8 @@ namespace Nova.Server
             return 0;
         }
 
+
+        /// ----------------------------------------------------------------------------
         /// <summary>
         /// Check to see if the player has exceeded the required score.
         /// </summary>
@@ -216,6 +223,8 @@ namespace Nova.Server
             return 0;
         }
 
+
+        /// ----------------------------------------------------------------------------
         /// <summary>
         /// Check to see if the player has exceeded the required production capacity (in
         /// K resources).
@@ -249,6 +258,8 @@ namespace Nova.Server
             return 0;
         }
 
+
+        /// ----------------------------------------------------------------------------
         /// <summary>
         /// Check to see if the player has met the required number of capital ships.
         /// </summary>
@@ -279,6 +290,8 @@ namespace Nova.Server
             return 0;
         }
 
+
+        /// ----------------------------------------------------------------------------
         /// <summary>
         /// Check to see if the player has the highest score after the specified number
         /// of years.
@@ -321,6 +334,8 @@ namespace Nova.Server
             return 1;
         }
 
+
+        /// ----------------------------------------------------------------------------
         /// <summary>
         /// Check to see if the player has exceeded the second place score by the
         /// specified amount.

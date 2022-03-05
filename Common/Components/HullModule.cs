@@ -20,14 +20,21 @@
 // ===========================================================================
 #endregion
 
-namespace Nova.Common.Components
-{
+#region Module Description
+// ===========================================================================
+// This file defines the Hull Module component. A hull module is on of the 
+// individuale grid squares that makes up a Hull.
+// ===========================================================================
+#endregion
+
     using System;
     using System.ComponentModel;
     using System.Runtime.Serialization;
     using System.Xml;
     using Nova.Common.Converters;
 
+namespace Nova.Common.Components
+{
     /// <summary>
     /// The definition of the individual modules that make up a hull.
     /// These are the slots which define what components may be fitted.
@@ -66,19 +73,22 @@ namespace Nova.Common.Components
             }
         }
 
+        #region Construction
 
+        /// ----------------------------------------------------------------------------
         /// <summary>
         /// Default constructor.
         /// </summary>
-        public HullModule() 
-        { 
-        }
-        
+        /// ----------------------------------------------------------------------------
+        public HullModule() { }
 
+
+        /// ----------------------------------------------------------------------------
         /// <summary>
         /// Copy constructor.
         /// </summary>
         /// <param name="existing">The existing <see cref="HullModule"/> to copy.</param>
+        /// ----------------------------------------------------------------------------
         public HullModule(HullModule copy)
         {
             AllocatedComponent = copy.AllocatedComponent;
@@ -87,6 +97,7 @@ namespace Nova.Common.Components
             ComponentMaximum = copy.ComponentMaximum;
             ComponentType = copy.ComponentType;
         }
+        #endregion Construction
         
 
         public HullModule(int cellNumber, int componentMaximum, int componentCount, string componentType, string componentName)
@@ -99,11 +110,14 @@ namespace Nova.Common.Components
             AllocatedComponent.Name = componentName;
         }
 
+        #region Methods
 
+        /// ----------------------------------------------------------------------------
         /// <summary>
         /// Implement the ICloneable interface so modules can be cloned.
         /// </summary>
         /// <returns></returns>
+        /// ----------------------------------------------------------------------------
         public object Clone()
         {
             return new HullModule(this);
@@ -119,12 +133,18 @@ namespace Nova.Common.Components
         }
         
 
+        #endregion
+
+        #region Load Save Xml
+
+        /// ----------------------------------------------------------------------------
         /// <summary>
-        /// Load: initializing Constructor from an xml node.
+        /// Load: Initialising Constructor from an xml node.
         /// </summary>
         /// <param name="node">An <see cref="XmlNode"/> named "Module" within a "Property" node with Type=="Hull" 
         /// in a Nova component definition file (xml document).
         /// </param>
+        /// ----------------------------------------------------------------------------
         public HullModule(XmlNode node)
         {
             XmlNode subnode = node.FirstChild;
@@ -168,11 +188,13 @@ namespace Nova.Common.Components
         }
 
 
+        /// ----------------------------------------------------------------------------
         /// <summary>
-        /// Serialize a <see cref="HullModule"/> to xml.
+        /// Serialise a <see cref="HullModule"/> to xml.
         /// </summary>
         /// <param name="xmldoc">The parent <see cref="XmlDocument"/>.</param>
-        /// <returns>An XmlElement representation of the HullModule.</returns>
+        /// <returns>an XmlElement representation of the HullModule</returns>
+        /// ----------------------------------------------------------------------------
         public XmlElement ToXml(XmlDocument xmldoc)
         {
             XmlElement xmlelModule = xmldoc.CreateElement("Module");
@@ -214,5 +236,7 @@ namespace Nova.Common.Components
 
             return xmlelModule;
         }
+
+        #endregion
     }
 }
