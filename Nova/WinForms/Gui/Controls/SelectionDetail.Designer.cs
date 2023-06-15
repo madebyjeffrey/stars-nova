@@ -1,3 +1,6 @@
+using Nova.Common;
+using System;
+
 namespace Nova.WinForms.Gui
 {
    public partial class SelectionDetail
@@ -30,6 +33,10 @@ namespace Nova.WinForms.Gui
         {
             this.planetDetail = new PlanetDetail(empireState, clientState);
             this.fleetDetail = new FleetDetail(clientState);
+            this.fleetDetail.setPlanetMode += this.setPlanetDetail;
+            this.fleetDetail.setFleetMode += this.setFleetDetail;
+            this.planetDetail.setPlanetMode += this.setPlanetDetail;
+            this.planetDetail.setFleetMode += this.setFleetDetail;
             this.SuspendLayout();
             // 
             // planetDetail1
@@ -69,11 +76,31 @@ namespace Nova.WinForms.Gui
             this.SuspendLayout();
 
         }
+        private void setPlanetDetail(object sender, SelectionArgs e)
+        {
+            planetMode = true;
+            fleetMode = false;
+            this.Value = e.Selection;
+            //planetDetail.SetStarDetails(e.Selection as Star);
+            //fleetDetail.SetFleetDetails (null);
+        }
+        private void setFleetDetail(object sender, SelectionArgs e)
+        {
+            planetMode = false;
+            fleetMode = true;
+            this.Value = e.Selection;
+            //planetDetail.ClearStar();
+            //fleetDetail.SetFleetDetails(e.Selection as Fleet);
+        }
+
 
         #endregion
 
         private PlanetDetail planetDetail;
-      private FleetDetail fleetDetail;
+        private FleetDetail fleetDetail;
+        private bool planetMode;
+        private bool fleetMode;
+
 
    }
 }

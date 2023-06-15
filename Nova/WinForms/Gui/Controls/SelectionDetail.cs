@@ -142,7 +142,9 @@ namespace Nova.WinForms.Gui
             // Detail panel works with owned objects, so retrieve them from their collections.
             if (item is FleetIntel || item is Fleet)
             {
-                DisplayFleet(empireState.OwnedFleets[item.Key]);
+                 fleetMode = true;
+                 planetMode = false;
+                 DisplayFleet(empireState.OwnedFleets[item.Key]);
             }
             else
             {
@@ -151,6 +153,8 @@ namespace Nova.WinForms.Gui
                 try
                 {
                     DisplayPlanet(empireState.OwnedStars[item.Name]);
+                    fleetMode =false;
+                    planetMode=true;
                 }
                 catch
                 {

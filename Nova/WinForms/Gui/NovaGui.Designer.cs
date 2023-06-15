@@ -6,10 +6,15 @@
 
     public partial class NovaGUI
     {
+        private bool planetViewMode ;
+        private bool fleetViewMode ;
+        public bool planetView { get { return planetViewMode; } }
+        public bool fleetView { get { return fleetViewMode; } }
         private void InitializeComponent()
         {
+            planetViewMode = false ;
+            fleetViewMode = false ;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NovaGUI));
-
             this.groupBox2  = new System.Windows.Forms.GroupBox();
             this.mainMenu   = new System.Windows.Forms.MenuStrip();
             
@@ -272,7 +277,16 @@
             this.PerformLayout();
 
         }
-
+        public void viewPlanetMode()
+        {
+            planetViewMode = true;
+            fleetViewMode = false;
+        }
+        public void fleetPlanetMode()
+        {
+            planetViewMode = false;
+            fleetViewMode = true;
+        }
         private GroupBox groupBox2;
 
         private MenuStrip mainMenu;
@@ -297,5 +311,6 @@
         private SelectionSummary selectionSummary;
         private SelectionDetail selectionDetail;
         private StarMap mapControl;
+
     }
 }

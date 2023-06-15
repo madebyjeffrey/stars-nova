@@ -55,6 +55,8 @@ namespace Nova.WinForms.Gui
         /// <Summary>
         /// Initializes a new instance of the PlanetDetail class.
         /// </Summary>
+        public event EventHandler<SelectionArgs> setFleetMode;
+        public event EventHandler<SelectionArgs> setPlanetMode;
         public PlanetDetail(EmpireData empireState, ClientData clientState)
         {
             this.empireState = empireState;
@@ -162,7 +164,7 @@ namespace Nova.WinForms.Gui
         /// Set the Star which is to be displayed.
         /// </Summary>
         /// <param name="selectedStar">The Star to be displayed.</param>
-        private void SetStarDetails(Star selectedStar)
+        public void SetStarDetails(Star selectedStar)
         {
             if (selectedStar == null)
             {
@@ -594,7 +596,11 @@ namespace Nova.WinForms.Gui
             Fleet fleet = GettopFleetInOrbit();
             if (fleet != null)
             {
-                OnPlanetSelectionChanged(new SelectionArgs(fleet));
+                //OnPlanetSelectionChanged(new SelectionArgs(fleet));
+
+                if (setFleetMode != null) setFleetMode.Invoke(this, new SelectionArgs(fleet));
+
+
             }
         }
 

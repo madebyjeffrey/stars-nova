@@ -61,6 +61,8 @@ namespace Nova.WinForms.Gui
 
         private bool WaypointSelection_executing = false;
         private bool FleetChange_executing = false;
+        public event EventHandler<SelectionArgs> setFleetMode;
+        public event EventHandler<SelectionArgs> setPlanetMode;
 
         /// <Summary>
         /// Property to set or get the fleet currently being displayed.
@@ -589,7 +591,7 @@ namespace Nova.WinForms.Gui
         /// Set up all the display controls to reflect the selected fleet
         /// </Summary>
         /// <param name="fleet">The selected fleet.</param>
-        private void SetFleetDetails(Fleet topFleet)
+        public void SetFleetDetails(Fleet topFleet)
         {
             FleetChange_executing = true;// set a flag to tell other UI event handlers to not create commands in response to this routine changing tasks or waypoints
             wayPoints.DrawMode = DrawMode.OwnerDrawFixed;
@@ -740,7 +742,7 @@ namespace Nova.WinForms.Gui
             FleetChange_executing = true;// set a flag to tell other UI event handlers to not create commands in response to this routine changing tasks or waypoints
             if (topFleet != null && topFleet.InOrbit != null)
             {
-                OnFleetSelectionChanged(new SelectionArgs(topFleet.InOrbit as Star));
+                if (setPlanetMode != null) setPlanetMode.Invoke(this, new SelectionArgs(topFleet.InOrbit as Star));
             }
             FleetChange_executing = false;
         }
@@ -749,9 +751,10 @@ namespace Nova.WinForms.Gui
         {
             FleetChange_executing = true;// set a flag to tell other UI event handlers to not create commands in response to this routine changing tasks or waypoints
             Fleet newFleet = GettopFleetAtLocation();
+            if (setFleetMode != null) setFleetMode.Invoke(this, new SelectionArgs(newFleet));
 
             // Inform of the selection change to all listening objects.
-            OnFleetSelectionChanged(new SelectionArgs(newFleet));
+            //OnFleetSelectionChanged(new SelectionArgs(newFleet));
             FleetChange_executing = false;
         }
 
