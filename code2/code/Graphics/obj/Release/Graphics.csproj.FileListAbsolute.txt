@@ -1,5 +1,0 @@
-F:\Stars!Nova\Repos\code2\code\Graphics\bin\Release\Graphics.dll
-F:\Stars!Nova\Repos\code2\code\Graphics\bin\Release\Graphics.pdb
-F:\Stars!Nova\Repos\code2\code\Graphics\obj\Release\Graphics.csproj.CoreCompileInputs.cache
-F:\Stars!Nova\Repos\code2\code\Graphics\obj\Release\Graphics.dll
-F:\Stars!Nova\Repos\code2\code\Graphics\obj\Release\Graphics.pdb

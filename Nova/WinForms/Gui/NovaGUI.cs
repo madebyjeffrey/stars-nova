@@ -23,6 +23,8 @@
 namespace Nova.WinForms.Gui
 {
     using System;
+    using System.IO;
+    using System.Text;
     using System.Windows.Forms;
 
     using Nova.Client;
@@ -338,26 +340,28 @@ namespace Nova.WinForms.Gui
             OrderWriter orderWriter = new OrderWriter(clientState);
             orderWriter.WriteOrders();
 
-            int i = 0;
-            while (i < 50)
-            {
-//                Application.DoEvents();
-//                this.Update();
-                i++;
-            }
+
 
             
             // prepare the arguments that will tell how to re-initialize.
             CommandArguments commandArguments = new CommandArguments();
             Application.DoEvents();
             commandArguments.Add(CommandArguments.Option.RaceName, clientState.EmpireState.Race.Name);
-            Application.DoEvents();
+            //Application.DoEvents();
             commandArguments.Add(CommandArguments.Option.Turn, clientState.EmpireState.TurnYear + 1);
             commandArguments.Add(CommandArguments.Option.IntelFileName, clientState.IntelFileName);
             Application.DoEvents();
-
-
-
+            string turnFlagFileName = System.IO.Path.Combine(clientState.GameFolder, "Client" + Global.TurnFlagExtension); //little file with just the turnyear
+            byte[] turnYear = new byte[10];
+            string turnYearStr = "";
+            while (turnYearStr.TrimEnd() != (clientState.EmpireState.TurnYear + 1).ToString())
+            {
+                System.IO.Stream turnFlagFile = new FileStream(turnFlagFileName /*+ ".xml"*/, FileMode.OpenOrCreate);
+                turnFlagFile.Read(turnYear, 0, 10);
+                turnYearStr = Encoding.Default.GetString(turnYear);
+                turnFlagFile.Close();
+                Application.DoEvents();
+            }
             clientState.Initialize(commandArguments.ToArray(),true);
 
             // this.selectionDetail.emp = clientState.pl

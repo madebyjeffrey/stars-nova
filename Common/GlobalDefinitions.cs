@@ -66,6 +66,7 @@ namespace Nova.Common
         public const string OrdersExtension = ".orders";
         public const string RaceExtension = ".race";
         public const string IntelExtension = ".intel";
+        public const string TurnFlagExtension = ".turn"; // We could continuously open and parse the .intel file to check for a new year but that may cause deadlocks or "unable to open file for writing Errors" so put the turnyear in a little file
         public const string SettingsExtension = ".settings";
         #endregion
 

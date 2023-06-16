@@ -26,6 +26,7 @@ namespace Nova.WinForms.Console
     using System.Diagnostics;
     using System.IO;
     using System.Reflection;
+    using System.Text;
     using System.Threading;
     using System.Windows.Forms;
     
@@ -340,6 +341,14 @@ namespace Nova.WinForms.Console
                         {
                             // TODO (Priority 4) Grey out the players or something so it is clearer you can not click to play at the moment.
                             GenerateTurn();
+                            string turnFlagFileName = System.IO.Path.Combine(serverState.GameFolder, "Client" + Global.TurnFlagExtension); //little file with just the turnyear
+                            System.IO.Stream turnFlagFile = new FileStream(turnFlagFileName /*+ ".xml"*/, FileMode.Create);
+                            turnFlagFile.Write(ASCIIEncoding.Default.GetBytes(serverState.TurnYear.ToString()), 0, serverState.TurnYear.ToString().Length);
+                            byte[] padding = new byte[1];
+                            padding[0] = 32;
+                            for (int i = 0; i< 9; i++) turnFlagFile.Write(padding ,0,1);
+                            turnFlagFile.Close();
+
                         }
                     }
                     else
@@ -555,6 +564,7 @@ namespace Nova.WinForms.Console
             serverState.Save();
 
             SetPlayerList();
+
         }
 
         /// <Summary>
