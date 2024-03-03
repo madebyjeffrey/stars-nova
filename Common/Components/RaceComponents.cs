@@ -24,7 +24,8 @@ namespace Nova.Common.Components
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
-    
+    using System.Runtime.Versioning;
+
     using Nova.Common;
 
     /// <summary>
@@ -36,6 +37,7 @@ namespace Nova.Common.Components
     /// AllComponents reference.
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class RaceComponents : Dictionary<string, Component>
     {
         private String DialogHint = "";
@@ -70,7 +72,7 @@ namespace Nova.Common.Components
         {
             Component candidate = null;
             foreach (Component component in this.Values)
-                if ((component.Type == ItemType.BeamWeapons) && ((component.Properties["Weapon"] as Weapon).Group != WeaponType.shieldSapper))
+                if ((component.Type == ItemType.BeamWeapons) && ((component.Properties["Weapon"] as Weapon).Group != WeaponType.ShieldSapper))
                 {
                     if (candidate == null) candidate = component;
                     if ((component.Properties["Weapon"] as Weapon).Range > (candidate.Properties["Weapon"] as Weapon).Range) candidate = component;

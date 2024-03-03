@@ -22,11 +22,13 @@
 namespace Nova.Common
 {
     using System;
+    using System.Runtime.Versioning;
     using System.Xml;
 
     /// <summary>
     /// Implementation of ProductionUnit for factory building.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class FactoryProductionUnit : IProductionUnit
     {
         private Resources cost;

@@ -33,10 +33,12 @@ using Nova.Common;
 
 namespace Nova.Common.Components
 {
+    using System.Runtime.Versioning;
     /// <summary>
     /// DoubleProperty class.
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class DoubleProperty : ComponentProperty
     {
         public double Value = 0.0;

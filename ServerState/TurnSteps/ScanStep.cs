@@ -24,13 +24,15 @@ namespace Nova.Server.TurnSteps
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    
+    using System.Runtime.Versioning;
+
     using Nova.Common;
     using Nova.Common.Components;
     
     /// <summary>
     /// This step updates intel with scanning information.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class ScanStep : ITurnStep
     {
         private ServerData serverState;

@@ -5,8 +5,11 @@ using System.Text;
 
 namespace Nova.Server.NewGame
 {
+    using System.Runtime.Versioning;
+
     using Nova.Common;
 
+    [SupportedOSPlatform("windows")]
     public class HomeStarLeftoverpointsAdjuster
     {
         public static void Adjust(Star star, Race race)

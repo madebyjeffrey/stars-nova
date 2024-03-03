@@ -22,11 +22,13 @@
 namespace Nova.Common
 {
     using System;
+    using System.Runtime.Versioning;
     using System.Xml;
     using Nova.Common.Components;
     /// <summary>
     /// This class is used for "constructing" terraform 1%.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class TerraformProductionUnit : IProductionUnit
     {
         private Resources cost;

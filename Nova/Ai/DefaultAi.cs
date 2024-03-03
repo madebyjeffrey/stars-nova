@@ -24,6 +24,7 @@ namespace Nova.Ai
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Runtime.Versioning;
     using System.Text;
 
     using Nova.Client;
@@ -33,6 +34,7 @@ namespace Nova.Ai
     using Nova.Common.DataStructures;
     using Nova.Common.Waypoints;
 
+    [SupportedOSPlatform("windows")]
     public class DefaultAi : AbstractAI
     {
         private Intel turnData;

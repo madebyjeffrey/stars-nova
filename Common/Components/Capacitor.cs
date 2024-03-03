@@ -31,10 +31,12 @@ namespace Nova.Common.Components
 {
     #region Using Statements
     using System;
+    using System.Runtime.Versioning;
     using System.Xml;
     #endregion
 
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class CapacitorProperty : ComponentProperty
     {
         public double Value = 0;

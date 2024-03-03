@@ -25,6 +25,7 @@ namespace Nova.Common.Waypoints
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Runtime.Versioning;
     using System.Xml;
     
     using Nova.Common;
@@ -32,6 +33,7 @@ namespace Nova.Common.Waypoints
     /// <summary>
     /// Performs Star Colonisation.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class ColoniseTask : IWaypointTask
     {
         private List<Message> messages = new List<Message>();

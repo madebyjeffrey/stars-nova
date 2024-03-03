@@ -29,12 +29,14 @@
 
 namespace Nova.WinForms.Gui
 {
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
 
     /// <Summary>
     /// This module provides a WaypointListBox which is a List box that passes on
     /// the delete key.
     /// </Summary>
+    [SupportedOSPlatform("windows")]
     public class WaypointListBox : ListBox
     {
         /// <Summary>

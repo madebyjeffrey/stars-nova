@@ -25,6 +25,7 @@ namespace Nova.WinForms.Gui
     using System;
     using System.Collections.Generic;
     using System.Drawing;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
     
     using Nova.Client;
@@ -36,6 +37,7 @@ namespace Nova.WinForms.Gui
     /// <Summary>
     /// Dialog for designing a ship or starbase.
     /// </Summary>
+    [SupportedOSPlatform("windows")]
     public partial class ShipDesignDialog : System.Windows.Forms.Form
     {
         private readonly ClientData clientState;

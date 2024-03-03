@@ -24,6 +24,7 @@ namespace Nova.Common.Waypoints
 {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.Versioning;
     using System.Xml;
     
     using Nova.Common;
@@ -37,6 +38,7 @@ namespace Nova.Common.Waypoints
     /// <summary>
     /// Performs Cargo transfer tasks.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class CargoTask : IWaypointTask
     {
         private List<Message> messages = new List<Message>();

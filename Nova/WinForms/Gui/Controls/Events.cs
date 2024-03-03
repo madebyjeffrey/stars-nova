@@ -24,6 +24,7 @@ namespace Nova.WinForms.Gui
 {
     using System;
     using System.Drawing;
+    using System.Runtime.Versioning;
 
     using Nova.Common;
     using Nova.Common.DataStructures;
@@ -31,6 +32,7 @@ namespace Nova.WinForms.Gui
     /// <Summary>
     /// Holds data related to the current cursor position
     /// </Summary>
+    [SupportedOSPlatform("windows")]
     public class CursorArgs : System.EventArgs
     {
         public Point Point;
@@ -44,6 +46,7 @@ namespace Nova.WinForms.Gui
     /// <Summary>
     /// Holds data related to the detailed selection. 
     /// </Summary>
+    [SupportedOSPlatform("windows")]
     public class SelectionArgs : System.EventArgs
     {
         private Mappable obj;

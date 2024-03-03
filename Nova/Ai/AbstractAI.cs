@@ -24,10 +24,12 @@ namespace Nova.Ai
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Runtime.Versioning;
     using System.Text;
     using Nova.Client;
     using Nova.Common;
 
+    [SupportedOSPlatform("windows")]
     public abstract class AbstractAI
     {
         protected string raceName;

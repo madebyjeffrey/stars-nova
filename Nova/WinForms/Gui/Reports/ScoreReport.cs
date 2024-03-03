@@ -25,6 +25,7 @@ namespace Nova.WinForms.Gui
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
     
     using Nova.Client;
@@ -33,6 +34,7 @@ namespace Nova.WinForms.Gui
     /// <Summary>
     /// Score Summary report dialog class
     /// </Summary>
+    [SupportedOSPlatform("windows")]
     public partial class ScoreReport : Form
     {
         private List<ScoreRecord> allScores;

@@ -30,6 +30,7 @@ namespace Nova.Common.Components
 {
     #region Using Statements
     using System;
+    using System.Runtime.Versioning;
     using System.Xml;
     using Nova.Common;
     #endregion
@@ -39,24 +40,25 @@ namespace Nova.Common.Components
     /// </summary>
     public enum WeaponType
     {
-        standardBeam,
-        shieldSapper,
-        gatlingGun,
-        torpedo,
-        missile
+        StandardBeam,
+        ShieldSapper,
+        GatlingGun,
+        Torpedo,
+        Missile
     }
 
     /// <summary>
     /// Weapon class.
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class Weapon : ComponentProperty
     {
         public int Power = 0;
         public int Range = 0;
         public int Initiative = 0;
         public int Accuracy = 0;
-        public WeaponType Group = WeaponType.standardBeam;
+        public WeaponType Group = WeaponType.StandardBeam;
 
         #region Construction
 
@@ -65,7 +67,7 @@ namespace Nova.Common.Components
         /// </summary>
         public Weapon()
         {
-            this.Group = WeaponType.standardBeam;
+            this.Group = WeaponType.StandardBeam;
         }
 
         /// <summary>
@@ -228,19 +230,19 @@ namespace Nova.Common.Components
                             switch (subnode.FirstChild.Value.ToLower())
                             {
                                 case "standardweapon":
-                                    Group = WeaponType.standardBeam;
+                                    Group = WeaponType.StandardBeam;
                                     break;
                                 case "shieldsapper":
-                                    Group = WeaponType.shieldSapper;
+                                    Group = WeaponType.ShieldSapper;
                                     break;
                                 case "gatlinggun":
-                                    Group = WeaponType.gatlingGun;
+                                    Group = WeaponType.GatlingGun;
                                     break;
                                 case "torpedo":
-                                    Group = WeaponType.torpedo;
+                                    Group = WeaponType.Torpedo;
                                     break;
                                 case "missile":
-                                    Group = WeaponType.missile;
+                                    Group = WeaponType.Missile;
                                     break;
                             }
                             break;
@@ -303,12 +305,12 @@ namespace Nova.Common.Components
 
         public bool IsBeam
         {
-            get { return Group == WeaponType.standardBeam || Group == WeaponType.shieldSapper || Group == WeaponType.gatlingGun; }
+            get { return Group == WeaponType.StandardBeam || Group == WeaponType.ShieldSapper || Group == WeaponType.GatlingGun; }
         }
 
         public bool IsMissile
         {
-            get { return Group == WeaponType.torpedo || Group == WeaponType.missile; }
+            get { return Group == WeaponType.Torpedo || Group == WeaponType.Missile; }
         }
 
         #endregion

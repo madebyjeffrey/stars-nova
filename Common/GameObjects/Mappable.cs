@@ -22,6 +22,7 @@
 namespace Nova.Common
 {
     using System;
+    using System.Runtime.Versioning;
     using System.Xml;
     
     using Nova.Common.DataStructures;
@@ -29,6 +30,7 @@ namespace Nova.Common
     /// <summary>
     /// An object which has a position in Nova.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class Mappable : Item
     {
         /// <summary>

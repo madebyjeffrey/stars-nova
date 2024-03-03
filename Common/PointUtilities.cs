@@ -30,6 +30,8 @@ namespace Nova.Common
 {
     using System;
     using System.Drawing;
+    using System.Runtime.Versioning;
+
     using Nova.Common.DataStructures;
 
     /// <summary>
@@ -38,6 +40,7 @@ namespace Nova.Common
     /// <remarks>
     /// TODO (priority 4) - should these be merged with NovaPoint? - Dan 28 Nova 10.
     /// </remarks>
+    [SupportedOSPlatform("windows")]
     public static class PointUtilities
     {
         private static readonly Random Random = new Random();

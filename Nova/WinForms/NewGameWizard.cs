@@ -26,6 +26,7 @@ namespace Nova.WinForms
     using System.Diagnostics;
     using System.IO;
     using System.Reflection;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
 
     using Nova.Common;
@@ -36,6 +37,7 @@ namespace Nova.WinForms
     /// The Stars! Nova - New Game Wizard <see cref="Form"/>.
     /// This dialog will determine the objectives and settings of the game.
     /// </Summary>
+    [SupportedOSPlatform("windows")]
     public partial class NewGameWizard : Form
     {
         private int numberOfPlayers;

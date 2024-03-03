@@ -23,13 +23,15 @@ namespace Nova.Server.NewGame
 {
     using System.Collections.Generic;
     using System.IO;
-    
+    using System.Runtime.Versioning;
+
     using Nova.Common;
     using Nova.Common.Components;
     
     /// <summary>
     /// Creates a game from scratch.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class Gameinitializer
     {
         private ServerData serverState;

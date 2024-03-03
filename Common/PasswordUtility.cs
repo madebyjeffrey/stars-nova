@@ -29,8 +29,8 @@ namespace Nova.Common
     {
         public string CalculateHash(string plainText)
         {
-            byte[] plainBytes = ASCIIEncoding.Default.GetBytes(plainText);
-            byte[] hashBytes = new MD5CryptoServiceProvider().ComputeHash(plainBytes);
+            byte[] plainBytes = ASCIIEncoding.Default.GetBytes(plainText); 
+            byte[] hashBytes = MD5.Create().ComputeHash(plainBytes);
             return BitConverter.ToString(hashBytes);
         }
     }

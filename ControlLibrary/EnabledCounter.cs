@@ -23,12 +23,14 @@
 namespace Nova.ControlLibrary
 {
     using System;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
     using Nova.Common;
 
     /// <summary>
     /// A user control that combines a counter and a check box.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class EnabledCounter : UserControl
     {
         /// <summary>

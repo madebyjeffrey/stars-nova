@@ -25,6 +25,7 @@ namespace Nova.WinForms.Gui
 {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
     
     using Nova.Client;
@@ -44,6 +45,7 @@ namespace Nova.WinForms.Gui
     /// Dialog for displaying current research levels and allocating resources to
     /// further research.
     /// </Summary>
+    [SupportedOSPlatform("windows")]
     public partial class ResearchDialog : Form
     {
         /// <Summary>

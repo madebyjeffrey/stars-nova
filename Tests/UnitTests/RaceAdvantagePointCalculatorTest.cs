@@ -62,24 +62,24 @@ namespace Nova.Tests.UnitTests
         public void calculateAdvantagePoints()
         {
             int result2 = raceAdvantagePointCalculator.calculateAdvantagePoints(race);
-            Assert.AreEqual(result1, result2, "two runs with same race are not equal");
+            Assert.That(result1, Is.EqualTo(result2), "two runs with same race are not equal");
 
             // ColonistsPerResource 1000->700
             race.ColonistsPerResource = 700;
             int result3 = raceAdvantagePointCalculator.calculateAdvantagePoints(race);
-            Assert.IsTrue(Math.Abs(result1 - (result3 + (2400 / 3))) <= 1, "Colonists per resource = 700, with rounding");
+            Assert.That(Math.Abs(result1 - (result3 + (2400 / 3))) <= 1, Is.True, "Colonists per resource = 700, with rounding");
             race.ColonistsPerResource = 1000;
 
             // Cheap Factories
             race.Traits.Add("CF"); // Cheap Factories
             int result4 = raceAdvantagePointCalculator.calculateAdvantagePoints(race);
-            Assert.IsTrue(Math.Abs(result1 - (result4 + (175 / 3))) <= 1);
+            Assert.That(Math.Abs(result1 - (result4 + (175 / 3))) <= 1, Is.True);
             race.Traits.Remove("CF");
 
             // PRT JOAT->IT
             race.Traits.SetPrimary("IT");
             int result5 = raceAdvantagePointCalculator.calculateAdvantagePoints(race);
-            Assert.IsTrue(Math.Abs((result1 - 66/3) - (result5 + 180 / 3)) <= 1);
+            Assert.That(Math.Abs((result1 - 66/3) - (result5 + 180 / 3)) <= 1, Is.True);
             race.Traits.SetPrimary("JOAT");
         }
 
@@ -89,7 +89,7 @@ namespace Nova.Tests.UnitTests
             // Expensive Techs start at 3
             race.Traits.Add("ExtraTech");
             int result6 = raceAdvantagePointCalculator.calculateAdvantagePoints(race);
-            Assert.IsTrue(Math.Abs(result1 - (result6 + 180 / 3)) <= 1, "Extra Tech normal: " + result1 + " expected: " + (result1 - 180 / 3) + " was: " + result6);
+            Assert.That(Math.Abs(result1 - (result6 + 180 / 3)) <= 1, Is.True, "Extra Tech normal: " + result1 + " expected: " + (result1 - 180 / 3) + " was: " + result6);
         }
 
         [Test]
@@ -97,13 +97,13 @@ namespace Nova.Tests.UnitTests
         {
             race.Traits.Add("IFE");
             int resultX = raceAdvantagePointCalculator.calculateAdvantagePoints(race);
-            Assert.IsTrue(Math.Abs(result1 - (resultX + 235 / 3)) <= 1, "LRT Test for IFE: normal: " + result1 + " expected: " + (result1 - (235 / 3)).ToString() + " was: " + resultX.ToString());
+            Assert.That(Math.Abs(result1 - (resultX + 235 / 3)) <= 1, Is.True,"LRT Test for IFE: normal: " + result1 + " expected: " + (result1 - (235 / 3)).ToString() + " was: " + resultX.ToString());
         }
 
         [Test]
         public void calculateAdvantagePointsForStandardJoat()
         {
-            Assert.IsTrue(Math.Abs(result1 - 25) <= 1, "was: " + result1 + " expected: 25");
+            Assert.That(Math.Abs(result1 - 25) <= 1, Is.True, "was: " + result1 + " expected: 25");
         }
 
         [Test]
@@ -113,7 +113,7 @@ namespace Nova.Tests.UnitTests
             race.TemperatureTolerance.Immune = true;
             race.RadiationTolerance.Immune = true;
             int resultY = raceAdvantagePointCalculator.calculateAdvantagePoints(race);
-            Assert.IsTrue(Math.Abs(resultY + 3900) <= 1, "normal:" + result1 + ", freestars: " + resultY + " expected: -3900");
+            Assert.That(Math.Abs(resultY + 3900) <= 1, Is.True, "normal:" + result1 + ", freestars: " + resultY + " expected: -3900");
         }
     }
 }

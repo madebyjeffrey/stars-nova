@@ -24,6 +24,7 @@ namespace Nova.WinForms.Gui
 {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
 
     using Nova.Client;
@@ -34,6 +35,7 @@ namespace Nova.WinForms.Gui
     /// <Summary>
     /// Production queue dialog.
     /// </Summary>
+    [SupportedOSPlatform("windows")]
     public partial class ProductionDialog : System.Windows.Forms.Form
     {        
         private readonly Star queueStar;

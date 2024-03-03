@@ -24,6 +24,7 @@ namespace Nova.Common.DataStructures
 {
     #region Using Statements
     using System;
+    using System.Runtime.Versioning;
     using System.Xml;
     #endregion
 
@@ -31,6 +32,7 @@ namespace Nova.Common.DataStructures
     /// A class to record weapons being fired.
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class BattleStepWeapons : BattleStep
     {
         public enum TokenDefence

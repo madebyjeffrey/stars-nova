@@ -25,6 +25,7 @@ namespace Nova.Common
     using System.Collections.Generic;
     using System.Drawing;
     using System.IO;
+    using System.Runtime.Versioning;
 
     using Nova.Common.Components;
 
@@ -33,6 +34,7 @@ namespace Nova.Common
     /// This module defines the class AllShipIcons which is used to load and
     /// store the game wide list of ship icon images, as a collection of <see cref="ShipIcon"/>s.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public sealed class AllShipIcons
     {
         private static readonly object Padlock = new object();

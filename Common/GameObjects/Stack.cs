@@ -24,6 +24,7 @@ namespace Nova.Common
     using System;
     using System.Drawing;
     using System.Linq;
+    using System.Runtime.Versioning;
     using System.Windows;
     using System.Xml;
     
@@ -35,6 +36,7 @@ namespace Nova.Common
     /// only one ShipToken of Quantity ships of a single design, and holds the key
     /// of the Fleet that spawned it.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class Stack : Fleet
     {
         /// <summary>

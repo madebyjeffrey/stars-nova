@@ -39,9 +39,11 @@ using System.Linq;
 
 namespace Nova.WinForms.Gui
 {
+    using System.Runtime.Versioning;
     /// <Summary>
     /// A control to display user messages.
     /// </Summary>
+    [SupportedOSPlatform("windows")]
     public class Messages : System.Windows.Forms.UserControl
     {
         public Dictionary<string, StarIntel> stars;            //TODO priority(3) is it better to convert the message.event keys in LinkIntelReferences() or here?

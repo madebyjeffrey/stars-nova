@@ -27,6 +27,7 @@ namespace Nova.WinForms.Gui
     using System.Drawing;
     using System.Drawing.Drawing2D;
     using System.Linq;
+    using System.Runtime.Versioning;
     using System.Text;
     using System.Windows.Forms;
     
@@ -36,6 +37,7 @@ namespace Nova.WinForms.Gui
     /// <Summary>
     /// Dialog for viewing battle progress and outcome.
     /// </Summary>
+    [SupportedOSPlatform("windows")]
     public partial class BattleViewer : Form
     {
         private readonly BattleReport theBattle;

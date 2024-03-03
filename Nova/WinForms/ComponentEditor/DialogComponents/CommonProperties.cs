@@ -23,6 +23,7 @@
 namespace Nova.WinForms.ComponentEditor
 {
     using System;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
     
     using Nova.Common;
@@ -31,6 +32,7 @@ namespace Nova.WinForms.ComponentEditor
     /// <summary>
     /// Dialog component dealing with properties common to all components.
     /// </summary>
+    [SupportedOSPlatform("windows")]    
     public partial class CommonProperties : UserControl
     {
         public event EventHandler ListBoxChanged;

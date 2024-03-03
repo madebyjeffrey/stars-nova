@@ -36,10 +36,10 @@ namespace Nova.Tests.UnitTests
 
             bool testNear = PointUtilities.IsNear(a, b);
 
-            Assert.IsTrue(a.X == 1);
-            Assert.IsTrue(a.Y == 2);
-            Assert.IsTrue(b.X == 3);
-            Assert.IsTrue(b.Y == 4);
+            Assert.That(a.X == 1, Is.True);
+            Assert.That(a.Y == 2, Is.True);
+            Assert.That(b.X == 3, Is.True);
+            Assert.That(b.Y == 4, Is.True);
         }
     }
 }

@@ -23,6 +23,7 @@ namespace Nova.Server.TurnSteps
 {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.Versioning;
 
     using Nova.Common;
     using Nova.Common.Components;
@@ -31,6 +32,7 @@ namespace Nova.Server.TurnSteps
     /// <summary>
     /// Manages any pre-turn generation data setup.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class FirstStep : ITurnStep
     {
         private ServerData serverState;

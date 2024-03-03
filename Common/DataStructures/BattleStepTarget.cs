@@ -23,12 +23,14 @@
 namespace Nova.Common.DataStructures
 {
     using System;
+    using System.Runtime.Versioning;
     using System.Xml;
 
     /// <summary>
     /// A class to record a new target.
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class BattleStepTarget : BattleStep
     {
         public long StackKey 

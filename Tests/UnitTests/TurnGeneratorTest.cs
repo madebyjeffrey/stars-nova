@@ -102,18 +102,18 @@ namespace Nova.Tests.UnitTests
             empireData.OwnedFleets.Add(fleet);
             serverData.AllEmpires.Add(empireData.Id, empireData);
             Console.WriteLine(fleets.First().Composition.Count());
-            Assert.AreEqual(fleets.First().Composition.Count(), 1);
+            Assert.That(fleets.First().Composition.Count(), Is.EqualTo(1));
         }
 
         [Test]
         public void Generate_ScrapFleets()
         {
             SimpleTurnGenerator turnGenerator = new SimpleTurnGenerator(serverData);
-            Assert.IsNotEmpty(serverData.IterateAllFleets().ToList());
+            Assert.That(serverData.IterateAllFleets().ToList(), Is.Not.Empty);
             turnGenerator.Generate();
             Console.WriteLine(fleets.First().Composition.Count());
-            Assert.AreEqual(fleets.First().Composition.Count(), 0);
-            Assert.IsEmpty(serverData.IterateAllFleets().ToList());
+            Assert.That(fleets.First().Composition.Count(), Is.EqualTo(0));
+            Assert.That(serverData.IterateAllFleets().ToList(), Is.Empty);
         }
 
         [Test]
@@ -145,13 +145,13 @@ namespace Nova.Tests.UnitTests
             // empireData.OwnedFleets.Add(fleet); // ToDo: this should not be allowed I think
 
             Console.WriteLine("2 Fleets: " + fleets.Count());
-            Assert.IsNotEmpty(serverData.IterateAllFleets().ToList());
+            Assert.That(serverData.IterateAllFleets().ToList(), Is.Not.Empty);
             Console.WriteLine("all Fleets count: " + serverData.IterateAllFleets().ToList().Count());
 
             SimpleTurnGenerator turnGenerator = new SimpleTurnGenerator(serverData);
             turnGenerator.Generate();
             // Assert.AreEqual(fleets.First().Composition.Count(), 1);
-            Assert.IsNotEmpty(serverData.IterateAllFleets().ToList());
+            Assert.That(serverData.IterateAllFleets().ToList(), Is.Not.Empty);
         }
 
         [Test]
@@ -170,11 +170,11 @@ namespace Nova.Tests.UnitTests
             NovaPoint fleetPoint = new NovaPoint(0, 0);
             fleet.Position = fleetPoint;
             serverData.SetFleetOrbit(fleet);
-            Assert.AreEqual(star.Name, fleet.InOrbit.Name);
+            Assert.That(star.Name, Is.EqualTo(fleet.InOrbit.Name));
 
             fleet.Position.X = 1;
             serverData.SetFleetOrbit(fleet);
-            Assert.AreEqual(null, fleet.InOrbit);
+            Assert.That(null, Is.EqualTo(fleet.InOrbit));
         }
     }
 }

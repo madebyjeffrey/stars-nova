@@ -22,8 +22,10 @@
 
 namespace Nova.WinForms.ComponentEditor
 {
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
 
+    [SupportedOSPlatform("windows")]
     public partial class BasicProperties : UserControl
     {
         /// <Summary>

@@ -1,12 +1,7 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.30729</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{AA9C1AA7-AB64-4560-91C7-95BB2A88FA1F}</ProjectGuid>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
     <AssemblyName>Nova.ControlLibrary</AssemblyName>
@@ -17,12 +12,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>ControlLibrary</RootNamespace>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -38,170 +27,83 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>..\Build\Debug\</OutputPath>
     <BaseAddress>285212672</BaseAddress>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DocumentationFile>
     </DocumentationFile>
-    <DebugSymbols>true</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
-    <Optimize>false</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
-    <WarningLevel>4</WarningLevel>
-    <DebugType>full</DebugType>
-    <ErrorReport>prompt</ErrorReport>
     <OutputType>Library</OutputType>
     <RootNamespace>ControlLibrary</RootNamespace>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>..\Build\Release\</OutputPath>
     <BaseAddress>285212672</BaseAddress>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>TRACE</DefineConstants>
     <DocumentationFile>
     </DocumentationFile>
     <FileAlignment>4096</FileAlignment>
-    <Optimize>true</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
-    <WarningLevel>4</WarningLevel>
     <DebugType>none</DebugType>
-    <ErrorReport>prompt</ErrorReport>
     <OutputType>Library</OutputType>
     <RootNamespace>ControlLibrary</RootNamespace>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'USE_COMMAND_ORDERS|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\USE_COMMAND_ORDERS\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <FileAlignment>4096</FileAlignment>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Graph.cs">
+    <Compile Update="Graph.cs">
       <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Graph.Designer.cs">
-      <DependentUpon>Graph.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
     </Compile>
     <Compile Include="..\VersionInfo.cs" />
-    <Compile Include="CargoTransfer.cs">
+    <Compile Update="CargoTransfer.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="CheckPassword.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CheckPassword.Designer.cs">
-      <DependentUpon>CheckPassword.cs</DependentUpon>
-    </Compile>
-    <Compile Include="EnabledCounter.cs">
+    <Compile Update="EnabledCounter.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="EnabledCounter.Designer.cs">
-      <DependentUpon>EnabledCounter.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Gauge.cs">
+    <Compile Update="Gauge.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="HullGrid.cs">
+    <Compile Update="HullGrid.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="HullGrid.Designer.cs">
-      <DependentUpon>HullGrid.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PlayerSelector.cs">
+    <Compile Update="PlayerSelector.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PlayerSelector.Designer.cs">
-      <DependentUpon>PlayerSelector.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Range.cs">
+    <Compile Update="Range.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ResearchCost.cs">
+    <Compile Update="ResearchCost.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ResourceDisplay.cs">
+    <Compile Update="ResourceDisplay.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <EmbeddedResource Include="CargoTransfer.resx">
-      <DependentUpon>CargoTransfer.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CheckPassword.resx">
-      <DependentUpon>CheckPassword.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="EnabledCounter.resx">
-      <DependentUpon>EnabledCounter.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Gauge.resx">
-      <DependentUpon>Gauge.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Graph.resx">
-      <DependentUpon>Graph.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="HullGrid.resx">
-      <DependentUpon>HullGrid.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PlayerSelector.resx">
-      <DependentUpon>PlayerSelector.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Range.resx">
-      <DependentUpon>Range.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ResearchCost.resx">
-      <DependentUpon>ResearchCost.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ResourceDisplay.resx">
-      <DependentUpon>ResourceDisplay.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <Compile Include="ResourcesOnHandDisplay.cs">
+    <Compile Update="ResourcesOnHandDisplay.cs">
       <SubType>UserControl</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common\Common.csproj">
-      <Project>{EF679930-F4C9-4D62-9A6A-DE29F8D328C0}</Project>
-      <Name>Common</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\Common\Common.csproj" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -220,13 +122,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-    <PostBuildEvent>
-    </PostBuildEvent>
-    <ProjectGuid>{AA9C1AA7-AB64-4560-91C7-95BB2A88FA1F}</ProjectGuid>
     <RootNamespace>Nova.ControlLibrary</RootNamespace>
   </PropertyGroup>
 </Project>

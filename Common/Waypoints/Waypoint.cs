@@ -24,6 +24,7 @@ namespace Nova.Common.Waypoints
 {
     using System;
     using System.Drawing;
+    using System.Runtime.Versioning;
     using System.Xml;
 
     using Nova.Common.DataStructures;
@@ -34,6 +35,7 @@ namespace Nova.Common.Waypoints
     /// colonise).
     /// and a chronological timestamp for processing SplitMerge orders
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class Waypoint
     {
         public NovaPoint Position

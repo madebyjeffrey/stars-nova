@@ -26,9 +26,11 @@ namespace Nova.WinForms.Gui.Controls
     using System.ComponentModel;
     using System.Data;
     using System.Drawing;
+    using System.Runtime.Versioning;
     using System.Text;
     using System.Windows.Forms;
 
+    [SupportedOSPlatform("windows")]
     public partial class CargoMeterCounter : UserControl
     {
         private bool reversed = false;

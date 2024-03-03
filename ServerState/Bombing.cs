@@ -28,10 +28,12 @@ namespace Nova.Server
     using Nova.Common.Components;
     using Nova.Server;
     using System.Collections.Generic;
+    using System.Runtime.Versioning;
 
     /// <summary>
     /// Deal with bombing.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class Bombing
     {
 

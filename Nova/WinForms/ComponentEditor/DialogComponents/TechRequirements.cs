@@ -22,12 +22,14 @@
 
 namespace Nova.WinForms.ComponentEditor
 {
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
     using Nova.Common;
 
     /// <summary>
     /// User control for accessing research tech levels.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class TechRequirements : UserControl
     {
         /// <Summary>

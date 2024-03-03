@@ -24,7 +24,8 @@ namespace Nova.Server
 {
     using System;    
     using System.Collections.Generic;
-    
+    using System.Runtime.Versioning;
+
     using Nova.Common;
     using Nova.Common.DataStructures;
     using Nova.Common.Waypoints;
@@ -32,6 +33,7 @@ namespace Nova.Server
     /// <summary>
     /// Check to see if a fleet is in an enemy Minefield and inflict appropriate damage.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class CheckForMinefields
     {
         private static readonly Random random = new Random();

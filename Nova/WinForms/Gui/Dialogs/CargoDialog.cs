@@ -24,6 +24,7 @@ namespace Nova.ControlLibrary
 {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
 
     using Nova.Client;
@@ -34,6 +35,7 @@ namespace Nova.ControlLibrary
     /// <summary>
     /// A dialog for transferring cargo between a fleet and a Mappable(fleet,planet or salvage).
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class CargoDialog : Form
     {
         private Fleet fleet;

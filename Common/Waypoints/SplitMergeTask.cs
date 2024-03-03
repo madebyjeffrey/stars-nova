@@ -26,6 +26,7 @@ namespace Nova.Common.Waypoints
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
+    using System.Runtime.Versioning;
     using System.Xml;
 
     using Nova.Common;
@@ -34,6 +35,7 @@ namespace Nova.Common.Waypoints
     /// <summary>
     /// Performs split or merge of fleets.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class SplitMergeTask : IWaypointTask
     {
         private List<Message> messages = new List<Message>();

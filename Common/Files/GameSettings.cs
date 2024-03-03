@@ -22,7 +22,8 @@
 namespace Nova.Common
 {
     using System;    
-    using System.IO;  
+    using System.IO;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;    
     using System.Xml.Serialization;
     
@@ -31,6 +32,7 @@ namespace Nova.Common
     /// This module is implemented as a singleton. 
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public sealed class GameSettings
     {
         // Map settings

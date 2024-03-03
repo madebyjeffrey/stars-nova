@@ -27,6 +27,7 @@ namespace Nova.Common
     using System.Collections.Generic;
     using System.IO;
     using System.IO.Compression;
+    using System.Runtime.Versioning;
     using System.Xml;
     using Nova.Common.Components;
 
@@ -36,6 +37,7 @@ namespace Nova.Common
     /// are the orders sent to the console/server.
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public sealed class Orders
     {
         public Dictionary<long, ShipDesign> RaceDesigns = new Dictionary<long, ShipDesign>();     // For any new designs

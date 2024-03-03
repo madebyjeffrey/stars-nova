@@ -5,6 +5,8 @@ using System.Windows.Forms;
 
 namespace GameFileInflator
 {
+    using System.Runtime.Versioning;
+    [SupportedOSPlatform("windows")]
     public static class Program
     {
         /// <summary>

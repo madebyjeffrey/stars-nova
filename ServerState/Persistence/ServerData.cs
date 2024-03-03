@@ -26,6 +26,7 @@ namespace Nova.Server
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
     using System.Xml;
     
@@ -42,6 +43,7 @@ namespace Nova.Server
     /// but it's just convenient to keep all "global" data in one place.
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class ServerData
     {
         public Dictionary<int, Stack<ICommand>> AllCommands     = new Dictionary<int, Stack<ICommand>>();

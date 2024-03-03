@@ -99,10 +99,10 @@ namespace Nova.Tests.UnitTests
 
             int dead = (int)Math.Max(killed, minKilled);
 
-            Assert.AreEqual(0.006448, populationKill, 0.01);
-            Assert.AreEqual(64.48, killed, 1);
-            Assert.AreEqual(94, minKilled, 1);
-            Assert.AreEqual(94, dead, 1);
+            Assert.That(0.006448, Is.EqualTo(populationKill).Within(0.01));
+            Assert.That(64.48, Is.EqualTo(killed).Within(1));
+            Assert.That(94, Is.EqualTo(minKilled).Within(1));
+            Assert.That(94, Is.EqualTo(dead).Within(1));
         }
     }
 }

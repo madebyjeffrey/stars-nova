@@ -37,11 +37,13 @@ namespace Nova.ControlLibrary
     using System;
     using System.ComponentModel;
     using System.Drawing;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
 
     using Nova.Common;
 
     // ToDo: Immunity
+    [SupportedOSPlatform("windows")]
     public class Range : System.Windows.Forms.UserControl
     {
         private enum TimerOptions

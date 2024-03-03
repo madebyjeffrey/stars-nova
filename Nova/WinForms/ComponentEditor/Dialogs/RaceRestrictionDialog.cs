@@ -41,6 +41,8 @@ using Nova.Common;
 
 namespace Nova.WinForms.ComponentEditor
 {
+    using System.Runtime.Versioning;
+    [SupportedOSPlatform("windows")]
     public partial class RaceRestrictionDialog : Form
     {
         public RaceRestriction Restrictions = null; // data representing the restriction

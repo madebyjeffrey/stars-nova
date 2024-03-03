@@ -34,6 +34,8 @@ using System.Windows.Forms;
 
 namespace Nova.WinForms.ComponentEditor
 {
+    using System.Runtime.Versioning;
+    [SupportedOSPlatform("windows")]
     public partial class HullDialog : Form
     {
         /// <Summary>

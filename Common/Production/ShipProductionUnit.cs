@@ -22,6 +22,7 @@
 namespace Nova.Common
 {
     using System;
+    using System.Runtime.Versioning;
     using System.Xml;
     
     using Nova.Common.Components;
@@ -29,6 +30,7 @@ namespace Nova.Common
     /// <summary>
     /// ShipProductionUnit class. This class is used for constructing 1 ship.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class ShipProductionUnit : IProductionUnit
     {
         private long designKey;

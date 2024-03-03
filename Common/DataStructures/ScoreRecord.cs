@@ -27,11 +27,13 @@ namespace Nova.Common
     using System.Text;
     using System.Xml;
     using System.Drawing;
+    using System.Runtime.Versioning;
 
     /// <summary>
     /// Keeps details of the data needed for the Score report.
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public sealed class ScoreRecord : IComparable
     {
         public int EmpireId;

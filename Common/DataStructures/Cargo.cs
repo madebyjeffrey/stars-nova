@@ -28,11 +28,13 @@ namespace Nova.Common
     using System.ComponentModel.Design.Serialization;
     using System.Globalization;
     using System.Reflection;
+    using System.Runtime.Versioning;
     using System.Xml;
     
     /// <summary>
     /// Cargo that may be carried by a ship (if it has a cargo pod).
     /// </summary>
+    [SupportedOSPlatform("windows")]
     [Serializable]
     [TypeConverter(typeof(CargoTypeConverter))]
     public class Cargo
@@ -343,6 +345,7 @@ namespace Nova.Common
         }
     }
 
+    [SupportedOSPlatform("windows")]
     public class CargoTypeConverter : TypeConverter
     {
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)

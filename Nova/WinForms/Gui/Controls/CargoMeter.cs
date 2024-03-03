@@ -28,10 +28,12 @@ namespace Nova.WinForms.Gui.Controls
     using System.Drawing;
     using System.Drawing.Drawing2D;
     using System.Linq;
+    using System.Runtime.Versioning;
     using System.Text;
     using System.Windows.Forms;
     using Nova.Common;
 
+    [SupportedOSPlatform("windows")]
     public partial class CargoMeter : Control
     {
         private int level = 0;

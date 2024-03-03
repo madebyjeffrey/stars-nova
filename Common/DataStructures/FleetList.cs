@@ -25,6 +25,7 @@ namespace Nova.Common
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Runtime.Versioning;
     using System.Text;
     
     /// <summary> 
@@ -33,6 +34,7 @@ namespace Nova.Common
     /// as well as maintaining a sorted list for next/previous functionality. 
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class FleetList : Dictionary<long, Fleet>
     {
         /// <summary>

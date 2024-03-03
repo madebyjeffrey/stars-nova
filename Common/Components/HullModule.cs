@@ -35,6 +35,7 @@
 
 namespace Nova.Common.Components
 {
+    using System.Runtime.Versioning;
     /// <summary>
     /// The definition of the individual modules that make up a hull.
     /// These are the slots which define what components may be fitted.
@@ -42,6 +43,7 @@ namespace Nova.Common.Components
     ///
     [Serializable]
     [TypeConverter(typeof(HullModuleConverter))]
+    [SupportedOSPlatform("windows")]
     public class HullModule : ICloneable
     {
         private int componentCount;

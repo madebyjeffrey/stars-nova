@@ -23,6 +23,7 @@ namespace Nova.Common
 {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.Versioning;
     using System.Xml;
     
     using Nova.Common.Components;
@@ -30,6 +31,7 @@ namespace Nova.Common
     /// <summary>
     /// Report on enemy or neutral empires.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class EmpireIntel
     {
         public Dictionary<long, ShipDesign> Designs = new Dictionary<long, ShipDesign>();

@@ -9,6 +9,8 @@ using System.Windows.Forms;
 
 namespace Nova.Common.RaceDefinition
 {
+    using System.Runtime.Versioning;
+    [SupportedOSPlatform("windows")]
     public class RaceAdvantagePointCalculator
     {
         const string PRT_HE = "HE";

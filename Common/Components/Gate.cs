@@ -31,10 +31,12 @@ using System.Xml;
 
 namespace Nova.Common.Components
 {
+    using System.Runtime.Versioning;
     /// <summary>
     /// Gate class.
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class Gate : ComponentProperty
     {
         public double SafeHullMass = 0;

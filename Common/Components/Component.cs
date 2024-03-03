@@ -26,6 +26,7 @@ namespace Nova.Common.Components
     using System.Collections.Generic;
     using System.Drawing;
     using System.IO;
+    using System.Runtime.Versioning;
     using System.Xml;
 
     /// <summary>
@@ -34,6 +35,7 @@ namespace Nova.Common.Components
     /// in the Properties collection.
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class Component : Item
     {
         public TechLevel RequiredTech = new TechLevel();
@@ -81,6 +83,7 @@ namespace Nova.Common.Components
         /// Copy constructor.
         /// </summary>
         /// <param name="existing"></param>
+        [SupportedOSPlatform("windows")]
         public Component(Component copy)
             : base(copy)
         {
@@ -142,6 +145,7 @@ namespace Nova.Common.Components
         /// <param name="node">An <see cref="XmlNode"/> within 
         /// a Nova component definition file (xml document).
         /// </param>
+        [SupportedOSPlatform("windows")]
         public Component(XmlNode node)
             : base(node)
         {

@@ -25,6 +25,7 @@ namespace Nova.Ai
     using System.Collections.Generic;
     using System.Drawing;
     using System.Linq;
+    using System.Runtime.Versioning;
     using System.Text;
 
     using Nova.Client;
@@ -42,6 +43,7 @@ namespace Nova.Ai
     /// <remarks>
     /// The default AI is stateless - it does not persist any information between turns other than what is in an ordinary player's state.
     /// </remarks>
+    [SupportedOSPlatform("windows")]
     public class DefaultAIPlanner
     {
         public const int EarlyScouts = 5;

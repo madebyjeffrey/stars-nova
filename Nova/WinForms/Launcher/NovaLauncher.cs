@@ -28,13 +28,14 @@ namespace Nova.WinForms.Launcher
     using System.Reflection;
     using System.Windows.Forms;
     using System.IO.Compression;
-
+    using System.Runtime.Versioning;
 
     using Nova.Common;
     
     /// <Summary>
     /// The Stars! Nova - Launcher <see cref="Form"/>
     /// </Summary>
+    [SupportedOSPlatform("windows")]
     public partial class NovaLauncher : Form
     {
         private readonly string serverStateFile;

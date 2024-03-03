@@ -10,12 +10,14 @@
 namespace Nova.Common
 {
     using System;
+    using System.Runtime.Versioning;
     using System.Threading;
     using System.Windows.Forms;  
 
     /// <summary>
     /// A progress dialog box.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class ProgressDialog : Form, IProgressCallback
     {
         public delegate void SetTextInvoker(string text);

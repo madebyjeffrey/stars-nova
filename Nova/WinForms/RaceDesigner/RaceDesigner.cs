@@ -1,4 +1,4 @@
-#region Copyright Notice
+ï»¿#region Copyright Notice
 // ============================================================================
 // Copyright (C) 2008 Ken Reed
 // Copyright (C) 2009, 2010, 2011 The Stars-Nova Project
@@ -35,6 +35,7 @@ namespace Nova.WinForms.RaceDesigner
     using System.Collections;
     using System.ComponentModel;
     using System.IO;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
     using System.Xml;
 
@@ -46,6 +47,7 @@ namespace Nova.WinForms.RaceDesigner
     /// Race designer main (and only) application form
     /// </Summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class RaceDesignerForm : System.Windows.Forms.Form
     {
         private RaceIcon currentRaceIcon;
@@ -1042,7 +1044,7 @@ namespace Nova.WinForms.RaceDesigner
             this.temperatureTolerance.Name = "temperatureTolerance";
             this.temperatureTolerance.RangeBarColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.temperatureTolerance.RangeTitle = "Temperature";
-            this.temperatureTolerance.RangeUnits = "°C";
+            this.temperatureTolerance.RangeUnits = "ï¿½C";
             this.temperatureTolerance.Size = new System.Drawing.Size(324, 95);
             this.temperatureTolerance.TabIndex = 1;
             this.temperatureTolerance.RangeChanged += new Nova.ControlLibrary.Range.RangeChangedHandler(this.Tolerance_RangeChanged);

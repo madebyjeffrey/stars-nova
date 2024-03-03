@@ -27,6 +27,7 @@ namespace Nova.Common
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Linq;
+    using System.Runtime.Versioning;
     using System.Xml;
 
     using Nova.Common.Converters;
@@ -37,6 +38,7 @@ namespace Nova.Common
     /// </summary>
     [Serializable]
     [TypeConverter(typeof(TechLevelConverter))]
+    [SupportedOSPlatform("windows")]
     public class TechLevel
     {
         /// <summary>

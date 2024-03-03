@@ -63,11 +63,13 @@ namespace Nova.WinForms.ComponentEditor
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Drawing;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
     
     using Nova.Common;
     using Nova.Common.Components;
 
+    [SupportedOSPlatform("windows")]
     public partial class ComponentEditorWindow : Form
         {
         // Keep track of when to save.
@@ -1116,19 +1118,19 @@ namespace Nova.WinForms.ComponentEditor
                    this.weaponAccuracy.Value = (decimal)weaponProperties.Accuracy;
                    switch (weaponProperties.Group)
                    {
-                       case WeaponType.standardBeam:
+                       case WeaponType.StandardBeam:
                            isStandardBeam.Checked = true;
                            break;
-                       case WeaponType.shieldSapper:
+                       case WeaponType.ShieldSapper:
                            isSapper.Checked = true;
                            break;
-                       case WeaponType.gatlingGun:
+                       case WeaponType.GatlingGun:
                            isGattling.Checked = true;
                            break;
-                       case WeaponType.torpedo:
+                       case WeaponType.Torpedo:
                            isTorpedo.Checked = true;
                            break;
-                       case WeaponType.missile:
+                       case WeaponType.Missile:
                            isMissile.Checked = true;
                            break;
                        default:
@@ -1579,27 +1581,27 @@ namespace Nova.WinForms.ComponentEditor
                weaponProperty.Accuracy = (int)this.weaponAccuracy.Value;
                if (isStandardBeam.Checked)
                {
-                   weaponProperty.Group = WeaponType.standardBeam;
+                   weaponProperty.Group = WeaponType.StandardBeam;
                }
                else if (isSapper.Checked)
                {
-                   weaponProperty.Group = WeaponType.shieldSapper;
+                   weaponProperty.Group = WeaponType.ShieldSapper;
                }
                else if (isGattling.Checked)
                {
-                   weaponProperty.Group = WeaponType.gatlingGun;
+                   weaponProperty.Group = WeaponType.GatlingGun;
                }
                else if (isTorpedo.Checked)
                {
-                   weaponProperty.Group = WeaponType.torpedo;
+                   weaponProperty.Group = WeaponType.Torpedo;
                }
                else if (isMissile.Checked)
                {
-                   weaponProperty.Group = WeaponType.missile;
+                   weaponProperty.Group = WeaponType.Missile;
                }
                else
                {
-                   weaponProperty.Group = WeaponType.standardBeam;
+                   weaponProperty.Group = WeaponType.StandardBeam;
                }
         
                newComponent.Properties.Add("Weapon", weaponProperty);

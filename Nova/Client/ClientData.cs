@@ -28,6 +28,7 @@ namespace Nova.Client
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
     using System.Xml;
     using Message = Nova.Common.Message;
@@ -38,6 +39,7 @@ namespace Nova.Client
     /// used by the AI, hence it is applicable to any Nova client. 
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public sealed class ClientData
     {
         public EmpireData EmpireState = null;

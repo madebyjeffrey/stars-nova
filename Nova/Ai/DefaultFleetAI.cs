@@ -24,6 +24,7 @@ namespace Nova.Ai
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Runtime.Versioning;
     using System.Text;
 
     using Nova.Client;
@@ -36,6 +37,7 @@ namespace Nova.Ai
     /// <summary>
     /// A sub AI to manage a <see cref="Fleet"/>.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class DefaultFleetAI
     {
         /// <summary>

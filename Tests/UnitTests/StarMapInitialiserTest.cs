@@ -40,8 +40,8 @@ namespace Nova.Tests.UnitTests
         {
             testRace.TestAdvantagePoints = -1;
             Race race = testRace;
-            Assert.AreEqual(-1, race.GetAdvantagePoints());
-            Assert.AreEqual(0, race.GetLeftoverAdvantagePoints());
+            Assert.That(-1, Is.EqualTo(race.GetAdvantagePoints()));
+            Assert.That(0, Is.EqualTo(race.GetLeftoverAdvantagePoints()));
         }
 
         [Test]
@@ -49,8 +49,8 @@ namespace Nova.Tests.UnitTests
         {
             testRace.TestAdvantagePoints = 51;
             Race race = testRace;
-            Assert.AreEqual(51, race.GetAdvantagePoints());
-            Assert.AreEqual(50, race.GetLeftoverAdvantagePoints());
+            Assert.That(51, Is.EqualTo(race.GetAdvantagePoints()));
+            Assert.That(50, Is.EqualTo(race.GetLeftoverAdvantagePoints()));
         }
 
         [Test]
@@ -58,8 +58,8 @@ namespace Nova.Tests.UnitTests
         {
             testRace.TestAdvantagePoints = 1;
             Race race = testRace;
-            Assert.AreEqual(1, race.GetAdvantagePoints());
-            Assert.AreEqual(1, race.GetLeftoverAdvantagePoints());
+            Assert.That(1, Is.EqualTo(race.GetAdvantagePoints()));
+            Assert.That(1, Is.EqualTo(race.GetLeftoverAdvantagePoints()));
         }
 
         [Test]
@@ -68,11 +68,11 @@ namespace Nova.Tests.UnitTests
             testRace.TestAdvantagePoints = 0;
             testRace.LeftoverPointTarget = "Mineral concentration";
             HomeStarLeftoverpointsAdjuster.Adjust(star, testRace);
-            Assert.AreEqual(0, star.MineralConcentration.Boranium + star.MineralConcentration.Germanium + star.MineralConcentration.Ironium);
+            Assert.That(0, Is.EqualTo(star.MineralConcentration.Boranium + star.MineralConcentration.Germanium + star.MineralConcentration.Ironium));
 
             testRace.TestAdvantagePoints = 2;
             HomeStarLeftoverpointsAdjuster.Adjust(star, testRace);
-            Assert.AreEqual(0, star.MineralConcentration.Boranium + star.MineralConcentration.Germanium + star.MineralConcentration.Ironium);
+            Assert.That(0, Is.EqualTo(star.MineralConcentration.Boranium + star.MineralConcentration.Germanium + star.MineralConcentration.Ironium));
         }
 
         [Test]
@@ -81,7 +81,7 @@ namespace Nova.Tests.UnitTests
             testRace.TestAdvantagePoints = 3;
             testRace.LeftoverPointTarget = "Mineral concentration";
             HomeStarLeftoverpointsAdjuster.Adjust(star, testRace);
-            Assert.AreEqual(1, star.MineralConcentration.Boranium + star.MineralConcentration.Germanium + star.MineralConcentration.Ironium);
+            Assert.That(1, Is.EqualTo(star.MineralConcentration.Boranium + star.MineralConcentration.Germanium + star.MineralConcentration.Ironium));
         }
 
         [Test]
@@ -93,7 +93,7 @@ namespace Nova.Tests.UnitTests
             testRace.TestAdvantagePoints = 3;
             testRace.LeftoverPointTarget = "Mineral concentration";
             HomeStarLeftoverpointsAdjuster.Adjust(star, testRace);
-            Assert.AreEqual(1, star.MineralConcentration.Ironium);
+            Assert.That(1, Is.EqualTo(star.MineralConcentration.Ironium));
         }
 
         [Test]
@@ -102,11 +102,11 @@ namespace Nova.Tests.UnitTests
             testRace.TestAdvantagePoints = 0;
             testRace.LeftoverPointTarget = "Mines";
             HomeStarLeftoverpointsAdjuster.Adjust(star, testRace);
-            Assert.AreEqual(0, star.Mines);
+            Assert.That(0, Is.EqualTo(star.Mines));
             testRace.TestAdvantagePoints = 1;
             testRace.LeftoverPointTarget = "Mines";
             HomeStarLeftoverpointsAdjuster.Adjust(star, testRace);
-            Assert.AreEqual(0, star.Mines);
+            Assert.That(0, Is.EqualTo(star.Mines));
         }
 
         [Test]
@@ -115,7 +115,7 @@ namespace Nova.Tests.UnitTests
             testRace.TestAdvantagePoints = 10;
             testRace.LeftoverPointTarget = "Mines";
             HomeStarLeftoverpointsAdjuster.Adjust(star, testRace);
-            Assert.AreEqual(5, star.Mines);
+            Assert.That(5, Is.EqualTo(star.Mines));
         }
 
         [Test]
@@ -124,11 +124,11 @@ namespace Nova.Tests.UnitTests
             testRace.TestAdvantagePoints = 0;
             testRace.LeftoverPointTarget = "Factories";
             HomeStarLeftoverpointsAdjuster.Adjust(star, testRace);
-            Assert.AreEqual(0, star.Factories);
+            Assert.That(0, Is.EqualTo(star.Factories));
             testRace.TestAdvantagePoints = 4;
             testRace.LeftoverPointTarget = "Factories";
             HomeStarLeftoverpointsAdjuster.Adjust(star, testRace);
-            Assert.AreEqual(0, star.Factories);
+            Assert.That(0, Is.EqualTo(star.Factories));
         }
 
         [Test]
@@ -137,7 +137,7 @@ namespace Nova.Tests.UnitTests
             testRace.TestAdvantagePoints = 11;
             testRace.LeftoverPointTarget = "Factories";
             HomeStarLeftoverpointsAdjuster.Adjust(star, testRace);
-            Assert.AreEqual(2, star.Factories);
+            Assert.That(2, Is.EqualTo(star.Factories));
         }
 
         [Test]
@@ -146,11 +146,11 @@ namespace Nova.Tests.UnitTests
             testRace.TestAdvantagePoints = 0;
             testRace.LeftoverPointTarget = "Defenses";
             HomeStarLeftoverpointsAdjuster.Adjust(star, testRace);
-            Assert.AreEqual(0, star.Defenses);
+            Assert.That(0, Is.EqualTo(star.Defenses));
             testRace.TestAdvantagePoints = 9;
             testRace.LeftoverPointTarget = "Defenses";
             HomeStarLeftoverpointsAdjuster.Adjust(star, testRace);
-            Assert.AreEqual(0, star.Defenses);
+            Assert.That(0, Is.EqualTo(star.Defenses));
         }
 
         [Test]
@@ -159,7 +159,7 @@ namespace Nova.Tests.UnitTests
             testRace.TestAdvantagePoints = 29;
             testRace.LeftoverPointTarget = "Defenses";
             HomeStarLeftoverpointsAdjuster.Adjust(star, testRace);
-            Assert.AreEqual(2, star.Defenses);
+            Assert.That(2, Is.EqualTo(star.Defenses));
         }
 
 
@@ -169,9 +169,9 @@ namespace Nova.Tests.UnitTests
             testRace.TestAdvantagePoints = 0;
             testRace.LeftoverPointTarget = "Surface minerals";
             HomeStarLeftoverpointsAdjuster.Adjust(star, testRace);
-            Assert.AreEqual(0, star.ResourcesOnHand.Boranium);
-            Assert.AreEqual(0, star.ResourcesOnHand.Germanium);
-            Assert.AreEqual(0, star.ResourcesOnHand.Ironium);
+            Assert.That(0, Is.EqualTo(star.ResourcesOnHand.Boranium));
+            Assert.That(0, Is.EqualTo(star.ResourcesOnHand.Germanium));
+            Assert.That(0, Is.EqualTo(star.ResourcesOnHand.Ironium));
         }
 
         [Test]
@@ -183,9 +183,9 @@ namespace Nova.Tests.UnitTests
             testRace.TestAdvantagePoints = 3;
             testRace.LeftoverPointTarget = "Surface minerals";
             HomeStarLeftoverpointsAdjuster.Adjust(star, testRace);
-            Assert.AreEqual(20, star.ResourcesOnHand.Boranium, "Boranium, Sum: " + (star.ResourcesOnHand.Boranium + star.ResourcesOnHand.Germanium + star.ResourcesOnHand.Ironium));
-            Assert.AreEqual(20, star.ResourcesOnHand.Germanium, "Germanium");
-            Assert.AreEqual(20, star.ResourcesOnHand.Ironium, "Ironium");
+            Assert.That(20, Is.EqualTo(star.ResourcesOnHand.Boranium), "Boranium, Sum: " + (star.ResourcesOnHand.Boranium + star.ResourcesOnHand.Germanium + star.ResourcesOnHand.Ironium));
+            Assert.That(20, Is.EqualTo(star.ResourcesOnHand.Germanium), "Germanium");
+            Assert.That(20, Is.EqualTo(star.ResourcesOnHand.Ironium), "Ironium");
         }
     }
 }

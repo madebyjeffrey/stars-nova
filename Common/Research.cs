@@ -30,7 +30,9 @@ namespace Nova.Common
 {
     using System;
     using System.Collections;
+    using System.Runtime.Versioning;
 
+    [SupportedOSPlatform("windows")]
     public class Research
     {
         /// <summary>

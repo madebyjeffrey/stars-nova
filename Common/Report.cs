@@ -32,6 +32,7 @@ using System.Windows.Forms;
 
 namespace Nova.Common
 {
+    using System.Runtime.Versioning;
     /// <summary>
     /// Provides a variety of message pop ups.
     /// </summary>
@@ -41,6 +42,7 @@ namespace Nova.Common
         /// Report an error.
         /// </summary>
         /// <param name="text">Message to display.</param>
+        [SupportedOSPlatform("windows")]
         public static void Error(string text)
         {
             MessageBox.Show(
@@ -57,6 +59,7 @@ namespace Nova.Common
         /// Raise a dialog to report an information message.
         /// </summary>
         /// <param name="text">Message to display.</param>
+        [SupportedOSPlatform("windows")]
         public static void Information(string text)
         {
             MessageBox.Show(
@@ -72,6 +75,7 @@ namespace Nova.Common
         /// Report a fatal error and terminate the application.
         /// </summary>
         /// <param name="text">Message to display.</param>
+        [SupportedOSPlatform("windows")]
         public static void FatalError(string text)
         {
             MessageBox.Show(
@@ -82,7 +86,7 @@ namespace Nova.Common
                 MessageBoxDefaultButton.Button1,
                 MessageBoxOptions.DefaultDesktopOnly);
 
-            System.Threading.Thread.CurrentThread.Abort();
+            Environment.Exit(1);
         }
 
         /// <summary>
@@ -90,6 +94,7 @@ namespace Nova.Common
         /// </summary>
         /// <param name="text">Message to display.</param>
         [Conditional("DEBUG")]
+        [SupportedOSPlatform("windows")]
         public static void Debug(string text)
         {
             MessageBox.Show(

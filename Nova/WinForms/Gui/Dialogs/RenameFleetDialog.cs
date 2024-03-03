@@ -6,9 +6,11 @@
     using System.Data;
     using System.Drawing;
     using System.Linq;
+    using System.Runtime.Versioning;
     using System.Text;
     using System.Windows.Forms;
 
+    [SupportedOSPlatform("windows")]
     public partial class RenameFleetDialog : Form
     {
         public RenameFleetDialog()

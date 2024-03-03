@@ -25,6 +25,7 @@ namespace Nova.Client
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Runtime.Versioning;
     using System.Xml;
     
     using Nova.Common;
@@ -36,6 +37,7 @@ namespace Nova.Client
     /// file and sent to the Nova Console so that the turn for the next year can 
     /// be generated. 
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class OrderWriter
     {
         private ClientData clientState;

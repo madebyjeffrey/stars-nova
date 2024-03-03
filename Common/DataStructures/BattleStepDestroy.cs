@@ -23,12 +23,14 @@
 namespace Nova.Common.DataStructures
 {
     using System;
+    using System.Runtime.Versioning;
     using System.Xml;
 
     /// <summary>
     /// A class to destroy a ship in a given stack.
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class BattleStepDestroy : BattleStep
     {
         public long StackKey 

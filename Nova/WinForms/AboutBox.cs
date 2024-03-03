@@ -30,8 +30,10 @@ namespace Nova.WinForms
 {
     using System;
     using System.Reflection;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
 
+    [SupportedOSPlatform("windows")]
     public partial class AboutBox : Form
     {
         public AboutBox()
@@ -85,7 +87,7 @@ namespace Nova.WinForms
                 }
             }
             // If there was no Title attribute, or if the Title attribute was the empty string, return the .exe name
-            return System.IO.Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().CodeBase);
+            return System.IO.Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location);
         }
 
         private string GetApplicationProductVersion()

@@ -23,11 +23,14 @@
 namespace Nova.Server
 {
     using System.Collections.Generic;
+    using System.Runtime.Versioning;
+
     using Nova.Common;
     
     /// <summary>
     /// Class to provide score data.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class Scores
     {
         private ServerData serverState;

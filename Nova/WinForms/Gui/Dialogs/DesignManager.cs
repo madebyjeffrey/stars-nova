@@ -24,6 +24,7 @@ namespace Nova.WinForms.Gui
 {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
     
     using Nova.Client;
@@ -34,6 +35,7 @@ namespace Nova.WinForms.Gui
     /// <Summary>
     /// Dialog to display and optionally delete designs.
     /// </Summary>
+    [SupportedOSPlatform("windows")]
     public partial class DesignManager : Form
     {
         private readonly ClientData clientState;

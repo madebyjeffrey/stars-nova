@@ -24,6 +24,7 @@ namespace Nova.WinForms.Gui
 {
     using System.Collections.Generic;
     using System.Drawing;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
     
     using Nova.Client;
@@ -32,6 +33,7 @@ namespace Nova.WinForms.Gui
     /// <Summary>
     /// The fleet Summary panel.
     /// </Summary>
+    [SupportedOSPlatform("windows")]
     public partial class FleetSummary : UserControl
     {
         private  EmpireData empireState;

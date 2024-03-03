@@ -32,8 +32,10 @@ using Nova.Common;
 
 namespace Nova.Common.Components
 {
+    using System.Runtime.Versioning;
 
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class Defense : ComponentProperty
     {
         public double Value = 0.0;

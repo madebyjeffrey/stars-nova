@@ -37,11 +37,13 @@ namespace Nova.Ai
 {
     using System;
     using System.IO;
+    using System.Runtime.Versioning;
 
     using Nova.Client;
     using Nova.Common;
     using Nova.Common.Components;
 
+    [SupportedOSPlatform("windows")]
     public class Program
     {
         private static readonly AbstractAI AI = new DefaultAi();

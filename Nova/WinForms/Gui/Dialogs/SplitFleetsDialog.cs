@@ -25,11 +25,13 @@ namespace Nova.WinForms.Gui.Dialogs
     using System.Collections.Generic;
     using System.Drawing;
     using System.Linq;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
     
     using Nova.Common;
     using Nova.Common.Components;
     
+    [SupportedOSPlatform("windows")]
     public partial class SplitFleetDialog : Form
     {
         private List<ShipDesign> designs;

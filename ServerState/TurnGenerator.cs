@@ -26,7 +26,8 @@ namespace Nova.Server
     using System.Collections.Generic;
     using System.IO;
     using System.Reflection;
-    
+    using System.Runtime.Versioning;
+
     using Nova.Common;
     using Nova.Common.Commands;
     using Nova.Common.Components;
@@ -38,6 +39,7 @@ namespace Nova.Server
     /// <summary>
     /// Class to process a new turn.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class TurnGenerator
     {
         private ServerData serverState;        
@@ -384,7 +386,7 @@ namespace Nova.Server
         protected virtual void CleanupOrders()
         {
             // Delete orders on turn generation.
-            // Copy each file into it’s new directory.
+            // Copy each file into itï¿½s new directory.
             DirectoryInfo source = new DirectoryInfo(serverState.GameFolder);
             foreach (FileInfo fi in source.GetFiles())
             {
@@ -417,7 +419,7 @@ namespace Nova.Server
                     Directory.CreateDirectory(target.FullName);
                 }
 
-                // Copy each file into it’s new directory.
+                // Copy each file into itï¿½s new directory.
                 foreach (FileInfo fi in source.GetFiles())
                 {
                     fi.CopyTo(Path.Combine(target.ToString(), fi.Name), true);

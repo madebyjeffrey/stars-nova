@@ -24,6 +24,7 @@ namespace Nova.Common
 {
     using System;
     using System.ComponentModel;
+    using System.Runtime.Versioning;
     using System.Xml;
 
     using Nova.Common.Converters;
@@ -44,6 +45,7 @@ namespace Nova.Common
     /// </summary>
     [Serializable]
     [TypeConverter(typeof(ResourcesConverter))]
+    [SupportedOSPlatform("windows")]
     public class Resources
     {
         public int Boranium = 0;

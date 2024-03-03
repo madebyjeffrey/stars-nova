@@ -24,6 +24,7 @@ namespace Nova.WinForms.Gui
 {
     using System;
     using System.IO;
+    using System.Runtime.Versioning;
     using System.Text;
     using System.Windows.Forms;
 
@@ -40,6 +41,7 @@ namespace Nova.WinForms.Gui
     /// This module holds the program entry Point and handles all things related to
     /// the main GUI window.
     /// </Summary>
+    [SupportedOSPlatform("windows")]
     public partial class NovaGUI : Form
     {
         public int CurrentTurn;      // control turnvar used for to decide to load new turn... (Thread)

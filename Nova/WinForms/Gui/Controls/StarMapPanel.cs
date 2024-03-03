@@ -22,8 +22,10 @@
 namespace Nova.WinForms.Gui
 {
     using System;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
 
+    [SupportedOSPlatform("windows")]
     public class StarMapPanel : UserControl
     {
         public event KeyEventHandler ArrowKeyPressed;

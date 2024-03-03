@@ -30,8 +30,10 @@ namespace Nova.ControlLibrary
 {
     using System;
     using System.ComponentModel;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
 
+    [SupportedOSPlatform("windows")]
     public class ResearchCost : System.Windows.Forms.UserControl
     {
         public delegate void SelectionChangedHandler(object sender, int value);

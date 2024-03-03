@@ -30,11 +30,14 @@ namespace Nova.ControlLibrary
 {
     using System;
     using System.ComponentModel;
+    using System.Runtime.Versioning;
+
     using Nova.Common;
 
     /// <summary>
     /// Control used to display extended resource information of a planet.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class ResourcesOnHandDisplay : ResourceDisplay
     {
         // Used to keep track of the resources not on hand.

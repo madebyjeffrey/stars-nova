@@ -22,6 +22,7 @@
 namespace Nova.Common.DataStructures
 {
     using System;
+    using System.Runtime.Versioning;
     using System.Xml;
 
     /// <summary>
@@ -29,6 +30,7 @@ namespace Nova.Common.DataStructures
     /// Like System.Drawing.Point, with added methods for serialization.
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class NovaPoint : ICloneable
     {
         public int X { get; set; }

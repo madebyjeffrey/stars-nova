@@ -23,6 +23,7 @@ namespace Nova.Common
 {
     using System;
     using System.Drawing;
+    using System.Runtime.Versioning;
     using System.Xml;
 
     /// <summary>
@@ -31,6 +32,7 @@ namespace Nova.Common
     /// display purposes and the file path is for loading/saving.
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class ShipIcon : ICloneable
     {
         private readonly int index;

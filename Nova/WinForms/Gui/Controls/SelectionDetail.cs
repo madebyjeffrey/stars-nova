@@ -23,6 +23,7 @@
 namespace Nova.WinForms.Gui
 {
     using System;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
     
     using Nova.Client;
@@ -32,6 +33,7 @@ namespace Nova.WinForms.Gui
     /// Control to act as a container to hold the appropriate Detail control of a
     /// selected Item.
     /// </Summary>
+    [SupportedOSPlatform("windows")]
     public partial class SelectionDetail : UserControl
     {
         // FIXME:(priority 3) this should not be here. It is only needed to pass it

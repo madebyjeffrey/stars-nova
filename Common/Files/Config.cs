@@ -25,6 +25,7 @@ namespace Nova.Common
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
     using System.Xml.Schema;
     using System.Xml.Serialization; 
@@ -33,6 +34,7 @@ namespace Nova.Common
     /// Class to manage the application configuration settings. 
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public sealed class Config : IDisposable, IXmlSerializable
     {
         private readonly Dictionary<string, string> settings = new Dictionary<string, string>(); // string key, string value

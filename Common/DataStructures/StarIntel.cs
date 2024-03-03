@@ -22,6 +22,7 @@
 namespace Nova.Common
 {
     using System;
+    using System.Runtime.Versioning;
     using System.Xml;
 
     using Nova.Common.DataStructures;
@@ -34,6 +35,7 @@ namespace Nova.Common
     /// know about a Star system.
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class StarIntel : Mappable
     {
         public int          Year                    { get; set; }

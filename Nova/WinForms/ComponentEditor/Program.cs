@@ -33,6 +33,8 @@ using Nova.Common;
 
 namespace Nova.WinForms.ComponentEditor
 {
+    using System.Runtime.Versioning;
+    [SupportedOSPlatform("windows")]
    public static class Program
    {
        [STAThread]

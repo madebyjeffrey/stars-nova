@@ -24,12 +24,14 @@ namespace Nova.Server.TurnSteps
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Runtime.Versioning;
     using System.Text;
     
     using Nova.Common;
     using Nova.Common.Waypoints;
 
 
+    [SupportedOSPlatform("windows")]
     public class ScrapFleetStep : ITurnStep
     {
         public List<Message> Process(ServerData serverState)

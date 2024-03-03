@@ -28,11 +28,13 @@ namespace Nova.Common.Converters
     using System.ComponentModel;
     using System.ComponentModel.Design.Serialization;
     using System.Reflection;
+    using System.Runtime.Versioning;
     #endregion
 
     /// <summary>
     /// <see cref="TypeConverter"/> for <see cref="Resources"/>.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class ResourcesConverter : InstanceDescriptorConverter<Resources>
     {
         protected override InstanceDescriptor ConvertToInstanceDescriptor(Resources value)

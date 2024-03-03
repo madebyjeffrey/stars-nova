@@ -25,6 +25,7 @@ namespace Nova.WinForms.Gui
     using System;
     using System.Collections.Generic;
     using System.Drawing;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
     
     using Nova.Client;
@@ -34,6 +35,7 @@ namespace Nova.WinForms.Gui
     /// <Summary>
     /// Planet Detail display pane.
     /// </Summary>
+    [SupportedOSPlatform("windows")]
     public partial class PlanetDetail : System.Windows.Forms.UserControl
     {
         private EmpireData empireState;
@@ -55,8 +57,8 @@ namespace Nova.WinForms.Gui
         /// <Summary>
         /// Initializes a new instance of the PlanetDetail class.
         /// </Summary>
-        public event EventHandler<SelectionArgs> setFleetMode;
-        public event EventHandler<SelectionArgs> setPlanetMode;
+        public event EventHandler<SelectionArgs> SetFleetMode;
+        public event EventHandler<SelectionArgs> SetPlanetMode;
         public PlanetDetail(EmpireData empireState, ClientData clientState)
         {
             this.empireState = empireState;
@@ -598,7 +600,7 @@ namespace Nova.WinForms.Gui
             {
                 //OnPlanetSelectionChanged(new SelectionArgs(fleet));
 
-                if (setFleetMode != null) setFleetMode.Invoke(this, new SelectionArgs(fleet));
+                if (SetFleetMode != null) SetFleetMode.Invoke(this, new SelectionArgs(fleet));
 
 
             }

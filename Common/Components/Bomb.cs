@@ -31,10 +31,12 @@ using System.Xml;
 
 namespace Nova.Common.Components
 {
+    using System.Runtime.Versioning;
     /// <summary>
     /// Bomb class.
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class Bomb : ComponentProperty
     {
         public int Installations = 0;

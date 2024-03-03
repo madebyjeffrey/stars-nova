@@ -23,13 +23,15 @@
 namespace Nova.Server
 { 
     using System.Collections.Generic;
-        
+    using System.Runtime.Versioning;
+
     using Nova.Common;
     using Nova.Server;
     
     /// <summary>
     /// Check for a victor (doesn't mean the end of a game, though - Alternate Reality races have no resources(factories and mines) so they have a very low score just a few turns before they wipe out everyone's Homeplanets ).
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class VictoryCheck
     {
         private readonly ServerData serverState;

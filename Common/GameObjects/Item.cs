@@ -24,6 +24,7 @@ namespace Nova.Common
 {
     using System;
     using System.Drawing;
+    using System.Runtime.Versioning;
     using System.Xml;
 
     using Nova.Common.DataStructures;
@@ -32,6 +33,7 @@ namespace Nova.Common
     /// Base class for most game items. 
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class Item
     {
         /// <summary>

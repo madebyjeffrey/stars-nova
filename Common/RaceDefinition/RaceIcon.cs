@@ -33,10 +33,12 @@ using System.Xml;
 
 namespace Nova.Common
 {
+    using System.Runtime.Versioning;
     /// <summary>
     /// A race's icon image.
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class RaceIcon : ICloneable
     {
         public string Source = string.Empty;

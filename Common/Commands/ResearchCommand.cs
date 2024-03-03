@@ -22,12 +22,14 @@
 namespace Nova.Common.Commands
 {
     using System;
+    using System.Runtime.Versioning;
     using System.Xml;
     
     /// <summary>
     /// Command that describes the change of research state. Includes both
     /// new(if at all) budget and target.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class ResearchCommand : ICommand
     {
         public int Budget

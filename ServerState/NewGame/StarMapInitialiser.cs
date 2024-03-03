@@ -24,7 +24,8 @@ namespace Nova.Server.NewGame
     using System;
     using System.Collections.Generic;
     using System.Drawing;
-    
+    using System.Runtime.Versioning;
+
     using Nova.Common;
     using Nova.Common.Components;
 
@@ -33,6 +34,7 @@ namespace Nova.Server.NewGame
     /// This object contains static methods to initialize the star map. 
     /// Note that StarsMapGenerator handles positioning of the stars.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class StarMapinitializer
     {
         private ServerData serverState;

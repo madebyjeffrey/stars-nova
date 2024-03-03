@@ -24,6 +24,7 @@ namespace Nova.Common.Waypoints
 {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.Versioning;
     using System.Xml;
 
     using Nova.Common;
@@ -34,6 +35,7 @@ namespace Nova.Common.Waypoints
     /// <summary>
     /// Performs transfer of fuel between fleets
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class FuelTransferTask : IWaypointTask
     {
         private List<Message> messages = new List<Message>();

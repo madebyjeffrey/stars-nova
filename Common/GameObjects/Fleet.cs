@@ -25,6 +25,7 @@ namespace Nova.Common
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Runtime.Versioning;
     using System.Xml;
 
     using Nova.Common.Components;
@@ -40,6 +41,7 @@ namespace Nova.Common
     /// A fleet may be a starbase, mineral packet or salvage.
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class Fleet : Mappable
     {
         /// <summary>
@@ -1015,7 +1017,7 @@ namespace Nova.Common
             catch (Exception e)
             {
                 Report.Error("Error loading fleet:" + Environment.NewLine + e.Message);
-                throw e;
+                throw;
             }
         }
 

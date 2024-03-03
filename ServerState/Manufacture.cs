@@ -27,12 +27,15 @@ namespace Nova.Server
     using Nova.Common;
     using Nova.Common.Components;
     using System;
+    using System.Runtime.Versioning;
+
     using Nova.Common.Commands;
     using Nova.Common.Waypoints;
 
     /// <summary>
     /// Class to manufacture the items in a star's queue.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class Manufacture
     {
         private ServerData serverState;

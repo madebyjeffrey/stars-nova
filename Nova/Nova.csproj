@@ -1,32 +1,14 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{184F17D9-28F2-4784-B5F0-8E9538A31BF7}</ProjectGuid>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <GenerateResourceWarnOnBinaryFormatterUse>false</GenerateResourceWarnOnBinaryFormatterUse>
     <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Nova</RootNamespace>
-    <AssemblyName>Nova</AssemblyName>
-    <FileAlignment>512</FileAlignment>
     <StartupObject>Nova.Program</StartupObject>
     <ApplicationIcon>Resources\Nova.ico</ApplicationIcon>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <OldToolsVersion>3.5</OldToolsVersion>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <NoStdLib>False</NoStdLib>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <RunCodeAnalysis>False</RunCodeAnalysis>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -44,55 +26,37 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
     <OutputPath>..\Build\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>Nova.ruleset</CodeAnalysisRuleSet>
     <RegisterForComInterop>False</RegisterForComInterop>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <BaseAddress>4194304</BaseAddress>
-    <PlatformTarget>x86</PlatformTarget>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
     <OutputPath>..\Build\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>Nova.ruleset</CodeAnalysisRuleSet>
     <RegisterForComInterop>False</RegisterForComInterop>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <BaseAddress>4194304</BaseAddress>
-    <PlatformTarget>x86</PlatformTarget>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
     <StartAction>Project</StartAction>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
     <RegisterForComInterop>False</RegisterForComInterop>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <BaseAddress>4194304</BaseAddress>
-    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'USE_COMMAND_ORDERS|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\USE_COMMAND_ORDERS\</OutputPath>
     <DefineConstants>TRACE;DEBUG;USE_COMMAND_ORDERS</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>Nova.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'USE_COMMAND_ORDERS' ">
     <StartAction>Project</StartAction>
@@ -113,432 +77,62 @@
     <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core">
-    </Reference>
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.IO.Compression.FileSystem" />
-    <Reference Include="System.IO.Compression.ZipFile, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.IO.Compression.ZipFile.4.3.0\lib\net46\System.IO.Compression.ZipFile.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq">
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="..\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="Ai\AbstractAI.cs" />
-    <Compile Include="Ai\AiRunner.cs" />
-    <Compile Include="Ai\DefaultAi.cs" />
-    <Compile Include="Ai\DefaultAIPlanner.cs" />
-    <Compile Include="Ai\DefaultFleetAI.cs" />
-    <Compile Include="Ai\DefaultPlanetAI.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\ComponentEditor\ComponentEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WinForms\ComponentEditor\ComponentEditor.Designer.cs">
-      <DependentUpon>ComponentEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\ComponentEditor\DialogComponents\BasicProperties.cs">
+    <Compile Update="WinForms\ComponentEditor\DialogComponents\BasicProperties.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="WinForms\ComponentEditor\DialogComponents\BasicProperties.Designer.cs">
-      <DependentUpon>BasicProperties.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\ComponentEditor\DialogComponents\CommonProperties.cs">
+    <Compile Update="WinForms\ComponentEditor\DialogComponents\CommonProperties.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="WinForms\ComponentEditor\DialogComponents\CommonProperties.Designer.cs">
-      <DependentUpon>CommonProperties.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\ComponentEditor\DialogComponents\ImageDisplay.cs">
+    <Compile Update="WinForms\ComponentEditor\DialogComponents\ImageDisplay.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="WinForms\ComponentEditor\DialogComponents\ImageDisplay.Designer.cs">
-      <DependentUpon>ImageDisplay.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\ComponentEditor\DialogComponents\TechRequirements.cs">
+    <Compile Update="WinForms\ComponentEditor\DialogComponents\TechRequirements.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="WinForms\ComponentEditor\DialogComponents\TechRequirements.Designer.cs">
-      <DependentUpon>TechRequirements.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\AboutBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WinForms\AboutBox.Designer.cs">
-      <DependentUpon>AboutBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\ComponentEditor\Dialogs\HullDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WinForms\ComponentEditor\Dialogs\HullDialog.Designer.cs">
-      <DependentUpon>HullDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\ComponentEditor\Dialogs\RaceRestrictionDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WinForms\ComponentEditor\Dialogs\RaceRestrictionDialog.Designer.cs">
-      <DependentUpon>RaceRestrictionDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\ComponentEditor\Program.cs" />
-    <Compile Include="WinForms\Gui\Controls\CargoMeter.cs">
+    <Compile Update="WinForms\Gui\Controls\CargoMeter.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="WinForms\Gui\Controls\CargoMeter.Designer.cs">
-      <DependentUpon>CargoMeter.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\Gui\Controls\CargoMeterCounter.cs">
+    <Compile Update="WinForms\Gui\Controls\CargoMeterCounter.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="WinForms\Gui\Controls\CargoMeterCounter.Designer.cs">
-      <DependentUpon>CargoMeterCounter.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\Gui\Controls\Events.cs" />
-    <Compile Include="WinForms\Gui\Controls\FleetDetail.Designer.cs">
-      <DependentUpon>FleetDetail.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\Gui\Controls\PlanetDetail.Designer.cs">
-      <DependentUpon>PlanetDetail.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\Gui\Dialogs\CargoDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WinForms\Gui\Dialogs\CargoDialog.Designer.cs">
-      <DependentUpon>CargoDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\Gui\Dialogs\CargoTransferDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WinForms\Gui\Dialogs\CargoTransferDialog.Designer.cs">
-      <DependentUpon>CargoTransferDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\Gui\Dialogs\ShipDesignDialog.Designer.cs">
-      <DependentUpon>ShipDesignDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\Gui\Dialogs\SplitFleetsDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WinForms\Gui\Dialogs\SplitFleetsDialog.Designer.cs">
-      <DependentUpon>SplitFleetsDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\Gui\Dialogs\ProductionDialog.Designer.cs">
-      <DependentUpon>ProductionDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\Gui\Dialogs\RenameFleetDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WinForms\Gui\Dialogs\RenameFleetDialog.Designer.cs">
-      <DependentUpon>RenameFleetDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\Gui\NovaGui.Designer.cs">
-      <DependentUpon>NovaGUI.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\NovaConsole.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WinForms\Gui\Controls\FleetDetail.cs">
+    <Compile Update="WinForms\Gui\Controls\FleetDetail.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="WinForms\Gui\Controls\FleetSummary.cs">
+    <Compile Update="WinForms\Gui\Controls\FleetSummary.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="WinForms\Gui\Controls\FleetSummary.Designer.cs">
-      <DependentUpon>FleetSummary.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\Gui\Controls\Messages.cs">
+    <Compile Update="WinForms\Gui\Controls\Messages.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="WinForms\Gui\Controls\StarMapPanel.cs">
+    <Compile Update="WinForms\Gui\Controls\StarMapPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="WinForms\Gui\Controls\PlanetDetail.cs">
+    <Compile Update="WinForms\Gui\Controls\PlanetDetail.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="WinForms\Gui\Controls\PlanetSummary.cs">
+    <Compile Update="WinForms\Gui\Controls\PlanetSummary.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="WinForms\Gui\Controls\SelectionDetail.cs">
+    <Compile Update="WinForms\Gui\Controls\SelectionDetail.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="WinForms\Gui\Controls\SelectionDetail.Designer.cs">
-      <DependentUpon>SelectionDetail.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\Gui\Controls\SelectionSummary.cs">
+    <Compile Update="WinForms\Gui\Controls\SelectionSummary.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="WinForms\Gui\Controls\SelectionSummary.Designer.cs">
-      <DependentUpon>SelectionSummary.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\Gui\Controls\StarMap.cs">
+    <Compile Update="WinForms\Gui\Controls\StarMap.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="WinForms\Gui\Controls\StarMap.Designer.cs">
-      <DependentUpon>StarMap.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\Gui\Dialogs\BattlePlans.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WinForms\Gui\Dialogs\BattlePlans.Designer.cs">
-      <DependentUpon>BattlePlans.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\Gui\Dialogs\BattleViewer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WinForms\Gui\Dialogs\BattleViewer.Designer.cs">
-      <DependentUpon>BattleViewer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\Gui\Dialogs\DesignManager.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WinForms\Gui\Dialogs\DesignManager.Designer.cs">
-      <DependentUpon>DesignManager.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\Gui\Dialogs\PlayerRelations.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WinForms\Gui\Dialogs\PlayerRelations.Designer.cs">
-      <DependentUpon>PlayerRelations.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\Gui\Dialogs\ProductionDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WinForms\Gui\Dialogs\ResearchDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WinForms\Gui\Dialogs\ResearchDialog.Designer.cs">
-      <DependentUpon>ResearchDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\Gui\Dialogs\ShipDesignDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WinForms\Gui\NovaGUI.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WinForms\Gui\QueueList.cs">
+    <Compile Update="WinForms\Gui\QueueList.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="WinForms\Gui\Reports\BattleReport.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WinForms\Gui\Reports\BattleReport.Designer.cs">
-      <DependentUpon>BattleReport.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\Gui\Reports\FleetReport.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WinForms\Gui\Reports\FleetReport.Designer.cs">
-      <DependentUpon>FleetReport.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\Gui\Reports\PlanetReport.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WinForms\Gui\Reports\PlanetReport.Designer.cs">
-      <DependentUpon>PlanetReport.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\Gui\Reports\ScoreReport.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WinForms\Gui\Reports\ScoreReport.Designer.cs">
-      <DependentUpon>ScoreReport.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\Gui\WaypointListBox.cs">
+    <Compile Update="WinForms\Gui\WaypointListBox.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="WinForms\Launcher\NovaLauncer.Designer.cs">
-      <DependentUpon>NovaLauncher.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\Launcher\Program.cs" />
-    <Compile Include="WinForms\NewGameWizard.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WinForms\NewGameWizard.Designer.cs">
-      <DependentUpon>NewGameWizard.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\NovaConsole.Designer.cs">
-      <DependentUpon>NovaConsole.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\RaceDesigner\RaceDesigner.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WinForms\RaceDesigner\Utilities.cs" />
-    <Compile Include="Client\ClientData.cs" />
-    <Compile Include="Client\IntelReader.cs" />
-    <Compile Include="Client\OrderWriter.cs" />
-    <Compile Include="Client\SelectRaceDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Client\SelectRaceDialog.Designer.cs">
-      <DependentUpon>SelectRaceDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\Launcher\NovaLauncher.cs">
-      <SubType>Form</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\ComponentEditor\ComponentEditor.resx">
-      <DependentUpon>ComponentEditor.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\ComponentEditor\DialogComponents\BasicProperties.resx">
-      <DependentUpon>BasicProperties.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\ComponentEditor\DialogComponents\CommonProperties.resx">
-      <DependentUpon>CommonProperties.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\ComponentEditor\DialogComponents\ImageDisplay.resx">
-      <DependentUpon>ImageDisplay.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\ComponentEditor\DialogComponents\TechRequirements.resx">
-      <DependentUpon>TechRequirements.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\AboutBox.resx">
-      <DependentUpon>AboutBox.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\ComponentEditor\Dialogs\HullDialog.resx">
-      <DependentUpon>HullDialog.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\ComponentEditor\Dialogs\RaceRestrictionDialog.resx">
-      <DependentUpon>RaceRestrictionDialog.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\Gui\Controls\CargoMeterCounter.resx">
-      <DependentUpon>CargoMeterCounter.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\Gui\Controls\FleetDetail.resx">
-      <DependentUpon>FleetDetail.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\Gui\Controls\PlanetDetail.resx">
-      <DependentUpon>PlanetDetail.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\Gui\Dialogs\CargoDialog.resx">
-      <DependentUpon>CargoDialog.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\Gui\Dialogs\CargoTransferDialog.resx">
-      <DependentUpon>CargoTransferDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\Gui\Dialogs\SplitFleetsDialog.resx">
-      <DependentUpon>SplitFleetsDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\Gui\Dialogs\RenameFleetDialog.resx">
-      <DependentUpon>RenameFleetDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\NovaConsole.resx">
-      <DependentUpon>NovaConsole.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\Gui\Controls\FleetSummary.resx">
-      <DependentUpon>FleetSummary.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\Gui\Controls\Messages.resx">
-      <DependentUpon>Messages.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\Gui\Controls\PlanetSummary.resx">
-      <DependentUpon>PlanetSummary.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\Gui\Controls\SelectionDetail.resx">
-      <DependentUpon>SelectionDetail.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\Gui\Controls\SelectionSummary.resx">
-      <DependentUpon>SelectionSummary.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\Gui\Controls\StarMap.resx">
-      <DependentUpon>StarMap.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\Gui\Dialogs\BattlePlans.resx">
-      <DependentUpon>BattlePlans.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\Gui\Dialogs\BattleViewer.resx">
-      <DependentUpon>BattleViewer.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\Gui\Dialogs\DesignManager.resx">
-      <DependentUpon>DesignManager.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\Gui\Dialogs\PlayerRelations.resx">
-      <DependentUpon>PlayerRelations.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\Gui\Dialogs\ProductionDialog.resx">
-      <DependentUpon>ProductionDialog.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\Gui\Dialogs\ResearchDialog.resx">
-      <DependentUpon>ResearchDialog.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\Gui\Dialogs\ShipDesignDialog.resx">
-      <DependentUpon>ShipDesignDialog.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\Gui\NovaGUI.resx">
-      <DependentUpon>NovaGUI.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\Gui\Reports\BattleReport.resx">
-      <DependentUpon>BattleReport.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\Gui\Reports\FleetReport.resx">
-      <DependentUpon>FleetReport.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\Gui\Reports\PlanetReport.resx">
-      <DependentUpon>PlanetReport.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\Gui\Reports\ScoreReport.resx">
-      <DependentUpon>ScoreReport.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\NewGameWizard.resx">
-      <DependentUpon>NewGameWizard.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\RaceDesigner\RaceDesigner.resx">
-      <DependentUpon>RaceDesigner.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Client\SelectRaceDialog.resx">
-      <DependentUpon>SelectRaceDialog.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
     <AdditionalFiles Include="DefaultRaces\AIs.race">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </AdditionalFiles>
@@ -569,29 +163,17 @@
     <Content Include="components.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="Nova.ruleset" />
-    <None Include="Nova.xcf" />
     <Content Include="NOTICE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Plasma.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common\Common.csproj">
-      <Project>{EF679930-F4C9-4D62-9A6A-DE29F8D328C0}</Project>
-      <Name>Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ControlLibrary\ControlLibrary.csproj">
-      <Project>{AA9C1AA7-AB64-4560-91C7-95BB2A88FA1F}</Project>
-      <Name>ControlLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ServerState\Server.csproj">
-      <Project>{0C92C1D5-9084-4E4A-82F1-889B74019A33}</Project>
-      <Name>Server</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\ControlLibrary\ControlLibrary.csproj" />
+    <ProjectReference Include="..\ServerState\Server.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Cursor.bmp">
@@ -635,14 +217,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
   <ItemGroup>
     <Content Include="Resources\smallplus.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -681,5 +255,20 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="WinForms\ComponentEditor\Dialogs\ArmorDialog.cs" />
+    <Compile Remove="WinForms\ComponentEditor\Dialogs\ArmorDialog.Designer.cs" />
+    <Compile Remove="WinForms\ComponentEditor\Dialogs\CargoPodDialog.cs" />
+    <Compile Remove="WinForms\ComponentEditor\Dialogs\CargoPodDialog.Designer.cs" />
+    <Compile Remove="WinForms\ComponentEditor\Dialogs\MineDialog.cs" />
+    <Compile Remove="WinForms\ComponentEditor\Dialogs\MineDialog.Designer.cs" />
+    <Compile Remove="WinForms\ComponentEditor\Dialogs\ShieldDialog.cs" />
+    <Compile Remove="WinForms\ComponentEditor\Dialogs\ShieldDialog.Designer.cs" />
+    <EmbeddedResource Remove="WinForms\ComponentEditor\Dialogs\ArmorDialog.resx" />
+    <EmbeddedResource Remove="WinForms\ComponentEditor\Dialogs\CargoPodDialog.resx" />
+    <EmbeddedResource Remove="WinForms\ComponentEditor\Dialogs\MineDialog.resx" />
+    <EmbeddedResource Remove="WinForms\ComponentEditor\Dialogs\ShieldDialog.resx" />
+    <EmbeddedResource Remove="WinForms\Launcher\NovaLauncer.resx" />
   </ItemGroup>
 </Project>

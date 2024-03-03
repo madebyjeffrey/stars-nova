@@ -160,7 +160,7 @@ namespace Nova.Tests.UnitTests
         public void Test1DetermineCoLocatedFleets()
         {
             fleetPositions = battleEngine.DetermineCoLocatedFleets();
-            Assert.AreEqual(2, fleetPositions.Count);
+            Assert.That(2, Is.EqualTo(fleetPositions.Count));
         }
 
         /// <Summary>
@@ -170,7 +170,7 @@ namespace Nova.Tests.UnitTests
         public void Test2EliminateSingleRaces()
         {
             battlePositions = battleEngine.EliminateSingleRaces(fleetPositions);
-            Assert.AreEqual(1, battlePositions.Count);
+            Assert.That(1, Is.EqualTo(battlePositions.Count));
         }
 
         /// <Summary>
@@ -181,7 +181,7 @@ namespace Nova.Tests.UnitTests
         {
             List<Fleet> combatZone = battlePositions[0];
             zoneStacks = battleEngine.GenerateStacks(combatZone);
-            Assert.AreEqual(2, zoneStacks.Count);
+            Assert.That(2, Is.EqualTo(zoneStacks.Count));
         }
 
         /// <Summary>
@@ -197,9 +197,9 @@ namespace Nova.Tests.UnitTests
             Stack stackA = zoneStacks[0];
             Stack stackB = zoneStacks[1];
 
-            Assert.AreEqual(2, numberOfTargets);
-            Assert.AreEqual(stackA.Target.Name, stackB.Name);
-            Assert.AreEqual(stackB.Target.Name, stackA.Name);
+            Assert.That(2, Is.EqualTo(numberOfTargets));
+            Assert.That(stackA.Target.Name, Is.EqualTo(stackB.Name));
+            Assert.That(stackB.Target.Name, Is.EqualTo(stackA.Name));
         }
 
         /// <Summary>
@@ -217,7 +217,7 @@ namespace Nova.Tests.UnitTests
             Fleet stackB = zoneStacks[1] as Fleet;
 
             distance = PointUtilities.Distance(stackA.Position, stackB.Position);
-            Assert.Greater((int)distance, 3); // changed from Global.MaxRange -1 to 3 due to reduction in battle board size from Ken's 20x20 to Stars! 10x10 - Dan 07 Jul 11
+            Assert.That((int)distance, Is.GreaterThan(3)); // changed from Global.MaxRange -1 to 3 due to reduction in battle board size from Ken's 20x20 to Stars! 10x10 - Dan 07 Jul 11
         }
 
         /// <Summary>
@@ -243,7 +243,7 @@ namespace Nova.Tests.UnitTests
 
             // Check that the fleets have moved towards each other.
 
-            Assert.Greater(distanceS, distanceE);
+            Assert.That(distanceS, Is.GreaterThan(distanceE));
         }
     }
 }

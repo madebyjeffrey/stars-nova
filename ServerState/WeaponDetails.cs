@@ -24,6 +24,8 @@ namespace Nova.Server
 {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.Versioning;
+
     using Nova.Common;
     using Nova.Common.Components;
 
@@ -33,6 +35,7 @@ namespace Nova.Server
     /// weapon system initiative.
     /// </summary>
     /// ----------------------------------------------------------------------------
+    [SupportedOSPlatform("windows")]
     public class WeaponDetails : IComparable
     {
         public struct TargetPercent

@@ -23,6 +23,7 @@ namespace Nova.Common.Commands
 {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.Versioning;
     using System.Xml;
     
     using Nova.Common.Components;
@@ -30,6 +31,7 @@ namespace Nova.Common.Commands
     /// <summary>
     /// Description of WaypointCommand.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class DesignCommand : ICommand
     {        
         public ShipDesign Design

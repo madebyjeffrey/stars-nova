@@ -25,6 +25,7 @@ namespace Nova.Common
     using System;
     using System.Collections.Generic;
     using System.Globalization;
+    using System.Runtime.Versioning;
     using System.Xml;
     
     using Nova.Common;
@@ -33,6 +34,7 @@ namespace Nova.Common
     /// This object represents a Star system, the basic unit of stars-nova settlement/expansion.
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class Star : Mappable
     {
         public bool HasFleetsInOrbit;

@@ -25,6 +25,7 @@ namespace Nova.Common.Commands
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Runtime.Versioning;
     using System.Text;
     using System.Xml;
 
@@ -32,6 +33,7 @@ namespace Nova.Common.Commands
     /// A command to pass to the server to rename a player's fleet.
     /// In Stars! players can name their own fleets anything they like, and that is what all players see. Can be used to dis-inform other players.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class RenameFleetCommand : ICommand
     {
         /// <summary>

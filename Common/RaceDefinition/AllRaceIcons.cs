@@ -23,12 +23,14 @@ namespace Nova.Common
 {
     using System.Collections.Generic;
     using System.Drawing;
-    using System.IO; 
+    using System.IO;
+    using System.Runtime.Versioning;
 
     /// <summary>
     /// A singleton containing all the useable race icons, which is used to load and
     /// store the game wide list of race icon images, as a collection of RaceIcons.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public sealed class AllRaceIcons
     {
         private static readonly object Padlock = new object();
@@ -73,6 +75,7 @@ namespace Nova.Common
         /// Load the race images.
         /// </summary>
         /// <returns>Returns true if the race icons were successfuly loaded.</returns>
+        [SupportedOSPlatform("windows")]
         public static bool Restore()
         {
             if (Data.IconList.Count < 1)
@@ -100,6 +103,7 @@ namespace Nova.Common
             return true;
         }
 
+        [SupportedOSPlatform("windows")]
         public static RaceIcon Restore(string iconName)
         {
             RaceIcon icon = null;

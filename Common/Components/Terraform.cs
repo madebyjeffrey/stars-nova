@@ -23,6 +23,7 @@
 namespace Nova.Common.Components
 {
     using System;
+    using System.Runtime.Versioning;
     using System.Xml;
     using Nova.Common;
 
@@ -30,6 +31,7 @@ namespace Nova.Common.Components
     /// This class defines a terraforming property.
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class Terraform : ComponentProperty
     {
         public int MaxModifiedGravity     = 0;

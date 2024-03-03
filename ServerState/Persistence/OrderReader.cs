@@ -25,6 +25,7 @@ namespace Nova.Server
     using System.Collections.Generic;
     using System.IO;
     using System.IO.Compression;
+    using System.Runtime.Versioning;
     using System.Xml;
     
     using Nova.Common;
@@ -34,6 +35,7 @@ namespace Nova.Server
     /// <summary>
     /// This class processes the reading of race orders files.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class OrderReader
     {
         private readonly string gameFolder;

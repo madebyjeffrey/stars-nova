@@ -36,6 +36,7 @@ namespace Nova.Common
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Runtime.Versioning;
     using System.Xml;
 
     /// <summary>
@@ -52,6 +53,7 @@ namespace Nova.Common
     /// An object to represent the race/traits a component is restricted to/from.
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class RaceRestriction
     {
         private readonly Dictionary<string, RaceAvailability> restrictions = new Dictionary<string, RaceAvailability>();

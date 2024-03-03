@@ -24,11 +24,13 @@ namespace Nova.WinForms.Gui
 {
     using Nova.Common;
     using System.Drawing;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
 
     /// <Summary>
     /// Control to display a Summary of the selected map Item.
     /// </Summary>
+    [SupportedOSPlatform("windows")]
     public partial class SelectionSummary : UserControl
     {
         private EmpireData empireState;

@@ -23,12 +23,14 @@
 namespace Nova.Common.DataStructures
 {
     using System;
+    using System.Runtime.Versioning;
     using System.Xml;
 
     /// <summary>
     /// A class to record a new stack position.
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class BattleStepMovement : BattleStep
     {
         public long StackKey 

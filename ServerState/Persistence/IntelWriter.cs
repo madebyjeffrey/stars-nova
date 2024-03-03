@@ -26,6 +26,7 @@ namespace Nova.Server
     using System.Collections.Generic;
     using System.IO;
     using System.Runtime.Serialization;
+    using System.Runtime.Versioning;
     using System.Xml;
 
     using Nova.Common;
@@ -36,6 +37,7 @@ namespace Nova.Server
     /// This module converts the console's state into Intel and saves it, thereby 
     /// generating the next turn to be played.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class IntelWriter
     {
         private readonly ServerData serverState;

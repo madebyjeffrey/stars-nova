@@ -26,6 +26,7 @@ namespace Nova.ControlLibrary
     using System.Collections;
     using System.Collections.Generic;
     using System.Drawing;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
     using Nova.Common;
     using Nova.Common.Components;
@@ -33,6 +34,7 @@ namespace Nova.ControlLibrary
     /// <summary>
     /// A component for displaying or editing a ship hull design.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class HullGrid : UserControl
     {
         public event EventHandler ModuleSelected;

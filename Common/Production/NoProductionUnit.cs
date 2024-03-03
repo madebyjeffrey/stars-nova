@@ -22,12 +22,14 @@
 namespace Nova.Common
 {
     using System;
+    using System.Runtime.Versioning;
     using System.Xml;
 
     /// <summary>
     /// Class representing an empty production unit. Useful for
     /// the production list header.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class NoProductionUnit : IProductionUnit
     {
         public Resources Cost

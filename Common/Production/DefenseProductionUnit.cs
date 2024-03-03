@@ -23,11 +23,13 @@
 namespace Nova.Common
 {
     using System;
+    using System.Runtime.Versioning;
     using System.Xml;
 
     /// <summary>
     /// Class for constructing 1 defense unit.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class DefenseProductionUnit : IProductionUnit
     {
         public Resources Cost

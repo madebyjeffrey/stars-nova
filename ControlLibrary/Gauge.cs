@@ -25,11 +25,13 @@ namespace Nova.ControlLibrary
     using System;
     using System.ComponentModel;
     using System.Drawing;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
 
     /// <summary>
     /// A simple gauge control.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class Gauge : System.Windows.Forms.UserControl
     {
         private readonly Font font              = new Font("Arial", 8);

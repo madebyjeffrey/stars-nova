@@ -95,13 +95,13 @@ namespace Nova.Tests.IntegrationTests
             serverState.Restore();
 
             // test
-            Assert.AreEqual(2101, serverState.TurnYear);            
-            Assert.AreEqual("dummy_value", serverState.GameFolder);
-            Assert.AreEqual(10, serverState.AllTechLevels[1]);
-            Assert.AreEqual(5, serverState.AllTechLevels[2]);
-            Assert.AreEqual("foofleet", serverState.AllEmpires[Player1Id].OwnedFleets[fleet1.Key].Name);
-            Assert.AreEqual("barfleet", serverState.AllEmpires[Player2Id].OwnedFleets[fleet2.Key].Name);
-            Assert.AreEqual(true, serverState.GameInProgress);
+            Assert.That(2101, Is.EqualTo(serverState.TurnYear));            
+            Assert.That("dummy_value", Is.EqualTo(serverState.GameFolder));
+            Assert.That(10, Is.EqualTo(serverState.AllTechLevels[1]));
+            Assert.That(5, Is.EqualTo(serverState.AllTechLevels[2]));
+            Assert.That("foofleet", Is.EqualTo(serverState.AllEmpires[Player1Id].OwnedFleets[fleet1.Key].Name));
+            Assert.That("barfleet", Is.EqualTo(serverState.AllEmpires[Player2Id].OwnedFleets[fleet2.Key].Name));
+            Assert.That(true, Is.EqualTo(serverState.GameInProgress));
         }
     }
 }

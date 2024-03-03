@@ -23,11 +23,13 @@ namespace Nova.Common.Commands
 {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.Versioning;
     using System.Xml;
     
     /// <summary>
     /// Description of Class1.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class ProductionCommand : ICommand
     {
         public ProductionOrder ProductionOrder

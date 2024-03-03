@@ -23,12 +23,14 @@
 namespace Nova.Common.Components
 {
     using System;
+    using System.Runtime.Versioning;
     using System.Xml;
 
     /// <summary>
     /// This class defines a mine-layer property.
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class MineLayer : ComponentProperty
     {
         // Only three types of mine layers are recognised, and they are distinguised by their HitChance:

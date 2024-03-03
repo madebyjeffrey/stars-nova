@@ -26,6 +26,7 @@ namespace Nova.Server
     using System.Collections.Generic;
     using System.Drawing;
     using System.Linq;
+    using System.Runtime.Versioning;
 
     using Nova.Common;
     using Nova.Common.Components;
@@ -35,6 +36,7 @@ namespace Nova.Server
     /// <summary>
     /// Deal with combat between races.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class BattleEngine
     {
         private readonly Random random = new Random();
@@ -630,7 +632,7 @@ namespace Nova.Server
         /// <summary>
         /// Quote from Stars! P L A Y E R S    G U I D E 
         //If you are using beam weapons and the damage your token can inflict on an
-        //enemy’s token is more than enough to destroy the enemy token, the
+        //enemyï¿½s token is more than enough to destroy the enemy token, the
         //remainder is used on additional enemy tokens in the same location, limited
         //only by the number of ships in the attacking token.
 

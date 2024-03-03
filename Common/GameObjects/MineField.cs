@@ -32,9 +32,11 @@
 namespace Nova.Common
 {
     using System;
+    using System.Runtime.Versioning;
     using System.Xml;
 
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class Minefield : Mappable
     {
         public int NumberOfMines;

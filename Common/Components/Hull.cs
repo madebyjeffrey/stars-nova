@@ -37,11 +37,13 @@
 
 namespace Nova.Common.Components
 {
+    using System.Runtime.Versioning;
 
     /// <summary>
     /// The definition of a hull object.
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class Hull : ComponentProperty
     {
         // Note: several hull properties _could_ be made by adding other properties

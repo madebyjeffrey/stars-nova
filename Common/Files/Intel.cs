@@ -45,6 +45,7 @@ namespace Nova.Common
     using System.Resources;
     using System.Runtime.Serialization;
     using System.Runtime.Serialization.Formatters;
+    using System.Runtime.Versioning;
     using System.Xml;
     using System.Xml.Serialization;
 
@@ -58,6 +59,7 @@ namespace Nova.Common
     /// The data items created by the Nova Console and read by the Nova GUI.
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public sealed class Intel
     {
         public EmpireData EmpireState = new EmpireData(true,"Intel");

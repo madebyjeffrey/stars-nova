@@ -23,6 +23,7 @@ namespace Nova.Common
 {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.Versioning;
     using System.Xml;
  
     using Nova.Common.DataStructures;
@@ -32,6 +33,7 @@ namespace Nova.Common
     /// know about a Fleet.
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class FleetIntel : Mappable
     {
         public int                          Year        { get; set; }

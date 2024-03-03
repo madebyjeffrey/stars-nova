@@ -36,6 +36,7 @@ namespace GameFileInflator
     using System.IO;
     using System.IO.Compression;
     using System.Linq;
+    using System.Runtime.Versioning;
     using System.Text;
     using System.Windows.Forms;
 
@@ -45,6 +46,7 @@ namespace GameFileInflator
     /// This module provides a means of un-compressing and re-compressing the 
     /// game files to aid in debugging.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class GameFileInflator : Form
     {
         /// <summary>

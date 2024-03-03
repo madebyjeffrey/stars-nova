@@ -35,9 +35,11 @@ namespace Nova.WinForms.Gui
     using Nova.Common.DataStructures; 
     using Nova.Common.Waypoints;
     using System.Collections.Generic;
+    using System.Runtime.Versioning;
     /// <Summary>
     /// StarMap is the control which holds the actual playing map. 
     /// </Summary>
+    [SupportedOSPlatform("windows")]
     public partial class StarMap : UserControl
     {
         /// <Summary>

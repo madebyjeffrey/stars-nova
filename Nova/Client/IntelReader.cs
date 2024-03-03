@@ -26,6 +26,7 @@ namespace Nova.Client
     using System.Collections;
     using System.Collections.Generic;
     using System.IO;
+    using System.Runtime.Versioning;
     using System.Xml;
     using System.Xml.Serialization;
 
@@ -33,6 +34,7 @@ namespace Nova.Client
     using Nova.Common.Components;
     using Nova.Common.DataStructures;
 
+    [SupportedOSPlatform("windows")]
     public class IntelReader
     {
         private ClientData clientState;

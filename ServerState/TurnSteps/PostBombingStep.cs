@@ -5,6 +5,8 @@ using System.Text;
 
 namespace Nova.Server.TurnSteps
 {
+    using System.Runtime.Versioning;
+
     using Nova.Common;
     using Nova.Common.Waypoints;
     /// <summary>
@@ -13,6 +15,7 @@ namespace Nova.Server.TurnSteps
     /// Bombing was carried out. It is easier to just perform the colonise steps last rather than have the Orders file filled up with
     /// SplitMerge tasks.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     class PostBombingStep : ITurnStep
     {
         public List <Message> Process(ServerData serverState)

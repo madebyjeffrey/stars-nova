@@ -24,10 +24,12 @@ namespace Nova.Common.DataStructures
 {
     #region Using Statements
     using System;
+    using System.Runtime.Versioning;
     using System.Xml;
     #endregion
 
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class BattleStep
     {
         public string Type;

@@ -24,10 +24,12 @@ namespace Nova.ControlLibrary
 {
     using System;
     using System.ComponentModel;
+    using System.Runtime.Versioning;
 
     /// <summary>
     /// A control for transferring cargo.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class CargoTransfer : System.Windows.Forms.UserControl
     {
         private int cargoAmount;

@@ -25,6 +25,7 @@ namespace Nova.Common
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Runtime.Versioning;
     using System.Xml;
 
     using Nova.Common.RaceDefinition;
@@ -35,6 +36,7 @@ namespace Nova.Common
     /// the loading and saving of race data to a file.
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class Race
     {
         public bool encrypted = false;

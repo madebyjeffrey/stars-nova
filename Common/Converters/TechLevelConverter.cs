@@ -27,11 +27,13 @@ namespace Nova.Common.Converters
     using System.ComponentModel;
     using System.ComponentModel.Design.Serialization;
     using System.Reflection;
+    using System.Runtime.Versioning;
     #endregion
 
     /// <summary>
     /// <see cref="TypeConverter"/> for <see cref="TechLevel"/>.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class TechLevelConverter : InstanceDescriptorConverter<TechLevel>
     {
         protected override InstanceDescriptor ConvertToInstanceDescriptor(TechLevel value)

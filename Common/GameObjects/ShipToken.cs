@@ -23,6 +23,7 @@ namespace Nova.Common
 {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.Versioning;
     using System.Xml;
     
     using Nova.Common.Components;
@@ -32,6 +33,7 @@ namespace Nova.Common
     /// Describes a Token of Quantity ships, all of the same design. A Token forms part of a Fleet (or in battle, a Stack). Damage is tracked at the Token level. 
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class ShipToken
     {
         /// <summary>

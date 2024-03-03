@@ -24,11 +24,13 @@ namespace Nova.Common
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Runtime.Versioning;
 
     /// <summary>
     /// This module returns details of a planet's Defenses
     /// TODO (priority 5) - Transfer this to the Defense component property.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public static class Defenses
     {
         public static Dictionary<string, double> DefenseTypes = new Dictionary<string, double>();

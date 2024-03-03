@@ -31,11 +31,13 @@ using System.Xml;
 
 namespace Nova.Common.Components
 {
+    using System.Runtime.Versioning;
 
     /// <summary>
     /// Definition of an engine property.
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class Engine : ComponentProperty
     {
         public int[] FuelConsumption = new int[10];

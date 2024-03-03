@@ -26,9 +26,11 @@ namespace Nova.Common
     using System.Collections.Generic;
     using System.IO;
     using System.Reflection;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
 
     using Microsoft.Win32;
+    using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
 
     /// <summary>
     /// The FileSearcher object is used to find a file that is part of Nova. It uses
@@ -40,6 +42,7 @@ namespace Nova.Common
     /// let the calling function know that we can't find the file and have it decide 
     /// what to do.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public static class FileSearcher
     {
         private static bool disableComponentGraphics; // if we can't find them the first time, stop asking.

@@ -24,18 +24,20 @@ namespace Nova.Common
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Runtime.Versioning;
     using System.Text;
     using System.Xml;
 
     /// <summary>
     /// Racial Traits: 
-    /// Defines a colletion of TraitEntry objects representing the singular primary
+    /// Defines a collection of TraitEntry objects representing the singular primary
     /// and zero or more lesser (secondary) racial traits. See PrimaryTraits and 
     /// SecondaryTraits for descriptions of these traits.
     /// </summary>
     /// <remarks>
     /// Inherits from TraitList and adds a PrimaryTrait field.</remarks>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class RacialTraits : TraitList
     {
         private TraitEntry primaryTrait = AllTraits.Data.Primary["JOAT"]; // Start with some default primary trait

@@ -86,7 +86,7 @@ namespace Nova.Tests.UnitTests
             expected = expected.Replace('\\', Path.DirectorySeparatorChar);
             baseDir = baseDir.Replace('\\', Path.DirectorySeparatorChar);
             targetPath = targetPath.Replace('\\', Path.DirectorySeparatorChar);
-            Assert.AreEqual(expected, Global.EvaluateRelativePath(baseDir, targetPath));
+            Assert.That(expected, Is.EqualTo(Global.EvaluateRelativePath(baseDir, targetPath)));
         }
     }
 }

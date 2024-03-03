@@ -24,9 +24,11 @@ namespace Nova
     using System;
     using System.IO;
     using System.Linq;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
     using Nova.Common;
 
+    [SupportedOSPlatform("windows")]
     public static class Program
     {
         /// <Summary>

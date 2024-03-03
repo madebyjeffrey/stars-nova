@@ -23,6 +23,7 @@
 namespace Nova.WinForms.Gui
 {
     using System.Collections.Generic;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
 
     using Nova.Common;
@@ -32,6 +33,7 @@ namespace Nova.WinForms.Gui
     /// This module provides a control to display the production queue for the 
     /// currently selected Star system.
     /// </Summary>
+    [SupportedOSPlatform("windows")]
     public class QueueList : ListView
     {
         /// <summary>

@@ -30,8 +30,11 @@ namespace Nova.ControlLibrary
 {
     using System;
     using System.ComponentModel;
+    using System.Runtime.Versioning;
+
     using Nova.Common;
 
+    [SupportedOSPlatform("windows")]
     public class ResourceDisplay : System.Windows.Forms.UserControl
     {        
         private System.Windows.Forms.Label label1;

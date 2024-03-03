@@ -25,6 +25,7 @@ namespace Nova.WinForms.Gui
     using System;
     using System.Collections.Generic;
     using System.Drawing;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
     
     using Nova.Client;
@@ -34,6 +35,7 @@ namespace Nova.WinForms.Gui
     /// <Summary>
     /// The Star system Summary panel.
     /// </Summary>
+    [SupportedOSPlatform("windows")]
     public class PlanetSummary : System.Windows.Forms.UserControl, IStarObserver
     {
         // List of the Star reports.

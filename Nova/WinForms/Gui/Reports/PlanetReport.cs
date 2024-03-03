@@ -26,6 +26,7 @@ namespace Nova.WinForms.Gui
     using System.Collections;
     using System.Collections.Generic;
     using System.Drawing;
+    using System.Runtime.Versioning;
     using System.Text;
     using System.Windows.Forms;
     
@@ -35,6 +36,7 @@ namespace Nova.WinForms.Gui
     /// <Summary>
     /// Planet Summary report dialog class
     /// </Summary>
+    [SupportedOSPlatform("windows")]
     public partial class PlanetReport : Form
     {
         private readonly EmpireData empireState;

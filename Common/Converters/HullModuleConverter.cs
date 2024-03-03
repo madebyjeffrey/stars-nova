@@ -26,9 +26,12 @@ namespace Nova.Common.Converters
     using System.Collections;
     using System.ComponentModel.Design.Serialization;
     using System.Reflection;
+    using System.Runtime.Versioning;
+
     using Nova.Common.Components;
     #endregion
 
+    [SupportedOSPlatform("windows")]
     public class HullModuleConverter : InstanceDescriptorConverter<HullModule>
     {
         protected override InstanceDescriptor ConvertToInstanceDescriptor(HullModule value)

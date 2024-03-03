@@ -30,11 +30,13 @@
 namespace Nova.WinForms.RaceDesigner
 {
     using System;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
 
     /// <Summary>
     /// Race Designer utilities.
     /// </Summary>
+    [SupportedOSPlatform("windows")]
     public class Utilities
     {
         #region Methods

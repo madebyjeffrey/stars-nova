@@ -35,8 +35,8 @@ namespace Nova.WinForms.Gui
             this.fleetDetail = new FleetDetail(clientState);
             this.fleetDetail.setPlanetMode += this.setPlanetDetail;
             this.fleetDetail.setFleetMode += this.setFleetDetail;
-            this.planetDetail.setPlanetMode += this.setPlanetDetail;
-            this.planetDetail.setFleetMode += this.setFleetDetail;
+            this.planetDetail.SetPlanetMode += this.setPlanetDetail;
+            this.planetDetail.SetFleetMode += this.setFleetDetail;
             this.SuspendLayout();
             // 
             // planetDetail1

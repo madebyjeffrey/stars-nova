@@ -26,6 +26,7 @@ namespace Nova.Common.Components
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.IO;
+    using System.Runtime.Versioning;
     using System.Threading;
     using System.Xml;
 
@@ -33,6 +34,7 @@ namespace Nova.Common.Components
     /// Provides access to a <see cref="ConcurrentDictionary"/>
     /// containing all <see cref="Component"/>s indexed by their names.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public sealed class AllComponents
     {
         // Contains all components

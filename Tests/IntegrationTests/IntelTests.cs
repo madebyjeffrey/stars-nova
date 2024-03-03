@@ -27,6 +27,7 @@ using NUnit.Framework;
 
 namespace Nova.Tests.IntegrationTests
 {
+    using System.Runtime.Versioning;
     [TestFixture]
     public class IntelTests
     {
@@ -105,6 +106,7 @@ namespace Nova.Tests.IntegrationTests
         /// TODO Exception handling and logic (if-statements) in tests is not recommended.
         /// </Summary>
         [Test]
+        [SupportedOSPlatform("windows")]
         public void SerialisationTestIntel()
         {
             StringWriter stringStream = new StringWriter();
@@ -167,10 +169,10 @@ namespace Nova.Tests.IntegrationTests
                 }
 
                 // test if it worked
-                Assert.IsTrue(loadedData.EmpireState.TurnYear == 3500);
-                Assert.IsTrue(loadedData.EmpireState.StarReports.ContainsKey("Pluto") &&
+                Assert.That(loadedData.EmpireState.TurnYear == 3500, "TurnYear is 3500");
+                Assert.That(loadedData.EmpireState.StarReports.ContainsKey("Pluto") &&
                               loadedData.EmpireState.StarReports["Pluto"].Name == "Pluto");
-                Assert.IsTrue(loadedData.EmpireState.StarReports.ContainsKey("Pluto") &&
+                Assert.That(loadedData.EmpireState.StarReports.ContainsKey("Pluto") &&
                               loadedData.EmpireState.StarReports["Pluto"].Colonists == 25000);
 
             }

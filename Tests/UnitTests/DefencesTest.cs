@@ -45,8 +45,8 @@ namespace Nova.Tests.UnitTests
 
             Defenses.ComputeDefenseCoverage(star);
 
-            Assert.AreEqual(0.9791, Defenses.PopulationCoverage, 0.001);
-            Assert.AreEqual(0.8524, Defenses.SmartBombCoverage, 0.001);
+            Assert.That(0.9791, Is.EqualTo(Defenses.PopulationCoverage).Within(0.001));
+            Assert.That(0.8524, Is.EqualTo(Defenses.SmartBombCoverage).Within(0.001));
         }
     }
 }

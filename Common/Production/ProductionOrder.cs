@@ -25,6 +25,7 @@ namespace Nova.Common
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Globalization;
+    using System.Runtime.Versioning;
     using System.Xml;
 
     using Nova.Common.Components;
@@ -33,6 +34,7 @@ namespace Nova.Common
     /// Details of a design in the queue.
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class ProductionOrder 
     {        
         // Number to build

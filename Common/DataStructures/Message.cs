@@ -23,6 +23,7 @@
 namespace Nova.Common
 {
     using System;
+    using System.Runtime.Versioning;
     using System.Xml;
     using Nova.Common.DataStructures;
 
@@ -30,6 +31,7 @@ namespace Nova.Common
     /// This class defines the format of messages sent to one or more players.
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class Message
     {
         public string Text;      // The text to display in the message box.

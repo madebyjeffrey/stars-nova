@@ -23,6 +23,7 @@
 namespace Nova.ControlLibrary
 {
     using System;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
 
     using Nova.Common;
@@ -30,6 +31,7 @@ namespace Nova.ControlLibrary
     /// <summary>
     /// An object to control the checking of passwords.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class CheckPassword : Form
     {
         private readonly Race empireData;

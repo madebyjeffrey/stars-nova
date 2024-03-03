@@ -24,6 +24,7 @@ namespace Nova.WinForms.Gui
 {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.Versioning;
     using System.Text;
     using System.Windows.Forms;
     
@@ -34,6 +35,7 @@ namespace Nova.WinForms.Gui
     /// <Summary>
     /// Fleet Summary report dialog class
     /// </Summary>
+    [SupportedOSPlatform("windows")]
     public partial class FleetReport : Form
     {
         private EmpireData empireState;

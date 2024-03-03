@@ -24,9 +24,11 @@ namespace Nova.Common.DataStructures
 {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.Versioning;
     using System.Xml;
 
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class BattleReport
     {
         /// <summary>
@@ -127,7 +129,7 @@ namespace Nova.Common.DataStructures
                 catch (Exception e)
                 {
                     Report.Error("Failed to load battle report: " + Environment.NewLine + e.Message);
-                    throw e;
+                    throw;
                 }
                 subnode = subnode.NextSibling;
             }

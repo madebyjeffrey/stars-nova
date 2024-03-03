@@ -22,11 +22,13 @@
 namespace Nova.Common
 {
     using System;
+    using System.Runtime.Versioning;
     using System.Xml;
 
     /// <summary>
     /// Implementation of ProductionUnit for constructing one mine.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class MineProductionUnit : IProductionUnit
     {
         private Resources cost;

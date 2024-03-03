@@ -62,7 +62,7 @@ namespace Nova.Tests.UnitTests
             int growth = star.CalculateGrowth(race);
 
             // check the growth
-            Assert.AreEqual(-1500, growth);
+            Assert.That(-1500, Is.EqualTo(growth));
 
             return growth;
         }
@@ -84,7 +84,7 @@ namespace Nova.Tests.UnitTests
             int growth = star.CalculateGrowth(race);
 
             // check the growth
-            Assert.AreEqual(10000, growth);
+            Assert.That(10000, Is.EqualTo(growth));
 
             return growth;
         }
@@ -106,7 +106,7 @@ namespace Nova.Tests.UnitTests
             int growth = star.CalculateGrowth(race);
 
             // check the growth
-            Assert.AreEqual(22200, growth);
+            Assert.That(22200, Is.EqualTo(growth));
 
             return growth;
         }
@@ -128,7 +128,7 @@ namespace Nova.Tests.UnitTests
             int growth = star.CalculateGrowth(race);
 
             // check the growth
-            Assert.AreEqual(0, growth);
+            Assert.That(0, Is.EqualTo(growth));
 
             return growth;
         }
@@ -150,7 +150,7 @@ namespace Nova.Tests.UnitTests
             int growth = star.CalculateGrowth(race);
 
             // check the growth
-            Assert.AreEqual(-30000, growth);
+            Assert.That(-30000, Is.EqualTo(growth));
 
             return growth;
         }
@@ -172,7 +172,7 @@ namespace Nova.Tests.UnitTests
             int growth = star.CalculateGrowth(race);
 
             // check the growth
-            Assert.AreEqual(-600000, growth);
+            Assert.That(-600000, Is.EqualTo(growth));
 
             return growth;
         }
@@ -187,7 +187,7 @@ namespace Nova.Tests.UnitTests
             race.TemperatureTolerance.Immune = true;
             race.GravityTolerance.Immune = true;
             habitalValue = race.HabValue(star);
-            Assert.AreEqual(1.0, habitalValue);
+            Assert.That(1.0, Is.EqualTo(habitalValue));
         }
 
         [Test]
@@ -203,7 +203,7 @@ namespace Nova.Tests.UnitTests
             race.GravityTolerance.MaximumValue = 2;
             race.GravityTolerance.MinimumValue = 0;
             habitalValue = race.HabValue(star);
-            Assert.AreEqual(1.0, habitalValue);
+            Assert.That(1.0, Is.EqualTo(habitalValue));
         }
 
         [Test]
@@ -219,7 +219,7 @@ namespace Nova.Tests.UnitTests
             race.GravityTolerance.MaximumValue = 2;
             race.GravityTolerance.MinimumValue = 0;
             habitalValue = race.HabValue(star);
-            Assert.AreEqual(-0.15, habitalValue);
+            Assert.That(-0.15, Is.EqualTo(habitalValue));
         }
 
         [Test]
@@ -235,7 +235,7 @@ namespace Nova.Tests.UnitTests
             race.GravityTolerance.MaximumValue = 60;
             race.GravityTolerance.MinimumValue = 50;
             habitalValue = race.HabValue(star);
-            Assert.AreEqual(-0.45, habitalValue);
+            Assert.That(-0.45, Is.EqualTo(habitalValue));
         }
 
         [Test]
@@ -252,7 +252,7 @@ namespace Nova.Tests.UnitTests
             race.GravityTolerance.MaximumValue = 70;
             race.GravityTolerance.MinimumValue = 60;
             habitalValue = race.HabValue(star);
-            Assert.AreEqual(-0.90, habitalValue);
+            Assert.That(-0.90, Is.EqualTo(habitalValue));
         }
 
         [Test]
@@ -268,7 +268,7 @@ namespace Nova.Tests.UnitTests
             race.GravityTolerance.MaximumValue = 5;
             race.GravityTolerance.MinimumValue = 0;
             habitalValue = race.HabValue(star);
-            Assert.AreEqual(-0.10, habitalValue);
+            Assert.That(-0.10, Is.EqualTo(habitalValue));
         }
     }
 }

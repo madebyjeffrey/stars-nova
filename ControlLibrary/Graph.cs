@@ -34,12 +34,14 @@ namespace Nova.ControlLibrary
     using System.Data;
     using System.Drawing;
     using System.Drawing.Drawing2D;
+    using System.Runtime.Versioning;
     using System.Text;
     using System.Windows.Forms;
 
     /// <summary>
     /// Simple control that can display 2d graph.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class Graph : UserControl
     {
         private int[] data;

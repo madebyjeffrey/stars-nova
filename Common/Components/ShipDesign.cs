@@ -24,6 +24,7 @@ namespace Nova.Common.Components
 {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.Versioning;
     using System.Xml;
 
     /// <summary>
@@ -31,6 +32,7 @@ namespace Nova.Common.Components
     /// design are only available once the hull modules have been populated.
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class ShipDesign : Item
     {
         // This is the component that contains the Hull property, to which all other ships components attach.

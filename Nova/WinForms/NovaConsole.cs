@@ -26,6 +26,7 @@ namespace Nova.WinForms.Console
     using System.Diagnostics;
     using System.IO;
     using System.Reflection;
+    using System.Runtime.Versioning;
     using System.Text;
     using System.Threading;
     using System.Windows.Forms;
@@ -36,6 +37,7 @@ namespace Nova.WinForms.Console
     /// <Summary>
     /// The Nova console is the interface for the server functionality
     /// </Summary>
+    [SupportedOSPlatform("windows")]
     public partial class NovaConsole : Form
     {
         private ServerData serverState;       

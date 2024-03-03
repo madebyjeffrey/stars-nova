@@ -24,12 +24,14 @@ namespace Nova.Common
 {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.Versioning;
     using System.Xml;
 
     /// <summary>
     /// Class for a star's production queue.
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class ProductionQueue
     {
         /// <summary>

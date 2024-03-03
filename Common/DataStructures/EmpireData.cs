@@ -25,6 +25,7 @@ namespace Nova.Common
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Runtime.Versioning;
     using System.Xml;
     
     using Nova.Common.Components;
@@ -43,6 +44,7 @@ namespace Nova.Common
     /// the Nova console/server. 
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class EmpireData
     {
         private ushort empireId;

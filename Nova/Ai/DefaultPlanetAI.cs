@@ -24,6 +24,7 @@ namespace Nova.Ai
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Runtime.Versioning;
     using System.Text;
 
     using Nova.Client;
@@ -37,6 +38,7 @@ namespace Nova.Ai
     /// <summary>
     /// A helper object for the default AI for managing planets.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class DefaultPlanetAI
     {
         private const int FactoryProductionPrecedence = 0;

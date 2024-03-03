@@ -34,11 +34,13 @@
 
 namespace Nova.Common.Components
 {
+    using System.Runtime.Versioning;
 
     /// <summary>
     /// Fuel Property.
     /// </summary>
     [Serializable]
+    [SupportedOSPlatform("windows")]
     public class Fuel : ComponentProperty
     {
         public int Capacity = 0;

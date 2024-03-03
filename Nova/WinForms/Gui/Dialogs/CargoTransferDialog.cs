@@ -24,6 +24,7 @@ namespace Nova.ControlLibrary
 {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.Versioning;
     using System.Windows.Forms;
     using Nova.WinForms.Gui.Controls;
 
@@ -33,6 +34,7 @@ namespace Nova.ControlLibrary
     using Nova.Common.Waypoints;
 
 
+    [SupportedOSPlatform("windows")]
     public partial class CargoTransferDialog : Form
     {
         private Fleet fleet;
