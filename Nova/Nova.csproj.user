@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup />
+  <ItemGroup>
+    <Compile Update="Client\SelectRaceDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="WinForms\AboutBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="WinForms\ComponentEditor\ComponentEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="WinForms\ComponentEditor\Dialogs\HullDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="WinForms\ComponentEditor\Dialogs\RaceRestrictionDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="WinForms\Gui\Dialogs\BattlePlans.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="WinForms\Gui\Dialogs\BattleViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="WinForms\Gui\Dialogs\CargoDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="WinForms\Gui\Dialogs\CargoTransferDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="WinForms\Gui\Dialogs\DesignManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="WinForms\Gui\Dialogs\PlayerRelations.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="WinForms\Gui\Dialogs\ProductionDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="WinForms\Gui\Dialogs\RenameFleetDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="WinForms\Gui\Dialogs\ResearchDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="WinForms\Gui\Dialogs\ShipDesignDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="WinForms\Gui\Dialogs\SplitFleetsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="WinForms\Gui\NovaGUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="WinForms\Gui\Reports\BattleReport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="WinForms\Gui\Reports\FleetReport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="WinForms\Gui\Reports\PlanetReport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="WinForms\Gui\Reports\ScoreReport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="WinForms\Launcher\NovaLauncher.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="WinForms\NewGameWizard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="WinForms\NovaConsole.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="WinForms\RaceDesigner\RaceDesigner.cs">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+</Project>

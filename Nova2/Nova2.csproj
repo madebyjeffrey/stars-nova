@@ -1,0 +1,230 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net8.0-windows</TargetFramework>
+        <Nullable>disable</Nullable>
+        <UseWindowsForms>true</UseWindowsForms>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <RootNamespace>Nova</RootNamespace>
+        <ApplicationIcon>Resources\Nova.ico</ApplicationIcon>
+        <Version>0.4.2</Version>
+        <AssemblyVersion>0.4.2.0</AssemblyVersion>
+        <FileVersion>0.4.2.0</FileVersion>
+        <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Common\Common.csproj"/>
+        <ProjectReference Include="..\ControlLibrary\ControlLibrary.csproj"/>
+        <ProjectReference Include="..\ServerState\Server.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Update="WinForms\ComponentEditor\DialogComponents\BasicProperties.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="WinForms\ComponentEditor\DialogComponents\CommonProperties.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="WinForms\ComponentEditor\DialogComponents\ImageDisplay.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="WinForms\ComponentEditor\DialogComponents\TechRequirements.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="WinForms\ComponentEditor\Dialogs\HullDialog.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Update="WinForms\ComponentEditor\Dialogs\RaceRestrictionDialog.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Update="WinForms\ComponentEditor\ComponentEditor.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Update="WinForms\Gui\Controls\CargoMeter.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="WinForms\Gui\Controls\CargoMeterCounter.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="WinForms\Gui\Controls\FleetDetail.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="WinForms\Gui\Controls\FleetSummary.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="WinForms\Gui\Controls\Messages.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="WinForms\Gui\Controls\PlanetDetail.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="WinForms\Gui\Controls\PlanetSummary.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="WinForms\Gui\Controls\SelectionDetail.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="WinForms\Gui\Controls\SelectionSummary.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="WinForms\Gui\Controls\StarMap.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="WinForms\Gui\Controls\StarMapPanel.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="WinForms\Gui\Dialogs\BattlePlans.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Update="WinForms\Gui\Dialogs\BattleViewer.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Update="WinForms\Gui\Dialogs\CargoDialog.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Update="WinForms\Gui\Dialogs\CargoTransferDialog.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Update="WinForms\Gui\Dialogs\DesignManager.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Update="WinForms\Gui\Dialogs\PlayerRelations.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Update="WinForms\Gui\Dialogs\ProductionDialog.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Update="WinForms\Gui\Dialogs\RenameFleetDialog.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Update="WinForms\Gui\Dialogs\ResearchDialog.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Update="WinForms\Gui\Dialogs\ShipDesignDialog.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Update="WinForms\Gui\Dialogs\SplitFleetsDialog.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Update="WinForms\Gui\Reports\BattleReport.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Update="WinForms\Gui\Reports\FleetReport.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Update="WinForms\Gui\Reports\PlanetReport.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Update="WinForms\Gui\Reports\ScoreReport.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Update="WinForms\Gui\NovaGUI.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Update="WinForms\Gui\QueueList.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="WinForms\Gui\WaypointListBox.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="WinForms\Launcher\NovaLauncher.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Update="WinForms\RaceDesigner\RaceDesigner.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Update="WinForms\AboutBox.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Update="WinForms\NewGameWizard.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Update="WinForms\NovaConsole.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Update="Client\SelectRaceDialog.cs">
+            <SubType>Form</SubType>
+        </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+        <AdditionalFiles Include="DefaultRaces\AIs.race">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </AdditionalFiles>
+        <AdditionalFiles Include="DefaultRaces\Antetheral.race">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </AdditionalFiles>
+        <AdditionalFiles Include="DefaultRaces\Humanoid.race">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </AdditionalFiles>
+        <AdditionalFiles Include="DefaultRaces\Insectoid.race">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </AdditionalFiles>
+        <AdditionalFiles Include="DefaultRaces\Nucleotid.race">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </AdditionalFiles>
+        <AdditionalFiles Include="DefaultRaces\Rabbitoid.race">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </AdditionalFiles>
+        <AdditionalFiles Include="DefaultRaces\Silicanoid.race">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </AdditionalFiles>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Update="Resources\Plasma.png">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Update="Resources\Cursor.bmp">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Update="Resources\Nova.ico">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Update="Resources\newplasma.png">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Update="Resources\fleet.png">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Update="Resources\planeticon.png">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Update="Resources\smallplus.png">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Update="Resources\salvage0000.png">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Update="Resources\MineralPacket0000.png">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Update="Resources\Nova.jpg">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Update="Resources\fleet2.png">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Update="Resources\copyright free play button.jpg">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Update="Resources\Diamond_Button.png">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="DefaultRaces.zip">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Graphics.zip">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="components.zip">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+</Project>
